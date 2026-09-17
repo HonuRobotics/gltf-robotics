@@ -31,7 +31,7 @@ So, precisely:
 
 | Term | What it is | Who says it that way |
 |---|---|---|
-| coordinate system | origin + orientation | ISO 9787 §5, ISO 8373 |
+| coordinate system (frame) | origin + orientation | ISO 9787 §5, ISO 8373 |
 | frame | the same thing | REP 103, REP 105, tf |
 | origin | the point alone | ISO 9787 §3.10, §5.1–5.3 |
 | pivot, object origin | the point *as named*, but in practice the whole frame | Blender, Maya, 3ds Max |
@@ -64,7 +64,9 @@ There are multiple practices in robotics, so there is not just one convention. A
 
     **[Corrected]** "No clear parent" is right about joints and wrong about frames. A mobile `base_link` does have a parent in the transform tree — REP 105 puts it under `odom`, then `map`, then `earth` — but that edge is a *published transform* produced by odometry, not a joint in the model. The model is rootless; the runtime tree is not.
 
-    **[Firm]** "Axis midpoint projected to the ground" is a real documented pattern, though the standard example is a different frame rather than `base_link` itself. REP 120 defines `base_footprint` as "the representation of the robot position on the floor", where "The translation component of the frame should be the barycenter of the feet projections on the floor", with roll and pitch zero. Its stated rationale is stability: `base_footprint` "provides a fairly stable 2D planar representation of the humanoid even while walking and swaying with the `base_link`". **[Practice]** The wheeled-robot equivalent, the wheel-axis midpoint projected to the ground, is very widely used but is not written down in any REP.
+    **[Firm]** ISO 9787 §5.5 does give the mobile platform axis rule, and it is REP 103: "The `+X_p` axis is normally taken in the forward direction of the mobile platform. The `+Z_p` axis is normally taken in the upward direction of the mobile platform." Figure 6 draws it on a four-wheeled vehicle with `Y_p` to the platform's left. So for the mobile case the robotics standard and the ROS convention agree outright, and the only thing ISO leaves open is where the origin sits — the same gap REP 105 leaves.
+
+**[Firm]** "Axis midpoint projected to the ground" is a real documented pattern, though the standard example is a different frame rather than `base_link` itself. REP 120 defines `base_footprint` as "the representation of the robot position on the floor", where "The translation component of the frame should be the barycenter of the feet projections on the floor", with roll and pitch zero. Its stated rationale is stability: `base_footprint` "provides a fairly stable 2D planar representation of the humanoid even while walking and swaying with the `base_link`". **[Practice]** The wheeled-robot equivalent, the wheel-axis midpoint projected to the ground, is very widely used but is not written down in any REP.
 
 2. **Base link, fixed or passive.** One parent, one or many children. Example: the root part (body) of a manipulator kinematic chain. There is one point in the geometry that can be taken as the definitive location of the rest of the kinematic chain in the world. The location of the base origin is often fixed — either with an overt fixed joint to something else in the world, or passively by gravity and friction.
 
@@ -116,13 +118,17 @@ In this case it is common to choose an origin that is a physically identifiable 
 | System | Clause | Referenced to |
 |---|---|---|
 | Mechanical interface, `O_m` | §5.3 | the mechanical interface; origin at its center, `+Z_m` perpendicular away from it |
-| Task, `O_k` | §5.6 | "the site of the task" |
-| Object, `O_j` | §5.7 | "the object" |
-| Camera, `O_c` | §5.8 | "the sensor which monitors the site of the task" |
+| Tool (TCS), `O_t` | §5.4 | origin **is** the TCP; `+Z_t` "tool dependent, normally in the direction of the tool" |
+| Mobile platform, `O_p` | §5.5 | `+X_p` forward, `+Z_p` up — REP 103's body frame |
+| Task, `O_k` | §5.6 | "the site of the task" — **defined by figure only, no axis rule** |
+| Object, `O_j` | §5.7 | "the object" — figure only |
+| Camera, `O_c` | §5.8 | "the sensor which monitors the site of the task" — figure only |
+
+**[Firm]** Worth noting what the standard declines to do: §5.6 through §5.8 give no axis convention at all, only a reference to Figure 7. So ISO fixes axes for the world, base, mechanical interface, tool and mobile platform, and leaves the task, object and camera systems to the application. Annex A then works the base and mechanical interface systems through five mechanical structures — rectangular, cylindrical, polar, articulated and SCARA — and none of them is a mobile robot.
 
 **[Firm]** The mechanical interface coordinate system is the standard name for the thing the earlier attempt in this project called an "attach" or a "slot". It has a defined origin rule — the center of the mating interface — and a defined axis rule: `+Z` along the mating normal, pointing away from the surface.
 
-**[Firm]** Note that this is a genuine disagreement between communities, not a restatement. ISO 9787's mounting frames are built around `+Z` along the mating normal; REP 103's body frame is built around `x` forward, `y` left, `z` up. A mount frame authored to ISO and a body frame authored to REP 103 differ by a rotation, and neither is wrong.
+**[Firm]** The disagreement is narrower than it first looks, and worth stating precisely. ISO 9787's *mounting* frames are built around `+Z` along the mating normal (§5.3), and its *tool* frames around `+Z` "normally in the direction of the tool" (§5.4), both of which differ from a REP 103 body frame by a rotation. But its *mobile platform* frame (§5.5) is `+X` forward and `+Z` up, which is REP 103 exactly. So ISO and ROS agree about vehicles and differ only about mounting interfaces and tools, where ISO is describing a mating surface rather than a body.
 
 **[Firm]** REP 103 also carries a deliberate second convention for sensors, and it is the clearest precedent in ROS for a frame that breaks the body-frame rule on purpose: "In the case of cameras, there is often a second frame defined with a `_optical` suffix. This uses a slightly different convention: z forward, x right, y down."
 
@@ -156,18 +162,116 @@ Three things genuinely do not survive:
 
 **[Open]** Where that leaves the project's own rule is the next increment of this document, and it should not be written until the single-body case is airtight.
 
+#### Standards for 3D assets
+
+**[Corrected]** The working assumption behind this document — solid references on the robotics side, nothing comparable for 3D assets — is wrong. The asset formats are standardized, and one of them is the format this project delivers in.
+
+| Standard | What it is | Coordinate system it fixes |
+|---|---|---|
+| **ISO/IEC 12113:2022** | *Information technology — Runtime 3D asset delivery format — Khronos glTF™ 2.0.* glTF 2.0 published as an International Standard | right-handed, `+Y` up, meters, radians; front faces `+Z`, left side faces `+X` (§3.4) |
+| **ISO/IEC 19775-1:2023** | *Extensible 3D (X3D) — Part 1: Architecture and base components* | §4.3.6 right-handed, `+Y` up, base unit "metres"; default viewer sits on `+Z` looking down `−Z`, so an object facing the camera faces `+Z` |
+| **ISO 17506:2022** | *COLLADA digital asset schema specification for 3D visualization of industrial data* (was ISO/PAS 17506:2012) | declares its up axis per file, `<up_axis>`, rather than fixing one |
+
+**[Firm]** Three consequences follow, and they reframe the whole problem.
+
+First, citing glTF §3.4 *is* citing an ISO standard. The Khronos registry text and ISO/IEC 12113 are the same specification under two covers, so the asset side of this pipeline is no less formally grounded than the robotics side.
+
+Second, the asset standards agree with each other. glTF and X3D independently land on right-handed, `+Y` up, meters, and a front that faces `+Z` — X3D by way of where it puts the default camera rather than by saying so. That agreement is worth leaning on: it is not one vendor's habit.
+
+Third, COLLADA is the outlier and the reason it behaved differently for us. It makes the up axis a per-file *declaration* instead of a convention, which is exactly the freedom that lets a consumer ignore it — and both Gazebo and RViz do.
+
+**[Firm]** What genuinely has no standard is narrower than "3D assets":
+
+- **Authoring-tool vocabulary.** "Pivot" (Maya, 3ds Max) and "object origin" (Blender) are vendor terms. No standard names them, and no standard relates them to each other.
+- **Blender's viewport sense of "front".** Blender's Front view (numpad 1) looks along `+Y`, so the face presented to you is the `−Y` face. Taking that as the object's front makes Blender's convention forward `−Y`, left `+X`, up `+Z`. That is a UI habit, documented only by the behavior of the view shortcuts.
+- **Which way a delivered asset should face.** glTF states it without a requirement keyword and provides no property to record it, so nothing can enforce or check it.
+
+**[Open]** OpenUSD is not standardized. The Alliance for OpenUSD is working toward a specification, but there is no ISO or equivalent text today, which matters because REP 158 is written around USD as the authoring baseline.
+
+## Reconciling the standards
+
+**[Firm]** The problem is not a missing standard. It is that two well-standardized communities label the same three axes differently, and an unstandardized authoring tool adds a third labeling.
+
+### Where they agree, and it is most of it
+
+| Property | Robotics (ISO 9787, REP 103) | 3D assets (ISO/IEC 12113, ISO/IEC 19775) | Agree? |
+|---|---|---|---|
+| Handedness | right-handed (ISO §4.1, REP 103 "All systems are right handed") | right-handed (glTF §3.4, X3D §4.3.6) | **yes** |
+| Length unit | meter (REP 103 base units) | meter (glTF §3.4, X3D §4.3.6) | **yes** |
+| Angle unit | radian (REP 103) | radian (glTF §3.4) | **yes** |
+| Rotation names | roll, pitch, yaw about X, Y, Z (ISO §4.3, REP 103) | not addressed | no conflict |
+| Which axis is up | `+Z` (ISO §5.1 "collinear but in the opposite direction to the acceleration of gravity"; §5.5 `+Z_p` up) | `+Y` | **no** |
+| Which axis is forward | `+X` (ISO §5.5, REP 103) | `+Z` | **no** |
+
+### The disagreement is one cyclic relabeling
+
+**[Firm]** Write each convention as the ordered triple its `(X, Y, Z)` axes mean:
+
+- robotics — `(forward, left, up)`
+- 3D assets — `(left, up, forward)`
+
+The same three directions in the same cyclic order, shifted by one position. Nothing is mirrored, no unit differs, no handedness differs. That is why a single rotation reconciles them, and why the reconciliation can never need a reflection or a scale.
+
+**[Corrected]** Blender's viewport convention is *not* a third position in that cycle, which is a tidier claim than the algebra supports. Its triple is `(left, back, up)` — the front view presents the `−Y` face — and that is not a cyclic shift of `(forward, left, up)`; it shares the robotics up axis and differs in the other two. A yaw of `+90°` about that shared up axis carries Blender's axes onto REP 103's, which is why a part authored to REP 103 shows its front in Blender's **Right** view rather than its Front view. Blender is also the one convention here with no standard behind it.
+
+### Our frame names
+
+**[Firm where a clause is cited, otherwise ours]** Based on ISO 9787 and deliberately not identical to it. ISO is written for industrial manipulators, so three of its eight systems have no use here and it lacks a name for the thing we handle most: an ordinary rigid component that is neither a base, a tool, nor a mating surface.
+
+| Our name | Basis | Status |
+|---|---|---|
+| **world frame** | ISO 9787 §5.1 world coordinate system | **adopt as-is**: `+Z` opposite gravity, origin ours to define |
+| **vehicle frame** | ISO 9787 §5.5 mobile platform coordinate system | **adopt the axes as-is** (`+X` forward, `+Z` up, = REP 103); rename, because "mobile platform" reads oddly for a boat and an ROV |
+| **part frame** | none — ISO numbers axes, not links | **ours.** ISO has no term for a non-root rigid body that is not a tool or an interface. This is the gap we must fill ourselves |
+| **mount frame** | ISO 9787 §5.3 mechanical interface coordinate system | **narrow**: keep the origin rule (center of the interface) and drop the `+Z` mating-normal axis rule in favor of the part frame's axes, so that one convention governs every frame in a model |
+| **asset frame** | glTF / ISO/IEC 12113 §3.5, the scene's implicit space | **ours, grounded in the format.** No robotics standard has this concept; it exists only inside a file |
+| **node frame** | glTF / ISO/IEC 12113 §3.5 node | **adopt as-is**, the format's own term |
+| **sensor frame** | ISO 9787 §5.8 camera coordinate system; REP 103 `_optical` | **adopt REP 103's**, since ISO gives no axis rule and REP 103 does (`z` forward, `x` right, `y` down) |
+| *tool frame* | ISO 9787 §5.4 | **reserved, unused.** No manipulators in scope yet; adopt as-is if one arrives |
+
+**[Open]** The mount-frame narrowing is a real decision and not yet taken. Keeping ISO's `+Z`-along-the-mating-normal rule would make every mounting face self-describing but put a second axis convention inside one model; dropping it keeps one convention but means a mount frame carries no information about which way the surface faces.
+
+### The full reconciliation
+
+Each row is one frame; each column is what that frame is called, or what stands in for it, in each place.
+
+| Our frame | ISO 9787 | ROS (REP 103/105) | SDF / Gazebo | glTF (ISO/IEC 12113) | Blender | Action |
+|---|---|---|---|---|---|---|
+| world frame | world CS, §5.1 | `map`, `earth` (REP 105) | `<world>`, implicit world frame | — | the scene, Z-up | adopt |
+| vehicle frame | mobile platform CS, §5.5 | `base_link` (REP 105) | model frame; root `<link>` | — | — | adopt axes, rename |
+| part frame | — | a non-root `<link>` | `<link>` | — | the object, and its origin | **ours** |
+| mount frame | mechanical interface CS, §5.3 | a massless link + fixed joint | `<frame>`, and a `<joint>` parent | — | — | narrow |
+| asset frame | — | — | the `<mesh><uri>` as placed by `<visual><pose>` | scene's implicit space, §3.5 | the exported scene | ours |
+| node frame | — | — | — | node, §3.5 | the object's origin | adopt |
+| sensor frame | camera CS, §5.8 | `*_optical` (REP 103) | `<sensor><pose>` | — | — | adopt REP 103 |
+
+**[Firm]** Two asymmetries in that table are the whole reason this is hard. The middle rows have no glTF column, because glTF has no concept of a link, a joint or a mount — it has nodes and geometry and nothing else. And the `asset frame` and `node frame` rows have no robotics column, because nothing in ISO 9787 or the REPs describes the inside of a mesh file. The pipeline has to join two vocabularies that do not overlap at the point where they meet.
+
+### Adopt, narrow, or invent
+
+**[Firm]** Summarizing what this project actually has to write down, which is much less than Take 1 assumed:
+
+- **Adopt as-is, no project text needed:** handedness, length and angle units, roll/pitch/yaw naming, the world frame, the vehicle frame's axes, the sensor optical frame, glTF's node and scene model. All are settled by ISO 9787, REP 103 or ISO/IEC 12113 and need only a citation.
+- **Narrow:** the mount frame, by dropping ISO's mating-normal axis rule (undecided, above).
+- **Invent, because no standard reaches:** the part frame as a named concept; where an origin sits within a part's geometry; which asset-frame axis a delivery's forward direction occupies; and the rule joining the asset frame to the part frame — that is, the value of the visual pose.
+- **[Open]** That last list is short and it is exactly the list Take 1 failed to isolate. The next increments should address it in that order.
+
 ## Next increment
 
-Deliberately not covered yet, in the order it should be taken up:
+The vocabulary and the standards groundwork are now settled, and the list of things this project must decide for itself is short — see "Adopt, narrow, or invent" above. Deliberately not covered yet, in the order it should be taken up:
 
-1. One rigid body, one mesh, no joints: world frame, body frame, mesh vertices. Get this airtight before adding anything.
-2. The transform from the file's frame to the body frame, and which of glTF, Gazebo and RViz applies what.
-3. A second body and a joint between them.
-4. Only then: the project's delivery rule.
+1. One rigid body, one mesh, no joints: world frame, vehicle frame, asset frame, mesh vertices, written in the frame names agreed above. Get this airtight before adding anything.
+2. The transform from the asset frame to the part frame — the value of the visual pose — and which of glTF, Gazebo and RViz applies what. Take 1's findings on this are sound and can be carried over; its framing cannot.
+3. Where the origin sits within a part, and which asset-frame axis carries forward. These are the two genuine inventions.
+4. A second body and a joint between them, which is where the mount-frame narrowing has to be settled.
+5. Only then: the project's delivery rule.
 
 ## References
 
-- ISO 9787:2013, *Robots and robotic devices — Coordinate systems and motion nomenclatures*. §3 terms, §4.1 right-handedness, §4.3 roll/pitch/yaw, §4.4 axis numbering, §5.1–5.8 the eight coordinate systems. Public preview of the front matter and §3–5.3: https://cdn.standards.iteh.ai/samples/59444/075b6999979c4afa84ad1cb58620dcbc/ISO-9787-2013.pdf — clauses 5.4 onward are behind the paywall and are cited here from the §3 term definitions, which quote the same sources.
+- ISO 9787:2013, *Robots and robotic devices — Coordinate systems and motion nomenclatures*. §3 terms, §4.1 right-handedness, §4.3 roll/pitch/yaw, §4.4 axis numbering, §5.1–5.8 the eight coordinate systems, Annex A worked examples. Purchased single-user copy at `tools/maritime-workspace/refs/`, which is git-ignored — cite it by clause rather than copying text. https://www.iso.org/standard/59444.html
+- ISO/IEC 12113:2022, *Information technology — Runtime 3D asset delivery format — Khronos glTF™ 2.0* — the same specification as the Khronos registry text: https://www.iso.org/standard/83990.html
+- ISO/IEC 19775-1:2023, *Extensible 3D (X3D) — Part 1* §4.3.6 standard units and coordinate system. Web3D publishes the text free: https://www.web3d.org/standards/number/19775-1
+- ISO 17506:2022, *COLLADA digital asset schema specification*: https://www.iso.org/standard/78834.html
 - ISO 8373:2012 / :2021, *Robotics — Vocabulary*. The source ISO 9787 draws its terms from: https://www.iso.org/standard/75539.html
 - REP 103, *Standard Units of Measure and Coordinate Conventions* — chirality, axis orientation, the `_optical` suffix frame, rotation representation: https://www.ros.org/reps/rep-0103.html
 - REP 105, *Coordinate Frames for Mobile Platforms* — `base_link`, `odom`, `map`, `earth`: https://www.ros.org/reps/rep-0105.html
