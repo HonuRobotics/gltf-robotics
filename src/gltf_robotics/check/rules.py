@@ -277,8 +277,11 @@ def rule_7_materials(m):
                 # A metallic-roughness texture multiplies against the factor, so
                 # a blue channel of zero still yields a non-metal. Whether it
                 # does cannot be known without decoding the image, which this
-                # tool deliberately does not do. An unset factor is still a
-                # smell: it means the author did not state an intent.
+                # tool deliberately does not do -- so this warns rather than
+                # fails. Do not read the warning as "probably fine": a solid
+                # white metallic channel is the common export, and where this
+                # project decoded its own maps it found B = 255 throughout, so
+                # the unset factor really did make those parts metal.
                 metal_unverified.append(f"{name} ({how}, metallicRoughness texture present)")
         if maps and "baseColor" not in maps:
             missing_base.append(f"{name} ({', '.join(sorted(maps))})")
@@ -297,9 +300,11 @@ def rule_7_materials(m):
             "7", WARN,
             f"{len(metal_unverified)} materials leave metallicFactor unset but carry an ORM map",
             "; ".join(metal_unverified[:6]) + ". The texture's blue channel multiplies against "
-            "the factor and may well bring it to zero, so this is not necessarily the metalness "
-            "trap -- but reading the file cannot tell you, because that needs the decoded texel "
-            "values. State the factor explicitly if the part is not metal."))
+            "the factor, so a black metallic channel would still yield a non-metal. Settling it "
+            "needs the decoded texel values, which this tool does not read. Do not assume it is "
+            "fine: a solid white metallic channel is the usual export, and every map measured in "
+            "this project's own library had B = 255, which makes the part fully metal. State the "
+            "factor explicitly if the part is not metal."))
     if missing_base:
         out.append(Finding("7", FAIL, f"{len(missing_base)} textured materials have no baseColorTexture",
                            "; ".join(missing_base[:5]) + " -- this is the shape that terminates RViz"))
