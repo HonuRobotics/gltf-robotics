@@ -134,15 +134,66 @@ ISO 17450-1 §3.3.1.1.3 defines a **situation feature** as a "point, straight li
 **B. What "referenced to" means — location, orientation, or both.**
 To write: ISO's own "location **and/or** orientation" is the crux, and the *and/or* is load-bearing. A coordinate system has six degrees of freedom to pin down, three translational and three rotational, and each kind of situation feature constrains a different subset — a plane fixes one translation and two rotations; an axis fixes two translations and two rotations; a point fixes three translations and no rotation. So a single feature is almost never enough, and "referenced to" is shorthand for a *set* of features that together constrain all six. This is where ISO 5459's primary / secondary / tertiary datum ordering belongs, and where a table belongs: feature kind, what it constrains, what is left free. **[Open]** those degree-of-freedom counts are stated from the GPS invariance-class model (ISO 17450-1 §3.3.1.2 and Annex E) and must be checked against that annex before this is published as [Firm].
 
-**C. Worked examples, one per case we actually meet.**
+**C. Definition and realization are two different things, and every mature practice has both.**
 
-| Case | Situation features it is referenced to | Status |
-|---|---|---|
-| Manipulator base, ISO 9787 §5.2 | the base mounting surface, a **plane** — "connection surface between the arm and its supporting structure" (§3.2); `+X₁` is then fixed by a *constructed* direction through the working-space center, not by a feature | write up from the standard |
-| Mechanical interface, §5.3 | the interface, a **plane**, plus its **axis**; reference point at "the centre of the mechanical interface" | write up |
-| Mobile platform, §5.5 | **none given.** ISO fixes the axes functionally — "`+X_p` … in the forward direction", "`+Z_p` … in the upward direction" — and names no feature at all. This is the gap, and it is the gap for exactly our vehicles | the open question |
-| Surface vessel | naval architecture already has a three-plane datum system: the **baseline**, the **centreline** plane, and a transverse plane through the **aft perpendicular**, origin at the intersection of the latter two. ISO 7462 carries the terminology and its terms are free on the ISO OBP | strong candidate for the vehicle coordinate system |
-| Our parts | to be decided; the one genuine invention | open |
+The four mobile cases below look incommensurable until this split is made, so it belongs ahead of the examples:
+
+- **Definition** — which situation features fix the reference point and the axes. This is what makes the coordinate system *meaningful*, and it is the datum specification of part 0.
+- **Realization** — a physical mark an instrument can actually be placed on. This is what makes it *measurable*.
+
+**[Firm]** ISO 5459 has the standard name for the realization: a **datum target**, indicated as a datum target *point*, *line* or *area*. Its stated purpose is to establish a datum from limited contact where a whole feature cannot be used, so that every supplier seats the part identically. A tab welded to an ROV frame and a survey monument in a ship's gyro room are datum target points. That matters for morale as much as rigor: those practices are not hacks, they are standard practice missing only its paperwork.
+
+To write: that a definition without a realization cannot be measured in the shop, and a realization without a definition cannot be reproduced on a redesign — which is why each of the cases below feels incomplete on its own.
+
+**C.1 Derivation depth predicts instability.**
+
+A usable test, to be written up as the reason to prefer one candidate over another:
+
+| Candidate | Referenced to | Depth | Stable under design change? |
+|---|---|---|---|
+| Ship survey monument | a physical mark | 0 | yes |
+| ROV welded tab | a physical mark | 0 | yes |
+| Wheel axis ∩ ground plane | a straight line and a plane | 1 | yes |
+| "Center of the outline projected on the ground" | silhouette → projection → center | 3 | **no** — add a sensor mast and it moves |
+| "At the center of mass" | mass distribution of a configuration | 3+, and not geometric at all | **no** — reprovision and it moves |
+
+The rule to state: prefer the least-derived datum available; where a derived one is unavoidable, freeze it by naming the artifact and configuration it was derived from.
+
+**C.2 The cases, as we actually meet them.**
+
+| Case | Definition | Realization | To write |
+|---|---|---|---|
+| Manipulator base, ISO 9787 §5.2 | the base mounting surface, a **plane** — "connection surface between the arm and its supporting structure" (§3.2); `+X₁` then fixed by a *constructed* direction through the working-space center, not by a feature | left to the manufacturer | the one case the standard specifies nearly completely |
+| Mechanical interface, §5.3 | the interface **plane** plus its **axis**; reference point at "the centre of the mechanical interface" | the flange face and bolt circle | write up from the standard |
+| Mobile platform, §5.5 | **none given.** ISO fixes the axes functionally — "`+X_p` … in the forward direction", "`+Z_p` … in the upward direction" — and names no feature at all | none given | the gap, and it is the gap for exactly our vehicles |
+| Wheeled robot | the wheel **axis** intersected with the **ground plane**. Note the folk version, "center of the projection of the outline on the ground", is depth 3 and the outline is not a feature; REP 120 is more careful, using "the barycenter of the **feet** projections" | usually none; a machined face or scribed mark would be an improvement | also separate `base_link` from `base_footprint` — see C.3 |
+| ROV | not usually written down | **a tab welded to the frame.** Arbitrary but unambiguous: it exists on the hardware, in the CAD model, and under a tape measure | state the tab as a datum target and say nothing about where it roughly sits — "roughly midpoint" does no work and invites someone to re-derive it |
+| Surface vessel | naval architecture's three planes: the **baseline**, the **centreline** plane, and a transverse plane through the **aft perpendicular**, reference point at the intersection of the latter two. ISO 7462 carries the terminology and its terms are free on the ISO OBP | **a survey monument**, typically in the gyro room, with every sensor surveyed from it | the mature two-layer practice, and the model for the others. Capture why the gyro room: the INS is the sensor whose orientation error compounds through everything else, so the monument goes where uncertainty against the datum is smallest. Capture also that the design coordinate system and the as-built survey can disagree by build tolerance, and the survey is what is true |
+| UUV, torpedo-shaped | **[Corrected]** "at the center of mass" is unusable, because the CoM is a function of provisioning and moves between missions. "The CoM of the CAD model at a stated configuration" is a *frozen* derived value — honest and reproducible, but it makes the CAD artifact and its configuration part of the specification, and therefore version-controlled. The depth-1 alternative for a body of revolution: the hull's **axis of revolution** plus a transverse **plane** at a named station (a ring frame, a section joint, the nose tangency point), which gives five of six degrees of freedom, with roll needing one more — a keyway, a connector boss, a scribed line | none by default | note that the CoM is chosen for control and hydrodynamic convenience, which is a legitimate reason to place a frame but should be declared as a choice rather than presented as geometry |
+| Our parts | to be decided; the one genuine invention | — | open |
+
+**C.3 `base_link` is a datum; `base_footprint` is not.**
+
+To write: a conflation the wheeled case invites. `base_link` is a **fixed datum on the body**, so it wants a low-derivation featural definition. `base_footprint` is a **derived runtime frame** that legitimately moves as the vehicle pitches, rolls or walks — REP 120 defines it that way on purpose. "Center of the outline on the ground" is an acceptable definition for the second and a bad one for the first, and saying so removes most of the vagueness in current practice.
+
+**C.4 Why the vehicle coordinate system is a configuration item, not a modeling convention.**
+
+**[Firm]** This is the strongest argument in the document for declaring the datum a priori, and it is not about modeling at all. Because the vehicle coordinate system is what localization reports — `base_link`'s pose in `odom` and `map`, per REP 105 — the datum is an interface between four artifacts:
+
+- the **CAD model**, where the offsets originate
+- the **simulation model**, which must agree or the simulation lies
+- the **navigation software's sensor extrinsics**, all measured against it
+- the **as-built survey**, which is the ground truth
+
+Move the datum by 10 cm and every reported vehicle position moves 10 cm, and every sensor offset is wrong by the same amount. To write: the conclusion that follows — the datum is owned, versioned, declared before 3D asset work is commissioned, and *cited* by all four consumers rather than re-derived by each.
+
+**C.5 The rule shape this produces.**
+
+Proposed, to be refined:
+
+> The vehicle coordinate system shall be declared before the 3D asset is commissioned. The declaration names: the situation features that define it; the datum target that realizes it on the hardware, where one exists; and the CAD artifact and configuration, where any part of the definition is derived rather than featural. The same declaration is cited by the simulation model, the navigation extrinsics and the survey, and is never independently re-derived.
+
+**[Open]** Two things to settle before any of part C is promoted from outline to [Firm]. ISO 7462 is solid for the terminology of baseline, centreline and perpendiculars, but whether a standard governs vessel survey monuments and alignment practice has not been checked — that is naval combat-systems alignment territory. And the degree-of-freedom counts in part B still need checking against ISO 17450-1 Annex E.
 
 **D. Why this replaces the origin question.**
 To write: "where does the origin sit within the part?" invites derived answers that move whenever the geometry changes. "Which situation features is the part coordinate system referenced to?" invites an answer a modeler, an integrator and an inspector can each point at, and it is checkable by measurement on redelivery — the property the rule needed and never had. Close on what this does to the delivery spec: the manifest records the named features, not a set of coordinates.
