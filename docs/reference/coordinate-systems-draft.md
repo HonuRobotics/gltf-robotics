@@ -37,27 +37,25 @@ Here we clearly describe some of the usual conventions. The reason is that there
 Terms that have to be pinned down because they are used differently at different stages of the flow in [Central Issue](#central-issue). Organized by where in the flow each term comes from, so a reader can see which vocabulary they are standing in.
 
 ### Our formal default
+This document uses **coordinate system** as the formal term. *Coordinate system*, *coordinate frame* and *frame* are used as synonyms.
 
-**Decided.** This document uses **coordinate system** as the formal term. *Coordinate system*, *coordinate frame* and *frame* all mean the same thing here.
-
- The reasons 
+Why?
  * ISO 9787 says "coordinate system" throughout. 
  * "coordinate system" is the native term at three of the four stages of the flow:
+
 | Stage | Its own term |
 |---|---|
 | 3D graphics conventions | "coordinate system" — X3D §4.3.6, *Standard units and coordinate system* |
 | glTF spec | "coordinate system" — §3.4 is titled *Coordinate System and Units* |
 | assimp loader | no vocabulary of its own |
 | Gazebo / ROS | "frame" — REP 103, REP 105 and tf, which identifies each by a `frame_id`; SDF also has a `<frame>` element |
-* And "frame" collides three ways on the asset side, which is where the readers least able to disambiguate it are.  In the DCC world...
-    - **A frame is a unit of time** in every DCC tool, and in glTF's own tooling.  To a modeler, "frame" means a point on the timeline first.
-    - **3D graphics does not use "frame" for this concept anyway.** Its idiom is *space* — object space, world space, tangent space — so adopting "frame" buys nothing on that side.
+* And "frame" collides asset side.  In the DCC world...
+    - A frame is a unit of time** in every DCC tool, and in glTF's own tooling.  In this context "frame" means a point on the timeline.
+    - 3D graphics uses "space" for this concept, not "frame", e.g, object space, world space, tangent space.
+* So **coordinate system** is the least common denominator. 
 
-*Space* was considered as the formal term for that last reason and rejected: it would import the mirror-image problem, since no roboticist says "object space". % CLAUDE: Rephrase, "Space" is an equivalent term for the conceptm cinubg from the DCC side, but confounded on the robotics side ("configuration space", etc.)
 
 "Frame" stays legal in three narrow places: inside verbatim quotations, since REP 105 really does say "the coordinate frame called `base_link`"; when naming a ROS or SDF artifact (`frame_id`, `<frame>`, `base_link`, `base_footprint`, and the REP titles in the references); and in informal prose where nothing is ambiguous.
-
-Two registers, copying ISO's own habit: the **full name in prose** — "the part coordinate system is referenced to the mounting face" — and the **subscripted origin symbol in tables, equations and diagram labels**, which is exactly what ISO uses `O₁`, `O_m` and `O_p` for. That removes the verbosity objection without inventing an abbreviation.
 
 **[Open]** The document does not yet obey its own rule. Its title and objective still say "Coordinate Frames", and the eight names coined in [Our frame names](#our-frame-names) are all "*x* frame". Renaming those is pending, and it is a rename rather than a decision. % CLAUDE: Fix on next PMR
 
