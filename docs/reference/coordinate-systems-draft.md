@@ -8,6 +8,15 @@ Use tools/maritime-workspace/notes/glTF_Gazebo_ROS_Coordinates.md as background.
 
 The purpose of this document is to be a clear explanation of how coordinate frames can be conceptualized and labeled from 3D graphics (authoring 3D assets in Blender) to robotic simulation (rendering visual assets aligned with collision models in Gazebo and RViz).
 
+### Central Issue
+
+The main challenge that motivates this documentation is that in order to build a repeatable 3D asset workflow we need to document the convestion
+
+
+3D Graphics Convetions -> glTF spec -> assimp loader -> Gazebo/ROS
+
+Each item in the flow has its own combination of vocabulary, standards, convention an best practices.   To complicate things, these conventiosn are incomplete (not all conventions contrain the same things) and sometimes conflict.   This requires understanding and document each step and, importantly, connecting the interfaces between each item so that the standards/conventions are followed, or where necessary document variation from standards/conventions.  
+
 ## How claims in this document are marked
 
 Take 1 went wrong by building detail on assumptions that were never checked. So every claim here carries its standing:
@@ -17,32 +26,69 @@ Take 1 went wrong by building detail on assumptions that were never checked. So 
 - **[Open]** — we do not know yet, or it needs a measurement nobody has made.
 - **[Corrected]** — was asserted in Take 1 or in this draft and is wrong. Kept visible on purpose.
 
+
+
+
+
 ## Coordinate Conventions and Typical Practices
 
 Here we clearly describe some of the usual conventions. The reason is that there are multiple conventions across multiple communities and fields.
 
-### Origin vs coordinate frame
+## Vocabulary / Nomenclature / Glossary % CLAUDE: In this section collect all th terms that we need to clarify or terminology used across the items in the Central Issue items.
 
-**[Firm]** They are not synonymous, and one standard settles it cleanly. A *coordinate system* (robotics usually says *frame*, and the two words mean the same thing) is an origin **plus** an orientation — six numbers, a pose. An *origin* is only the point where the axes meet — three numbers.
+**[Firm]** They are not synonymous, and one standard settles it cleanly. A *coordinate system* (robotics usually says *frame*, and the two words mean the same thing) is an origin **plus** an orientation — six numbers, a pose. An *origin* is only the point where the axes meet — three numbers. 
 
-ISO 9787, the dedicated standard for robot coordinate systems, is explicit about the relationship. It names each system with its origin symbol, "World coordinate system, `O₀ - X₀ - Y₀ - Z₀`", and defines the origin as a point belonging to the system: "mobile platform origin / mobile platform reference point: origin point of the mobile platform coordinate system" (§3.10). Its clauses then fix origins and axes separately — "The origin of the base coordinate system, `O₁`, shall be defined by the manufacturer of the robot. The `+Z₁` axis is in the direction of the mechanical structure of the robot perpendicularly away from the base mounting surface" (§5.2).
-
+ "World coordinate system, `O₀ - X₀ - Y₀ - Z₀`",  % CLAUDE:  Just explain this nomenclature briefly.   Key is that for use when we describe `O_0` it describes the location of the origin relative to the geometry and `X₀ - Y₀ - Z₀` define the orientation of the frame (coordinate system) relative to the geometry.
+ 
 So, precisely:
 
 | Term | What it is | Who says it that way |
 |---|---|---|
-| coordinate system (frame) | origin + orientation | ISO 9787 §5, ISO 8373 |
+| coordinate system | origin + orientation | ISO 9787 §5, ISO 8373 |
 | frame | the same thing | REP 103, REP 105, tf |
 | origin | the point alone | ISO 9787 §3.10, §5.1–5.3 |
 | pivot, object origin | the point *as named*, but in practice the whole frame | Blender, Maya, 3ds Max |
 
+% CLAUDE: I think we should adopt "coordinate system" as our formal default.   For our purposes all these terms are synonymous: coordinate system, coordinate frame, frame.   
+
 **[Firm]** The trap worth naming: 3D graphics uses the word "origin" for something that is actually a full frame. Blender's object origin carries the object's local axes with it, so rotating the object rotates about those axes — position and orientation both. The word names the point; the thing is a frame. That mismatch is a large part of why these conversations go wrong.
 
-### Robotics
+### Assumptions
+
+* All coordinate systems are right-handed.
+* All coordinate systems define rotations about x, y and z as roll, pitch and yaw respectively. 
+
+### Standards Summary
+
+#### ISO 9787:2013
+
+This is our foundations for the robotics coordinate systems and motion nomenclature
+
+Named Coordinate Systems and Notation:
+* **World** ($O_0 = X_0 - Y_0 - Z_0$): 
+    * $O_0$ is user defined - unconstrained on where world frame is located
+    * $+Z_0$ is defined as " collinear but in the opposite direction to the acceleration of gravity vector" - which is a more exact way of saying $+Z_0$ is up.
+    * $+X_0$ is  user defined - unconstrained orientation of frame, other than `+Z_0` is up.
+    * Comments:
+        * This is the standard we adopt in total.   
+            * consistent with most (not all) other conventions and our preference.
+            * clearly documented so all we need to do is say we follow 5.1 and cite the standard.
+* **Base** ($O_1 = X_1 - Y_1 - Z_1$):
+    * Base denotes the base of a robot.
+    * $O_1$: The origin of the base shall be defined by the manufacturer of the robot. 
+        * For the spec and workflow we are building this is important.  We can adapt something along the lines of "The location of the base coordinate system relative to the robot geometry SHOULD be explicity defined when commissioning the 3D asset creation.  Ideally both the robot hardware and the 3D model share the same origin location definition. This is a datum point on the robot, typically associated with a recognizable feature or a survey landmark, in order to serve as the canoncial reference location for sensors and actuators."
+        This is a sticking point - and one we've gotten wrong.  
+
+
+
+
+
+
+
+
+### Robotics 
 
 There are multiple practices in robotics, so there is not just one convention. Also, these are soft conventions and there is likely a multitude of practices, good and bad, out in the wild.
-
-**[Firm]** Two things *are* fixed across the field and are worth stating before the soft parts. All coordinate systems are right-handed: "All coordinate systems described in this International Standard are defined by the orthogonal right-hand rule" (ISO 9787 §4.1), and REP 103 says "All systems are right handed." And the rotation names agree: ISO 9787 §4.3 defines rotations `A`, `B`, `C` about `X`, `Y`, `Z` and states "A, B and C are also called roll, pitch and yaw, respectively", which is REP 103's "fixed axis roll, pitch, yaw about X, Y, Z axes respectively".
 
 #### Categorizing links by their place in the tree
 
