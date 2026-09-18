@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Parts Library Audit &mdash; glTF for Robot Simulation main documentation</title>
+  <title>Exporting from Blender &mdash; glTF for Robot Simulation main documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../_static/honu.css?v=44af46ee" />
@@ -21,8 +21,8 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="BlueBoat Chassis Audit" href="audit-blueboat-chassis.html" />
-    <link rel="prev" title="Community exemplars: who else ships glTF to Gazebo and RViz" href="community-exemplars.html" /> 
+    <link rel="next" title="Reference" href="../reference/index.html" />
+    <link rel="prev" title="Checking a delivery" href="checking-a-delivery.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -96,21 +96,21 @@
 </li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../how-to/index.html">How-to guides</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../how-to/checking-a-delivery.html">Checking a delivery</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../how-to/checking-a-delivery.html#running-the-checker">Running the checker</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../how-to/checking-a-delivery.html#reading-the-output">Reading the output</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../how-to/checking-a-delivery.html#what-a-clean-run-does-not-mean">What a clean run does not mean</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">How-to guides</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="checking-a-delivery.html">Checking a delivery</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="checking-a-delivery.html#running-the-checker">Running the checker</a></li>
+<li class="toctree-l3"><a class="reference internal" href="checking-a-delivery.html#reading-the-output">Reading the output</a></li>
+<li class="toctree-l3"><a class="reference internal" href="checking-a-delivery.html#what-a-clean-run-does-not-mean">What a clean run does not mean</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../how-to/exporting-from-blender.html">Exporting from Blender</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../how-to/exporting-from-blender.html#author-in-the-ros-frame-and-let-the-exporter-convert">Author in the ROS frame, and let the exporter convert</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../how-to/exporting-from-blender.html#apply-transforms-before-exporting">Apply transforms before exporting</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../how-to/exporting-from-blender.html#name-the-object-not-the-mesh">Name the object, not the mesh</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../how-to/exporting-from-blender.html#metalness-is-the-defect-that-keeps-recurring">Metalness is the defect that keeps recurring</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../how-to/exporting-from-blender.html#texture-format-is-decided-by-the-source-image">Texture format is decided by the source image</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../how-to/exporting-from-blender.html#transparency-is-per-material-not-per-pixel">Transparency is per material, not per pixel</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../how-to/exporting-from-blender.html#versions">Versions</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Exporting from Blender</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#author-in-the-ros-frame-and-let-the-exporter-convert">Author in the ROS frame, and let the exporter convert</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#apply-transforms-before-exporting">Apply transforms before exporting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#name-the-object-not-the-mesh">Name the object, not the mesh</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#metalness-is-the-defect-that-keeps-recurring">Metalness is the defect that keeps recurring</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#texture-format-is-decided-by-the-source-image">Texture format is decided by the source image</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#transparency-is-per-material-not-per-pixel">Transparency is per material, not per pixel</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#versions">Versions</a></li>
 </ul>
 </li>
 </ul>
@@ -276,42 +276,42 @@
 </li>
 </ul>
 </li>
-<li class="toctree-l1 current"><a class="reference internal" href="index.html">Evidence</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="community-exemplars.html">Community exemplars: who else ships glTF to Gazebo and RViz</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="community-exemplars.html#method">Method</a></li>
-<li class="toctree-l3"><a class="reference internal" href="community-exemplars.html#the-cohort">The cohort</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="community-exemplars.html#gazebosim-jetty-demo-the-closest-thing-to-an-upstream-reference">gazebosim/jetty_demo — the closest thing to an upstream reference</a></li>
-<li class="toctree-l4"><a class="reference internal" href="community-exemplars.html#open-rmf-rmf-site-gltf-generated-rather-than-authored">open-rmf/rmf_site — glTF generated rather than authored</a></li>
-<li class="toctree-l4"><a class="reference internal" href="community-exemplars.html#husarion-rosbot-ros-a-commercial-product-doing-it-per-link">husarion/rosbot_ros — a commercial product doing it per-link</a></li>
-<li class="toctree-l4"><a class="reference internal" href="community-exemplars.html#robotlocomotion-the-informed-dissent-on-packaging">RobotLocomotion — the informed dissent on packaging</a></li>
-<li class="toctree-l4"><a class="reference internal" href="community-exemplars.html#usnistgov-ariac-a-migration-caught-in-the-middle">usnistgov/ARIAC — a migration caught in the middle</a></li>
-<li class="toctree-l4"><a class="reference internal" href="community-exemplars.html#vanttec-vanttec-usv-the-nearest-maritime-peer-inverted">vanttec/vanttec_usv — the nearest maritime peer, inverted</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../evidence/index.html">Evidence</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../evidence/community-exemplars.html">Community exemplars: who else ships glTF to Gazebo and RViz</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../evidence/community-exemplars.html#method">Method</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../evidence/community-exemplars.html#the-cohort">The cohort</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../evidence/community-exemplars.html#gazebosim-jetty-demo-the-closest-thing-to-an-upstream-reference">gazebosim/jetty_demo — the closest thing to an upstream reference</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../evidence/community-exemplars.html#open-rmf-rmf-site-gltf-generated-rather-than-authored">open-rmf/rmf_site — glTF generated rather than authored</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../evidence/community-exemplars.html#husarion-rosbot-ros-a-commercial-product-doing-it-per-link">husarion/rosbot_ros — a commercial product doing it per-link</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../evidence/community-exemplars.html#robotlocomotion-the-informed-dissent-on-packaging">RobotLocomotion — the informed dissent on packaging</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../evidence/community-exemplars.html#usnistgov-ariac-a-migration-caught-in-the-middle">usnistgov/ARIAC — a migration caught in the middle</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../evidence/community-exemplars.html#vanttec-vanttec-usv-the-nearest-maritime-peer-inverted">vanttec/vanttec_usv — the nearest maritime peer, inverted</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="community-exemplars.html#the-people-and-the-two-organizations-that-turned-out-not-to-be-doing-this">The people, and the two organizations that turned out not to be doing this</a></li>
-<li class="toctree-l3"><a class="reference internal" href="community-exemplars.html#what-this-changes-for-us">What this changes for us</a></li>
-<li class="toctree-l3"><a class="reference internal" href="community-exemplars.html#where-the-argument-is-being-had">Where the argument is being had</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../evidence/community-exemplars.html#the-people-and-the-two-organizations-that-turned-out-not-to-be-doing-this">The people, and the two organizations that turned out not to be doing this</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../evidence/community-exemplars.html#what-this-changes-for-us">What this changes for us</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../evidence/community-exemplars.html#where-the-argument-is-being-had">Where the argument is being had</a></li>
 </ul>
 </li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Parts Library Audit</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#per-part">Per part</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#units-frame-dimensions">Units, frame, dimensions</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#where-the-library-is-already-clean">Where the library is already clean</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#systemic-defects-pipeline-not-per-part">Systemic defects (pipeline, not per part)</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#fixes-in-priority-order">Fixes, in priority order</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../evidence/audit-parts-library.html">Parts Library Audit</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../evidence/audit-parts-library.html#per-part">Per part</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../evidence/audit-parts-library.html#units-frame-dimensions">Units, frame, dimensions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../evidence/audit-parts-library.html#where-the-library-is-already-clean">Where the library is already clean</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../evidence/audit-parts-library.html#systemic-defects-pipeline-not-per-part">Systemic defects (pipeline, not per part)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../evidence/audit-parts-library.html#fixes-in-priority-order">Fixes, in priority order</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="audit-blueboat-chassis.html">BlueBoat Chassis Audit</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="audit-blueboat-chassis.html#files">Files</a></li>
-<li class="toctree-l3"><a class="reference internal" href="audit-blueboat-chassis.html#units-frame-origin">Units, frame, origin</a></li>
-<li class="toctree-l3"><a class="reference internal" href="audit-blueboat-chassis.html#geometry">Geometry</a></li>
-<li class="toctree-l3"><a class="reference internal" href="audit-blueboat-chassis.html#materials">Materials</a></li>
-<li class="toctree-l3"><a class="reference internal" href="audit-blueboat-chassis.html#transparency">Transparency</a></li>
-<li class="toctree-l3"><a class="reference internal" href="audit-blueboat-chassis.html#avoid-list">Avoid list</a></li>
-<li class="toctree-l3"><a class="reference internal" href="audit-blueboat-chassis.html#fixes-in-priority-order">Fixes, in priority order</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../evidence/audit-blueboat-chassis.html">BlueBoat Chassis Audit</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../evidence/audit-blueboat-chassis.html#files">Files</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../evidence/audit-blueboat-chassis.html#units-frame-origin">Units, frame, origin</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../evidence/audit-blueboat-chassis.html#geometry">Geometry</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../evidence/audit-blueboat-chassis.html#materials">Materials</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../evidence/audit-blueboat-chassis.html#transparency">Transparency</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../evidence/audit-blueboat-chassis.html#avoid-list">Avoid list</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../evidence/audit-blueboat-chassis.html#fixes-in-priority-order">Fixes, in priority order</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="assessment-brief.html">Assessment of glTF examples models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../evidence/assessment-brief.html">Assessment of glTF examples models</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../project/index.html">Project</a><ul>
@@ -343,10 +343,10 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
-          <li class="breadcrumb-item"><a href="index.html">Evidence</a></li>
-      <li class="breadcrumb-item active">Parts Library Audit</li>
+          <li class="breadcrumb-item"><a href="index.html">How-to guides</a></li>
+      <li class="breadcrumb-item active">Exporting from Blender</li>
       <li class="wy-breadcrumbs-aside">
-              <a href="https://github.com/HonuRobotics/gltf-robotics/blob/main/docs/evidence/audit-parts-library.md" class="fa fa-github"> Edit on GitHub</a>
+              <a href="https://github.com/HonuRobotics/gltf-robotics/blob/main/docs/how-to/exporting-from-blender.md" class="fa fa-github"> Edit on GitHub</a>
       </li>
   </ul>
   <hr/>
@@ -354,243 +354,48 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="parts-library-audit">
-<h1>Parts Library Audit<a class="headerlink" href="#parts-library-audit" title="Link to this heading"></a></h1>
-<blockquote>
-<div><p><strong>Reproduced source document, not project truth.</strong> This is one of the “Visual asset audit · bluerobotics_models” reports, produced with Claude on 2026-09-03 and delivered as a browser artifact. The text below is reproduced from that artifact unedited, including its errors, so that the audit trail has a fixed copy to cite. Its measurements were re-checked and its verdicts re-judged in <a class="reference internal" href="../reference/pipeline-review.html"><span class="std std-doc">VISUAL_ASSET_PIPELINE_REVIEW.md</span></a>, section 6.1; read that before acting on anything here. In particular the tangents column is not a defect, the report covers 13 parts rather than the 12 its subtitle claims, and “26 images” is 28.</p>
-</div></blockquote>
-<p>Visual asset audit · bluerobotics_models</p>
-<p>the 12 GLB parts beyond the two chassis · <code class="docutils literal notranslate"><span class="pre">bluerobotics_parts/models/</span></code></p>
-<p>audited 2026-09-03 against <code class="docutils literal notranslate"><span class="pre">docs/reference/asset-spec.md</span></code> · companion reports: BlueBoat Chassis Audit, BlueROV2 Chassis Audit</p>
-<p>The small parts are in better shape than the chassis — their defects are pipeline settings, not modeling. No orphan primitives, no BLEND misuse, no degenerate triangles, tidy budgets, and consistently good material names. But one exporter preset (tangents off, JPEG on) touched every file, and the saturated metalness bug struck three more parts. Fix the preset once and re-export, and most of this table turns green.</p>
-<section id="per-part">
-<h2>Per part<a class="headerlink" href="#per-part" title="Link to this heading"></a></h2>
-<table class="docutils align-default">
-<thead>
-<tr class="row-odd"><th class="head"><p>Part</p></th>
-<th class="head"><p>Tris</p></th>
-<th class="head"><p>Mesh name</p></th>
-<th class="head"><p>Textures</p></th>
-<th class="head"><p>Metalness</p></th>
-<th class="head"><p>Tangents</p></th>
-</tr>
-</thead>
-<tbody>
-<tr class="row-even"><td><p>t200_thruster</p></td>
-<td><p>1,860</p></td>
-<td><p>Cylinder.017</p></td>
-<td><p>2 × 512² JPEG</p></td>
-<td><p>PASS</p></td>
-<td><p>MISSING</p></td>
-</tr>
-<tr class="row-odd"><td><p>t200_prop_cw</p></td>
-<td><p>260</p></td>
-<td><p>Cylinder.016</p></td>
-<td><p>2 × 512² JPEG</p></td>
-<td><p>PASS</p></td>
-<td><p>MISSING</p></td>
-</tr>
-<tr class="row-even"><td><p>t200_prop_ccw</p></td>
-<td><p>260</p></td>
-<td><p>Cylinder.015</p></td>
-<td><p>2 × 512² JPEG</p></td>
-<td><p>PASS</p></td>
-<td><p>MISSING</p></td>
-</tr>
-<tr class="row-odd"><td><p>m200_weedless_prop_cw</p></td>
-<td><p>388</p></td>
-<td><p>Cylinder.009</p></td>
-<td><p>3 × 512² JPEG</p></td>
-<td><p>PASS</p></td>
-<td><p>MISSING</p></td>
-</tr>
-<tr class="row-even"><td><p>m200_weedless_prop_ccw</p></td>
-<td><p>388</p></td>
-<td><p>Cylinder.010</p></td>
-<td><p>3 × 512² JPEG</p></td>
-<td><p>PASS</p></td>
-<td><p>MISSING</p></td>
-</tr>
-<tr class="row-odd"><td><p>blueboat_antenna_mast</p></td>
-<td><p>2,756</p></td>
-<td><p>Cylinder.001</p></td>
-<td><p>3 × 512² JPEG</p></td>
-<td><p>PASS</p></td>
-<td><p>MISSING</p></td>
-</tr>
-<tr class="row-even"><td><p>basestation_antenna</p></td>
-<td><p>942</p></td>
-<td><p>Cube.003</p></td>
-<td><p>3 × 128×256 JPEG</p></td>
-<td><p>SATURATED</p></td>
-<td><p>MISSING</p></td>
-</tr>
-<tr class="row-odd"><td><p>surveyor_multibeam</p></td>
-<td><p>725</p></td>
-<td><p>Cube.002</p></td>
-<td><p>3 × 256² JPEG</p></td>
-<td><p>SATURATED</p></td>
-<td><p>MISSING</p></td>
-</tr>
-<tr class="row-even"><td><p>omniscan_450_sidescan</p></td>
-<td><p>748</p></td>
-<td><p>Cube.005</p></td>
-<td><p>2 × 256² JPEG</p></td>
-<td><p>SATURATED</p></td>
-<td><p>NO NORMAL MAP</p></td>
-</tr>
-<tr class="row-odd"><td><p>ping_singlebeam</p></td>
-<td><p>422</p></td>
-<td><p>Cylinder.004</p></td>
-<td><p>2 × 256² JPEG</p></td>
-<td><p>PASS</p></td>
-<td><p>MISSING</p></td>
-</tr>
-<tr class="row-even"><td><p>blueboat_ping_singlebeam_mount</p></td>
-<td><p>806</p></td>
-<td><p>Cube.002</p></td>
-<td><p>1 × 128² JPEG</p></td>
-<td><p>PASS</p></td>
-<td><p>NO NORMAL MAP</p></td>
-</tr>
-<tr class="row-odd"><td><p>blueboat_payload_bracket</p></td>
-<td><p>1,703</p></td>
-<td><p>Cube.002</p></td>
-<td><p>1 × 64² JPEG</p></td>
-<td><p>PASS</p></td>
-<td><p>NO NORMAL MAP</p></td>
-</tr>
-<tr class="row-even"><td><p>blueboat_flag</p></td>
-<td><p>164</p></td>
-<td><p>Cylinder.011</p></td>
-<td><p>1 × 256² JPEG</p></td>
-<td><p>PASS</p></td>
-<td><p>NO NORMAL MAP</p></td>
-</tr>
-</tbody>
-</table>
+  <section id="exporting-from-blender">
+<h1>Exporting from Blender<a class="headerlink" href="#exporting-from-blender" title="Link to this heading"></a></h1>
+<p>Every delivery this project has received came out of <code class="docutils literal notranslate"><span class="pre">Khronos</span> <span class="pre">glTF</span> <span class="pre">Blender</span> <span class="pre">I/O</span></code>, and most of the defects found in them are export defaults rather than modelling mistakes. This page collects the ones that bite, each with what the export does and what to do instead.</p>
+<p>None of it is a substitute for checking the result: run <a class="reference internal" href="checking-a-delivery.html"><span class="std std-doc"><code class="docutils literal notranslate"><span class="pre">gltf-check</span></code></span></a> on the exported file, and open it in the Khronos Sample Viewer before delivering it.</p>
+<section id="author-in-the-ros-frame-and-let-the-exporter-convert">
+<h2>Author in the ROS frame, and let the exporter convert<a class="headerlink" href="#author-in-the-ros-frame-and-let-the-exporter-convert" title="Link to this heading"></a></h2>
+<p>Blender is Z-up and right-handed, the same convention as REP 103, so a part is modelled x forward, y left, z up — exactly the part frame the macro uses. The exporter then applies its fixed Y-up conversion, mapping (x, y, z) to (x, z, −y).</p>
+<p>The consequence is that every delivered file has up on +Y and forward on +X. The +Y is glTF’s requirement. The +X is a consequence of authoring in the robot’s convention rather than a decision anyone recorded, and it differs from glTF’s own statement that an asset faces +Z. Profile section 5.3 is the interim rule: keep authoring in the part frame, and do not re-orient a delivery to face +Z without agreement.</p>
+<p>Do not rotate the part to “fix” its orientation for Gazebo. That correction happens downstream.</p>
 </section>
-<section id="units-frame-dimensions">
-<h2>Units, frame, dimensions<a class="headerlink" href="#units-frame-dimensions" title="Link to this heading"></a></h2>
-<table class="docutils align-default">
-<thead>
-<tr class="row-odd"><th class="head"><p>Part</p></th>
-<th class="head"><p>Measured (mm)</p></th>
-<th class="head"><p>Check</p></th>
-</tr>
-</thead>
-<tbody>
-<tr class="row-even"><td><p>t200_thruster</p></td>
-<td><p>112.8 × 97.1 × 96.6</p></td>
-<td><p>Datasheet says 113 mm long, ~100 mm diameter — matches — PASS</p></td>
-</tr>
-<tr class="row-odd"><td><p>t200_prop_cw / ccw</p></td>
-<td><p>73.0 mm disc, both</p></td>
-<td><p>Identical dims, mirrored centers — a proper handed pair — PASS</p></td>
-</tr>
-<tr class="row-even"><td><p>m200_weedless_prop_cw / ccw</p></td>
-<td><p>110.3 mm disc, both</p></td>
-<td><p>Identical dims, mirrored — proper pair — PASS</p></td>
-</tr>
-<tr class="row-odd"><td><p>basestation_antenna</p></td>
-<td><p>121 × 953 × 140</p></td>
-<td><p>~1 m directional antenna, plausible — PASS</p></td>
-</tr>
-<tr class="row-even"><td><p>blueboat_antenna_mast</p></td>
-<td><p>74 × 862 × 81</p></td>
-<td><p>Plausible mast height — PASS</p></td>
-</tr>
-<tr class="row-odd"><td><p>blueboat_flag</p></td>
-<td><p>17 × 1004 × 305</p></td>
-<td><p>~1 m pole with flag, plausible — PASS</p></td>
-</tr>
-<tr class="row-even"><td><p>ping_singlebeam</p></td>
-<td><p>50 × 71 × 41</p></td>
-<td><p>50 mm housing diameter matches the Ping — PASS</p></td>
-</tr>
-<tr class="row-odd"><td><p>omniscan_450_sidescan</p></td>
-<td><p>333 × 32 × 62</p></td>
-<td><p>Plausible — PASS</p></td>
-</tr>
-<tr class="row-even"><td><p>surveyor_multibeam</p></td>
-<td><p>191 × 56 × 91</p></td>
-<td><p>Plausible — PASS</p></td>
-</tr>
-<tr class="row-odd"><td><p>blueboat_payload_bracket</p></td>
-<td><p>75 × 50 × 300</p></td>
-<td><p>Plausible — PASS</p></td>
-</tr>
-<tr class="row-even"><td><p>blueboat_ping_singlebeam_mount</p></td>
-<td><p>241 × 55 × 44</p></td>
-<td><p>Plausible — PASS</p></td>
-</tr>
-</tbody>
-</table>
-<p>All 12 parts are authored Y up with heights on the Y axis, consistent with the chassis convention. One observation: the three T200 files carry a small baked node translation (2.8 mm in x, −2.9 mm in z), identical across thruster and both props — it looks like a deliberate axis alignment, but it is the only place in the library where the file’s node transform is not identity, and worth a comment in the part macro so nobody “cleans” it away.</p>
+<section id="apply-transforms-before-exporting">
+<h2>Apply transforms before exporting<a class="headerlink" href="#apply-transforms-before-exporting" title="Link to this heading"></a></h2>
+<p>Profile section 5.5 requires exactly one root node carrying no rotation and no matrix. The exporter writes a Y-up conversion node when transforms are left unapplied, and that node is a genuine hazard rather than cosmetic: Gazebo pre-multiplies it and RViz post-multiplies it, so the same file lands differently in the two consumers.</p>
+<p>Set the scene unit scale to 1.0 and apply object scale as well. A file at the wrong scale is silently wrong — nothing downstream can detect it, and two assets in the wider corpus are millimetre files corrected by a URDF <code class="docutils literal notranslate"><span class="pre">scale</span></code> further down.</p>
 </section>
-<section id="where-the-library-is-already-clean">
-<h2>Where the library is already clean<a class="headerlink" href="#where-the-library-is-already-clean" title="Link to this heading"></a></h2>
-<table class="docutils align-default">
-<thead>
-<tr class="row-odd"><th class="head"><p>Requirement</p></th>
-<th class="head"><p>Measured across all 12</p></th>
-<th class="head"><p>Status</p></th>
-</tr>
-</thead>
-<tbody>
-<tr class="row-even"><td><p>Every primitive has a material</p></td>
-<td><p>No orphan primitives anywhere (unlike the BlueROV2 chassis)</p></td>
-<td><p>PASS</p></td>
-</tr>
-<tr class="row-odd"><td><p>No BLEND misuse</p></td>
-<td><p>Every material OPAQUE (unlike the BlueBoat chassis)</p></td>
-<td><p>PASS</p></td>
-</tr>
-<tr class="row-even"><td><p>No degenerate triangles</p></td>
-<td><p>Zero across all 12 files</p></td>
-<td><p>PASS</p></td>
-</tr>
-<tr class="row-odd"><td><p>Authored normals</p></td>
-<td><p>Unit length in every primitive of every file</p></td>
-<td><p>PASS</p></td>
-</tr>
-<tr class="row-even"><td><p>UVs in [0, 1]</p></td>
-<td><p>All files in range (unlike the BlueROV2’s 1.02 spill)</p></td>
-<td><p>PASS</p></td>
-</tr>
-<tr class="row-odd"><td><p>Triangle budgets</p></td>
-<td><p>164 to 2,756 per part; whole library is 10.7k tris</p></td>
-<td><p>PASS</p></td>
-</tr>
-<tr class="row-even"><td><p>Material names</p></td>
-<td><p>Consistently component names: Thruster, Antenna, Sonar, Payload-Bracket…</p></td>
-<td><p>PASS</p></td>
-</tr>
-<tr class="row-odd"><td><p>Avoid list</p></td>
-<td><p>No extensions, Draco, KTX2, animations, cameras or lights in any file</p></td>
-<td><p>PASS</p></td>
-</tr>
-</tbody>
-</table>
+<section id="name-the-object-not-the-mesh">
+<h2>Name the object, not the mesh<a class="headerlink" href="#name-the-object-not-the-mesh" title="Link to this heading"></a></h2>
+<p>Gazebo names each submesh after the node that instantiates the mesh — never after the mesh datablock and never after the material. The node name comes from the Blender object name, so renaming the mesh datablock changes nothing anyone sees.</p>
+<p>Clear Blender’s numeric suffixes. <code class="docutils literal notranslate"><span class="pre">Cube.001</span></code> and <code class="docutils literal notranslate"><span class="pre">blueboat_chassis.visual.001</span></code> are both real examples from delivered files, and the suffix travels into the node name. The root node must be named for the part, with no suffix and no spaces.</p>
+<p>Check for leftover scenes too. Six delivered files carried empty extra scenes inherited from the Blender file; the profile requires exactly one.</p>
 </section>
-<section id="systemic-defects-pipeline-not-per-part">
-<h2>Systemic defects (pipeline, not per part)<a class="headerlink" href="#systemic-defects-pipeline-not-per-part" title="Link to this heading"></a></h2>
-<ol class="arabic simple">
-<li><p><strong>Normal maps without tangents</strong> — 9 of 12 files. Every part that carries a normal map lacks the TANGENT attribute. One exporter checkbox, missed on every export. Gazebo does not generate tangents.</p></li>
-<li><p><strong>Every texture is JPEG</strong> — 12 of 12 files, 26 images. Not one PNG in the library. Acceptable for base color, visibly wrong for normal maps (8×8 block artifacts appear in shading).</p></li>
-<li><p><strong>Saturated metalness</strong> — 3 parts. basestation_antenna, surveyor_multibeam and omniscan_450_sidescan have their metalness channel at ~1.0, the same renders-dark bug as the BlueBoat hull. Plastic housings declared solid metal.</p></li>
-<li><p><strong>Blender default mesh names</strong> — 12 of 12. Cube.002, Cylinder.017… while the material names show the naming discipline existed; it just never reached the meshes.</p></li>
-</ol>
+<section id="metalness-is-the-defect-that-keeps-recurring">
+<h2>Metalness is the defect that keeps recurring<a class="headerlink" href="#metalness-is-the-defect-that-keeps-recurring" title="Link to this heading"></a></h2>
+<p>glTF’s <code class="docutils literal notranslate"><span class="pre">metallicFactor</span></code> defaults to 1.0, and so does Blender’s. A material where nobody set it is a material that says “metal”, and a plastic hull renders as dark metal.</p>
+<p>A metallic-roughness texture does not rescue it by existing. The effective metalness is the factor multiplied by the texture’s blue channel, so only a dark blue channel brings it down. Every metallic-roughness map measured in this project’s library is a solid colour with B = 255, which means the factor was doing the deciding all along — and in four of fifteen parts the factor was unset.</p>
+<p>Two fixes, either is fine: set <code class="docutils literal notranslate"><span class="pre">metallicFactor</span></code> to 0 for anything not genuinely metallic, or author a black metallic channel and carry roughness as a factor rather than a map. Prefer stating the factor, because it is readable without decoding an image.</p>
 </section>
-<section id="fixes-in-priority-order">
-<h2>Fixes, in priority order<a class="headerlink" href="#fixes-in-priority-order" title="Link to this heading"></a></h2>
-<ol class="arabic simple">
-<li><p>Fix the export preset once — tangents on, PNG for normal maps — and re-export all 12. This clears the two biggest columns in one pass.</p></li>
-<li><p>Blacken the metalness channel on the three saturated parts (or set <code class="docutils literal notranslate"><span class="pre">metallicFactor:</span> <span class="pre">0</span></code> as a stopgap).</p></li>
-<li><p>Rename meshes to component names during the re-export pass.</p></li>
-<li><p>Migrate the two DAE stragglers — <code class="docutils literal notranslate"><span class="pre">ping360.dae</span></code> and <code class="docutils literal notranslate"><span class="pre">bluerov2_heavy.dae</span></code> — into the same GLB pipeline so the whole library is one format.</p></li>
-</ol>
-<p><code class="docutils literal notranslate"><span class="pre">bluerobotics_parts/models/*/*.visual.glb</span></code> · all files Khronos glTF Blender I/O v5.1.20 · measured with a direct GLB parse (accessors, textures, channels)</p>
+<section id="texture-format-is-decided-by-the-source-image">
+<h2>Texture format is decided by the source image<a class="headerlink" href="#texture-format-is-decided-by-the-source-image" title="Link to this heading"></a></h2>
+<p>Under its default Automatic image setting the exporter writes JPEG when the source image is JPEG. So a preset change alone will not get PNG normal maps out of a project whose source textures are JPEG — the fix is at the texture source.</p>
+<p>This matters because chroma subsampling blends channels that are unrelated in a normal or ORM map, and converting an existing JPEG to PNG preserves the damage rather than undoing it. A re-export from the original texture is the remedy.</p>
+<p>Profile section 8 requires PNG for normal, metallic, roughness and packed ORM maps, and for anything carrying alpha. Base colour and emissive may be JPEG. Textures are capped at 2048 pixels on each side.</p>
+<p>Be aware that the corpus disagrees with this rule more sharply than with any other in the profile: counted by image, normal maps in the wider corpus run 38 JPEG to 4 PNG. The rule is about what this project accepts, not a description of what arrives.</p>
+</section>
+<section id="transparency-is-per-material-not-per-pixel">
+<h2>Transparency is per material, not per pixel<a class="headerlink" href="#transparency-is-per-material-not-per-pixel" title="Link to this heading"></a></h2>
+<p>Plan transparency per material. For cutouts — vents, perforations, mesh guards — use <code class="docutils literal notranslate"><span class="pre">alphaMode:</span> <span class="pre">MASK</span></code> with <code class="docutils literal notranslate"><span class="pre">alphaCutoff</span></code> 0.5 and binary alpha in a PNG base colour.</p>
+<p>Do not tag an opaque part <code class="docutils literal notranslate"><span class="pre">BLEND</span></code>. Gazebo ignores <code class="docutils literal notranslate"><span class="pre">BLEND</span></code> and renders the material opaque, so the result looks fine there and is wrong everywhere else. One delivered chassis reached us exactly this way: 0.56% of its base colour map is a cutout region, and the whole hull had been tagged <code class="docutils literal notranslate"><span class="pre">BLEND</span></code> to handle it.</p>
+</section>
+<section id="versions">
+<h2>Versions<a class="headerlink" href="#versions" title="Link to this heading"></a></h2>
+<p>Every current delivery reports <code class="docutils literal notranslate"><span class="pre">Khronos</span> <span class="pre">glTF</span> <span class="pre">Blender</span> <span class="pre">I/O</span> <span class="pre">v5.1.20</span></code>, which corresponds to Blender 5.1. Whether those versions get pinned is still open — profile section 11 has the proposal. The generator string records the tool but not the settings, so two files from the same exporter can still differ in image format, tangents and compression. That is why the checks constrain the outcome rather than the settings.</p>
 </section>
 </section>
 
@@ -598,8 +403,8 @@
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="community-exemplars.html" class="btn btn-neutral float-left" title="Community exemplars: who else ships glTF to Gazebo and RViz" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="audit-blueboat-chassis.html" class="btn btn-neutral float-right" title="BlueBoat Chassis Audit" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="checking-a-delivery.html" class="btn btn-neutral float-left" title="Checking a delivery" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../reference/index.html" class="btn btn-neutral float-right" title="Reference" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

@@ -21,7 +21,7 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Reference" href="../reference/index.html" />
+    <link rel="next" title="Checking a delivery" href="checking-a-delivery.html" />
     <link rel="prev" title="The glTF Robotics Profile" href="../profile/profile.html" /> 
 </head>
 
@@ -96,7 +96,23 @@
 </li>
 </ul>
 </li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">How-to guides</a><ul class="simple">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">How-to guides</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="checking-a-delivery.html">Checking a delivery</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="checking-a-delivery.html#running-the-checker">Running the checker</a></li>
+<li class="toctree-l3"><a class="reference internal" href="checking-a-delivery.html#reading-the-output">Reading the output</a></li>
+<li class="toctree-l3"><a class="reference internal" href="checking-a-delivery.html#what-a-clean-run-does-not-mean">What a clean run does not mean</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="exporting-from-blender.html">Exporting from Blender</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="exporting-from-blender.html#author-in-the-ros-frame-and-let-the-exporter-convert">Author in the ROS frame, and let the exporter convert</a></li>
+<li class="toctree-l3"><a class="reference internal" href="exporting-from-blender.html#apply-transforms-before-exporting">Apply transforms before exporting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="exporting-from-blender.html#name-the-object-not-the-mesh">Name the object, not the mesh</a></li>
+<li class="toctree-l3"><a class="reference internal" href="exporting-from-blender.html#metalness-is-the-defect-that-keeps-recurring">Metalness is the defect that keeps recurring</a></li>
+<li class="toctree-l3"><a class="reference internal" href="exporting-from-blender.html#texture-format-is-decided-by-the-source-image">Texture format is decided by the source image</a></li>
+<li class="toctree-l3"><a class="reference internal" href="exporting-from-blender.html#transparency-is-per-material-not-per-pixel">Transparency is per material, not per pixel</a></li>
+<li class="toctree-l3"><a class="reference internal" href="exporting-from-blender.html#versions">Versions</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../reference/index.html">Reference</a><ul>
@@ -339,9 +355,29 @@
              
   <section id="how-to-guides">
 <h1>How-to guides<a class="headerlink" href="#how-to-guides" title="Link to this heading"></a></h1>
-<p>The authoring workflow: producing a model that satisfies the profile, exporting it, delivering it, and checking it before review.</p>
-<p>Not yet written. This is the gap the repository exists to close — the rules are documented and the checks are mechanical, but the workflow that produces a conforming model has never been written down. Until it is, <a class="reference internal" href="../profile/index.html"><span class="std std-doc">the profile</span></a> states the target and <code class="docutils literal notranslate"><span class="pre">gltf-check</span></code> says whether a file hits it.</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="checking-a-delivery.html"><span class="std std-doc">Checking a delivery</span></a> — the four conformance questions, what answers each, and how to read <code class="docutils literal notranslate"><span class="pre">gltf-check</span></code> output.</p></li>
+<li><p><a class="reference internal" href="exporting-from-blender.html"><span class="std std-doc">Exporting from Blender</span></a> — the export defaults that produce most of the defects we see, and what to do instead.</p></li>
+</ul>
 <div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="checking-a-delivery.html">Checking a delivery</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="checking-a-delivery.html#running-the-checker">Running the checker</a></li>
+<li class="toctree-l2"><a class="reference internal" href="checking-a-delivery.html#reading-the-output">Reading the output</a></li>
+<li class="toctree-l2"><a class="reference internal" href="checking-a-delivery.html#what-a-clean-run-does-not-mean">What a clean run does not mean</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="exporting-from-blender.html">Exporting from Blender</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="exporting-from-blender.html#author-in-the-ros-frame-and-let-the-exporter-convert">Author in the ROS frame, and let the exporter convert</a></li>
+<li class="toctree-l2"><a class="reference internal" href="exporting-from-blender.html#apply-transforms-before-exporting">Apply transforms before exporting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="exporting-from-blender.html#name-the-object-not-the-mesh">Name the object, not the mesh</a></li>
+<li class="toctree-l2"><a class="reference internal" href="exporting-from-blender.html#metalness-is-the-defect-that-keeps-recurring">Metalness is the defect that keeps recurring</a></li>
+<li class="toctree-l2"><a class="reference internal" href="exporting-from-blender.html#texture-format-is-decided-by-the-source-image">Texture format is decided by the source image</a></li>
+<li class="toctree-l2"><a class="reference internal" href="exporting-from-blender.html#transparency-is-per-material-not-per-pixel">Transparency is per material, not per pixel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="exporting-from-blender.html#versions">Versions</a></li>
+</ul>
+</li>
+</ul>
 </div>
 </section>
 
@@ -350,7 +386,7 @@
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="../profile/profile.html" class="btn btn-neutral float-left" title="The glTF Robotics Profile" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="../reference/index.html" class="btn btn-neutral float-right" title="Reference" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="checking-a-delivery.html" class="btn btn-neutral float-right" title="Checking a delivery" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
