@@ -28,7 +28,6 @@ Take 1 went wrong by building detail on assumptions that were never checked. So 
 
 
 
-
 ## Coordinate Conventions and Typical Practices
 
 Here we clearly describe some of the usual conventions. The reason is that there are multiple conventions across multiple communities and fields.
