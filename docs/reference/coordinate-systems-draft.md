@@ -1,4 +1,4 @@
-# Coordinate Frames: glTF, Gazebo and ROS - Take 2
+# Coordinate Systems: glTF, Gazebo and ROS - Take 2
 
 Start over with an incremental build up of the understanding and explanation of how these coordinate systems are used.
 
@@ -6,7 +6,7 @@ Use tools/maritime-workspace/notes/glTF_Gazebo_ROS_Coordinates.md as background.
 
 ##  Objective
 
-The purpose of this document is to be a clear explanation of how coordinate frames can be conceptualized and labeled from 3D graphics (authoring 3D assets in Blender) to robotic simulation (rendering visual assets aligned with collision models in Gazebo and RViz).
+The purpose of this document is to be a clear explanation of how coordinate systems can be conceptualized and labeled from 3D graphics (authoring 3D assets in Blender) to robotic simulation (rendering visual assets aligned with collision models in Gazebo and RViz).
 
 ### Central Issue
 
@@ -49,15 +49,16 @@ Why?
 | glTF spec | "coordinate system" — §3.4 is titled *Coordinate System and Units* |
 | assimp loader | no vocabulary of its own |
 | Gazebo / ROS | "frame" — REP 103, REP 105 and tf, which identifies each by a `frame_id`; SDF also has a `<frame>` element |
-* And "frame" collides asset side.  In the DCC world...
-    - A frame is a unit of time** in every DCC tool, and in glTF's own tooling.  In this context "frame" means a point on the timeline.
-    - 3D graphics uses "space" for this concept, not "frame", e.g, object space, world space, tangent space.
+* And "frame" collides on the asset side.  In the DCC world...
+    - **A frame is a unit of time** in every DCC tool, and in glTF's own tooling.  In this context "frame" means a point on the timeline.
+    - 3D graphics uses "space" for this concept, not "frame", e.g., object space, world space, tangent space.
+ * *Space* is therefore the equivalent term coming from the DCC side, and it was considered. It is rejected because it is confounded on the robotics side, where "space" is already taken and means something else: configuration space, work space, task space, state space.
 * So **coordinate system** is the least common denominator. 
 
 
 "Frame" stays legal in three narrow places: inside verbatim quotations, since REP 105 really does say "the coordinate frame called `base_link`"; when naming a ROS or SDF artifact (`frame_id`, `<frame>`, `base_link`, `base_footprint`, and the REP titles in the references); and in informal prose where nothing is ambiguous.
 
-**[Open]** The document does not yet obey its own rule. Its title and objective still say "Coordinate Frames", and the eight names coined in [Our frame names](#our-frame-names) are all "*x* frame". Renaming those is pending, and it is a rename rather than a decision. % CLAUDE: Fix on next PMR
+**Decided.** Our own names follow the rule, in two registers copying ISO's own habit: the **full name in prose** — "the part coordinate system is referenced to the mounting face" — and the **subscripted origin symbol in tables, equations and diagram labels**, which is what ISO uses `O₁`, `O_m` and `O_p` for. See [Our coordinate system names](#our-coordinate-system-names).
 
 ### Terms by stage of the flow
 
@@ -208,7 +209,7 @@ This is our foundations for the robotics coordinate systems and motion nomenclat
 
 Named Coordinate Systems and Notation:
 * **World** ($O_0 = X_0 - Y_0 - Z_0$): 
-    * $O_0$ is user defined - unconstrained on where world frame is located
+    * $O_0$ is user defined - unconstrained on where the world coordinate system is located
     * $+Z_0$ is defined as " collinear but in the opposite direction to the acceleration of gravity vector" - which is a more exact way of saying $+Z_0$ is up.
     * $+X_0$ is  user defined - unconstrained orientation of frame, other than `+Z_0` is up.
     * Comments:
@@ -264,7 +265,7 @@ There are multiple practices in robotics, so there is not just one convention. A
 
     **[Corrected]** The draft said "one parent, one child". A link can branch — a torso with two arms, a hull with four thruster mounts — so one parent and *n* children is the general case, and "intermediate" should mean only "has a parent joint and at least one child".
 
-    **[Firm]** ISO 9787 defines no coordinate system for an intermediate link. It numbers the axes instead: "axis 1 shall be the first motion closest to the base mounting surface, axis 2 the second motion, and so on, and the last the motion to which the mechanical interface is attached" (§4.4). Per-link frame placement is the business of a kinematics convention such as Denavit-Hartenberg, not of this standard.
+    **[Firm]** ISO 9787 defines no coordinate system for an intermediate link. It numbers the axes instead: "axis 1 shall be the first motion closest to the base mounting surface, axis 2 the second motion, and so on, and the last the motion to which the mechanical interface is attached" (§4.4). Per-link coordinate system placement is the business of a kinematics convention such as Denavit-Hartenberg, not of this standard.
 
 4. **Leaf link.** One parent, no children. An end effector is one kind of leaf; so is a wheel, a sensor, a flag or a propeller.
 
@@ -316,7 +317,7 @@ In this case it is common to choose an origin that is a physically identifiable 
 
 **[Firm]** The mechanical interface coordinate system is the standard name for the thing the earlier attempt in this project called an "attach" or a "slot". It has a defined origin rule — the center of the mating interface — and a defined axis rule: `+Z` along the mating normal, pointing away from the surface.
 
-**[Firm]** The disagreement is narrower than it first looks, and worth stating precisely. ISO 9787's *mounting* frames are built around `+Z` along the mating normal (§5.3), and its *tool* frames around `+Z` "normally in the direction of the tool" (§5.4), both of which differ from a REP 103 body frame by a rotation. But its *mobile platform* frame (§5.5) is `+X` forward and `+Z` up, which is REP 103 exactly. So ISO and ROS agree about vehicles and differ only about mounting interfaces and tools, where ISO is describing a mating surface rather than a body.
+**[Firm]** The disagreement is narrower than it first looks, and worth stating precisely. ISO 9787's *mounting* coordinate systems are built around `+Z` along the mating normal (§5.3), and its *tool* coordinate systems around `+Z` "normally in the direction of the tool" (§5.4), both of which differ from a REP 103 body frame by a rotation. But its *mobile platform* frame (§5.5) is `+X` forward and `+Z` up, which is REP 103 exactly. So ISO and ROS agree about vehicles and differ only about mounting interfaces and tools, where ISO is describing a mating surface rather than a body.
 
 **[Firm]** REP 103 also carries a deliberate second convention for sensors, and it is the clearest precedent in ROS for a frame that breaks the body-frame rule on purpose: "In the case of cameras, there is often a second frame defined with a `_optical` suffix. This uses a slightly different convention: z forward, x right, y down."
 
@@ -402,56 +403,56 @@ The same three directions in the same cyclic order, shifted by one position. Not
 
 **[Corrected]** Blender's viewport convention is *not* a third position in that cycle, which is a tidier claim than the algebra supports. Its triple is `(left, back, up)` — the front view presents the `−Y` face — and that is not a cyclic shift of `(forward, left, up)`; it shares the robotics up axis and differs in the other two. A yaw of `+90°` about that shared up axis carries Blender's axes onto REP 103's, which is why a part authored to REP 103 shows its front in Blender's **Right** view rather than its Front view. Blender is also the one convention here with no standard behind it.
 
-### Our frame names
+### Our coordinate system names
 
 **[Firm where a clause is cited, otherwise ours]** Based on ISO 9787 and deliberately not identical to it. ISO is written for industrial manipulators, so three of its eight systems have no use here and it lacks a name for the thing we handle most: an ordinary rigid component that is neither a base, a tool, nor a mating surface.
 
 | Our name | Basis | Status |
 |---|---|---|
-| **world frame** | ISO 9787 §5.1 world coordinate system | **adopt as-is**: `+Z` opposite gravity, origin ours to define |
-| **vehicle frame** | ISO 9787 §5.5 mobile platform coordinate system | **adopt the axes as-is** (`+X` forward, `+Z` up, = REP 103); rename, because "mobile platform" reads oddly for a boat and an ROV |
-| **part frame** | none — ISO numbers axes, not links | **ours.** ISO has no term for a non-root rigid body that is not a tool or an interface. This is the gap we must fill ourselves |
-| **mount frame** | ISO 9787 §5.3 mechanical interface coordinate system | **narrow**: keep the origin rule (center of the interface) and drop the `+Z` mating-normal axis rule in favor of the part frame's axes, so that one convention governs every frame in a model |
-| **asset frame** | glTF / ISO/IEC 12113 §3.5, the scene's implicit space | **ours, grounded in the format.** No robotics standard has this concept; it exists only inside a file |
-| **node frame** | glTF / ISO/IEC 12113 §3.5 node | **adopt as-is**, the format's own term |
-| **sensor frame** | ISO 9787 §5.8 camera coordinate system; REP 103 `_optical` | **adopt REP 103's**, since ISO gives no axis rule and REP 103 does (`z` forward, `x` right, `y` down) |
-| *tool frame* | ISO 9787 §5.4 | **reserved, unused.** No manipulators in scope yet; adopt as-is if one arrives |
+| **world coordinate system** | ISO 9787 §5.1 world coordinate system | **adopt as-is**: `+Z` opposite gravity, origin ours to define |
+| **vehicle coordinate system** | ISO 9787 §5.5 mobile platform coordinate system | **adopt the axes as-is** (`+X` forward, `+Z` up, = REP 103); rename, because "mobile platform" reads oddly for a boat and an ROV |
+| **part coordinate system** | none — ISO numbers axes, not links | **ours.** ISO has no term for a non-root rigid body that is not a tool or an interface. This is the gap we must fill ourselves |
+| **mount coordinate system** | ISO 9787 §5.3 mechanical interface coordinate system | **narrow**: keep the origin rule (center of the interface) and drop the `+Z` mating-normal axis rule in favor of the part coordinate system's axes, so that one convention governs every coordinate system in a model |
+| **asset coordinate system** | glTF / ISO/IEC 12113 §3.5, the scene's implicit space | **ours, grounded in the format.** No robotics standard has this concept; it exists only inside a file |
+| **node coordinate system** | glTF / ISO/IEC 12113 §3.5 node | **adopt as-is**, the format's own term |
+| **sensor coordinate system** | ISO 9787 §5.8 camera coordinate system; REP 103 `_optical` | **adopt REP 103's**, since ISO gives no axis rule and REP 103 does (`z` forward, `x` right, `y` down) |
+| *tool coordinate system* | ISO 9787 §5.4 | **reserved, unused.** No manipulators in scope yet; adopt as-is if one arrives |
 
-**[Open]** The mount-frame narrowing is a real decision and not yet taken. Keeping ISO's `+Z`-along-the-mating-normal rule would make every mounting face self-describing but put a second axis convention inside one model; dropping it keeps one convention but means a mount frame carries no information about which way the surface faces.
+**[Open]** The mount-coordinate-system narrowing is a real decision and not yet taken. Keeping ISO's `+Z`-along-the-mating-normal rule would make every mounting face self-describing but put a second axis convention inside one model; dropping it keeps one convention but means a mount coordinate system carries no information about which way the surface faces.
 
 ### The full reconciliation
 
 Each row is one frame; each column is what that frame is called, or what stands in for it, in each place.
 
-| Our frame | ISO 9787 | ROS (REP 103/105) | SDF / Gazebo | glTF (ISO/IEC 12113) | Blender | Action |
-|---|---|---|---|---|---|---|
-| world frame | world CS, §5.1 | `map`, `earth` (REP 105) | `<world>`, implicit world frame | — | the scene, Z-up | adopt |
-| vehicle frame | mobile platform CS, §5.5 | `base_link` (REP 105) | model frame; root `<link>` | — | — | adopt axes, rename |
-| part frame | — | a non-root `<link>` | `<link>` | — | the object, and its origin | **ours** |
-| mount frame | mechanical interface CS, §5.3 | a massless link + fixed joint | `<frame>`, and a `<joint>` parent | — | — | narrow |
-| asset frame | — | — | the `<mesh><uri>` as placed by `<visual><pose>` | scene's implicit space, §3.5 | the exported scene | ours |
-| node frame | — | — | — | node, §3.5 | the object's origin | adopt |
-| sensor frame | camera CS, §5.8 | `*_optical` (REP 103) | `<sensor><pose>` | — | — | adopt REP 103 |
+| Our name | Symbol | ISO 9787 | ROS (REP 103/105) | SDF / Gazebo | glTF (ISO/IEC 12113) | Blender | Action |
+|---|---|---|---|---|---|---|---|
+| world coordinate system | `O₀` | world CS, §5.1 | `map`, `earth` (REP 105) | `<world>`, implicit world frame element | — | the scene, Z-up | adopt |
+| vehicle coordinate system | `O_v` | mobile platform CS, §5.5 | `base_link` (REP 105) | model frame; root `<link>` | — | — | adopt axes, rename |
+| part coordinate system | `O_pt` | — | a non-root `<link>` | `<link>` | — | the object, and its origin | **ours** |
+| mount coordinate system | `O_m` | mechanical interface CS, §5.3 | a massless link + fixed joint | `<frame>`, and a `<joint>` parent | — | — | narrow |
+| asset coordinate system | `O_a` | — | — | the `<mesh><uri>` as placed by `<visual><pose>` | scene's implicit space, §3.5 | the exported scene | ours |
+| node coordinate system | `O_n` | — | — | — | node, §3.5 | the object's origin | adopt |
+| sensor coordinate system | `O_s` | camera CS, §5.8 | `*_optical` (REP 103) | `<sensor><pose>` | — | — | adopt REP 103 |
 
-**[Firm]** Two asymmetries in that table are the whole reason this is hard. The middle rows have no glTF column, because glTF has no concept of a link, a joint or a mount — it has nodes and geometry and nothing else. And the `asset frame` and `node frame` rows have no robotics column, because nothing in ISO 9787 or the REPs describes the inside of a mesh file. The pipeline has to join two vocabularies that do not overlap at the point where they meet.
+**[Firm]** Two asymmetries in that table are the whole reason this is hard. The middle rows have no glTF column, because glTF has no concept of a link, a joint or a mount — it has nodes and geometry and nothing else. And the `asset coordinate system` and `node coordinate system` rows have no robotics column, because nothing in ISO 9787 or the REPs describes the inside of a mesh file. The pipeline has to join two vocabularies that do not overlap at the point where they meet.
 
 ### Adopt, narrow, or invent
 
 **[Firm]** Summarizing what this project actually has to write down, which is much less than Take 1 assumed:
 
-- **Adopt as-is, no project text needed:** handedness, length and angle units, roll/pitch/yaw naming, the world frame, the vehicle frame's axes, the sensor optical frame, glTF's node and scene model. All are settled by ISO 9787, REP 103 or ISO/IEC 12113 and need only a citation.
-- **Narrow:** the mount frame, by dropping ISO's mating-normal axis rule (undecided, above).
-- **Invent, because no standard reaches:** the part frame as a named concept; where an origin sits within a part's geometry; which asset-frame axis a delivery's forward direction occupies; and the rule joining the asset frame to the part frame — that is, the value of the visual pose.
+- **Adopt as-is, no project text needed:** handedness, length and angle units, roll/pitch/yaw naming, the world coordinate system, the vehicle coordinate system's axes, the sensor optical coordinate system, glTF's node and scene model. All are settled by ISO 9787, REP 103 or ISO/IEC 12113 and need only a citation.
+- **Narrow:** the mount coordinate system, by dropping ISO's mating-normal axis rule (undecided, above).
+- **Invent, because no standard reaches:** the part coordinate system as a named concept; where an origin sits within a part's geometry; which asset-coordinate-system axis a delivery's forward direction occupies; and the rule joining the asset coordinate system to the part coordinate system — that is, the value of the visual pose.
 - **[Open]** That last list is short and it is exactly the list Take 1 failed to isolate. The next increments should address it in that order.
 
 ## Next increment
 
 The vocabulary and the standards groundwork are now settled, and the list of things this project must decide for itself is short — see "Adopt, narrow, or invent" above. Deliberately not covered yet, in the order it should be taken up:
 
-1. One rigid body, one mesh, no joints: world frame, vehicle frame, asset frame, mesh vertices, written in the frame names agreed above. Get this airtight before adding anything.
-2. The transform from the asset frame to the part frame — the value of the visual pose — and which of glTF, Gazebo and RViz applies what. Take 1's findings on this are sound and can be carried over; its framing cannot.
-3. Where the origin sits within a part, and which asset-frame axis carries forward. These are the two genuine inventions.
-4. A second body and a joint between them, which is where the mount-frame narrowing has to be settled.
+1. One rigid body, one mesh, no joints: world, vehicle and asset coordinate systems, mesh vertices, written in the names agreed above. Get this airtight before adding anything.
+2. The transform from the asset coordinate system to the part coordinate system — the value of the visual pose — and which of glTF, Gazebo and RViz applies what. Take 1's findings on this are sound and can be carried over; its framing cannot.
+3. Where the origin sits within a part, and which asset-coordinate-system axis carries forward. These are the two genuine inventions.
+4. A second body and a joint between them, which is where the mount-coordinate-system narrowing has to be settled.
 5. Only then: the project's delivery rule.
 
 ## References
