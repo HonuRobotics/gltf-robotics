@@ -37,3 +37,5 @@ where = ["src"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+# So `pytest` works in a bare checkout, without an editable install first.
+pythonpath = ["src", "tests"]
