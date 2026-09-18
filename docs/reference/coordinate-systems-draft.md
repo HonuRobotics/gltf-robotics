@@ -10,12 +10,11 @@ The purpose of this document is to be a clear explanation of how coordinate fram
 
 ### Central Issue
 
-The main challenge that motivates this documentation is that in order to build a repeatable 3D asset workflow we need to document the convestion
+The main challenge that motivates this documentation is that in order to build a repeatable 3D asset workflow we need to document the conventions at every stage of this flow, and at every interface between stages:
 
+3D graphics conventions -> glTF spec -> assimp loader -> Gazebo / ROS
 
-3D Graphics Convetions -> glTF spec -> assimp loader -> Gazebo/ROS
-
-Each item in the flow has its own combination of vocabulary, standards, convention an best practices.   To complicate things, these conventiosn are incomplete (not all conventions contrain the same things) and sometimes conflict.   This requires understanding and document each step and, importantly, connecting the interfaces between each item so that the standards/conventions are followed, or where necessary document variation from standards/conventions.  
+Each item in the flow has its own combination of vocabulary, standards, conventions and best practices. To complicate things, these conventions are incomplete — not all of them constrain the same things — and sometimes they conflict. This requires understanding and documenting each step and, importantly, connecting the interfaces between each item so that the standards and conventions are followed, or, where necessary, documenting the variation from them.  
 
 ## How claims in this document are marked
 
@@ -34,24 +33,74 @@ Take 1 went wrong by building detail on assumptions that were never checked. So 
 
 Here we clearly describe some of the usual conventions. The reason is that there are multiple conventions across multiple communities and fields.
 
-## Vocabulary / Nomenclature / Glossary % CLAUDE: In this section collect all th terms that we need to clarify or terminology used across the items in the Central Issue items.
+## Vocabulary / Nomenclature / Glossary
 
-**[Firm]** They are not synonymous, and one standard settles it cleanly. A *coordinate system* (robotics usually says *frame*, and the two words mean the same thing) is an origin **plus** an orientation — six numbers, a pose. An *origin* is only the point where the axes meet — three numbers. 
+Terms that have to be pinned down because they are used differently at different stages of the flow in [Central Issue](#central-issue). Organized by where in the flow each term comes from, so a reader can see which vocabulary they are standing in.
 
- "World coordinate system, `O₀ - X₀ - Y₀ - Z₀`",  % CLAUDE:  Just explain this nomenclature briefly.   Key is that for use when we describe `O_0` it describes the location of the origin relative to the geometry and `X₀ - Y₀ - Z₀` define the orientation of the frame (coordinate system) relative to the geometry.
- 
-So, precisely:
+### Our formal default
 
-| Term | What it is | Who says it that way |
+This document uses **coordinate system** as the formal term. *Coordinate system*, *coordinate frame* and *frame* are exact synonyms here.
+
+The choice follows ISO 9787, which says "coordinate system" throughout and never "frame". The ROS side says the opposite — REP 103, REP 105 and tf all say *frame*, and tf identifies each one by a `frame_id` string. So the reconciliation table later is translating between two vocabularies.
+
+The reason we don't use "frame" is because that term is severly overloaded in 
+### Coordinate system, origin, and reference point
+
+**[Firm]** A coordinate system is an origin **plus** an orientation: six numbers, a pose. An origin alone is just the point where the axes meet.
+
+**[Corrected]** That distinction is true but it is not what we actually do, and an earlier draft of this section offered it as the whole answer. When this project "defines the origin" of a part it is not choosing a point in empty space — it is stating **which physical feature of the geometry the coordinate system is anchored to**. That act has standard names, and we borrow them rather than author our own.
+
+**[Firm]** ISO 9787 never once defines a coordinate system by where its origin numerically sits. Every clause-3 definition uses one formula, "coordinate system **referenced to** *a physical thing*":
+
+| Clause | Definition, verbatim |
+|---|---|
+| 3.4 world | "stationary coordinate system referenced to earth, which is independent of the robot motion" |
+| 3.5 base | "coordinate system referenced to the base mounting surface" |
+| 3.6 mechanical interface | "coordinate system referenced to the mechanical interface" |
+| 3.7 tool (TCS) | "coordinate system referenced to the tool or to the end effector attached to the mechanical interface" |
+| 3.11 task | "coordinate system referenced to the site of the task" |
+| 3.12 object | "coordinate system referenced to the object" |
+| 3.13 camera | "coordinate system referenced to the sensor which monitors the site of the task" |
+
+**Decided.** We adopt that pattern. Every coordinate system this project defines is stated as *referenced to* a named feature, never as a set of coordinates.
+
+**[Firm]** ISO 9787 also supplies the word for the origin considered as a located thing. §3.10: "mobile platform origin; mobile platform **reference point**: origin point of the mobile platform coordinate system". So *reference point* is the standard's own term, and we use it wherever "origin" would be ambiguous.
+
+### The `O - X - Y - Z` notation
+
+**[Firm]** ISO 9787 names each coordinate system by its origin and its three axes together, subscripted per system: "World coordinate system, `O₀ - X₀ - Y₀ - Z₀`", "Base coordinate system, `O₁ - X₁ - Y₁ - Z₁`", "Mechanical interface coordinate system, `O_m - X_m - Y_m - Z_m`", and so on. The notation is doing exactly the split above:
+
+- `O₀` is the **reference point** — it fixes the coordinate system's *location* with respect to the geometry.
+- `X₀ - Y₀ - Z₀` are the axes — they fix its *orientation* with respect to the geometry.
+
+That is why the standard's clauses come in two halves, one sentence placing `O` and one or two more fixing the axes. §5.2 is the clearest case: "The origin of the base coordinate system, `O₁`, shall be defined by the manufacturer of the robot. The `+Z₁` axis is in the direction of the mechanical structure of the robot perpendicularly away from the base mounting surface."
+
+Subscripts in use: `0` world, `1` base, `m` mechanical interface, `t` tool, `p` mobile platform, `k` task, `j` object, `c` camera.
+
+### Specifying a coordinate system: datums and what "referenced to" means
+
+> **OUTLINE — not yet written.** The plan for the subsection that makes "referenced to" precise. Review the structure before it gets filled in.
+
+**Why it is needed.** "Referenced to the mounting face" is better than "origin at the centroid", but it is still loose: it does not say how much of the six degrees of freedom one face actually pins down, nor what may be named as a feature in the first place. Both questions have citable answers in the GPS (geometrical product specification) standards, so this subsection borrows rather than invents.
+
+**A. What may serve as a datum — four kinds, and nothing else.**
+ISO 17450-1 §3.3.1.1.3 defines a **situation feature** as a "point, straight line, plane or helix, from which the location and/or orientation of a geometrical feature can be defined", adding that it "is a geometrical attribute of an ideal feature" and that "no dimensional parameters are linked to a situation feature". To write: that the list is exhaustive, with the standard's own examples (situation point of a sphere or a cone, situation straight line of a cylinder, situation plane of a plane pair). The consequence to draw out: a centroid, a bounding-box center or a "center in plan" is a *derived quantity*, not a situation feature — which is the precise reason those rules drift on redelivery while a face or a bore axis does not. Also to reconcile with the Standards Summary note below, which reaches for "a datum point … associated with a recognizable feature or a survey landmark": that instinct is right, and the refinement is that a *point* is only one of the four kinds and the weakest, because a point alone fixes no orientation at all. Vocabulary to introduce alongside: **datum**, **datum feature** and **datum system** from ISO 5459, and ASME Y14.5's **datum reference frame**, "a Cartesian coordinate system oriented on a part from selected part features", as the phrase closest to our meaning.
+
+**B. What "referenced to" means — location, orientation, or both.**
+To write: ISO's own "location **and/or** orientation" is the crux, and the *and/or* is load-bearing. A coordinate system has six degrees of freedom to pin down, three translational and three rotational, and each kind of situation feature constrains a different subset — a plane fixes one translation and two rotations; an axis fixes two translations and two rotations; a point fixes three translations and no rotation. So a single feature is almost never enough, and "referenced to" is shorthand for a *set* of features that together constrain all six. This is where ISO 5459's primary / secondary / tertiary datum ordering belongs, and where a table belongs: feature kind, what it constrains, what is left free. **[Open]** those degree-of-freedom counts are stated from the GPS invariance-class model (ISO 17450-1 §3.3.1.2 and Annex E) and must be checked against that annex before this is published as [Firm].
+
+**C. Worked examples, one per case we actually meet.**
+
+| Case | Situation features it is referenced to | Status |
 |---|---|---|
-| coordinate system | origin + orientation | ISO 9787 §5, ISO 8373 |
-| frame | the same thing | REP 103, REP 105, tf |
-| origin | the point alone | ISO 9787 §3.10, §5.1–5.3 |
-| pivot, object origin | the point *as named*, but in practice the whole frame | Blender, Maya, 3ds Max |
+| Manipulator base, ISO 9787 §5.2 | the base mounting surface, a **plane** — "connection surface between the arm and its supporting structure" (§3.2); `+X₁` is then fixed by a *constructed* direction through the working-space center, not by a feature | write up from the standard |
+| Mechanical interface, §5.3 | the interface, a **plane**, plus its **axis**; reference point at "the centre of the mechanical interface" | write up |
+| Mobile platform, §5.5 | **none given.** ISO fixes the axes functionally — "`+X_p` … in the forward direction", "`+Z_p` … in the upward direction" — and names no feature at all. This is the gap, and it is the gap for exactly our vehicles | the open question |
+| Surface vessel | naval architecture already has a three-plane datum system: the **baseline**, the **centreline** plane, and a transverse plane through the **aft perpendicular**, origin at the intersection of the latter two. ISO 7462 carries the terminology and its terms are free on the ISO OBP | strong candidate for the vehicle coordinate system |
+| Our parts | to be decided; the one genuine invention | open |
 
-% CLAUDE: I think we should adopt "coordinate system" as our formal default.   For our purposes all these terms are synonymous: coordinate system, coordinate frame, frame.   
-
-**[Firm]** The trap worth naming: 3D graphics uses the word "origin" for something that is actually a full frame. Blender's object origin carries the object's local axes with it, so rotating the object rotates about those axes — position and orientation both. The word names the point; the thing is a frame. That mismatch is a large part of why these conversations go wrong.
+**D. Why this replaces the origin question.**
+To write: "where does the origin sit within the part?" invites derived answers that move whenever the geometry changes. "Which situation features is the part coordinate system referenced to?" invites an answer a modeler, an integrator and an inspector can each point at, and it is checkable by measurement on redelivery — the property the rule needed and never had. Close on what this does to the delivery spec: the manifest records the named features, not a set of coordinates.
 
 ### Assumptions
 
