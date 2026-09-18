@@ -75,7 +75,11 @@ glTF's scene graph is a transform tree in exactly the tf sense, and the intuitio
 
 **Frames live on nodes, and only on nodes.** A node's local transform is `T_parent_node`, given either as a `matrix` or as `translation`, `rotation` and `scale`. The specification's composition rule is a tf lookup written out `[S]`: "the global transformation matrix of a node is the product of the global transformation matrix of its parent node and its own local transformation matrix. When the node has no parent node, its global transformation matrix is identical to its local transformation matrix."
 
-**A mesh is not a frame, and neither is a primitive.** A mesh carries no transform of its own `[S]`; its vertex coordinates are expressed in the frame of whichever node instantiates it. That is why one mesh may be instantiated by several nodes at several different places — geometry is frame-relative data, not a frame. So there is no "mesh frame" in the tree, and a part split into several primitives to carry several materials is still one frame's worth of geometry: primitives cannot fragment a frame, because there is nowhere on a primitive to put a transform.
+**The node frame is the mesh frame; what does not exist is a second frame.** A node holds at most one mesh — `node.mesh` is a single index — and a mesh carries no transform of its own `[S]`. Its vertex positions, which the specification types as `POSITION`, VEC3 of float32, "Unitless XYZ vertex positions" `[S]`, are expressed directly in that node's frame. So if it helps to say "mesh frame", it names the same frame as the node instantiating the mesh, and nothing is left open by the format declining to relate them: there is no transform between a mesh and its node, and the arrangement of the geometry within the frame *is* the vertex data. A pose from mesh to node is not unspecified; it does not exist.
+
+Two words remain worth keeping apart for one reason. "The same mesh could be used by many nodes, which could have different transforms" `[S]`, so the frame belongs to the instantiation rather than to the mesh: a reused mesh has one set of coordinates and as many frames as there are nodes referencing it. For a part delivered as one mesh under one node they coincide exactly, and the distinction is bookkeeping.
+
+**Primitives change none of this.** A part split into several primitives to carry several materials is still one frame's worth of geometry, because there is nowhere on a primitive to put a transform.
 
 **A scene's space is the file's top frame.** A scene is a list of root nodes, and the space their local transforms are expressed in is what this note calls the asset frame. glTF never names it, and it is the closest thing in the format to a world frame — but only in a structural sense, because glTF has no world: no ground, no gravity, no environment, nothing for that frame to be relative to.
 
@@ -115,9 +119,35 @@ Below the visual pose, nothing means anything. No glTF frame has semantics. The 
 
 So the entire coordinate problem is one edge, `T_link_asset`. That is where somebody declares what the asset's axes mean in the body frame. It is the only place the declaration can live, because the file has no vocabulary for it and the consumer has no knowledge of it. And no validator can check it, which is why the rule has to be written down in a document like this one rather than enforced by a tool.
 
+That also settles where the geometry's own semantics get stated, which is the question "x is forward, z is up — said about what?". Because no transform separates a mesh from its node, the statement attaches to the node frame; and because the model specification forbids a `rotation` or a `matrix` on the root node, that frame shares its orientation with the asset frame, so one declaration of orientation covers the mesh, the node and the asset alike. Were a rotation permitted there, they would separate, and a delivery would need two statements where one had sufficed: what the asset frame means, and how the geometry is turned within it. Section 1.5 works through which of our rules does that work; it is a design reason for the no-rotation rule, independent of the three tooling reasons in section 4.
+
 Read this way, glTF's "+Y is up" and "the front faces +Z" are not facts about geometry at all. They are a recommended value for that one edge, stated in prose instead of in data. Section 3 takes them at face value and does the arithmetic.
 
-### 1.5 The two consumers disagree about where the correction edge goes
+Notice that those two sentences together fix the frame completely. Up plus front, with right-handedness, determines all three axes, exactly as REP 103's "x forward, y left, z up" does. glTF is not vague about orientation and does not leave it out: it states a full convention. What differs between its two halves is enforcement. Every exporter and every viewer acts on the up half, so a file that disobeys it looks wrong immediately. Nothing whatever acts on the front half, because no property in the format marks a front — so a file that disobeys it looks fine everywhere and is wrong only in an assembly.
+
+So for a part that has a front — a thruster, a camera, a hull — a convention has to be chosen, and not because glTF is silent but because what glTF says is unrepresentable. The convention's only possible home is a document, plus the poses written against it. What it buys is worth naming: it lets an integrator write a part's attach pose without asking the modeler which way they happened to point it. Without a convention every part needs its own correction, found by looking at it, and "check it in Gazebo" becomes the only specification there is. Two edge cases follow from the same reasoning. The specification says the front of an *asset*, not of a mesh, which costs us nothing while a delivery is one part per file, and would bite immediately if a whole vehicle shipped in one file. And a part with no natural front — a bracket, a pod, a plain cylinder — still needs its orientation recorded, because what the integrator has to know is not which way is natural but which way it was authored.
+
+### 1.5 Which frame the convention actually constrains
+
+glTF §3.4 is stated about the asset frame. The vertex positions are expressed in a node frame. Those are two different frames, related by the node's local transform composed up the tree, so §3.4 constrains the numbers in the buffer only to the extent that something pins that relationship down — and nothing in glTF does. The format is perfectly happy with a file whose asset frame is impeccably Y-up and whose geometry sits under a node rotated ninety degrees.
+
+What closes the gap is a set of rules, none of them the format's. Four are settled in the model specification and one is still open:
+
+| Rule | Status | Effect on the asset-to-node relationship |
+|---|---|---|
+| Exactly one scene, listing only the root node | normative | there is one asset frame, with one node directly beneath it |
+| Exactly one root node | normative | one node frame to relate the asset frame to |
+| No `rotation` and no `matrix` on the root node | normative | the root node frame has the **same orientation** as the asset frame |
+| A `translation` on the root node is permitted | normative permission | the origins may differ; no axis is touched |
+| Whether child nodes are permitted at all | Open, decision 15 | a child carrying a rotation has an orientation of its own, which §3.4 does not reach |
+
+The third row carries the weight, and it is worth seeing why it suffices. §3.4 is a statement purely about orientation: up and front are directions, and the paragraph says nothing whatever about where an origin sits. A root node with no rotation and no matrix therefore shares its orientation with the asset frame exactly, and that is what licenses reading "+Y is up" as a claim about the vertex data rather than only about an abstract frame above it. The permitted translation shifts the origin without turning any axis, so it leaves the orientation convention intact; where the origin belongs is a separate question that glTF never constrained and that section 5.4 of the model specification still has open.
+
+So the honest form of the assumption, and the answer to whether this note has been sliding between two frames: it has, and what licenses it is our no-rotation rule rather than anything in glTF. Throughout the rest of this note, "the file's frame" means the asset frame and the root node frame taken together, which share an orientation by that rule and may differ by a translation. Where the translation matters it matters a great deal, and section 1.6 is about precisely that.
+
+The open row deserves its own note. If a delivery may carry child nodes, then §3.4's convention reaches only the composed result and not the children's own vertex data: a child rotated ninety degrees inside an otherwise conformant file is still conformant, and its buffer is expressed in a frame that nothing has described. That is a coordinate-frame argument for settling decision 15, and it is not among the reasons currently listed there.
+
+### 1.6 The two consumers disagree about where the correction edge goes
 
 Both consumers need the same correction — a rotation of +90° about X, taking a Y-up asset frame to a Z-up link frame — and they attach it to different links of the chain.
 
@@ -131,14 +161,14 @@ RViz inserts it **below** the root node, by post-multiplying the root node's own
 
 The two agree exactly when `T_asset_rootnode` commutes with `Rx(90)`: when the root node is the identity, a pure scale, or a rotation about X alone. Any other root transform, a translation included, places the geometry in two different spots. That is the whole of the hazard that section 4.4 derives from the source and section 5 measures, stated kinematically: the same correction frame, attached at a different point in the tree. It is also the reason the root node has to be the identity, which is a rule about tree shape rather than about axes.
 
-### 1.6 Vocabulary
+### 1.7 Vocabulary
 
 | Kinematics | glTF | This note |
 |---|---|---|
 | world frame | nothing; the format has no world | the SDF world, outside the file |
 | body frame | nothing; not expressible in the format | the link frame, with REP 103 semantics |
 | the frame a file's contents are expressed in | the scene's implicit space | asset frame |
-| a frame in the transform tree | a node | node frame |
+| a frame in the transform tree | a node | node frame, which is also the mesh frame |
 | geometry expressed in a frame | a mesh and its primitives | the vertices |
 | fixed joint, static transform | a node's `matrix` or TRS properties | node transform |
 | a frame's name | `node.name`: optional, non-unique, and not how the tree is assembled | see section 4.2 on submesh naming |
@@ -166,7 +196,7 @@ That is the mechanism. Four further facts shape what a modeler may and may not d
 |---|---|---|---|---|---|
 | ROS body frame | +z | +x | +y | right | REP 103, "Axis Orientation": "x forward, y left, z up" `[S]` |
 | Blender world | +Z | none defined; the viewport's *Front* view looks along +Y at the −Y face | none defined | right | Blender's own convention; the exporter's swizzle below is what proves it Z-up `[C]` |
-| glTF | +Y | +Z | +X | right | glTF 2.0 §3.4 `[S]` |
+| glTF | +Y | +Z | +X | right | glTF 2.0 §3.4 `[S]`, stated of the asset frame |
 
 Blender's "front" is a third convention, neither ROS's +X nor glTF's +Z, and it is the one a modeler looks at all day. Section 10 deals with it.
 
@@ -182,7 +212,7 @@ REP 158 `[S]`, a draft, is a USD document with glTF as its export target. Its Z-
 
 ### 3.1 The algebra
 
-All three frames are right-handed, so every mapping between them is a proper rotation, and each can be written as one or two of the fixed-axis rotations REP 103 names. Writing a body-frame vector as (forward, left, up) and a file-frame vector as (X, Y, Z):
+All three frames are right-handed, so every mapping between them is a proper rotation, and each can be written as one or two of the fixed-axis rotations REP 103 names. Writing a body-frame vector as (forward, left, up) and a file-frame vector as (X, Y, Z), where "file frame" means the asset frame and, by the no-rotation rule of section 1.5, the root node frame with it:
 
 | The file was produced by | File (X, Y, Z) holds | Rotation that returns it to the body frame |
 |---|---|---|
@@ -302,7 +332,7 @@ if (ext == ".gltf" || ext == ".glb" || ext == ".vrm") {
 
 Two decisions in twelve lines. Collada's up-axis is explicitly ignored, so RViz agrees with Gazebo about Collada. glTF is rotated +90° about X, so RViz disagrees with Gazebo about glTF.
 
-Look at where the rotation goes: it is *post-multiplied onto the root node's own transform*. `computeTransformOverSceneGraph` (lines 518–523) then composes parent × child down the tree and `p *= transform` (line 587) applies the product to each vertex, so RViz computes `Root · Rx(90) · Child … · v`. Gazebo computes `Root · Child … · v` and the visual pose then applies `Rx(90)` outside, giving `Rx(90) · Root · Child … · v`. The two agree exactly when `Root` commutes with `Rx(90)`, which is to say when the root node is identity, or a pure scale, or a rotation about X. For a root carrying a translation T, Gazebo shows the geometry at `Rx·T` and RViz at `T`: the same file, 0.5 m up in one and 0.5 m to the left in the other. Child nodes are unaffected, since both compose them on the same side of the correction. Section 1.5 states the same result as a tree: the same correction frame, attached above the root node in one consumer and below it in the other. Confirmed for the Gazebo half by probe in section 5; the RViz half is the tutorial's stage 3.
+Look at where the rotation goes: it is *post-multiplied onto the root node's own transform*. `computeTransformOverSceneGraph` (lines 518–523) then composes parent × child down the tree and `p *= transform` (line 587) applies the product to each vertex, so RViz computes `Root · Rx(90) · Child … · v`. Gazebo computes `Root · Child … · v` and the visual pose then applies `Rx(90)` outside, giving `Rx(90) · Root · Child … · v`. The two agree exactly when `Root` commutes with `Rx(90)`, which is to say when the root node is identity, or a pure scale, or a rotation about X. For a root carrying a translation T, Gazebo shows the geometry at `Rx·T` and RViz at `T`: the same file, 0.5 m up in one and 0.5 m to the left in the other. Child nodes are unaffected, since both compose them on the same side of the correction. Section 1.6 states the same result as a tree: the same correction frame, attached above the root node in one consumer and below it in the other. Confirmed for the Gazebo half by probe in section 5; the RViz half is the tutorial's stage 3.
 
 The installed `librviz_rendering.so` 15.2.5 in the container contains the `.gltf`, `.glb` and `.vrm` extension literals; that shows the comparison is compiled in, and stage 3 of the tutorial is what shows the rotation follows it. The branch was added by ros2/rviz PR 1482, merged to `rolling` on 2025-06-16; the `jazzy` (rviz_rendering 14.1.24) and `kilted` (15.0.15) branches do not contain it `[C]`. The distro floor for these files in RViz is therefore Lyrical.
 
