@@ -1,0 +1,449 @@
+
+===== marker_yup.glb
+bbox min -0.1 -0.025 -0.5  max 1 0.25 0.025
+submeshes 4  materials 4  skeleton yes
+  submesh[0] name='marker' verts 24 tris 12 normals 24 uvsets 0 material 0
+    bounds min 0 -0.025 -0.025  max 1 0.025 0.025
+  submesh[1] name='marker' verts 24 tris 12 normals 24 uvsets 0 material 1
+    bounds min -0.025 -0.025 -0.5  max 0.025 0.025 0
+  submesh[2] name='marker' verts 24 tris 12 normals 24 uvsets 0 material 2
+    bounds min -0.025 0 -0.025  max 0.025 0.25 0.025
+  submesh[3] name='marker' verts 24 tris 12 normals 24 uvsets 0 material 3
+    bounds min -0.1 -0.025 -0.025  max 0 0.025 0.025
+  material[0] diffuse 0.8 0.1 0.1 1 transparency 0 alphaFromTexture 0 threshold 0.5 twoSided 0 emissive 0 0 0 1
+    base color: -
+    pbr metalness 0 roughness 0.8
+    normal:    -
+    metalness: -
+    roughness: -
+    emissive:  -
+    lightmap:  - uvset 0
+  material[1] diffuse 0.1 0.7 0.1 1 transparency 0 alphaFromTexture 0 threshold 0.5 twoSided 0 emissive 0 0 0 1
+    base color: -
+    pbr metalness 0 roughness 0.8
+    normal:    -
+    metalness: -
+    roughness: -
+    emissive:  -
+    lightmap:  - uvset 0
+  material[2] diffuse 0.1 0.2 0.85 1 transparency 0 alphaFromTexture 0 threshold 0.5 twoSided 0 emissive 0 0 0 1
+    base color: -
+    pbr metalness 0 roughness 0.8
+    normal:    -
+    metalness: -
+    roughness: -
+    emissive:  -
+    lightmap:  - uvset 0
+  material[3] diffuse 0.35 0.35 0.35 1 transparency 0 alphaFromTexture 0 threshold 0.5 twoSided 0 emissive 0 0 0 1
+    base color: -
+    pbr metalness 0 roughness 0.8
+    normal:    -
+    metalness: -
+    roughness: -
+    emissive:  -
+    lightmap:  - uvset 0
+
+===== marker_yup.gltf
+bbox min -0.1 -0.025 -0.5  max 1 0.25 0.025
+submeshes 4  materials 4  skeleton yes
+  submesh[0] name='marker' verts 24 tris 12 normals 24 uvsets 0 material 0
+    bounds min 0 -0.025 -0.025  max 1 0.025 0.025
+  submesh[1] name='marker' verts 24 tris 12 normals 24 uvsets 0 material 1
+    bounds min -0.025 -0.025 -0.5  max 0.025 0.025 0
+  submesh[2] name='marker' verts 24 tris 12 normals 24 uvsets 0 material 2
+    bounds min -0.025 0 -0.025  max 0.025 0.25 0.025
+  submesh[3] name='marker' verts 24 tris 12 normals 24 uvsets 0 material 3
+    bounds min -0.1 -0.025 -0.025  max 0 0.025 0.025
+  material[0] diffuse 0.8 0.1 0.1 1 transparency 0 alphaFromTexture 0 threshold 0.5 twoSided 0 emissive 0 0 0 1
+    base color: -
+    pbr metalness 0 roughness 0.8
+    normal:    -
+    metalness: -
+    roughness: -
+    emissive:  -
+    lightmap:  - uvset 0
+  material[1] diffuse 0.1 0.7 0.1 1 transparency 0 alphaFromTexture 0 threshold 0.5 twoSided 0 emissive 0 0 0 1
+    base color: -
+    pbr metalness 0 roughness 0.8
+    normal:    -
+    metalness: -
+    roughness: -
+    emissive:  -
+    lightmap:  - uvset 0
+  material[2] diffuse 0.1 0.2 0.85 1 transparency 0 alphaFromTexture 0 threshold 0.5 twoSided 0 emissive 0 0 0 1
+    base color: -
+    pbr metalness 0 roughness 0.8
+    normal:    -
+    metalness: -
+    roughness: -
+    emissive:  -
+    lightmap:  - uvset 0
+  material[3] diffuse 0.35 0.35 0.35 1 transparency 0 alphaFromTexture 0 threshold 0.5 twoSided 0 emissive 0 0 0 1
+    base color: -
+    pbr metalness 0 roughness 0.8
+    normal:    -
+    metalness: -
+    roughness: -
+    emissive:  -
+    lightmap:  - uvset 0
+
+===== marker_zup.glb
+bbox min -0.1 -0.025 -0.025  max 1 0.5 0.25
+submeshes 4  materials 4  skeleton yes
+  submesh[0] name='marker' verts 24 tris 12 normals 24 uvsets 0 material 0
+    bounds min 0 -0.025 -0.025  max 1 0.025 0.025
+  submesh[1] name='marker' verts 24 tris 12 normals 24 uvsets 0 material 1
+    bounds min -0.025 0 -0.025  max 0.025 0.5 0.025
+  submesh[2] name='marker' verts 24 tris 12 normals 24 uvsets 0 material 2
+    bounds min -0.025 -0.025 0  max 0.025 0.025 0.25
+  submesh[3] name='marker' verts 24 tris 12 normals 24 uvsets 0 material 3
+    bounds min -0.1 -0.025 -0.025  max 0 0.025 0.025
+  material[0] diffuse 0.8 0.1 0.1 1 transparency 0 alphaFromTexture 0 threshold 0.5 twoSided 0 emissive 0 0 0 1
+    base color: -
+    pbr metalness 0 roughness 0.8
+    normal:    -
+    metalness: -
+    roughness: -
+    emissive:  -
+    lightmap:  - uvset 0
+  material[1] diffuse 0.1 0.7 0.1 1 transparency 0 alphaFromTexture 0 threshold 0.5 twoSided 0 emissive 0 0 0 1
+    base color: -
+    pbr metalness 0 roughness 0.8
+    normal:    -
+    metalness: -
+    roughness: -
+    emissive:  -
+    lightmap:  - uvset 0
+  material[2] diffuse 0.1 0.2 0.85 1 transparency 0 alphaFromTexture 0 threshold 0.5 twoSided 0 emissive 0 0 0 1
+    base color: -
+    pbr metalness 0 roughness 0.8
+    normal:    -
+    metalness: -
+    roughness: -
+    emissive:  -
+    lightmap:  - uvset 0
+  material[3] diffuse 0.35 0.35 0.35 1 transparency 0 alphaFromTexture 0 threshold 0.5 twoSided 0 emissive 0 0 0 1
+    base color: -
+    pbr metalness 0 roughness 0.8
+    normal:    -
+    metalness: -
+    roughness: -
+    emissive:  -
+    lightmap:  - uvset 0
+
+===== marker_zup.gltf
+bbox min -0.1 -0.025 -0.025  max 1 0.5 0.25
+submeshes 4  materials 4  skeleton yes
+  submesh[0] name='marker' verts 24 tris 12 normals 24 uvsets 0 material 0
+    bounds min 0 -0.025 -0.025  max 1 0.025 0.025
+  submesh[1] name='marker' verts 24 tris 12 normals 24 uvsets 0 material 1
+    bounds min -0.025 0 -0.025  max 0.025 0.5 0.025
+  submesh[2] name='marker' verts 24 tris 12 normals 24 uvsets 0 material 2
+    bounds min -0.025 -0.025 0  max 0.025 0.025 0.25
+  submesh[3] name='marker' verts 24 tris 12 normals 24 uvsets 0 material 3
+    bounds min -0.1 -0.025 -0.025  max 0 0.025 0.025
+  material[0] diffuse 0.8 0.1 0.1 1 transparency 0 alphaFromTexture 0 threshold 0.5 twoSided 0 emissive 0 0 0 1
+    base color: -
+    pbr metalness 0 roughness 0.8
+    normal:    -
+    metalness: -
+    roughness: -
+    emissive:  -
+    lightmap:  - uvset 0
+  material[1] diffuse 0.1 0.7 0.1 1 transparency 0 alphaFromTexture 0 threshold 0.5 twoSided 0 emissive 0 0 0 1
+    base color: -
+    pbr metalness 0 roughness 0.8
+    normal:    -
+    metalness: -
+    roughness: -
+    emissive:  -
+    lightmap:  - uvset 0
+  material[2] diffuse 0.1 0.2 0.85 1 transparency 0 alphaFromTexture 0 threshold 0.5 twoSided 0 emissive 0 0 0 1
+    base color: -
+    pbr metalness 0 roughness 0.8
+    normal:    -
+    metalness: -
+    roughness: -
+    emissive:  -
+    lightmap:  - uvset 0
+  material[3] diffuse 0.35 0.35 0.35 1 transparency 0 alphaFromTexture 0 threshold 0.5 twoSided 0 emissive 0 0 0 1
+    base color: -
+    pbr metalness 0 roughness 0.8
+    normal:    -
+    metalness: -
+    roughness: -
+    emissive:  -
+    lightmap:  - uvset 0
+
+===== marker_rotnode.glb
+bbox min -0.1 -0.025 -0.5  max 1 0.25 0.025
+submeshes 4  materials 4  skeleton yes
+  submesh[0] name='marker' verts 24 tris 12 normals 24 uvsets 0 material 0
+    bounds min 0 -0.025 -0.025  max 1 0.025 0.025
+  submesh[1] name='marker' verts 24 tris 12 normals 24 uvsets 0 material 1
+    bounds min -0.025 -0.025 -0.5  max 0.025 0.025 1.49012e-09
+  submesh[2] name='marker' verts 24 tris 12 normals 24 uvsets 0 material 2
+    bounds min -0.025 -1.49012e-09 -0.025  max 0.025 0.25 0.025
+  submesh[3] name='marker' verts 24 tris 12 normals 24 uvsets 0 material 3
+    bounds min -0.1 -0.025 -0.025  max 0 0.025 0.025
+  material[0] diffuse 0.8 0.1 0.1 1 transparency 0 alphaFromTexture 0 threshold 0.5 twoSided 0 emissive 0 0 0 1
+    base color: -
+    pbr metalness 0 roughness 0.8
+    normal:    -
+    metalness: -
+    roughness: -
+    emissive:  -
+    lightmap:  - uvset 0
+  material[1] diffuse 0.1 0.7 0.1 1 transparency 0 alphaFromTexture 0 threshold 0.5 twoSided 0 emissive 0 0 0 1
+    base color: -
+    pbr metalness 0 roughness 0.8
+    normal:    -
+    metalness: -
+    roughness: -
+    emissive:  -
+    lightmap:  - uvset 0
+  material[2] diffuse 0.1 0.2 0.85 1 transparency 0 alphaFromTexture 0 threshold 0.5 twoSided 0 emissive 0 0 0 1
+    base color: -
+    pbr metalness 0 roughness 0.8
+    normal:    -
+    metalness: -
+    roughness: -
+    emissive:  -
+    lightmap:  - uvset 0
+  material[3] diffuse 0.35 0.35 0.35 1 transparency 0 alphaFromTexture 0 threshold 0.5 twoSided 0 emissive 0 0 0 1
+    base color: -
+    pbr metalness 0 roughness 0.8
+    normal:    -
+    metalness: -
+    roughness: -
+    emissive:  -
+    lightmap:  - uvset 0
+
+===== marker_rotnode.gltf
+bbox min -0.1 -0.025 -0.025  max 1 0.5 0.25
+submeshes 4  materials 4  skeleton yes
+  submesh[0] name='marker' verts 24 tris 12 normals 24 uvsets 0 material 0
+    bounds min 0 -0.025 -0.025  max 1 0.025 0.025
+  submesh[1] name='marker' verts 24 tris 12 normals 24 uvsets 0 material 1
+    bounds min -0.025 0 -0.025  max 0.025 0.5 0.025
+  submesh[2] name='marker' verts 24 tris 12 normals 24 uvsets 0 material 2
+    bounds min -0.025 -0.025 0  max 0.025 0.025 0.25
+  submesh[3] name='marker' verts 24 tris 12 normals 24 uvsets 0 material 3
+    bounds min -0.1 -0.025 -0.025  max 0 0.025 0.025
+  material[0] diffuse 0.8 0.1 0.1 1 transparency 0 alphaFromTexture 0 threshold 0.5 twoSided 0 emissive 0 0 0 1
+    base color: -
+    pbr metalness 0 roughness 0.8
+    normal:    -
+    metalness: -
+    roughness: -
+    emissive:  -
+    lightmap:  - uvset 0
+  material[1] diffuse 0.1 0.7 0.1 1 transparency 0 alphaFromTexture 0 threshold 0.5 twoSided 0 emissive 0 0 0 1
+    base color: -
+    pbr metalness 0 roughness 0.8
+    normal:    -
+    metalness: -
+    roughness: -
+    emissive:  -
+    lightmap:  - uvset 0
+  material[2] diffuse 0.1 0.2 0.85 1 transparency 0 alphaFromTexture 0 threshold 0.5 twoSided 0 emissive 0 0 0 1
+    base color: -
+    pbr metalness 0 roughness 0.8
+    normal:    -
+    metalness: -
+    roughness: -
+    emissive:  -
+    lightmap:  - uvset 0
+  material[3] diffuse 0.35 0.35 0.35 1 transparency 0 alphaFromTexture 0 threshold 0.5 twoSided 0 emissive 0 0 0 1
+    base color: -
+    pbr metalness 0 roughness 0.8
+    normal:    -
+    metalness: -
+    roughness: -
+    emissive:  -
+    lightmap:  - uvset 0
+
+===== marker_roottrans.glb
+bbox min -0.1 0.475 -0.5  max 1 0.75 0.025
+submeshes 4  materials 4  skeleton yes
+  submesh[0] name='marker' verts 24 tris 12 normals 24 uvsets 0 material 0
+    bounds min 0 0.475 -0.025  max 1 0.525 0.025
+  submesh[1] name='marker' verts 24 tris 12 normals 24 uvsets 0 material 1
+    bounds min -0.025 0.475 -0.5  max 0.025 0.525 0
+  submesh[2] name='marker' verts 24 tris 12 normals 24 uvsets 0 material 2
+    bounds min -0.025 0.5 -0.025  max 0.025 0.75 0.025
+  submesh[3] name='marker' verts 24 tris 12 normals 24 uvsets 0 material 3
+    bounds min -0.1 0.475 -0.025  max 0 0.525 0.025
+  material[0] diffuse 0.8 0.1 0.1 1 transparency 0 alphaFromTexture 0 threshold 0.5 twoSided 0 emissive 0 0 0 1
+    base color: -
+    pbr metalness 0 roughness 0.8
+    normal:    -
+    metalness: -
+    roughness: -
+    emissive:  -
+    lightmap:  - uvset 0
+  material[1] diffuse 0.1 0.7 0.1 1 transparency 0 alphaFromTexture 0 threshold 0.5 twoSided 0 emissive 0 0 0 1
+    base color: -
+    pbr metalness 0 roughness 0.8
+    normal:    -
+    metalness: -
+    roughness: -
+    emissive:  -
+    lightmap:  - uvset 0
+  material[2] diffuse 0.1 0.2 0.85 1 transparency 0 alphaFromTexture 0 threshold 0.5 twoSided 0 emissive 0 0 0 1
+    base color: -
+    pbr metalness 0 roughness 0.8
+    normal:    -
+    metalness: -
+    roughness: -
+    emissive:  -
+    lightmap:  - uvset 0
+  material[3] diffuse 0.35 0.35 0.35 1 transparency 0 alphaFromTexture 0 threshold 0.5 twoSided 0 emissive 0 0 0 1
+    base color: -
+    pbr metalness 0 roughness 0.8
+    normal:    -
+    metalness: -
+    roughness: -
+    emissive:  -
+    lightmap:  - uvset 0
+
+===== marker_roottrans.gltf
+bbox min -0.1 0.475 -0.5  max 1 0.75 0.025
+submeshes 4  materials 4  skeleton yes
+  submesh[0] name='marker' verts 24 tris 12 normals 24 uvsets 0 material 0
+    bounds min 0 0.475 -0.025  max 1 0.525 0.025
+  submesh[1] name='marker' verts 24 tris 12 normals 24 uvsets 0 material 1
+    bounds min -0.025 0.475 -0.5  max 0.025 0.525 0
+  submesh[2] name='marker' verts 24 tris 12 normals 24 uvsets 0 material 2
+    bounds min -0.025 0.5 -0.025  max 0.025 0.75 0.025
+  submesh[3] name='marker' verts 24 tris 12 normals 24 uvsets 0 material 3
+    bounds min -0.1 0.475 -0.025  max 0 0.525 0.025
+  material[0] diffuse 0.8 0.1 0.1 1 transparency 0 alphaFromTexture 0 threshold 0.5 twoSided 0 emissive 0 0 0 1
+    base color: -
+    pbr metalness 0 roughness 0.8
+    normal:    -
+    metalness: -
+    roughness: -
+    emissive:  -
+    lightmap:  - uvset 0
+  material[1] diffuse 0.1 0.7 0.1 1 transparency 0 alphaFromTexture 0 threshold 0.5 twoSided 0 emissive 0 0 0 1
+    base color: -
+    pbr metalness 0 roughness 0.8
+    normal:    -
+    metalness: -
+    roughness: -
+    emissive:  -
+    lightmap:  - uvset 0
+  material[2] diffuse 0.1 0.2 0.85 1 transparency 0 alphaFromTexture 0 threshold 0.5 twoSided 0 emissive 0 0 0 1
+    base color: -
+    pbr metalness 0 roughness 0.8
+    normal:    -
+    metalness: -
+    roughness: -
+    emissive:  -
+    lightmap:  - uvset 0
+  material[3] diffuse 0.35 0.35 0.35 1 transparency 0 alphaFromTexture 0 threshold 0.5 twoSided 0 emissive 0 0 0 1
+    base color: -
+    pbr metalness 0 roughness 0.8
+    normal:    -
+    metalness: -
+    roughness: -
+    emissive:  -
+    lightmap:  - uvset 0
+
+===== marker_twonode.glb
+bbox min -0.1 -0.025 -0.5  max 1 0.525 0.025
+submeshes 5  materials 5  skeleton yes
+  submesh[0] name='marker' verts 24 tris 12 normals 24 uvsets 0 material 1
+    bounds min 0 -0.025 -0.025  max 1 0.025 0.025
+  submesh[1] name='marker' verts 24 tris 12 normals 24 uvsets 0 material 2
+    bounds min -0.025 -0.025 -0.5  max 0.025 0.025 0
+  submesh[2] name='marker' verts 24 tris 12 normals 24 uvsets 0 material 3
+    bounds min -0.025 0 -0.025  max 0.025 0.25 0.025
+  submesh[3] name='marker' verts 24 tris 12 normals 24 uvsets 0 material 4
+    bounds min -0.1 -0.025 -0.025  max 0 0.025 0.025
+  submesh[4] name='pointer' verts 24 tris 12 normals 24 uvsets 0 material 0
+    bounds min -0.025 0.475 -0.3  max 0.025 0.525 1.49012e-09
+  material[0] diffuse 0.9 0.6 0.1 1 transparency 0 alphaFromTexture 0 threshold 0.5 twoSided 0 emissive 0 0 0 1
+    base color: -
+    pbr metalness 0 roughness 0.8
+    normal:    -
+    metalness: -
+    roughness: -
+    emissive:  -
+    lightmap:  - uvset 0
+  material[1] diffuse 0.8 0.1 0.1 1 transparency 0 alphaFromTexture 0 threshold 0.5 twoSided 0 emissive 0 0 0 1
+    base color: -
+    pbr metalness 0 roughness 0.8
+    normal:    -
+    metalness: -
+    roughness: -
+    emissive:  -
+    lightmap:  - uvset 0
+  material[2] diffuse 0.1 0.7 0.1 1 transparency 0 alphaFromTexture 0 threshold 0.5 twoSided 0 emissive 0 0 0 1
+    base color: -
+    pbr metalness 0 roughness 0.8
+    normal:    -
+    metalness: -
+    roughness: -
+    emissive:  -
+    lightmap:  - uvset 0
+  material[3] diffuse 0.1 0.2 0.85 1 transparency 0 alphaFromTexture 0 threshold 0.5 twoSided 0 emissive 0 0 0 1
+    base color: -
+    pbr metalness 0 roughness 0.8
+    normal:    -
+    metalness: -
+    roughness: -
+    emissive:  -
+    lightmap:  - uvset 0
+  material[4] diffuse 0.35 0.35 0.35 1 transparency 0 alphaFromTexture 0 threshold 0.5 twoSided 0 emissive 0 0 0 1
+    base color: -
+    pbr metalness 0 roughness 0.8
+    normal:    -
+    metalness: -
+    roughness: -
+    emissive:  -
+    lightmap:  - uvset 0
+
+===== marker_zup_declZ.dae
+bbox min -0.1 -0.025 -0.025  max 1 0.5 0.25
+submeshes 1  materials 0  skeleton no
+  submesh[0] name='marker' verts 28 tris 48 normals 0 uvsets 0 material NONE
+    bounds min -0.1 -0.025 -0.025  max 1 0.5 0.25
+
+===== marker_zup_declY.dae
+bbox min -0.1 -0.025 -0.025  max 1 0.5 0.25
+submeshes 1  materials 0  skeleton no
+  submesh[0] name='marker' verts 28 tris 48 normals 0 uvsets 0 material NONE
+    bounds min -0.1 -0.025 -0.025  max 1 0.5 0.25
+##########  same .dae files forced through assimp (GZ_MESH_FORCE_ASSIMP=true):
+
+===== marker_zup_declZ.dae
+(2026-09-17 01:37:38.252) [info] [MeshManager.cc:1667] Using assimp to load all mesh formats
+bbox min -0.1 -0.025 -0.025  max 1 0.5 0.25
+submeshes 1  materials 1  skeleton yes
+  submesh[0] name='marker-node' verts 88 tris 48 normals 88 uvsets 0 material 0
+    bounds min -0.1 -0.025 -0.025  max 1 0.5 0.25
+  material[0] diffuse 0.6 0.6 0.6 1 transparency 0 alphaFromTexture 0 threshold 0.5 twoSided 0 emissive 0 0 0 1
+    base color: -
+    pbr metalness 0 roughness 0.5
+    normal:    -
+    metalness: -
+    roughness: -
+    emissive:  -
+    lightmap:  - uvset 0
+
+===== marker_zup_declY.dae
+(2026-09-17 01:37:38.253) [info] [MeshManager.cc:1667] Using assimp to load all mesh formats
+bbox min -0.1 -0.025 -0.025  max 1 0.5 0.25
+submeshes 1  materials 1  skeleton yes
+  submesh[0] name='marker-node' verts 88 tris 48 normals 88 uvsets 0 material 0
+    bounds min -0.1 -0.025 -0.025  max 1 0.5 0.25
+  material[0] diffuse 0.6 0.6 0.6 1 transparency 0 alphaFromTexture 0 threshold 0.5 twoSided 0 emissive 0 0 0 1
+    base color: -
+    pbr metalness 0 roughness 0.5
+    normal:    -
+    metalness: -
+    roughness: -
+    emissive:  -
+    lightmap:  - uvset 0

@@ -1,0 +1,6 @@
+cmake_minimum_required(VERSION 3.16)
+project(glb_probe CXX)
+set(CMAKE_CXX_STANDARD 17)
+find_package(gz-common REQUIRED COMPONENTS graphics)
+add_executable(glb_probe glb_probe.cc)
+target_link_libraries(glb_probe gz-common::gz-common-graphics)
