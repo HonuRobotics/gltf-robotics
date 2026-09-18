@@ -1,0 +1,611 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Community exemplars: who else ships glTF to Gazebo and RViz &mdash; glTF for Robot Simulation main documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/honu.css?v=44af46ee" />
+
+  
+    <link rel="shortcut icon" href="../_static/honu-robotics-favicon.svg"/>
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=a8da1a53"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Parts Library Audit" href="audit-parts-library.html" />
+    <link rel="prev" title="Evidence" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            glTF for Robot Simulation
+              <img src="../_static/honu-robotics-white-logo.svg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../profile/index.html">The Profile</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../profile/profile.html">The glTF Robotics Profile</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../profile/profile.html#introduction">1. Introduction</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../profile/profile.html#scope">1.1 Scope</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../profile/profile.html#relationship-to-external-standards">1.2 Relationship to external standards</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../profile/profile.html#project-specific-content-informative">1.3 Project-specific content (Informative)</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../profile/profile.html#document-conventions">2. Document conventions</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../profile/profile.html#audience">2.1 Audience</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../profile/profile.html#normative-terminology">2.2 Normative terminology</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../profile/profile.html#informative-language">2.3 Informative language</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../profile/profile.html#decision-status">2.4 Decision status</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../profile/profile.html#terminology">3. Terminology</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../profile/profile.html#delivery">4. Delivery</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../profile/profile.html#files">4.1 Files</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../profile/profile.html#format">4.2 Format</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../profile/profile.html#asset-header">4.3 Asset header</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../profile/profile.html#coordinate-system-units-and-frame">5. Coordinate system, units and frame</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../profile/profile.html#units">5.1 Units</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../profile/profile.html#up-axis">5.2 Up axis</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../profile/profile.html#forward-axis">5.3 Forward axis</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../profile/profile.html#origin">5.4 Origin</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../profile/profile.html#scenes-and-nodes">5.5 Scenes and nodes</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../profile/profile.html#geometry">6. Geometry</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../profile/profile.html#uv-sets">6.1 UV sets</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../profile/profile.html#budgets">6.2 Budgets</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../profile/profile.html#primitives-and-submeshes">6.3 Primitives and submeshes</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../profile/profile.html#materials">7. Materials</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../profile/profile.html#textures">8. Textures</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../profile/profile.html#transparency">9. Transparency</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../profile/profile.html#prohibited-content">10. Prohibited content</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../profile/profile.html#authoring-toolchain">11. Authoring toolchain</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../profile/profile.html#conformance">12. Conformance</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../profile/profile.html#checks-informative">12.1 Checks (Informative)</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../profile/profile.html#decision-status-informative">13. Decision status (Informative)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../how-to/index.html">How-to guides</a><ul class="simple">
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/index.html">Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../reference/coordinate-systems.html">Coordinate Systems: glTF, Gazebo and ROS</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../reference/coordinate-systems.html#objective">Objective</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../reference/coordinate-systems.html#central-issue">Central Issue</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/coordinate-systems.html#how-claims-in-this-document-are-marked">How claims in this document are marked</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/coordinate-systems.html#coordinate-conventions-and-typical-practices">Coordinate Conventions and Typical Practices</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/coordinate-systems.html#vocabulary-nomenclature-glossary">Vocabulary / Nomenclature / Glossary</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../reference/coordinate-systems.html#our-formal-default">Our formal default</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/coordinate-systems.html#terms-by-stage-of-the-flow">Terms by stage of the flow</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/coordinate-systems.html#coordinate-system-origin-and-reference-point">Coordinate system, origin, and reference point</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/coordinate-systems.html#the-o-x-y-z-notation">The <code class="docutils literal notranslate"><span class="pre">O</span> <span class="pre">-</span> <span class="pre">X</span> <span class="pre">-</span> <span class="pre">Y</span> <span class="pre">-</span> <span class="pre">Z</span></code> notation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/coordinate-systems.html#specifying-a-coordinate-system-datums-and-what-referenced-to-means">Specifying a coordinate system: datums and what “referenced to” means</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/coordinate-systems.html#assumptions">Assumptions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/coordinate-systems.html#standards-summary">Standards Summary</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="../reference/coordinate-systems.html#iso-9787-2013">ISO 9787:2013</a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/coordinate-systems.html#robotics">Robotics</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="../reference/coordinate-systems.html#categorizing-links-by-their-place-in-the-tree">Categorizing links by their place in the tree</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../reference/coordinate-systems.html#manipulation-centric-robots-with-static-base">Manipulation-centric (robots with static base)</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../reference/coordinate-systems.html#mobile-centric">Mobile-centric</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../reference/coordinate-systems.html#other-conventions-worth-knowing">Other conventions worth knowing</a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/coordinate-systems.html#d-graphics">3D Graphics</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="../reference/coordinate-systems.html#what-survives-into-gltf-and-what-does-not">What survives into glTF, and what does not</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../reference/coordinate-systems.html#standards-for-3d-assets">Standards for 3D assets</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/coordinate-systems.html#reconciling-the-standards">Reconciling the standards</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../reference/coordinate-systems.html#where-they-agree-and-it-is-most-of-it">Where they agree, and it is most of it</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/coordinate-systems.html#the-disagreement-is-one-cyclic-relabeling">The disagreement is one cyclic relabeling</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/coordinate-systems.html#our-coordinate-system-names">Our coordinate system names</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/coordinate-systems.html#the-full-reconciliation">The full reconciliation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/coordinate-systems.html#adopt-narrow-or-invent">Adopt, narrow, or invent</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/coordinate-systems.html#next-increment">Next increment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/coordinate-systems.html#references">References</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/pipeline-review.html">Visual asset pipeline: technical review and proposed guidelines</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../reference/pipeline-review.html#context-starting-point">Context / Starting Point</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/pipeline-review.html#main-issues">Main Issues</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/pipeline-review.html#background">0. Background</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../reference/pipeline-review.html#sources-of-truth">0.1 Sources of truth</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/pipeline-review.html#how-the-audit-works">0.2 How the audit works</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/pipeline-review.html#background-gltf-and-what-our-consumers-do-with-it">1. Background: glTF and what our consumers do with it</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../reference/pipeline-review.html#the-format">1.1 The format</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/pipeline-review.html#the-consumers">1.2 The consumers</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/pipeline-review.html#the-gazebo-path-step-by-step">1.3 The Gazebo path, step by step</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/pipeline-review.html#what-the-loader-reads-from-a-gltf-material">1.4 What the loader reads from a glTF material</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/pipeline-review.html#the-rviz-path">1.5 The RViz path</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/pipeline-review.html#the-pipeline-in-this-repo-and-where-forward-is">1.6 The pipeline in this repo, and where forward is</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/pipeline-review.html#what-must-be-considered-when-moving-this-project-to-glb">1.7 What must be considered when moving this project to GLB</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/pipeline-review.html#the-written-record-what-the-gazebo-project-says-about-gltf">1.8 The written record: what the Gazebo project says about glTF</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/pipeline-review.html#frames-and-origins-what-gltf-fixes-and-what-it-leaves-to-us">1.9 Frames and origins: what glTF fixes, and what it leaves to us</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/pipeline-review.html#verification-tooling-and-criteria">2. Verification tooling and criteria</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../reference/pipeline-review.html#glb-probe-what-gazebo-actually-built">2.1 glb_probe: what Gazebo actually built</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/pipeline-review.html#file-level-lint">2.2 File-level lint</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/pipeline-review.html#eyes-on-a-render">2.3 Eyes on a render</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/pipeline-review.html#external-viewers-are-not-a-gazebo-proxy">2.4 External viewers are not a Gazebo proxy</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/pipeline-review.html#acceptance-criteria-as-pass-or-fail">2.5 Acceptance criteria, as pass or fail</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/pipeline-review.html#the-khronos-gltf-validator">2.6 The Khronos glTF Validator</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/pipeline-review.html#audit-of-the-original-draft-spec-item-by-item">3. Audit of the original draft spec, item by item</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../reference/pipeline-review.html#files">Files</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/pipeline-review.html#units-frame-origin">Units, frame, origin</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/pipeline-review.html#geometry">Geometry</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/pipeline-review.html#materials">Materials</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/pipeline-review.html#transparency">Transparency</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/pipeline-review.html#do-not-use">Do not use</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/pipeline-review.html#checklist-before-delivery">Checklist before delivery</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/pipeline-review.html#the-delivered-files-measured">4. The delivered files, measured</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/pipeline-review.html#what-the-draft-spec-does-not-cover-and-should">5. What the draft spec does not cover and should</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/pipeline-review.html#the-two-claude-artifacts">6. The two Claude artifacts</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../reference/pipeline-review.html#parts-library-audit-the-12-non-chassis-parts">6.1 Parts Library Audit (the 12 non-chassis parts)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/pipeline-review.html#blueboat-chassis-audit">6.2 BlueBoat Chassis Audit</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/pipeline-review.html#bluerov2-chassis-audit">6.3 BlueROV2 Chassis Audit</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/pipeline-review.html#proposed-guideline-pin-the-authoring-stack">7. Proposed guideline: pin the authoring stack</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../reference/pipeline-review.html#the-proposal">7.1 The proposal</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/pipeline-review.html#what-actually-varies">7.2 What actually varies</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/pipeline-review.html#what-a-version-pin-can-and-cannot-do">7.3 What a version pin can and cannot do</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/pipeline-review.html#how-it-would-be-enforced">7.4 How it would be enforced</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/pipeline-review.html#the-stack-as-it-would-be-declared">7.5 The stack, as it would be declared</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/pipeline-review.html#reconciliation-with-the-existing-repo-guidelines">8. Reconciliation with the existing repo guidelines</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../reference/pipeline-review.html#docs-design-parts-md-the-mesh-conventions">8.1 <code class="docutils literal notranslate"><span class="pre">docs/design/parts.md</span></code>, the mesh conventions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/pipeline-review.html#docs-how-to-add-part-md-the-acceptance-steps">8.2 <code class="docutils literal notranslate"><span class="pre">docs/how-to/add-part.md</span></code>, the acceptance steps</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/pipeline-review.html#the-faq">8.3 The FAQ</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/pipeline-review.html#the-older-readme-checklist-commit-b5daead">8.4 The older README checklist, commit <code class="docutils literal notranslate"><span class="pre">b5daead</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/pipeline-review.html#the-one-contradiction-to-resolve-first">8.5 The one contradiction to resolve first</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/pipeline-review.html#further-proposed-guidelines">9. Further proposed guidelines</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../reference/pipeline-review.html#provenance-what-accompanies-a-delivery">9.1 Provenance: what accompanies a delivery</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/pipeline-review.html#the-dimensional-source-of-truth">9.2 The dimensional source of truth</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/pipeline-review.html#names-are-an-interface-not-decoration">9.3 Names are an interface, not decoration</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/pipeline-review.html#redelivery">9.4 Redelivery</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/pipeline-review.html#retiring-the-two-collada-parts">9.5 Retiring the two COLLADA parts</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/pipeline-review.html#what-the-modeler-checks-and-what-we-check">9.6 What the modeler checks, and what we check</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/pipeline-review.html#decisions-the-team-has-to-make">10. Decisions the team has to make</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/pbr-and-gltf.html">PBR, and why glTF is inseparable from it</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../reference/pbr-and-gltf.html#the-shift-in-one-sentence">The shift in one sentence</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/pbr-and-gltf.html#what-we-had-before-collada-plus-an-image">What we had before: Collada plus an image</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/pbr-and-gltf.html#what-pbr-replaces-it-with">What PBR replaces it with</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../reference/pbr-and-gltf.html#the-four-terms-in-that-table-reference">The four terms in that table (reference)</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/pbr-and-gltf.html#the-differences-that-actually-bite">The differences that actually bite</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/pbr-and-gltf.html#why-gltf-and-pbr-cannot-be-separated">Why glTF and PBR cannot be separated</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/pbr-and-gltf.html#where-to-go-next">Where to go next</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/gltf-background-notes.html">glTF Background</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../reference/gltf-background-notes.html#references">References</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../reference/gltf-background-notes.html#khronos-org">Khronos.org</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/gltf-background-notes.html#gltf-2-0-specification">glTF 2.0 Specification</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="../reference/gltf-background-notes.html#https-github-com-khronosgroup-gltf-tutorials">https://github.com/KhronosGroup/glTF-Tutorials</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../reference/gltf-background-notes.html#gltf-quickstart">glTF Quickstart</a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/gltf-background-notes.html#video-discussing-vulkan-neural-rendering-slang-ai-more-neil-trevett-khronos-group-interview">Video: Discussing Vulkan, Neural Rendering, SLANG, AI &amp; More - Neil Trevett &amp; Khronos Group Interview</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/gltf-background-notes.html#gltf-2-0-quickstart-and-tools">glTF 2.0 Quickstart and tools</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/gltf-background-notes.html#openusd-conventions-for-simulation-asset-interoperability-in-open-source-robotics">OpenUSD Conventions for Simulation Asset Interoperability in Open Source Robotics</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/gltf-background-notes.html#closely-related-work-and-examples">Closely Related Work and Examples</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../reference/gltf-background-notes.html#community-standards-documents-discussion-etc">Community standards, documents, discussion, etc.</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="../reference/gltf-background-notes.html#gazebo-community-and-developers">Gazebo community and developers</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../reference/gltf-background-notes.html#examples">Examples</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="../reference/gltf-background-notes.html#fuel">Fuel</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../reference/gltf-background-notes.html#repos">Repos</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Evidence</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Community exemplars: who else ships glTF to Gazebo and RViz</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#method">Method</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#the-cohort">The cohort</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#gazebosim-jetty-demo-the-closest-thing-to-an-upstream-reference">gazebosim/jetty_demo — the closest thing to an upstream reference</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#open-rmf-rmf-site-gltf-generated-rather-than-authored">open-rmf/rmf_site — glTF generated rather than authored</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#husarion-rosbot-ros-a-commercial-product-doing-it-per-link">husarion/rosbot_ros — a commercial product doing it per-link</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#robotlocomotion-the-informed-dissent-on-packaging">RobotLocomotion — the informed dissent on packaging</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#usnistgov-ariac-a-migration-caught-in-the-middle">usnistgov/ARIAC — a migration caught in the middle</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#vanttec-vanttec-usv-the-nearest-maritime-peer-inverted">vanttec/vanttec_usv — the nearest maritime peer, inverted</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#the-people-and-the-two-organizations-that-turned-out-not-to-be-doing-this">The people, and the two organizations that turned out not to be doing this</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#what-this-changes-for-us">What this changes for us</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#where-the-argument-is-being-had">Where the argument is being had</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="audit-parts-library.html">Parts Library Audit</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="audit-parts-library.html#per-part">Per part</a></li>
+<li class="toctree-l3"><a class="reference internal" href="audit-parts-library.html#units-frame-dimensions">Units, frame, dimensions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="audit-parts-library.html#where-the-library-is-already-clean">Where the library is already clean</a></li>
+<li class="toctree-l3"><a class="reference internal" href="audit-parts-library.html#systemic-defects-pipeline-not-per-part">Systemic defects (pipeline, not per part)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="audit-parts-library.html#fixes-in-priority-order">Fixes, in priority order</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="audit-blueboat-chassis.html">BlueBoat Chassis Audit</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="audit-blueboat-chassis.html#files">Files</a></li>
+<li class="toctree-l3"><a class="reference internal" href="audit-blueboat-chassis.html#units-frame-origin">Units, frame, origin</a></li>
+<li class="toctree-l3"><a class="reference internal" href="audit-blueboat-chassis.html#geometry">Geometry</a></li>
+<li class="toctree-l3"><a class="reference internal" href="audit-blueboat-chassis.html#materials">Materials</a></li>
+<li class="toctree-l3"><a class="reference internal" href="audit-blueboat-chassis.html#transparency">Transparency</a></li>
+<li class="toctree-l3"><a class="reference internal" href="audit-blueboat-chassis.html#avoid-list">Avoid list</a></li>
+<li class="toctree-l3"><a class="reference internal" href="audit-blueboat-chassis.html#fixes-in-priority-order">Fixes, in priority order</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="assessment-brief.html">Assessment of glTF examples models</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../project/index.html">Project</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../project/asset-spec-superseded.html">Visual asset spec</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../project/asset-spec-superseded.html#files">Files</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../project/asset-spec-superseded.html#units-frame-origin">Units, frame, origin</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../project/asset-spec-superseded.html#geometry">Geometry</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../project/asset-spec-superseded.html#materials">Materials</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../project/asset-spec-superseded.html#transparency">Transparency</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../project/asset-spec-superseded.html#do-not-use">Do not use</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../project/asset-spec-superseded.html#checklist-before-delivery">Checklist before delivery</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">glTF for Robot Simulation</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Evidence</a></li>
+      <li class="breadcrumb-item active">Community exemplars: who else ships glTF to Gazebo and RViz</li>
+      <li class="wy-breadcrumbs-aside">
+              <a href="https://github.com/HonuRobotics/gltf-robotics/blob/main/docs/evidence/community-exemplars.md" class="fa fa-github"> Edit on GitHub</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="community-exemplars-who-else-ships-gltf-to-gazebo-and-rviz">
+<h1>Community exemplars: who else ships glTF to Gazebo and RViz<a class="headerlink" href="#community-exemplars-who-else-ships-gltf-to-gazebo-and-rviz" title="Link to this heading"></a></h1>
+<p>Survey run 2026-09-12. The question was whether anyone outside this project is authoring and provisioning robot models as glTF for Gazebo and RViz, and if so whose practice is worth copying. It is the outward-looking companion to <code class="docutils literal notranslate"><span class="pre">GLB_INVENTORY.md</span></code> in bluerobotics_models, which measures our own files, and to the Fuel survey, which established that glTF is almost absent from Fuel. Fuel turned out to be the wrong place to look: the people doing this work keep their assets in their own repositories.</p>
+<section id="method">
+<h2>Method<a class="headerlink" href="#method" title="Link to this heading"></a></h2>
+<p>GitHub code search over the text formats that reference a mesh — <code class="docutils literal notranslate"><span class="pre">extension:urdf</span></code>, <code class="docutils literal notranslate"><span class="pre">extension:xacro</span></code>, <code class="docutils literal notranslate"><span class="pre">extension:sdf</span></code> containing <code class="docutils literal notranslate"><span class="pre">.glb</span></code> or <code class="docutils literal notranslate"><span class="pre">.gltf</span></code> — which finds the reference even though the binary itself is not indexed. That is 2,672 URDF, 497 SDF, 288 xacro and 259 SDF-with-<code class="docutils literal notranslate"><span class="pre">.gltf</span></code> hits, sampled to 207 distinct repositories and ranked by stars and last push. Then org-scoped searches (<code class="docutils literal notranslate"><span class="pre">org:gazebosim</span></code>, <code class="docutils literal notranslate"><span class="pre">org:open-rmf</span></code>, <code class="docutils literal notranslate"><span class="pre">org:RobotecAI</span></code>, <code class="docutils literal notranslate"><span class="pre">org:Ekumen-OS</span></code>, <code class="docutils literal notranslate"><span class="pre">org:foxglove</span></code>), the REP and Discourse threads where the format question is being argued, and direct inspection of the candidate files. Five exemplar GLBs were downloaded and their JSON chunk parsed for generator, extensions, image MIME types and triangle counts; those numbers are quoted below and are reproducible with <code class="docutils literal notranslate"><span class="pre">probe/glb_community_probe.py</span></code>, which downloads each file and parses its JSON chunk.</p>
+<p>One caveat on the population. Most of those 2,672 URDF files are manipulation and VLA research — dexterous hands, teleoperation rigs, scene-generation papers — targeting MuJoCo, Isaac or SAPIEN, where glTF has been ordinary for years. They are not evidence about Gazebo or RViz. The Gazebo-and-RViz cohort is small enough to name person by person, which is what follows.</p>
+</section>
+<section id="the-cohort">
+<h2>The cohort<a class="headerlink" href="#the-cohort" title="Link to this heading"></a></h2>
+<section id="gazebosim-jetty-demo-the-closest-thing-to-an-upstream-reference">
+<h3>gazebosim/jetty_demo — the closest thing to an upstream reference<a class="headerlink" href="#gazebosim-jetty-demo-the-closest-thing-to-an-upstream-reference" title="Link to this heading"></a></h3>
+<p>The demo world for the Gazebo Jetty release, by <code class="docutils literal notranslate"><span class="pre">iche033</span></code> (Ian Chen), <code class="docutils literal notranslate"><span class="pre">aaronchongth</span></code> (Aaron Chong), <code class="docutils literal notranslate"><span class="pre">arjo129</span></code> (Arjo Chakravarty) and <code class="docutils literal notranslate"><span class="pre">scpeters</span></code> (Steve Peters). Seventeen warehouse models, every one of them a single self-contained <code class="docutils literal notranslate"><span class="pre">base_visual.glb</span></code> beside a <code class="docutils literal notranslate"><span class="pre">model.sdf</span></code>, and sixteen older COLLADA models — <code class="docutils literal notranslate"><span class="pre">ur10</span></code>, <code class="docutils literal notranslate"><span class="pre">vehicle_with_wheel_slip</span></code>, <code class="docutils literal notranslate"><span class="pre">cordless_drill</span></code> — left as they were. The new assets are glTF; nothing was migrated.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">model.sdf</span></code> pattern is worth quoting in full because it is so spare:</p>
+<div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="nt">&lt;visual</span><span class="w"> </span><span class="na">name=</span><span class="s">"base_visual"</span><span class="nt">&gt;</span>
+<span class="w">  </span><span class="nt">&lt;geometry&gt;&lt;mesh&gt;&lt;uri&gt;</span>base_visual.glb<span class="nt">&lt;/uri&gt;&lt;/mesh&gt;&lt;/geometry&gt;</span>
+<span class="nt">&lt;/visual&gt;</span>
+<span class="nt">&lt;collision</span><span class="w"> </span><span class="na">name=</span><span class="s">"forklift_b132_collider_cylinder"</span><span class="nt">&gt;</span>
+<span class="w">  </span><span class="nt">&lt;pose&gt;</span>-0.455378<span class="w"> </span>0.684627<span class="w"> </span>0.285136<span class="w"> </span>0.0<span class="w"> </span>1.570796<span class="w"> </span>0.0<span class="nt">&lt;/pose&gt;</span>
+<span class="w">  </span><span class="nt">&lt;geometry&gt;&lt;cylinder&gt;&lt;radius&gt;</span>0.284716<span class="nt">&lt;/radius&gt;&lt;length&gt;</span>0.224494<span class="nt">&lt;/length&gt;&lt;/cylinder&gt;&lt;/geometry&gt;</span>
+<span class="nt">&lt;/collision&gt;</span>
+</pre></div>
+</div>
+<p>One visual, no <code class="docutils literal notranslate"><span class="pre">&lt;material&gt;</span></code> and no <code class="docutils literal notranslate"><span class="pre">&lt;pbr&gt;</span></code>, and roughly thirty hand-placed primitive colliders per model named <code class="docutils literal notranslate"><span class="pre">&lt;part&gt;_collider_&lt;shape&gt;</span></code>. That naming convention also appears in <code class="docutils literal notranslate"><span class="pre">iche033/simple_warehouse</span></code>, in <code class="docutils literal notranslate"><span class="pre">ros-physical-ai/demos</span></code>, and in this repository, which suggests a shared Blender-side workflow that nobody has published; the Blender exporter Gazebo does ship, <code class="docutils literal notranslate"><span class="pre">gz-sim/examples/scripts/blender/sdf_exporter.py</span></code>, still writes <code class="docutils literal notranslate"><span class="pre">model.dae</span></code> and knows nothing about GLB.</p>
+<p>What the files themselves contain is more surprising than the SDF:</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>File</p></th>
+<th class="head"><p>Size</p></th>
+<th class="head"><p>Nodes</p></th>
+<th class="head"><p>Tris</p></th>
+<th class="head"><p>Images</p></th>
+<th class="head"><p>Extensions</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">Forklift/base_visual.glb</span></code></p></td>
+<td><p>4.0 MB</p></td>
+<td><p>1</p></td>
+<td><p>15,492</p></td>
+<td><p>3 JPEG (base, MR, normal)</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">KHR_materials_specular</span></code>, <code class="docutils literal notranslate"><span class="pre">KHR_materials_ior</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">Distribution_Warehouse/base_visual.glb</span></code></p></td>
+<td><p>85.5 MB</p></td>
+<td><p>3,010</p></td>
+<td><p>331,438</p></td>
+<td><p>27 JPEG</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">KHR_texture_transform</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">iche033/simple_warehouse</span></code> <code class="docutils literal notranslate"><span class="pre">thor_table.glb</span></code></p></td>
+<td><p>49.7 MB</p></td>
+<td><p>91</p></td>
+<td><p>187,508</p></td>
+<td><p>PNG base and MR, mixed normals</p></td>
+<td><p>none</p></td>
+</tr>
+</tbody>
+</table>
+<p>All from <code class="docutils literal notranslate"><span class="pre">Khronos</span> <span class="pre">glTF</span> <span class="pre">Blender</span> <span class="pre">I/O</span></code> v4.4 to v4.5. Three things follow. The texture-format rule we derived, and REP-158 with it, is not what the Gazebo team practices: normal and metallic-roughness maps here are JPEG. Extensions are used casually, including <code class="docutils literal notranslate"><span class="pre">KHR_texture_transform</span></code>, which our own audit found Gazebo’s loader ignores, so textures should misplace — either the transform is identity in that file or the audit’s finding needs revisiting against Jetty. And there is no size discipline at all: 85 MB in one visual, 3,010 nodes, against the budget question in section 10 of the pipeline review.</p>
+</section>
+<section id="open-rmf-rmf-site-gltf-generated-rather-than-authored">
+<h3>open-rmf/rmf_site — glTF generated rather than authored<a class="headerlink" href="#open-rmf-rmf-site-gltf-generated-rather-than-authored" title="Link to this heading"></a></h3>
+<p>The RMF site editor writes its own glTF. <code class="docutils literal notranslate"><span class="pre">crates/rmf_site_editor/src/site/sdf_exporter.rs</span></code> calls a purpose-built <code class="docutils literal notranslate"><span class="pre">bevy_gltf_export</span></code> crate and emits <code class="docutils literal notranslate"><span class="pre">level_N_visual.glb</span></code> and <code class="docutils literal notranslate"><span class="pre">level_N_collision.glb</span></code> per building level, <code class="docutils literal notranslate"><span class="pre">model_N_visual.glb</span></code> / <code class="docutils literal notranslate"><span class="pre">model_N_collision.glb</span></code> per model and <code class="docutils literal notranslate"><span class="pre">lift_N.glb</span></code> per lift, then writes an SDF that points at them. Visual and collision are separate GLB files by construction, and there is a <code class="docutils literal notranslate"><span class="pre">scripts/blender/obj_to_glb.py</span></code> for the legacy floor meshes. This is the only example found of a tool that treats GLB as a compile target for Gazebo rather than as a delivery format from a modeler.</p>
+</section>
+<section id="husarion-rosbot-ros-a-commercial-product-doing-it-per-link">
+<h3>husarion/rosbot_ros — a commercial product doing it per-link<a class="headerlink" href="#husarion-rosbot-ros-a-commercial-product-doing-it-per-link" title="Link to this heading"></a></h3>
+<p>ROSbot XL and ROSbot 3 descriptions, one GLB per link under <code class="docutils literal notranslate"><span class="pre">meshes/rosbot/</span></code>, referenced from URDF so the same file serves RViz and Gazebo:</p>
+<div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="nt">&lt;origin</span><span class="w"> </span><span class="na">xyz=</span><span class="s">"0.0 0.0 -0.0173"</span><span class="w"> </span><span class="na">rpy=</span><span class="s">"${pi/2} 0.0 ${pi/2}"</span><span class="w"> </span><span class="nt">/&gt;</span>
+<span class="nt">&lt;mesh</span><span class="w"> </span><span class="na">filename=</span><span class="s">"package://rosbot_description/meshes/rosbot/body.glb"</span><span class="w"> </span><span class="na">scale=</span><span class="s">"0.001 0.001 0.001"</span><span class="w"> </span><span class="nt">/&gt;</span>
+</pre></div>
+</div>
+<p>They keep millimeter units in the file and correct with <code class="docutils literal notranslate"><span class="pre">scale</span></code>, and they carry the axis correction in the visual origin rather than baking it, which is the same trade-off <code class="docutils literal notranslate"><span class="pre">parts.xacro</span></code> makes with <code class="docutils literal notranslate"><span class="pre">gltf_up</span></code>. Their <code class="docutils literal notranslate"><span class="pre">body.glb</span></code> was written by <code class="docutils literal notranslate"><span class="pre">trimesh</span></code>, not Blender, and carries no textures at all — two materials, flat colors, 16,221 triangles. A CAD-to-GLB conversion, not an art pipeline. <code class="docutils literal notranslate"><span class="pre">ros-physical-ai/demos</span></code> does the same for the SO-ARM101: untextured GLB visuals, primitive colliders.</p>
+</section>
+<section id="robotlocomotion-the-informed-dissent-on-packaging">
+<h3>RobotLocomotion — the informed dissent on packaging<a class="headerlink" href="#robotlocomotion-the-informed-dissent-on-packaging" title="Link to this heading"></a></h3>
+<p>Toyota Research Institute is the largest user of glTF in URDF and SDFormat found anywhere, and it does the opposite of what we do on two counts. <code class="docutils literal notranslate"><span class="pre">RobotLocomotion/models</span></code> holds 148 <code class="docutils literal notranslate"><span class="pre">.gltf</span></code> files with 148 matching <code class="docutils literal notranslate"><span class="pre">.bin</span></code> sidecars, plus 48 KTX2 textures — external assets everywhere, no GLB. That is not an accident of tooling: Drake’s <a class="reference external" href="https://drake.mit.edu/doxygen_cxx/group__geometry__file__formats.html">file formats page</a> says <code class="docutils literal notranslate"><span class="pre">.glb</span></code> “container” files are not supported at all, and that “<code class="docutils literal notranslate"><span class="pre">.gltf</span></code> files with external assets (i.e., separate <code class="docutils literal notranslate"><span class="pre">.bin</span></code> and <code class="docutils literal notranslate"><span class="pre">.png</span></code> files) will load faster than <code class="docutils literal notranslate"><span class="pre">.gltf</span></code> files with assets embedded.” Their stated reason for glTF over OBJ is ours: “glTF is designed, from the start, to support Physically Based Rendering.” NASA JPL’s <code class="docutils literal notranslate"><span class="pre">nasa-jpl/m2020-urdf-models</span></code>, the Perseverance and Ingenuity models used for operations visualization in RViz, is packaged the same way — 36 <code class="docutils literal notranslate"><span class="pre">.gltf</span></code> with 36 <code class="docutils literal notranslate"><span class="pre">.bin</span></code>.</p>
+<p>So the self-contained-GLB decision has a real dissenting camp with a loading-cost argument behind it, and the dissent is not compatible with us either way: KTX2 fails loudly in Gazebo and GLB fails in Drake.</p>
+</section>
+<section id="usnistgov-ariac-a-migration-caught-in-the-middle">
+<h3>usnistgov/ARIAC — a migration caught in the middle<a class="headerlink" href="#usnistgov-ariac-a-migration-caught-in-the-middle" title="Link to this heading"></a></h3>
+<p>The NIST competition environment currently holds 37 <code class="docutils literal notranslate"><span class="pre">.glb</span></code>, 13 <code class="docutils literal notranslate"><span class="pre">.dae</span></code>, 9 <code class="docutils literal notranslate"><span class="pre">.gltf</span></code> with sidecars and 29 <code class="docutils literal notranslate"><span class="pre">.stl</span></code>, mixed across <code class="docutils literal notranslate"><span class="pre">ariac_description</span></code> and <code class="docutils literal notranslate"><span class="pre">ariac_gz</span></code>. Useful as evidence that a large, maintained, Gazebo-first project is converting rather than having converted, and that nobody enforces one packaging choice across a repository.</p>
+</section>
+<section id="vanttec-vanttec-usv-the-nearest-maritime-peer-inverted">
+<h3>vanttec/vanttec_usv — the nearest maritime peer, inverted<a class="headerlink" href="#vanttec-vanttec-usv-the-nearest-maritime-peer-inverted" title="Link to this heading"></a></h3>
+<p>The only maritime project in the sample. Visuals are COLLADA with <code class="docutils literal notranslate"><span class="pre">&lt;pbr&gt;</span></code> maps declared in the SDF the classic way, and the single GLB in the repository is <code class="docutils literal notranslate"><span class="pre">hull_collision.glb</span></code> — glTF used for collision and COLLADA for visual, exactly backwards from everyone above. No conclusions drawn from one repository, but it is the state of the art in our own domain.</p>
+</section>
+</section>
+<section id="the-people-and-the-two-organizations-that-turned-out-not-to-be-doing-this">
+<h2>The people, and the two organizations that turned out not to be doing this<a class="headerlink" href="#the-people-and-the-two-organizations-that-turned-out-not-to-be-doing-this" title="Link to this heading"></a></h2>
+<p>The user hypothesis was Intrinsic, Ekumen and Robotec.ai. Verified handles and affiliations from GitHub profiles and merged work:</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Who</p></th>
+<th class="head"><p>Handle</p></th>
+<th class="head"><p>Where</p></th>
+<th class="head"><p>The glTF-relevant work</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Ian Chen</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">iche033</span></code></p></td>
+<td><p>Gazebo rendering</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">jetty_demo</span></code> and <code class="docutils literal notranslate"><span class="pre">simple_warehouse</span></code> assets; gz-rendering</p></td>
+</tr>
+<tr class="row-odd"><td><p>Steve Peters</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">scpeters</span></code></p></td>
+<td><p>Gazebo</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">jetty_demo</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>Arjo Chakravarty</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">arjo129</span></code></p></td>
+<td><p>Intrinsic</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">jetty_demo</span></code>, Open-RMF</p></td>
+</tr>
+<tr class="row-odd"><td><p>Aaron Chong</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">aaronchongth</span></code></p></td>
+<td><p>Intrinsic</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">jetty_demo</span></code> RMF integration</p></td>
+</tr>
+<tr class="row-even"><td><p>Morgan Quigley</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">codebot</span></code></p></td>
+<td><p>Intrinsic</p></td>
+<td><p>ros2/rviz #1001, the PR that made RViz load GLB at all (2023)</p></td>
+</tr>
+<tr class="row-odd"><td><p>Alejandro Hernández Cordero</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">ahcorde</span></code></p></td>
+<td><p>OSRF / Gazebo</p></td>
+<td><p>backported GLB loading to Humble and Iron; reviews the loader work</p></td>
+</tr>
+<tr class="row-even"><td><p>Luca Della Vedova</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">luca-della-vedova</span></code></p></td>
+<td><p>Intrinsic</p></td>
+<td><p>rmf_site glTF export</p></td>
+</tr>
+<tr class="row-odd"><td><p>Michel Hidalgo</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">hidmic</span></code></p></td>
+<td><p>Ekumen Labs</p></td>
+<td><p>ros2/rviz #1482, the glTF Y-up fix</p></td>
+</tr>
+<tr class="row-even"><td><p>Calder Phillips-Grafflin</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">calderpg-tri</span></code></p></td>
+<td><p>TRI</p></td>
+<td><p>ros2/rviz #1229, the report behind it</p></td>
+</tr>
+<tr class="row-odd"><td><p>Adam Dąbrowski</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">adamdbrw</span></code></p></td>
+<td><p>Robotec.ai</p></td>
+<td><p>author of REP-158</p></td>
+</tr>
+<tr class="row-even"><td><p>Mateusz Żak</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">zakmat</span></code></p></td>
+<td><p>Robotec.ai</p></td>
+<td><p>REP-158 peer review and compliance checker</p></td>
+</tr>
+<tr class="row-odd"><td><p>Jimmy McElwain</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">jimmy-mcelwain</span></code></p></td>
+<td><p>Yaskawa Motoman</p></td>
+<td><p>pushing the format question from the OEM side, in both the REP thread and Discourse</p></td>
+</tr>
+</tbody>
+</table>
+<p>Ekumen’s own robot, <code class="docutils literal notranslate"><span class="pre">Ekumen-OS/andino</span></code>, is STL and JPEG with no glTF anywhere; their glTF contribution is Michel Hidalgo’s work inside the RViz loader. Robotec.ai’s robot assets — <code class="docutils literal notranslate"><span class="pre">ROSCon2023Demo</span></code>, the UR and OTTO gems — are FBX, STL and COLLADA, because O3DE’s asset processor consumes them; <code class="docutils literal notranslate"><span class="pre">.glb</span></code> appears in their repositories only as a line in <code class="docutils literal notranslate"><span class="pre">sceneassetimporter.setreg</span></code>. Their glTF contribution is REP-158, which is an OpenUSD authoring convention whose declared export target is glTF 2.0. Neither organization is a source of Gazebo-facing glTF assets to copy, and saying so is worth as much as the positive findings.</p>
+</section>
+<section id="what-this-changes-for-us">
+<h2>What this changes for us<a class="headerlink" href="#what-this-changes-for-us" title="Link to this heading"></a></h2>
+<ol class="arabic simple">
+<li><p>The RViz Y-up rotation is younger and narrower than we treated it. <code class="docutils literal notranslate"><span class="pre">ros2/rviz</span></code> #1482 merged to <code class="docutils literal notranslate"><span class="pre">rolling</span></code> on 2025-06-16 and <code class="docutils literal notranslate"><span class="pre">ahcorde</span></code> declined to backport it — “this change might break many users” — so Jazzy and Kilted do not have it. Our files render correctly in RViz here because our distro is downstream of that merge. Anyone consuming these models on Jazzy sees every part rotated ninety degrees. That belongs in the model spec as a stated distro floor, not as an assumption.</p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">&lt;pbr&gt;</span></code>-in-SDF rule in the workspace <code class="docutils literal notranslate"><span class="pre">CLAUDE.md</span></code> disagrees with every glTF exemplar found. Jetty’s own models declare no material in the SDF and rely on what is inside the GLB, as do 53 of the 54 glTF models in Fuel. The rule may be correct for COLLADA and wrong for GLB, or correct for our gz-common version and stale; either way it now has enough counter-evidence to be worth re-deriving rather than repeating.</p></li>
+<li><p>Our texture-format rule is on the standards side of a split. REP-158 backs it and the shipped assets do not — jetty’s Forklift carries a JPEG normal map and a JPEG metallic-roughness map, as does most of Fuel. The spec should keep the rule and say plainly that assets arriving from anyone working normally will violate it.</p></li>
+<li><p>Self-contained GLB is defensible but no longer uncontested. Drake refuses GLB outright and argues external <code class="docutils literal notranslate"><span class="pre">.bin</span></code> loads faster; JPL packages the same way for RViz. If a model of ours is ever meant to be consumed outside Gazebo and RViz, packaging is the first thing that breaks, and the spec should say what the fallback is.</p></li>
+<li><p>There is an upstream gap we are sitting in the middle of. The Gazebo team’s assets are GLB, its published Blender exporter writes COLLADA, and the <code class="docutils literal notranslate"><span class="pre">&lt;part&gt;_collider_&lt;shape&gt;</span></code> convention that three separate projects use is undocumented. Whatever we build to emit colliders and visuals from Blender is a plausible upstream contribution rather than a private tool.</p></li>
+</ol>
+</section>
+<section id="where-the-argument-is-being-had">
+<h2>Where the argument is being had<a class="headerlink" href="#where-the-argument-is-being-had" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>REP-158, “OpenUSD Conventions for Simulation Asset Interoperability in Open Source Robotics”, in <code class="docutils literal notranslate"><span class="pre">openrobotics/reps</span></code> — drafted PR #29 (merged 2026-06-17), peer review addressed in PR #30 (2026-07-13). The <a class="reference external" href="https://discourse.openrobotics.org/t/draft-rep-158-openusd-conventions-for-simulation-asset-interoperability-in-open-source-robotics/55526">Discourse thread</a> carries the substantive debate, including a mesh-granularity exchange directly on our per-link question: combining meshes to the smallest possible set is preferable for performance, acknowledged as context-dependent rather than prescribed.</p></li>
+<li><p><a class="reference external" href="https://discourse.openrobotics.org/t/ros2-urdf-mesh-file-types/54954">“ROS2 URDF Mesh File Types”</a>, May 2026, opened because Blender 5.0 dropped COLLADA export. Converging on glTF 2.0 for visual and STL for collision, blocked on Isaac Sim’s URDF importer still accepting only dae, obj and stl. No governance action, no migration plan.</p></li>
+<li><p>The gz-common assimp loader PRs, which the pipeline review already tracks.</p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="Evidence" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="audit-parts-library.html" class="btn btn-neutral float-right" title="Parts Library Audit" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright Honu Robotics.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    <span class="fa fa-book"> Other Versions</span>
+    v: main
+    <span class="fa fa-caret-down"></span>
+  </span>
+  <div class="rst-other-versions">
+    <dl id="honu-version-list">
+      <dt>Distributions</dt>
+      <dd><a href="/gltf-robotics/main/" data-version="main">Main</a></dd>
+    </dl>
+  </div>
+</div>
+<script>
+  (function () {
+    var current = "main";
+    var base = "/gltf-robotics/";
+
+    /* Keep the reader on the same page when switching versions; the
+       version root href stays as the fallback for pages a version lacks. */
+    function wire() {
+      document.querySelectorAll('.rst-other-versions a[data-version]').forEach(function (a) {
+        var target = a.getAttribute('data-version');
+        var path = window.location.pathname;
+        if (target !== current && path.indexOf('/' + current + '/') !== -1) {
+          a.href = path.replace('/' + current + '/', '/' + target + '/');
+        }
+      });
+    }
+
+    if (!window.fetch) { wire(); return; }
+
+    /* The deploy tool maintains versions.json at the site root; reading it
+       at runtime lets builds published before a new distribution existed
+       still offer it in the flyout. Offline or local preview builds fall
+       back to the build time list rendered above. */
+    fetch(base + 'versions.json', {cache: 'no-cache'}).then(function (response) {
+      if (!response.ok) { throw new Error(response.status); }
+      return response.json();
+    }).then(function (entries) {
+      var list = document.getElementById('honu-version-list');
+      if (!list || !entries.length) { return; }
+      list.querySelectorAll('dd').forEach(function (dd) { dd.remove(); });
+      entries.forEach(function (entry) {
+        var a = document.createElement('a');
+        a.href = entry.url;
+        a.setAttribute('data-version', entry.name);
+        a.textContent = entry.name.charAt(0).toUpperCase() + entry.name.slice(1);
+        var dd = document.createElement('dd');
+        dd.appendChild(a);
+        list.appendChild(dd);
+      });
+    }).catch(function () {}).finally(wire);
+  })();
+</script><script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

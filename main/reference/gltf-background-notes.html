@@ -1,0 +1,878 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>glTF Background &mdash; glTF for Robot Simulation main documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/honu.css?v=44af46ee" />
+
+  
+    <link rel="shortcut icon" href="../_static/honu-robotics-favicon.svg"/>
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=a8da1a53"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Evidence" href="../evidence/index.html" />
+    <link rel="prev" title="PBR, and why glTF is inseparable from it" href="pbr-and-gltf.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            glTF for Robot Simulation
+              <img src="../_static/honu-robotics-white-logo.svg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../profile/index.html">The Profile</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../profile/profile.html">The glTF Robotics Profile</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../profile/profile.html#introduction">1. Introduction</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../profile/profile.html#scope">1.1 Scope</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../profile/profile.html#relationship-to-external-standards">1.2 Relationship to external standards</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../profile/profile.html#project-specific-content-informative">1.3 Project-specific content (Informative)</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../profile/profile.html#document-conventions">2. Document conventions</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../profile/profile.html#audience">2.1 Audience</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../profile/profile.html#normative-terminology">2.2 Normative terminology</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../profile/profile.html#informative-language">2.3 Informative language</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../profile/profile.html#decision-status">2.4 Decision status</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../profile/profile.html#terminology">3. Terminology</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../profile/profile.html#delivery">4. Delivery</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../profile/profile.html#files">4.1 Files</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../profile/profile.html#format">4.2 Format</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../profile/profile.html#asset-header">4.3 Asset header</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../profile/profile.html#coordinate-system-units-and-frame">5. Coordinate system, units and frame</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../profile/profile.html#units">5.1 Units</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../profile/profile.html#up-axis">5.2 Up axis</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../profile/profile.html#forward-axis">5.3 Forward axis</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../profile/profile.html#origin">5.4 Origin</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../profile/profile.html#scenes-and-nodes">5.5 Scenes and nodes</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../profile/profile.html#geometry">6. Geometry</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../profile/profile.html#uv-sets">6.1 UV sets</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../profile/profile.html#budgets">6.2 Budgets</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../profile/profile.html#primitives-and-submeshes">6.3 Primitives and submeshes</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../profile/profile.html#materials">7. Materials</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../profile/profile.html#textures">8. Textures</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../profile/profile.html#transparency">9. Transparency</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../profile/profile.html#prohibited-content">10. Prohibited content</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../profile/profile.html#authoring-toolchain">11. Authoring toolchain</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../profile/profile.html#conformance">12. Conformance</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../profile/profile.html#checks-informative">12.1 Checks (Informative)</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../profile/profile.html#decision-status-informative">13. Decision status (Informative)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../how-to/index.html">How-to guides</a><ul class="simple">
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="coordinate-systems.html">Coordinate Systems: glTF, Gazebo and ROS</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="coordinate-systems.html#objective">Objective</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="coordinate-systems.html#central-issue">Central Issue</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="coordinate-systems.html#how-claims-in-this-document-are-marked">How claims in this document are marked</a></li>
+<li class="toctree-l3"><a class="reference internal" href="coordinate-systems.html#coordinate-conventions-and-typical-practices">Coordinate Conventions and Typical Practices</a></li>
+<li class="toctree-l3"><a class="reference internal" href="coordinate-systems.html#vocabulary-nomenclature-glossary">Vocabulary / Nomenclature / Glossary</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="coordinate-systems.html#our-formal-default">Our formal default</a></li>
+<li class="toctree-l4"><a class="reference internal" href="coordinate-systems.html#terms-by-stage-of-the-flow">Terms by stage of the flow</a></li>
+<li class="toctree-l4"><a class="reference internal" href="coordinate-systems.html#coordinate-system-origin-and-reference-point">Coordinate system, origin, and reference point</a></li>
+<li class="toctree-l4"><a class="reference internal" href="coordinate-systems.html#the-o-x-y-z-notation">The <code class="docutils literal notranslate"><span class="pre">O</span> <span class="pre">-</span> <span class="pre">X</span> <span class="pre">-</span> <span class="pre">Y</span> <span class="pre">-</span> <span class="pre">Z</span></code> notation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="coordinate-systems.html#specifying-a-coordinate-system-datums-and-what-referenced-to-means">Specifying a coordinate system: datums and what “referenced to” means</a></li>
+<li class="toctree-l4"><a class="reference internal" href="coordinate-systems.html#assumptions">Assumptions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="coordinate-systems.html#standards-summary">Standards Summary</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="coordinate-systems.html#iso-9787-2013">ISO 9787:2013</a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="coordinate-systems.html#robotics">Robotics</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="coordinate-systems.html#categorizing-links-by-their-place-in-the-tree">Categorizing links by their place in the tree</a></li>
+<li class="toctree-l5"><a class="reference internal" href="coordinate-systems.html#manipulation-centric-robots-with-static-base">Manipulation-centric (robots with static base)</a></li>
+<li class="toctree-l5"><a class="reference internal" href="coordinate-systems.html#mobile-centric">Mobile-centric</a></li>
+<li class="toctree-l5"><a class="reference internal" href="coordinate-systems.html#other-conventions-worth-knowing">Other conventions worth knowing</a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="coordinate-systems.html#d-graphics">3D Graphics</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="coordinate-systems.html#what-survives-into-gltf-and-what-does-not">What survives into glTF, and what does not</a></li>
+<li class="toctree-l5"><a class="reference internal" href="coordinate-systems.html#standards-for-3d-assets">Standards for 3D assets</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="coordinate-systems.html#reconciling-the-standards">Reconciling the standards</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="coordinate-systems.html#where-they-agree-and-it-is-most-of-it">Where they agree, and it is most of it</a></li>
+<li class="toctree-l4"><a class="reference internal" href="coordinate-systems.html#the-disagreement-is-one-cyclic-relabeling">The disagreement is one cyclic relabeling</a></li>
+<li class="toctree-l4"><a class="reference internal" href="coordinate-systems.html#our-coordinate-system-names">Our coordinate system names</a></li>
+<li class="toctree-l4"><a class="reference internal" href="coordinate-systems.html#the-full-reconciliation">The full reconciliation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="coordinate-systems.html#adopt-narrow-or-invent">Adopt, narrow, or invent</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="coordinate-systems.html#next-increment">Next increment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="coordinate-systems.html#references">References</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline-review.html">Visual asset pipeline: technical review and proposed guidelines</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline-review.html#context-starting-point">Context / Starting Point</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline-review.html#main-issues">Main Issues</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline-review.html#background">0. Background</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline-review.html#sources-of-truth">0.1 Sources of truth</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline-review.html#how-the-audit-works">0.2 How the audit works</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline-review.html#background-gltf-and-what-our-consumers-do-with-it">1. Background: glTF and what our consumers do with it</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline-review.html#the-format">1.1 The format</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline-review.html#the-consumers">1.2 The consumers</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline-review.html#the-gazebo-path-step-by-step">1.3 The Gazebo path, step by step</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline-review.html#what-the-loader-reads-from-a-gltf-material">1.4 What the loader reads from a glTF material</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline-review.html#the-rviz-path">1.5 The RViz path</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline-review.html#the-pipeline-in-this-repo-and-where-forward-is">1.6 The pipeline in this repo, and where forward is</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline-review.html#what-must-be-considered-when-moving-this-project-to-glb">1.7 What must be considered when moving this project to GLB</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline-review.html#the-written-record-what-the-gazebo-project-says-about-gltf">1.8 The written record: what the Gazebo project says about glTF</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline-review.html#frames-and-origins-what-gltf-fixes-and-what-it-leaves-to-us">1.9 Frames and origins: what glTF fixes, and what it leaves to us</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline-review.html#verification-tooling-and-criteria">2. Verification tooling and criteria</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline-review.html#glb-probe-what-gazebo-actually-built">2.1 glb_probe: what Gazebo actually built</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline-review.html#file-level-lint">2.2 File-level lint</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline-review.html#eyes-on-a-render">2.3 Eyes on a render</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline-review.html#external-viewers-are-not-a-gazebo-proxy">2.4 External viewers are not a Gazebo proxy</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline-review.html#acceptance-criteria-as-pass-or-fail">2.5 Acceptance criteria, as pass or fail</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline-review.html#the-khronos-gltf-validator">2.6 The Khronos glTF Validator</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline-review.html#audit-of-the-original-draft-spec-item-by-item">3. Audit of the original draft spec, item by item</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline-review.html#files">Files</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline-review.html#units-frame-origin">Units, frame, origin</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline-review.html#geometry">Geometry</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline-review.html#materials">Materials</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline-review.html#transparency">Transparency</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline-review.html#do-not-use">Do not use</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline-review.html#checklist-before-delivery">Checklist before delivery</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline-review.html#the-delivered-files-measured">4. The delivered files, measured</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline-review.html#what-the-draft-spec-does-not-cover-and-should">5. What the draft spec does not cover and should</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline-review.html#the-two-claude-artifacts">6. The two Claude artifacts</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline-review.html#parts-library-audit-the-12-non-chassis-parts">6.1 Parts Library Audit (the 12 non-chassis parts)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline-review.html#blueboat-chassis-audit">6.2 BlueBoat Chassis Audit</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline-review.html#bluerov2-chassis-audit">6.3 BlueROV2 Chassis Audit</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline-review.html#proposed-guideline-pin-the-authoring-stack">7. Proposed guideline: pin the authoring stack</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline-review.html#the-proposal">7.1 The proposal</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline-review.html#what-actually-varies">7.2 What actually varies</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline-review.html#what-a-version-pin-can-and-cannot-do">7.3 What a version pin can and cannot do</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline-review.html#how-it-would-be-enforced">7.4 How it would be enforced</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline-review.html#the-stack-as-it-would-be-declared">7.5 The stack, as it would be declared</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline-review.html#reconciliation-with-the-existing-repo-guidelines">8. Reconciliation with the existing repo guidelines</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline-review.html#docs-design-parts-md-the-mesh-conventions">8.1 <code class="docutils literal notranslate"><span class="pre">docs/design/parts.md</span></code>, the mesh conventions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline-review.html#docs-how-to-add-part-md-the-acceptance-steps">8.2 <code class="docutils literal notranslate"><span class="pre">docs/how-to/add-part.md</span></code>, the acceptance steps</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline-review.html#the-faq">8.3 The FAQ</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline-review.html#the-older-readme-checklist-commit-b5daead">8.4 The older README checklist, commit <code class="docutils literal notranslate"><span class="pre">b5daead</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline-review.html#the-one-contradiction-to-resolve-first">8.5 The one contradiction to resolve first</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline-review.html#further-proposed-guidelines">9. Further proposed guidelines</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline-review.html#provenance-what-accompanies-a-delivery">9.1 Provenance: what accompanies a delivery</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline-review.html#the-dimensional-source-of-truth">9.2 The dimensional source of truth</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline-review.html#names-are-an-interface-not-decoration">9.3 Names are an interface, not decoration</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline-review.html#redelivery">9.4 Redelivery</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline-review.html#retiring-the-two-collada-parts">9.5 Retiring the two COLLADA parts</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline-review.html#what-the-modeler-checks-and-what-we-check">9.6 What the modeler checks, and what we check</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline-review.html#decisions-the-team-has-to-make">10. Decisions the team has to make</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pbr-and-gltf.html">PBR, and why glTF is inseparable from it</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pbr-and-gltf.html#the-shift-in-one-sentence">The shift in one sentence</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pbr-and-gltf.html#what-we-had-before-collada-plus-an-image">What we had before: Collada plus an image</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pbr-and-gltf.html#what-pbr-replaces-it-with">What PBR replaces it with</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pbr-and-gltf.html#the-four-terms-in-that-table-reference">The four terms in that table (reference)</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pbr-and-gltf.html#the-differences-that-actually-bite">The differences that actually bite</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pbr-and-gltf.html#why-gltf-and-pbr-cannot-be-separated">Why glTF and PBR cannot be separated</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pbr-and-gltf.html#where-to-go-next">Where to go next</a></li>
+</ul>
+</li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">glTF Background</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#references">References</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#khronos-org">Khronos.org</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#gltf-2-0-specification">glTF 2.0 Specification</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="#https-github-com-khronosgroup-gltf-tutorials">https://github.com/KhronosGroup/glTF-Tutorials</a></li>
+<li class="toctree-l5"><a class="reference internal" href="#gltf-quickstart">glTF Quickstart</a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="#video-discussing-vulkan-neural-rendering-slang-ai-more-neil-trevett-khronos-group-interview">Video: Discussing Vulkan, Neural Rendering, SLANG, AI &amp; More - Neil Trevett &amp; Khronos Group Interview</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#gltf-2-0-quickstart-and-tools">glTF 2.0 Quickstart and tools</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#openusd-conventions-for-simulation-asset-interoperability-in-open-source-robotics">OpenUSD Conventions for Simulation Asset Interoperability in Open Source Robotics</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#closely-related-work-and-examples">Closely Related Work and Examples</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#community-standards-documents-discussion-etc">Community standards, documents, discussion, etc.</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="#gazebo-community-and-developers">Gazebo community and developers</a></li>
+<li class="toctree-l5"><a class="reference internal" href="#examples">Examples</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="#fuel">Fuel</a></li>
+<li class="toctree-l6"><a class="reference internal" href="#repos">Repos</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../evidence/index.html">Evidence</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../evidence/community-exemplars.html">Community exemplars: who else ships glTF to Gazebo and RViz</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../evidence/community-exemplars.html#method">Method</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../evidence/community-exemplars.html#the-cohort">The cohort</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../evidence/community-exemplars.html#gazebosim-jetty-demo-the-closest-thing-to-an-upstream-reference">gazebosim/jetty_demo — the closest thing to an upstream reference</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../evidence/community-exemplars.html#open-rmf-rmf-site-gltf-generated-rather-than-authored">open-rmf/rmf_site — glTF generated rather than authored</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../evidence/community-exemplars.html#husarion-rosbot-ros-a-commercial-product-doing-it-per-link">husarion/rosbot_ros — a commercial product doing it per-link</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../evidence/community-exemplars.html#robotlocomotion-the-informed-dissent-on-packaging">RobotLocomotion — the informed dissent on packaging</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../evidence/community-exemplars.html#usnistgov-ariac-a-migration-caught-in-the-middle">usnistgov/ARIAC — a migration caught in the middle</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../evidence/community-exemplars.html#vanttec-vanttec-usv-the-nearest-maritime-peer-inverted">vanttec/vanttec_usv — the nearest maritime peer, inverted</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../evidence/community-exemplars.html#the-people-and-the-two-organizations-that-turned-out-not-to-be-doing-this">The people, and the two organizations that turned out not to be doing this</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../evidence/community-exemplars.html#what-this-changes-for-us">What this changes for us</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../evidence/community-exemplars.html#where-the-argument-is-being-had">Where the argument is being had</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../evidence/audit-parts-library.html">Parts Library Audit</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../evidence/audit-parts-library.html#per-part">Per part</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../evidence/audit-parts-library.html#units-frame-dimensions">Units, frame, dimensions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../evidence/audit-parts-library.html#where-the-library-is-already-clean">Where the library is already clean</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../evidence/audit-parts-library.html#systemic-defects-pipeline-not-per-part">Systemic defects (pipeline, not per part)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../evidence/audit-parts-library.html#fixes-in-priority-order">Fixes, in priority order</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../evidence/audit-blueboat-chassis.html">BlueBoat Chassis Audit</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../evidence/audit-blueboat-chassis.html#files">Files</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../evidence/audit-blueboat-chassis.html#units-frame-origin">Units, frame, origin</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../evidence/audit-blueboat-chassis.html#geometry">Geometry</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../evidence/audit-blueboat-chassis.html#materials">Materials</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../evidence/audit-blueboat-chassis.html#transparency">Transparency</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../evidence/audit-blueboat-chassis.html#avoid-list">Avoid list</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../evidence/audit-blueboat-chassis.html#fixes-in-priority-order">Fixes, in priority order</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../evidence/assessment-brief.html">Assessment of glTF examples models</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../project/index.html">Project</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../project/asset-spec-superseded.html">Visual asset spec</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../project/asset-spec-superseded.html#files">Files</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../project/asset-spec-superseded.html#units-frame-origin">Units, frame, origin</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../project/asset-spec-superseded.html#geometry">Geometry</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../project/asset-spec-superseded.html#materials">Materials</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../project/asset-spec-superseded.html#transparency">Transparency</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../project/asset-spec-superseded.html#do-not-use">Do not use</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../project/asset-spec-superseded.html#checklist-before-delivery">Checklist before delivery</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">glTF for Robot Simulation</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Reference</a></li>
+      <li class="breadcrumb-item active">glTF Background</li>
+      <li class="wy-breadcrumbs-aside">
+              <a href="https://github.com/HonuRobotics/gltf-robotics/blob/main/docs/reference/gltf-background-notes.md" class="fa fa-github"> Edit on GitHub</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="gltf-background">
+<h1>glTF Background<a class="headerlink" href="#gltf-background" title="Link to this heading"></a></h1>
+<p>These are notes from my working through the glTF specification.</p>
+<p>Here is what I want Claude Code to do:</p>
+<ul class="simple">
+<li><p>I’ve noted questions I have with “Q: “.   Take a cut at answering the question and add the answer below the quesiton with “A (CC): “ prepended.</p></li>
+</ul>
+<section id="references">
+<h2>References<a class="headerlink" href="#references" title="Link to this heading"></a></h2>
+<p>This section is a running history of the references I’ve reviewed as part of these notes.</p>
+<section id="khronos-org">
+<h3>Khronos.org<a class="headerlink" href="#khronos-org" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Develops and maintains open standards for “connectinog silicon to software” - low-level APIs and file formats.</p></li>
+<li><p>150 members</p></li>
+<li><p>They maintain many of the specifications, including <a class="reference external" href="https://www.khronos.org/opengl/">OpenGL</a> and <a class="reference external" href="https://www.khronos.org/collada/">Collada</a></p></li>
+</ul>
+</section>
+<section id="gltf-2-0-specification">
+<h3><a class="reference external" href="https://registry.khronos.org/glTF/specs/2.0/glTF-2.0.html">glTF 2.0 Specification</a><a class="headerlink" href="#gltf-2-0-specification" title="Link to this heading"></a></h3>
+<p><strong>The JPEG of 3D</strong></p>
+<p>Q: glTF as an ISO/IEC 12113:2022 specification.  Is there any functional difference betwee the glTF 2.0 spec and the ISO version?<br />
+A: No.   The difference is that the ISO froze in 2022.  The Khronos version is live, updates and includes the extension registry.   So cite the Khronos registry version, and cite a specific revision with it, because it moves. <code class="docutils literal notranslate"><span class="pre">model-spec.md</span></code> already says “registry revision 2.0.1”</p>
+<p>Q: I still don’t understand what an “accessor” is.  “An object describing the number and the format of data elements stored in a binary buffer.”   Could you give a couple concrete examples?</p>
+<p>A (CC): Three levels, and the accessor is the top one. A <strong>buffer</strong> is an undifferentiated blob of bytes. A <strong>buffer view</strong> is a byte range within it, offset and length, still untyped. An <strong>accessor</strong> says how to read that range: what the elements are, how many, and what they are made of. It is a C-style cast plus a count.</p>
+<p>From <code class="docutils literal notranslate"><span class="pre">minimal.gltf</span></code> in this directory, small enough to check by hand:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">accessors</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>    <span class="p">{</span><span class="n">bufferView</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="n">componentType</span><span class="p">:</span> <span class="mi">5126</span><span class="p">,</span> <span class="nb">type</span><span class="p">:</span> <span class="s2">"VEC3"</span><span class="p">,</span>   <span class="n">count</span><span class="p">:</span> <span class="mi">4</span><span class="p">}</span>
+<span class="n">bufferViews</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>  <span class="p">{</span><span class="n">byteOffset</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="n">byteLength</span><span class="p">:</span> <span class="mi">48</span><span class="p">}</span>
+</pre></div>
+</div>
+<p>Read bytes 0-48 as 4 groups of 3 float32s. That is 4 x 3 x 4 = 48 bytes, and it is the quad’s four corner positions. In C: <code class="docutils literal notranslate"><span class="pre">(float3</span> <span class="pre">*)(buffer</span> <span class="pre">+</span> <span class="pre">0)</span></code> with <code class="docutils literal notranslate"><span class="pre">n</span> <span class="pre">=</span> <span class="pre">4</span></code>.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">accessors</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>    <span class="p">{</span><span class="n">bufferView</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span> <span class="n">componentType</span><span class="p">:</span> <span class="mi">5123</span><span class="p">,</span> <span class="nb">type</span><span class="p">:</span> <span class="s2">"SCALAR"</span><span class="p">,</span> <span class="n">count</span><span class="p">:</span> <span class="mi">6</span><span class="p">}</span>
+<span class="n">bufferViews</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>  <span class="p">{</span><span class="n">byteOffset</span><span class="p">:</span> <span class="mi">128</span><span class="p">,</span> <span class="n">byteLength</span><span class="p">:</span> <span class="mi">12</span><span class="p">}</span>
+</pre></div>
+</div>
+<p>Read bytes 128-140 as 6 uint16s. That is 6 x 2 = 12 bytes, and they are vertex indices: 6 indices, three per triangle, so two triangles.</p>
+<p>A real part is the same shape at scale. <code class="docutils literal notranslate"><span class="pre">t200_prop_cw</span></code> has a POSITION accessor of 302 VEC3 float32s (3,624 bytes) and an index accessor of 780 uint16s, which is 260 triangles.</p>
+<p>Why the indirection exists, since two levels would seem enough: several accessors can read one buffer view at different offsets and strides, which is how interleaved vertex data is expressed. And the accessor is where <code class="docutils literal notranslate"><span class="pre">min</span></code>/<code class="docutils literal notranslate"><span class="pre">max</span></code> live, required on POSITION, which is why a reader can get a bounding box without decoding a byte of geometry.</p>
+<p>One asymmetry worth knowing: an embedded image names a buffer view directly and has no accessor, because a JPEG is not an array of typed elements. That is the only structural thing separating texture bytes from geometry bytes inside a GLB.</p>
+<ul class="simple">
+<li><p>This is the reason why our collada workflow won’t work - “Complete 3D scene representation. Not restricted to single objects, glTF can represent entire scenes, including nodes, transformations, transform hierarchy, meshes, materials, cameras, and animations.”</p></li>
+</ul>
+<p>A (CC): Careful here, this reason does not hold up, though the conclusion does. COLLADA is <em>also</em> a full scene format with a node hierarchy, cameras, animations and a transform tree; scene representation is not what separates them. Two things actually broke the workflow. First, the material model: COLLADA carried a Phong/Blinn material with a diffuse texture, and glTF carries metallic-roughness PBR, where metalness defaults to 1.0 and a plastic hull nobody set renders as dark metal. Four of fifteen delivered parts have exactly that defect. Second, scope: glTF’s specification covers far more than we need, so a naive reading applies rules that do not apply to us, which is the argument for a narrowing spec rather than for abandoning COLLADA.</p>
+<p>Q: 2.4. glTF Basics.  For image files, what are the tradeoffs in jpg vs png and what are the scenarios where you would use each?</p>
+<p>A (CC): PNG is lossless and carries alpha; JPEG is lossy and cannot. Both decode to RGBA8 on the GPU, so <strong>the choice costs disk and transfer, never video memory</strong> - a 2048 map occupies 16 MB decoded whichever format it arrived in. That rules out one argument only: you cannot justify JPEG as a way to fit more or larger textures into GPU memory, because it does not. It is not a claim that the choice is invisible. JPEG changes the decoded pixels, permanently, and whether that matters depends entirely on what the pixels mean - which is the subject of the table.</p>
+<p>Where it does make a difference is by map type, because JPEG’s 8x8 DCT blocking and chroma subsampling corrupt different data differently:</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Map</p></th>
+<th class="head"><p>Format</p></th>
+<th class="head"><p>Why</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Base color</p></td>
+<td><p>JPEG at libjpeg quality 95 or better, 4:4:4</p></td>
+<td><p>Perceptual sRGB data, which is what JPEG was designed for. PNG <strong>required</strong> if the map carries alpha - a cutout mask through JPEG is ragged. See the note on what “quality” means below; every JPEG we ship today is quality 75 at 4:2:0.</p></td>
+</tr>
+<tr class="row-odd"><td><p>Normal</p></td>
+<td><p>PNG</p></td>
+<td><p>RGB encodes a direction, not a color. Subsampling mixes channels and perturbs the vectors, giving blotchy shading. Every normal map in our library is currently JPEG.</p></td>
+</tr>
+<tr class="row-even"><td><p>Metallic-roughness / ORM</p></td>
+<td><p>PNG</p></td>
+<td><p>Independent scalars packed per channel. Chroma subsampling blends channels that have nothing to do with each other.</p></td>
+</tr>
+<tr class="row-odd"><td><p>Emissive</p></td>
+<td><p>JPEG at libjpeg quality 95 or better, 4:4:4</p></td>
+<td><p>Same argument as base color.</p></td>
+</tr>
+</tbody>
+</table>
+<p>Scale, from our own measurements: the one 2048 PNG base color in the library is 2,182 KB against the 2048 JPEG normal at 280 KB. PNG everywhere at 2048 is expensive on disk, which is why the rule wants to be per map type rather than blanket.</p>
+<p>The Blender exporter inherits the format from the source image, which is why the library is 31 JPEG to 2 PNG: this is a texture-authoring decision, not an export-dialog one.</p>
+<p><strong>This is review decision 4, and REP-0158 gives it an external authority we thought it lacked</strong> - see the note at the bottom of this file. It mandates lossless PNG for normal, metallic, roughness and packed ORM, and permits JPEG only for color maps without alpha. That is the table above, arrived at independently.</p>
+<p>Q: What would be your proposed guidelines for asset authors?   Draft a guideline, when it is obvious to use one or the other and when there might be good reasons to use either.</p>
+<p>A (CC): Drafted below reasoning only from the glTF 2.0 specification, so that the rule stands on the format rather than on any one consumer. Quotations are from <code class="docutils literal notranslate"><span class="pre">Specification.adoc</span></code> at the registry head. Anywhere a consumer might disagree with the spec-derived rule, or where REP-0158 says something adjacent, it is called out inline as a flag rather than resolved.</p>
+<p>Measurements are from the fifteen delivered <code class="docutils literal notranslate"><span class="pre">*.visual.glb</span></code> files, taken 2026-09-12.</p>
+<p><strong>Rule of thumb, before the derivation.</strong></p>
+<p>Use PNG for everything, because five of glTF’s six texture slots either forbid lossy encoding on their own terms or gain nothing from it, and because the one slot where JPEG genuinely belongs is also the one where PNG is often smaller anyway. The whole library converts for 3.9 MB, all of it in normal maps.</p>
+<p>Use JPEG only when all four of these hold:</p>
+<ol class="arabic simple">
+<li><p>the texture is plugged into <code class="docutils literal notranslate"><span class="pre">baseColorTexture</span></code> or <code class="docutils literal notranslate"><span class="pre">emissiveTexture</span></code> - the two sRGB slots - and no other slot; and</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">alphaMode</span></code> is <code class="docutils literal notranslate"><span class="pre">OPAQUE</span></code>, so no alpha channel is needed; and</p></li>
+<li><p>the encoder is set to libjpeg quality 95 or better with 4:4:4 chroma subsampling, not to a default; and</p></li>
+<li><p>the JPEG actually comes out smaller than the PNG, which for flat or near-flat maps it does not.</p></li>
+</ol>
+<p>If any one of those fails, the answer is PNG. In this library, fail it does: fourteen of fifteen parts are <code class="docutils literal notranslate"><span class="pre">OPAQUE</span></code> and would pass (1) and (2), but every JPEG in the library fails (3), and most of the base color maps fail (4) as well.</p>
+<p><strong>Step 0. The choice really is binary.</strong></p>
+<p>Core glTF recognizes two image media types and no others. The spec gives the magic-byte table for <code class="docutils literal notranslate"><span class="pre">image/png</span></code> and <code class="docutils literal notranslate"><span class="pre">image/jpeg</span></code> only, and requires that “the image data <strong>MUST</strong> match the <code class="docutils literal notranslate"><span class="pre">image.mimeType</span></code> property when the latter is defined.” Anything else - WebP, KTX2, Basis - exists only behind an extension (<code class="docutils literal notranslate"><span class="pre">EXT_texture_webp</span></code>, <code class="docutils literal notranslate"><span class="pre">KHR_texture_basisu</span></code>), which is a separate decision about extensions, not about texture format. So within core glTF there is nothing to choose but PNG or JPEG, and every map must be one of them.</p>
+<p><strong>Step 1. The spec assigns a transfer function per texture slot, and that decides most of it.</strong></p>
+<p>The governing sentence is in section 5.19: “Any colorspace information (such as ICC profiles, intents, gamma values, etc.) from PNG or JPEG images <strong>MUST</strong> be ignored. Effective transfer function (encoding) is defined by a glTF object that refers to the image.” An image in glTF has no color space of its own. The material slot it is plugged into defines how its bytes are read, and the spec fixes that per slot:</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Slot</p></th>
+<th class="head"><p>What the spec says it is</p></th>
+<th class="head"><p>Transfer function</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">baseColorTexture</span></code></p></td>
+<td><p>“<strong>MUST</strong> contain 8-bit values encoded with the sRGB opto-electronic transfer function”</p></td>
+<td><p>sRGB</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">emissiveTexture</span></code></p></td>
+<td><p>same sentence, verbatim</p></td>
+<td><p>sRGB</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">metallicRoughnessTexture</span></code></p></td>
+<td><p>“green channel contains roughness values and its blue channel contains metalness values … <strong>MUST</strong> be encoded with linear transfer function and <strong>MAY</strong> use more than 8 bits per channel”</p></td>
+<td><p>linear</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">normalTexture</span></code></p></td>
+<td><p>“encodes XYZ components of a normal vector in tangent space as RGB values stored with linear transfer function”</p></td>
+<td><p>linear</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">occlusionTexture</span></code></p></td>
+<td><p>“The red channel of the texture encodes the occlusion value … Other texture channels (if present) do not affect occlusion”</p></td>
+<td><p>linear</p></td>
+</tr>
+</tbody>
+</table>
+<p>That split is the guideline. JPEG is a perceptual codec: it transforms RGB into YCbCr and then discards chroma resolution and high-frequency detail on the premise that the three channels are a correlated color being looked at by an eye. In the two sRGB slots that premise holds exactly - they are sRGB color, which is what JPEG was designed for. In the three linear slots it fails on its own terms. A <code class="docutils literal notranslate"><span class="pre">metallicRoughnessTexture</span></code> has no color in it at all: green and blue are two unrelated scalars and red is ignored, so a codec that averages chroma is averaging quantities the spec defines as independent. A <code class="docutils literal notranslate"><span class="pre">normalTexture</span></code> is worse, because its three channels are not even independent - they are components of one vector, and the spec adds a constraint no color has: “Normal textures <strong>SHOULD NOT</strong> contain blue values less than or equal to <code class="docutils literal notranslate"><span class="pre">0.5</span></code>.”</p>
+<p>A second, quieter point in the same sentences: <code class="docutils literal notranslate"><span class="pre">metallicRoughnessTexture</span></code> <strong>MAY</strong> use more than 8 bits per channel. Only PNG can carry that. Choosing JPEG for a linear slot forecloses a precision option the spec explicitly grants, and does so silently.</p>
+<p><strong>Step 2. Alpha is a capability question, not a quality one.</strong></p>
+<p>Section 5.19.6: “The alpha value is taken from the fourth component of the <em>base color</em> for metallic-roughness material model,” and under <code class="docutils literal notranslate"><span class="pre">MASK</span></code>, “If the alpha value is greater than or equal to the <code class="docutils literal notranslate"><span class="pre">alphaCutoff</span></code> value then it is rendered as fully opaque, otherwise, it is rendered as fully transparent.” JPEG has no fourth component. So a base color texture that participates in <code class="docutils literal notranslate"><span class="pre">MASK</span></code> or <code class="docutils literal notranslate"><span class="pre">BLEND</span></code> must be PNG; there is no judgment in it.</p>
+<p>The converse is also in the spec and worth stating, because it prevents a defensive habit: “Normal textures <strong>SHOULD NOT</strong> contain <em>alpha</em> channel as it not used anyway.” An RGBA PNG normal map is a third more bytes for a channel the spec says will be ignored.</p>
+<p><strong>Step 3. A uniform map is a factor written the long way.</strong></p>
+<p>The spec defines the relationship: where a map is present the factor multiplies it, and where no map is present the factor is the whole value. A map whose every texel is identical therefore has an exact, lossless expression as a factor, and carrying it as an image adds a decode, a sampler, a texture binding and a file with nothing in them.</p>
+<p>This is not hypothetical. All seven <code class="docutils literal notranslate"><span class="pre">metallicRoughnessTexture</span></code> images in the library are a single uniform color - one unique value per channel across every texel. Six are <code class="docutils literal notranslate"><span class="pre">(255,</span> <span class="pre">255,</span> <span class="pre">255)</span></code> and <code class="docutils literal notranslate"><span class="pre">blueboat_chassis</span></code> is <code class="docutils literal notranslate"><span class="pre">(255,</span> <span class="pre">236,</span> <span class="pre">255)</span></code>, giving occlusion 1.0, roughness 0.93 to 1.0, and metalness 1.0. That is 82.9 KB spent encoding seven numbers, and it is the metalness defect recorded earlier in this file seen from the other side: the parts are not accidentally metallic, a constant-white blue channel is telling the renderer they are metal everywhere.</p>
+<p>So the first question about a map’s format is whether the map should exist. If it is uniform, delete it and set <code class="docutils literal notranslate"><span class="pre">metallicFactor</span></code>, <code class="docutils literal notranslate"><span class="pre">roughnessFactor</span></code> or <code class="docutils literal notranslate"><span class="pre">baseColorFactor</span></code>; the format question then does not arise.</p>
+<p><strong>Step 4. What lossy encoding costs in the linear slots, measured.</strong></p>
+<p>On <code class="docutils literal notranslate"><span class="pre">blueboat_chassis</span></code> normal at 2048, using the decoded shipped file as ground truth and restricting to the textured area because 15.4% of that map is flat background fill.</p>
+<p><strong>Read this table with its confound in mind.</strong> The “ground truth” is itself a JPEG - every normal map we hold has already been through one generation of libjpeg quality 75 at 4:2:0 - so these numbers measure a <em>second</em> generation on already-damaged content, not the first-generation loss. Two consequences. The first-generation damage cannot be measured from the delivered files at all, which is an argument in itself for getting PNG out of the modeler. And re-encoding at the source’s own settings is close to idempotent, which produces the misleading row at the bottom: q75 4:2:0 scores <em>better</em> than q75 4:4:4 here purely because the chroma was already subsampled, and nothing about that says q75 is a good setting.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Encoding</p></th>
+<th class="head"><p>Size</p></th>
+<th class="head"><p>Mean angular error</p></th>
+<th class="head"><p>p99</p></th>
+<th class="head"><p>p99.9</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>PNG</p></td>
+<td><p>2,322 KB</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+</tr>
+<tr class="row-odd"><td><p>JPEG q95 4:4:4</p></td>
+<td><p>780 KB</p></td>
+<td><p>0.41 deg</p></td>
+<td><p>2.60 deg</p></td>
+<td><p>6.18 deg</p></td>
+</tr>
+<tr class="row-even"><td><p>JPEG q95 4:2:0</p></td>
+<td><p>501 KB</p></td>
+<td><p>0.66 deg</p></td>
+<td><p>5.60 deg</p></td>
+<td><p>13.90 deg</p></td>
+</tr>
+<tr class="row-odd"><td><p>JPEG q90 4:2:0</p></td>
+<td><p>382 KB</p></td>
+<td><p>0.71 deg</p></td>
+<td><p>5.42 deg</p></td>
+<td><p>13.99 deg</p></td>
+</tr>
+<tr class="row-even"><td><p>JPEG q80 4:2:0</p></td>
+<td><p>294 KB</p></td>
+<td><p>0.82 deg</p></td>
+<td><p>5.29 deg</p></td>
+<td><p>13.23 deg</p></td>
+</tr>
+<tr class="row-odd"><td><p>JPEG q75 4:4:4</p></td>
+<td><p>400 KB</p></td>
+<td><p>0.76 deg</p></td>
+<td><p>4.87 deg</p></td>
+<td><p>12.01 deg</p></td>
+</tr>
+<tr class="row-even"><td><p>JPEG q75 4:2:0 - <em>the shipped setting, near-idempotent here</em></p></td>
+<td><p>279 KB</p></td>
+<td><p>0.37 deg</p></td>
+<td><p>4.16 deg</p></td>
+<td><p>10.78 deg</p></td>
+</tr>
+</tbody>
+</table>
+<p>Two readings, both restricted to the comparable rows. Holding quality fixed, 4:4:4 beats 4:2:0 at every quality from 80 to 95, and q90 at 4:4:4 beats q95 at 4:2:0 - which follows directly from step 1, since subsampling is the step that assumes the channels are chroma. And the maximum error is far above p99.9, over 100 degrees, concentrated at UV shell boundaries where ringing pulls background texels into the shell. Those are the seams a reviewer looks at first.</p>
+<p>One thing this does <em>not</em> show, and the distinction matters. The spec says “Normal vectors <strong>MUST</strong> be normalized before being used in lighting equations,” so a conforming client repairs the length of a damaged normal. It cannot repair the direction. Length deviation is therefore not the rendering error - but it is a free detector of lossy encoding, and by that detector our shipped maps are damaged: between 17% and 52% of textured texels are more than 1% off unit length, part by part, <code class="docutils literal notranslate"><span class="pre">t200_thruster</span></code> worst at 52%. The 8-bit quantization floor for perfectly unit normals is 0.0% by the same measure, so bit depth does not explain any of it.</p>
+<p>Unresolved, and worth an hour with the source bakes: eight of the eleven normal maps contain texels with blue at or below 0.5, which the spec says they <strong>SHOULD NOT</strong>; <code class="docutils literal notranslate"><span class="pre">blueboat_antenna_mast</span></code> and <code class="docutils literal notranslate"><span class="pre">blueboat_chassis</span></code> reach blue exactly 0.0, which is not a possible tangent-space normal. A one-generation JPEG re-encode of <code class="docutils literal notranslate"><span class="pre">bluerov2_chassis</span></code> normal, whose minimum blue is 0.545, created no new violations at any quality, so the encoder is not obviously the cause and the bake is the other suspect.</p>
+<p><strong>Step 5. Only now, budget.</strong></p>
+<p>Re-encoding every map in the library as PNG at its current resolution takes the texture payload from 2,896 KB to 6,749 KB, a factor of 2.3. Normal maps are the entire cost: <code class="docutils literal notranslate"><span class="pre">blueboat_chassis</span></code> normal goes from 280 KB to 2,322 KB, and every other normal map runs 6x to 10x. Base color and metallic-roughness maps mostly get <em>smaller</em> as PNG, being flat content that PNG’s filters handle and JPEG does not - <code class="docutils literal notranslate"><span class="pre">surveyor_multibeam</span></code> base color goes from 1.8 KB to 0.3 KB.</p>
+<p><strong>Where either format is genuinely defensible.</strong></p>
+<ol class="arabic simple">
+<li><p><strong>Base color and emissive, at any size.</strong> These are the sRGB slots; JPEG at quality 95 with 4:4:4 is the sensible default and PNG is equally defensible, often smaller, when the map is flat. Encode both and keep the smaller. The only hard constraint is alpha.</p></li>
+<li><p><strong>A normal map on a part whose budget genuinely binds.</strong> Reduce resolution rather than fidelity. PNG at half resolution totals 2,178 KB across the library, less than the JPEG payload shipped today. A 1024 lossless normal map and a 2048 JPEG one cost about the same bytes; the first has correct values at lower spatial frequency, the second has wrong values at high frequency, and the spec’s normalization requirement does not rescue the second.</p></li>
+<li><p><strong>Work in progress.</strong> JPEG during iteration is fine. The rule binds at delivery, where the file becomes the interface.</p></li>
+</ol>
+<p>Never defensible at delivery: a JPEG normal, occlusion, metallic-roughness or ORM map justified on the grounds that the artifacts are invisible. They are measurable, they concentrate at seams, and a reviewer cannot distinguish an encoding artifact from a baking error - which turns a cheap check into an expensive one.</p>
+<p><strong>Proposed spec text, glTF-only.</strong></p>
+<blockquote>
+<div><p>Images <strong>MUST</strong> be <code class="docutils literal notranslate"><span class="pre">image/png</span></code> or <code class="docutils literal notranslate"><span class="pre">image/jpeg</span></code>; no texture extension is permitted.
+<code class="docutils literal notranslate"><span class="pre">baseColorTexture</span></code> and <code class="docutils literal notranslate"><span class="pre">emissiveTexture</span></code> <strong>MAY</strong> be JPEG, or PNG. A JPEG <strong>MUST</strong> have all three component sampling factors equal to 1x1 in its <code class="docutils literal notranslate"><span class="pre">SOF0</span></code> marker, and quantization tables in its <code class="docutils literal notranslate"><span class="pre">DQT</span></code> marker no coarser than libjpeg quality 95.
+<code class="docutils literal notranslate"><span class="pre">baseColorTexture</span></code> <strong>MUST</strong> be PNG where <code class="docutils literal notranslate"><span class="pre">alphaMode</span></code> is <code class="docutils literal notranslate"><span class="pre">MASK</span></code> or <code class="docutils literal notranslate"><span class="pre">BLEND</span></code>.
+<code class="docutils literal notranslate"><span class="pre">normalTexture</span></code>, <code class="docutils literal notranslate"><span class="pre">occlusionTexture</span></code> and <code class="docutils literal notranslate"><span class="pre">metallicRoughnessTexture</span></code> <strong>MUST</strong> be PNG.
+<code class="docutils literal notranslate"><span class="pre">normalTexture</span></code> images <strong>MUST NOT</strong> carry an alpha channel, and <strong>SHOULD NOT</strong> contain blue values at or below 0.5.
+A texture whose texels are all one value <strong>MUST</strong> be removed and expressed as the corresponding factor.
+Where a texture budget binds, reduce resolution rather than changing a linear-slot map to a lossy format.</p>
+</div></blockquote>
+<p>Every clause there is checkable straight out of the GLB, which the current asset-spec row is not.</p>
+<p><strong>Flags to look into later.</strong></p>
+<blockquote>
+<div><p><strong>Gazebo.</strong> (a) <code class="docutils literal notranslate"><span class="pre">GLB_INVENTORY.md</span></code> in bluerobotics_models records that Gazebo reads none of the glTF sampler and always repeats, so <code class="docutils literal notranslate"><span class="pre">wrapS</span></code>/<code class="docutils literal notranslate"><span class="pre">wrapT</span></code>/filter settings are not a lever here; whether that also means mipmaps are generated or ignored is unchecked, and it changes how much a high-resolution map is actually worth. (b) Gazebo decodes with <code class="docutils literal notranslate"><span class="pre">stb_image</span></code>, which reads 16-bit PNG but may deliver 8 bits to the renderer - so the spec’s “<strong>MAY</strong> use more than 8 bits per channel” permission may not survive the loader, which would remove one of the arguments above. (c) Whether Gazebo honors <code class="docutils literal notranslate"><span class="pre">occlusionTexture</span></code> at all, given that ambient occlusion in a rasterizer is optional, is unverified. (d) The project rule in <code class="docutils literal notranslate"><span class="pre">CLAUDE.md</span></code> that PBR must be declared in the SDF rather than read from the GLB cuts across this whole section: if the SDF is the material source of record, then these rules govern what the modeler delivers and a second, parallel set governs what Gazebo renders. That needs settling before the spec text above is adopted.</p>
+<p><strong>RViz.</strong> Not examined. RViz loads meshes through its own resource pipeline rather than through gz-rendering, so glTF support, embedded-texture support and PBR support are all separate questions there, and a rule tuned to Gazebo may simply not apply. Worth one experiment with a delivered part before the spec claims to cover both.</p>
+<p><strong>REP-0158.</strong> Its texture-format rule and the one derived here agree on the outcome - lossless PNG for normal, metallic, roughness and packed ORM; JPEG only for color maps without alpha - which is reassuring, since they were reached from different directions. Two things to check rather than assume. It mandates packed ORM, while glTF’s <code class="docutils literal notranslate"><span class="pre">occlusionTexture</span></code> and <code class="docutils literal notranslate"><span class="pre">metallicRoughnessTexture</span></code> are separate slots that merely <em>may</em> share an image, so “one packed texture” is a stricter rule than the format requires and the spec text above does not impose it. And REP-0158 reasons in USD <code class="docutils literal notranslate"><span class="pre">UsdPreviewSurface</span></code> terms, where occlusion is not part of the surface at all in the same way - so its silence or emphasis on a channel should not be read as a glTF statement.</p>
+</div></blockquote>
+<p>Q: What are the conditions where a base color would include an alpha channel?</p>
+<p>A (CC): Exactly one condition in glTF, and it is narrower than it looks.</p>
+<p>The spec routes all transparency through one value: “The alpha value is taken from the fourth component of the <em>base color</em> for metallic-roughness material model.” That fourth component is the product of two things - <code class="docutils literal notranslate"><span class="pre">baseColorFactor[3]</span></code>, a single number for the whole material, and the alpha channel of <code class="docutils literal notranslate"><span class="pre">baseColorTexture</span></code>, one number per texel. So the question “does this map need an alpha channel” is really “does the opacity vary across the surface of this one material”.</p>
+<p>That gives three cases, and only the first needs a channel in the image:</p>
+<ol class="arabic simple">
+<li><p><strong>Opacity varies per texel within one material.</strong> Cutouts - vents, perforated plates, mesh guards, a printed decal with an irregular edge - where the silhouette is painted rather than modeled. This is <code class="docutils literal notranslate"><span class="pre">alphaMode:</span> <span class="pre">MASK</span></code> with <code class="docutils literal notranslate"><span class="pre">alphaCutoff</span></code>, and it is the only case where a per-texel alpha earns its bytes. The channel should be binary, since <code class="docutils literal notranslate"><span class="pre">MASK</span></code> thresholds it anyway.</p></li>
+<li><p><strong>Opacity is uniform across the material.</strong> An acrylic tube, a lens, a window. Put the value in <code class="docutils literal notranslate"><span class="pre">baseColorFactor[3]</span></code> and leave the texture RGB. Giving each translucent region its own material is the move here, which is what <a class="reference internal" href="../project/asset-spec-superseded.html"><span class="std std-doc">asset-spec.md</span></a> already says.</p></li>
+<li><p><strong>The material is opaque.</strong> <code class="docutils literal notranslate"><span class="pre">alphaMode:</span> <span class="pre">OPAQUE</span></code>, and the spec then ignores alpha entirely. An RGBA base color here is dead weight, and worse than dead weight because a reader looking at the file cannot tell whether the channel is meaningful.</p></li>
+</ol>
+<p>So: a base color texture carries an alpha channel when, and only when, the material is <code class="docutils literal notranslate"><span class="pre">MASK</span></code> or <code class="docutils literal notranslate"><span class="pre">BLEND</span></code> <em>and</em> the opacity varies across it. Uniform translucency is a factor, not a channel.</p>
+<p>What our library actually does, from the fifteen delivered files:</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Part</p></th>
+<th class="head"><p><code class="docutils literal notranslate"><span class="pre">alphaMode</span></code></p></th>
+<th class="head"><p>base color</p></th>
+<th class="head"><p>alpha content</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">blueboat_chassis</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">BLEND</span></code></p></td>
+<td><p>2048 PNG RGBA</p></td>
+<td><p>99.44% fully opaque, 0.35% fully transparent, 0.21% partial</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">bluerov2_chassis</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">OPAQUE</span></code></p></td>
+<td><p>1x1 PNG RGBA</p></td>
+<td><p>single texel, alpha 255</p></td>
+</tr>
+<tr class="row-even"><td><p>the other thirteen</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">OPAQUE</span></code></p></td>
+<td><p>JPEG RGB</p></td>
+<td><p>none</p></td>
+</tr>
+</tbody>
+</table>
+<p>Both RGBA maps are defects, in opposite directions. <code class="docutils literal notranslate"><span class="pre">blueboat_chassis</span></code> is case 1 wearing case 2’s clothes: 0.56% of the map is non-opaque, which is a cutout region, and it has been handled by tagging the entire hull <code class="docutils literal notranslate"><span class="pre">BLEND</span></code> - the defect <a class="reference internal" href="../project/asset-spec-superseded.html"><span class="std std-doc">asset-spec.md</span></a> already records. <code class="docutils literal notranslate"><span class="pre">MASK</span></code> at cutoff 0.5 is the correct treatment, and the 0.21% of partial-alpha texels are exactly what <code class="docutils literal notranslate"><span class="pre">MASK</span></code> would quantize away, so nothing is lost by the change. <code class="docutils literal notranslate"><span class="pre">bluerov2_chassis</span></code> is case 3: an RGBA channel on an <code class="docutils literal notranslate"><span class="pre">OPAQUE</span></code> material, which the spec says is ignored - harmless at 1x1, but it would not be harmless at 2048.</p>
+<p>One consequence for the format rule. The alpha requirement does not make PNG the default for base color across the board; it makes PNG mandatory for the small number of materials that are genuinely <code class="docutils literal notranslate"><span class="pre">MASK</span></code>. Fourteen of fifteen parts here are <code class="docutils literal notranslate"><span class="pre">OPAQUE</span></code> and have no alpha requirement at all - their base color format is decided on the size and quality grounds above, not on this one.</p>
+<blockquote>
+<div><p><strong>Flag - Gazebo.</strong> <code class="docutils literal notranslate"><span class="pre">model-spec.md</span></code> section 9 records that Gazebo honors <code class="docutils literal notranslate"><span class="pre">MASK</span></code> and ignores <code class="docutils literal notranslate"><span class="pre">BLEND</span></code> entirely, rendering the material opaque, and that uniform opacity reaches it through <code class="docutils literal notranslate"><span class="pre">baseColorFactor</span></code> alpha on any alpha mode but is applied twice, so 0.5 renders at about 0.25. If that still holds, case 2 above is not reachable in Gazebo as the spec describes it, and the open question is decision 6, not this one.</p>
+</div></blockquote>
+<p>Q: “JPEG fine at high quality” is vague. Can we be more explicit?</p>
+<p>A (CC): Yes, and being explicit exposes something worth knowing about the current deliveries.</p>
+<p>The difficulty is that “quality” is not a property of a JPEG file. It is an input to an encoder, which turns it into quantization tables, and different encoders map the same number differently - libjpeg 95, Photoshop’s 12 and Blender’s slider do not agree. So a spec clause that says “quality 95” is not checkable against a delivered file. Two things <em>are</em> in the file and are checkable:</p>
+<ul class="simple">
+<li><p><strong>Chroma subsampling</strong>, in the <code class="docutils literal notranslate"><span class="pre">SOF0</span></code> marker as the per-component sampling factors. 4:4:4 is all three components at 1x1; 4:2:0 is luma at 2x2 and the chroma planes at 1x1, meaning each chroma sample is shared by four pixels.</p></li>
+<li><p><strong>The quantization tables</strong>, in the <code class="docutils literal notranslate"><span class="pre">DQT</span></code> marker. libjpeg derives these from the quality number by scaling the standard Annex K tables, so the operation inverts: read the tables, compare against the scaled reference, and recover the effective quality. At quality 95 the luma table begins <code class="docutils literal notranslate"><span class="pre">[2,</span> <span class="pre">1,</span> <span class="pre">1,</span> <span class="pre">2,</span> <span class="pre">2,</span> <span class="pre">4,</span> <span class="pre">5,</span> <span class="pre">6]</span></code>; at quality 75 it begins <code class="docutils literal notranslate"><span class="pre">[8,</span> <span class="pre">6,</span> <span class="pre">5,</span> <span class="pre">8,</span> <span class="pre">12,</span> <span class="pre">20,</span> <span class="pre">26,</span> <span class="pre">31]</span></code>, four times coarser in the DC term.</p></li>
+</ul>
+<p>Running that over the library: <strong>all 31 JPEGs are libjpeg quality 75 at 4:2:0</strong>, without exception - base color, normal and metallic-roughness alike. That is libjpeg’s default and it is also the Blender glTF exporter’s default image quality, and its uniformity across parts delivered at different times says the setting was never touched rather than chosen. It also refines the note above about the exporter inheriting the source format: inheriting the <em>format</em> is consistent with re-encoding the <em>bytes</em>, and a single quality signature across every file is what re-encoding looks like.</p>
+<p>So the explicit version of the row, and the wording used in the proposed spec text:</p>
+<blockquote>
+<div><p>A JPEG <strong>MUST</strong> have all three component sampling factors equal to 1x1 in its <code class="docutils literal notranslate"><span class="pre">SOF0</span></code> marker, and quantization tables in its <code class="docutils literal notranslate"><span class="pre">DQT</span></code> marker no coarser than libjpeg quality 95.</p>
+</div></blockquote>
+<p>Both are readable with a few lines of Python and no image decode, which makes this a delivery check rather than a request.</p>
+<p>Note: 3.2. Asset - I think we should have our narrowing specicifation be specific to both version and minVersion.  We should probably be just 2.0 (no 1.0 and no 2.1 until we understand it.)</p>
+<p>Suggested rule: <code class="docutils literal notranslate"><span class="pre">asset.version</span></code> MUST be <code class="docutils literal notranslate"><span class="pre">&quot;2.0&quot;</span></code>; <code class="docutils literal notranslate"><span class="pre">asset.minVersion</span></code> MUST be absent. The second half is the more useful requirement, because a stray <code class="docutils literal notranslate"><span class="pre">minVersion</span></code> from some future exporter is a load failure in a consumer that would otherwise have been fine.</p>
+<p>3.4. Coordinate System and Units - This is a big one for later.</p>
+<p>Q: 3.5.1. Overview - What could this mean for our narrowing spec?   Is it clear if we want the glTF assets to contain a scene?  Or not - treated as a library of individual entities such as materials or meshes?   We aren’t ready to answer that question definitively yet, but what are the things we need to know to make that decision?</p>
+<p>A (CC): You are right that it is not answerable yet. Here is what the decision turns on, and what we already know.</p>
+<p>What the spec permits: a glTF asset MAY contain zero scenes, in which case it is a library of entities to be used by some other means, and a viewer has nothing to show. Our library today: 14 of 15 files are one scene, one node, one mesh. <code class="docutils literal notranslate"><span class="pre">bluerov2_chassis</span></code> has two, and several files carry leftover empty scenes.</p>
+<p>What we would need to establish, roughly in order of how cheaply it can be settled:</p>
+<ol class="arabic simple">
+<li><p><strong>Does anything downstream ever need to select a sub-entity out of the file?</strong> Today, never - one file per part, and <code class="docutils literal notranslate"><span class="pre">part_visual</span></code> points at the whole file with no <code class="docutils literal notranslate"><span class="pre">&lt;submesh&gt;</span></code>. This only becomes live if we deliver an assembled robot in one file.</p></li>
+<li><p><strong>What does the loader actually do</strong> with (a) no scene, (b) two scenes, (c) a non-default scene? One afternoon with <code class="docutils literal notranslate"><span class="pre">glb_probe</span></code> settles it, and nothing else will - the Gazebo project has almost nothing written down about glTF.</p></li>
+<li><p><strong>Does a scene-less file survive the modeler’s own check?</strong> Most viewers render nothing without a scene, which would break the Sample Viewer self-check step and the appearance gate with it. This is close to decisive.</p></li>
+<li><p><strong>Can Blender even export one?</strong> It exports the scene. A library file would need post-processing, so the delivery would no longer be what the modeler exported and could not be reproduced by them.</p></li>
+<li><p><strong>What does the validator say</strong> about zero scenes, and about unreferenced entities.</p></li>
+</ol>
+<p>My read: require exactly one scene for v1.0 - which is checkable and rules out the leftover-empty-scene defect we already have - and revisit “library” only if the assembled-delivery question below goes that way. Note the two questions are the same question: a library file is only useful when something else composes it, and composition is the thing we have parked.</p>
+<section id="https-github-com-khronosgroup-gltf-tutorials">
+<h4>https://github.com/KhronosGroup/glTF-Tutorials<a class="headerlink" href="#https-github-com-khronosgroup-gltf-tutorials" title="Link to this heading"></a></h4>
+</section>
+<section id="gltf-quickstart">
+<h4><a class="reference external" href="https://github.com/KhronosGroup/glTF/blob/main/specification/2.0/figures/gltfOverview-2.0.0d.png">glTF Quickstart</a><a class="headerlink" href="#gltf-quickstart" title="Link to this heading"></a></h4>
+</section>
+</section>
+<section id="video-discussing-vulkan-neural-rendering-slang-ai-more-neil-trevett-khronos-group-interview">
+<h3><a class="reference external" href="https://www.youtube.com/watch?v=HLIHnG_cYkk">Video: Discussing Vulkan, Neural Rendering, SLANG, AI &amp; More - Neil Trevett &amp; Khronos Group Interview</a><a class="headerlink" href="#video-discussing-vulkan-neural-rendering-slang-ai-more-neil-trevett-khronos-group-interview" title="Link to this heading"></a></h3>
+<ul>
+<li><p>Neil Trevett: VP Developer Ecosystems, NVIDIA; President, Kronos Group</p></li>
+<li><p>Programming and using GPUs:</p>
+<ul class="simple">
+<li><p>Vulkan: New generation GPU API, used for AI/ML acceleration
+Q: How does Vulcan compare/contrast with CUDA?</p></li>
+</ul>
+<p>A (CC): They overlap only in GPU compute, and are not competitors elsewhere. Vulkan is Khronos’s cross-vendor graphics <em>and</em> compute API - AMD, Intel, NVIDIA, Qualcomm, Apple via MoltenVK - and is deliberately explicit: you manage memory, synchronization and command buffers yourself, which is the price of portability. Shaders compile to SPIR-V, which is why SPIR-V and Slang appear alongside it in the interview. CUDA is NVIDIA-only and is a C++ single-source model, host and device code in one file, pitched much higher; its real moat is the library stack above it (cuBLAS, cuDNN, TensorRT), not the language. So: training and HPC go to CUDA on ecosystem grounds; compute that must run on any GPU goes to Vulkan. CUDA does no rasterization or presentation at all, so for putting pixels on screen they are not alternatives. Relevance to this project is close to zero - our stack is Ogre-Next under gz-rendering, and CI runs headless on Mesa with EGL.</p>
+<ul class="simple">
+<li><p>SPIR-V: Intermediate representation for compilers.</p></li>
+<li><p>Slang: Language (and compiler) - new generation shading language. Replaced glsl.</p></li>
+</ul>
+</li>
+</ul>
+<p>glTF</p>
+<ul class="simple">
+<li><p>Evolving, started as a display format (how to display ) and evolving to scene understanding</p></li>
+<li><p>Just added Gaussian Splats</p></li>
+<li></li>
+</ul>
+</section>
+<section id="gltf-2-0-quickstart-and-tools">
+<h3><a class="reference external" href="https://github.com/kcoley/glTF">glTF 2.0 Quickstart and tools</a><a class="headerlink" href="#gltf-2-0-quickstart-and-tools" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Mine this for useful stuff, but the parent repo is likely stale</p></li>
+<li><p>Lots of resources here.  Just links in the README. Some of the reference may be old.  For example, the “Sample Model” link points to a</p></li>
+</ul>
+<p>Reading</p>
+</section>
+<section id="openusd-conventions-for-simulation-asset-interoperability-in-open-source-robotics">
+<h3><a class="reference external" href="https://github.com/openrobotics/reps/blob/main/_posts/rep-0158%3A2006.md">OpenUSD Conventions for Simulation Asset Interoperability in Open Source Robotics</a><a class="headerlink" href="#openusd-conventions-for-simulation-asset-interoperability-in-open-source-robotics" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Maybe we don’t need glTF at all?</p></li>
+</ul>
+<p>A (CC): Having read it: REP-0158 is not an argument against glTF, it is an argument for authoring so that glTF export works. It mandates <code class="docutils literal notranslate"><span class="pre">UsdPreviewSurface</span></code> as the normative surface definition <em>“to ensure a direct mapping to glTF 2.0’s pbrMetallicRoughness workflow”</em>, forbids UDIMs because glTF cannot express them, and requires CCW winding to match glTF’s front-face rule. glTF 2.0 is its export target, named throughout.</p>
+<p>The two are different layers. glTF is a delivery format for one textured mesh - the JPEG of 3D, as your note above says. OpenUSD is a composition format: references, payloads, layering, variants. USD does what our xacro assembly does, not what our <code class="docutils literal notranslate"><span class="pre">.glb</span></code> does.</p>
+<p>Status and weight: Draft, 2026-03-03, authors from Robotec.ai, NVIDIA and Ekumen, sponsored by Michael Carroll of Intrinsic, with both the ROS and <strong>Gazebo</strong> PMCs listed. So it is a real signal about direction, and not yet settled.</p>
+<p>Three things in it we should act on regardless of whether we ever touch USD:</p>
+<ol class="arabic simple">
+<li><p><strong>It is an external authority for decision 4.</strong> <em>“Lossless PNG”</em> is mandated for normal, metallic, roughness and packed ORM maps; JPEG is permitted only for color maps without alpha. We had concluded the budget row had no authority outside this project. On texture format, it now has one, and it agrees with the analysis above.</p></li>
+<li><p><strong>It supports our +X forward decision.</strong> It requires ROS convention throughout - X forward, Y left, Z up - for exactly the reason we did: the frame is the interface. Note its Z-up applies to the USD <em>stage</em>, not to a glTF file, so there is no conflict with our Y-up rule; they are different layers.</p></li>
+<li><p><strong>Several of its rules are already ours</strong>: unique UVs packed into [0,1], triangulated geometry, no HDR texture formats.</p></li>
+</ol>
+<p>Where it genuinely bears on us is the question we parked - delivering a robot as one assembled asset. It is explicit that this is a composition problem: <code class="docutils literal notranslate"><span class="pre">kind=&quot;component&quot;</span></code> for a distributable part, <code class="docutils literal notranslate"><span class="pre">kind=&quot;assembly&quot;</span></code> for an aggregate, composed by References and Payloads, with <code class="docutils literal notranslate"><span class="pre">physics.usda</span></code> and <code class="docutils literal notranslate"><span class="pre">ros.usda</span></code> as separate layers. That is a serious answer to a problem we have not yet framed, and it is worth reading against that open question rather than against the choice of <code class="docutils literal notranslate"><span class="pre">.glb</span></code>.</p>
+<p>One caution for later: it also says <em>“OpenUSD and robotics XML formats (URDF, SDF, MJCF) are fundamentally mismatched paradigms. Conversions are inherently lossy.”</em> Our whole pipeline is xacro to URDF to SDF, so adopting USD would not be a format swap.</p>
+</section>
+</section>
+<section id="closely-related-work-and-examples">
+<h2>Closely Related Work and Examples<a class="headerlink" href="#closely-related-work-and-examples" title="Link to this heading"></a></h2>
+<p>Are there others with the same challenges (glTF interpretation/narrowing and workflow specification) and can we learn from them.</p>
+<section id="community-standards-documents-discussion-etc">
+<h3>Community standards, documents, discussion, etc.<a class="headerlink" href="#community-standards-documents-discussion-etc" title="Link to this heading"></a></h3>
+<section id="gazebo-community-and-developers">
+<h4>Gazebo community and developers<a class="headerlink" href="#gazebo-community-and-developers" title="Link to this heading"></a></h4>
+<p>Q: Gazebo is usually good about roadmaps.  To they have a roadmap that includes some details of glTF support - or any discussions online, or evidence in the code?</p>
+</section>
+<section id="examples">
+<h4>Examples<a class="headerlink" href="#examples" title="Link to this heading"></a></h4>
+<p>Can we identify</p>
+<section id="fuel">
+<h5>Fuel<a class="headerlink" href="#fuel" title="Link to this heading"></a></h5>
+<p>A (CC): Surveyed the whole library on 2026-09-12 through the Fuel REST API rather than the web UI, because neither mesh format nor articulation is a searchable field there. <code class="docutils literal notranslate"><span class="pre">GET</span> <span class="pre">/1.0/models?per_page=100</span></code> walks all 3,371 records; <code class="docutils literal notranslate"><span class="pre">/1.0/{owner}/models/{name}/tip/files</span></code> gives each model’s file tree; <code class="docutils literal notranslate"><span class="pre">/tip/files/model.sdf</span></code> gives the SDF. For the glTF assets themselves, an HTTP Range request for the first twenty bytes of a <code class="docutils literal notranslate"><span class="pre">.glb</span></code> yields the JSON chunk length, and a second range request yields the chunk - so every glTF file in Fuel can be inspected without downloading a byte of geometry. That matters here: the 54 glTF files total 534 MB, of which one model is 429 MB.</p>
+<p>Your read is right. The sharper version is that glTF is nearly absent from Fuel, and entirely absent from the part of Fuel we would want to learn from.</p>
+<p>Excluding the 1,033 GoogleResearch scanned objects - shoes, bottles, toys, uniformly OBJ plus MTL plus JPEG, one mesh each - leaves 2,333 models with retrievable file trees:</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Contains</p></th>
+<th class="head"><p>models</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">.dae</span></code></p></td>
+<td><p>1,404</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">.obj</span></code></p></td>
+<td><p>350</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">.stl</span></code></p></td>
+<td><p>300</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">.gltf</span></code> or <code class="docutils literal notranslate"><span class="pre">.glb</span></code></p></td>
+<td><p>54</p></td>
+</tr>
+</tbody>
+</table>
+<p>Narrowing to things that are robots in our sense - at least one <code class="docutils literal notranslate"><span class="pre">&lt;sensor&gt;</span></code> or an actuation/control plugin, which catches quadrotors whose only joints spin propellers and free-flyers with thrusters and no joints at all - gives 427 models. Three of them use glTF. By upload year there were none before 2024 and exactly one per year since, against 21 to 75 COLLADA platforms per year throughout. All 33 <code class="docutils literal notranslate"><span class="pre">&lt;actor&gt;</span></code> skins in the library are COLLADA.</p>
+<p>So there is no community practice for glTF robots to copy. There is no second opinion to check ours against. That is a finding rather than a dead end, since it removes “but everyone else does it this way” as an argument in either direction, but it does mean the spec is doing original work and should say so.</p>
+<p>The three that qualify:</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Model</p></th>
+<th class="head"><p>Container</p></th>
+<th class="head"><p>Links</p></th>
+<th class="head"><p>Joints</p></th>
+<th class="head"><p>Triangles</p></th>
+<th class="head"><p>Note</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">Open-RMF/Caddy</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">.gltf</span></code> + <code class="docutils literal notranslate"><span class="pre">.bin</span></code></p></td>
+<td><p>11</p></td>
+<td><p>8</p></td>
+<td><p>7,714</p></td>
+<td><p>The only single-file-plus-<code class="docutils literal notranslate"><span class="pre">&lt;submesh&gt;</span></code> precedent in Fuel</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">proque/atmos</span></code></p></td>
+<td><p>GLB</p></td>
+<td><p>9</p></td>
+<td><p>0</p></td>
+<td><p>195,403</p></td>
+<td><p>Thrusters, IMU, barometer, navsat; factor-only materials</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">proque/atmos_dual</span></code></p></td>
+<td><p>GLB</p></td>
+<td><p>13</p></td>
+<td><p>4</p></td>
+<td><p>1,463,312</p></td>
+<td><p>Mixes one GLB with four DAE meshes; absolute versioned URL as the mesh URI</p></td>
+</tr>
+</tbody>
+</table>
+<p><code class="docutils literal notranslate"><span class="pre">Open-RMF/Caddy</span></code> is worth reading in full, because it is the one model in Fuel that answers question 1 in section 3.5.1 above - does anything downstream ever need to select a sub-entity out of the file. It carries the whole vehicle in <code class="docutils literal notranslate"><span class="pre">polaris.gltf</span></code> and each link picks its own part out by node name:</p>
+<div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="nt">&lt;mesh&gt;</span>
+<span class="w">  </span><span class="nt">&lt;uri&gt;</span>model://Caddy/meshes/polaris.gltf<span class="nt">&lt;/uri&gt;</span>
+<span class="w">  </span><span class="nt">&lt;submesh&gt;&lt;name&gt;</span>Front_Wheel_Left<span class="nt">&lt;/name&gt;&lt;center&gt;</span>true<span class="nt">&lt;/center&gt;&lt;/submesh&gt;</span>
+<span class="nt">&lt;/mesh&gt;</span>
+</pre></div>
+</div>
+<p>Eleven visuals, one URI, eleven <code class="docutils literal notranslate"><span class="pre">&lt;submesh&gt;</span></code> selections, <code class="docutils literal notranslate"><span class="pre">&lt;center&gt;true&lt;/center&gt;</span></code> on every moving part so its geometry is recentered on its joint origin and <code class="docutils literal notranslate"><span class="pre">&lt;center&gt;false&lt;/center&gt;</span></code> on the chassis. Three defects in it are as instructive as the pattern. The file declares an external <code class="docutils literal notranslate"><span class="pre">&quot;uri&quot;:</span> <span class="pre">&quot;Ranger_Diffuse.png&quot;</span></code> that is not in the upload - fetching it returns 404 - so the only articulated glTF robot in Fuel renders untextured, which is a direct argument for self-contained GLB over <code class="docutils literal notranslate"><span class="pre">.gltf</span></code> plus loose files. Node names are duplicated between each parent transform node and its mesh child, so <code class="docutils literal notranslate"><span class="pre">Steering_Wheel</span></code> matches two nodes and <code class="docutils literal notranslate"><span class="pre">&lt;submesh&gt;</span></code> resolution is ambiguous. And a 0.0255 scale factor is baked into every node transform rather than into the mesh data.</p>
+<p>What the other 51 glTF files tell us, all of them props, scenes or test uploads. Seven of the 54 are byte-identical re-uploads of someone else’s asset, so there are 47 distinct files.</p>
+<ul class="simple">
+<li><p><strong>Container</strong>: 53 GLB to 1 <code class="docutils literal notranslate"><span class="pre">.gltf</span></code> plus <code class="docutils literal notranslate"><span class="pre">.bin</span></code>, and the one non-GLB is the broken one.</p></li>
+<li><p><strong>Tooling</strong>: 50 of 54 from the Blender glTF exporter, versions 3.3 through 5.1. Two from Sketchfab, one from Unity. No pipeline diversity to learn from.</p></li>
+<li><p><strong>Scope actually used</strong>: zero animations, zero skins, zero cameras, across every file. Every primitive is mode 4. Exactly one primitive in the entire corpus carries <code class="docutils literal notranslate"><span class="pre">TANGENT</span></code>, which agrees with what <code class="docutils literal notranslate"><span class="pre">glb_probe</span></code> found about our own loader.</p></li>
+<li><p><strong>Texture format</strong>: 5,429 JPEG images against 95 PNG. Forty-four of the 54 carry normal maps and 37 carry packed metallic-roughness maps, overwhelmingly as JPEG. This contradicts decision 4 and REP-0158 head-on. It does not overturn either - a corpus of warehouse props is not evidence about correctness - but it does say that assets delivered to us by anyone working in the normal way will arrive with JPEG normal maps, so the spec needs to state the rule and the remedy rather than assume the toolchain produces PNG.</p></li>
+<li><p><strong>The metalness default trap is live</strong>: 128 materials across 9 models leave <code class="docutils literal notranslate"><span class="pre">metallicFactor</span></code> unset, so 1.0, with no metallic-roughness texture to override it. <code class="docutils literal notranslate"><span class="pre">dhyutin/trial</span></code> is 8 of 8; <code class="docutils literal notranslate"><span class="pre">proque/atmos</span></code> is 80 of 404. The same defect we found in four of fifteen delivered parts.</p></li>
+<li><p><strong>Extensions</strong>: <code class="docutils literal notranslate"><span class="pre">KHR_materials_specular</span></code> in 29 models, <code class="docutils literal notranslate"><span class="pre">KHR_materials_ior</span></code> in 13, <code class="docutils literal notranslate"><span class="pre">KHR_materials_transmission</span></code> in 9, <code class="docutils literal notranslate"><span class="pre">KHR_texture_transform</span></code> in 6, <code class="docutils literal notranslate"><span class="pre">KHR_materials_unlit</span></code> in 2. Five models put <code class="docutils literal notranslate"><span class="pre">KHR_texture_transform</span></code> in <code class="docutils literal notranslate"><span class="pre">extensionsRequired</span></code> rather than <code class="docutils literal notranslate"><span class="pre">extensionsUsed</span></code>, which a spec-compliant reader must refuse to load outright. Those five are a ready-made conformance probe for what Gazebo actually does - <code class="docutils literal notranslate"><span class="pre">OpenRobotics/Distribution_Warehouse</span></code> is the convenient one.</p></li>
+</ul>
+<p>The two assets worth keeping as reference material:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">OpenRobotics/Forklift</span></code> - the best-authored glTF asset in Fuel. Self-contained GLB, 15,492 triangles, embedded albedo, normal and packed metalness-roughness maps, and roughly 30 hand-placed primitive colliders in the SDF against the single visual mesh. That collision discipline is worth as much as the material work. Its normal map is JPEG.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">OpenRobotics/Ionic</span> <span class="pre">Mascot</span></code> - the factor-only case: 12 materials, no textures at all, explicit <code class="docutils literal notranslate"><span class="pre">metallicFactor:</span> <span class="pre">0</span></code> on the non-metals. Also a counter-example on naming, with 148 nodes called <code class="docutils literal notranslate"><span class="pre">Cylinder002</span></code>, <code class="docutils literal notranslate"><span class="pre">Line001</span></code>, <code class="docutils literal notranslate"><span class="pre">Torus008</span></code>. Nothing in that file could be addressed by <code class="docutils literal notranslate"><span class="pre">&lt;submesh&gt;</span></code>.</p></li>
+</ul>
+<p>One caution about reading Fuel for SDF convention rather than for assets. Across the 427 robot platforms, 67% use primitive-only collision, 64% declare <code class="docutils literal notranslate"><span class="pre">&lt;material&gt;</span></code> in the SDF, 30% still reference the Gazebo Classic <code class="docutils literal notranslate"><span class="pre">gazebo.material</span></code> script, and only 8% use <code class="docutils literal notranslate"><span class="pre">&lt;submesh&gt;</span></code> at all - the dominant pattern is one mesh file per link, as in <code class="docutils literal notranslate"><span class="pre">bosdyn_spot</span></code> with 27 separate meshes. Of the 65 platforms declaring <code class="docutils literal notranslate"><span class="pre">&lt;pbr&gt;</span></code> in the SDF, every one pairs it with COLLADA and none with glTF. The two material approaches in the library are cleanly separated, and nobody does both, which is the one thing worth reconciling against the “PBR must be declared in the SDF” rule in our own <code class="docutils literal notranslate"><span class="pre">CLAUDE.md</span></code>.</p>
+</section>
+<section id="repos">
+<h5>Repos<a class="headerlink" href="#repos" title="Link to this heading"></a></h5>
+<p>Q: What are  popular (can be measured via github analytics) projects using glTF assets in Gazebo?</p>
+</section>
+</section>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="pbr-and-gltf.html" class="btn btn-neutral float-left" title="PBR, and why glTF is inseparable from it" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../evidence/index.html" class="btn btn-neutral float-right" title="Evidence" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright Honu Robotics.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    <span class="fa fa-book"> Other Versions</span>
+    v: main
+    <span class="fa fa-caret-down"></span>
+  </span>
+  <div class="rst-other-versions">
+    <dl id="honu-version-list">
+      <dt>Distributions</dt>
+      <dd><a href="/gltf-robotics/main/" data-version="main">Main</a></dd>
+    </dl>
+  </div>
+</div>
+<script>
+  (function () {
+    var current = "main";
+    var base = "/gltf-robotics/";
+
+    /* Keep the reader on the same page when switching versions; the
+       version root href stays as the fallback for pages a version lacks. */
+    function wire() {
+      document.querySelectorAll('.rst-other-versions a[data-version]').forEach(function (a) {
+        var target = a.getAttribute('data-version');
+        var path = window.location.pathname;
+        if (target !== current && path.indexOf('/' + current + '/') !== -1) {
+          a.href = path.replace('/' + current + '/', '/' + target + '/');
+        }
+      });
+    }
+
+    if (!window.fetch) { wire(); return; }
+
+    /* The deploy tool maintains versions.json at the site root; reading it
+       at runtime lets builds published before a new distribution existed
+       still offer it in the flyout. Offline or local preview builds fall
+       back to the build time list rendered above. */
+    fetch(base + 'versions.json', {cache: 'no-cache'}).then(function (response) {
+      if (!response.ok) { throw new Error(response.status); }
+      return response.json();
+    }).then(function (entries) {
+      var list = document.getElementById('honu-version-list');
+      if (!list || !entries.length) { return; }
+      list.querySelectorAll('dd').forEach(function (dd) { dd.remove(); });
+      entries.forEach(function (entry) {
+        var a = document.createElement('a');
+        a.href = entry.url;
+        a.setAttribute('data-version', entry.name);
+        a.textContent = entry.name.charAt(0).toUpperCase() + entry.name.slice(1);
+        var dd = document.createElement('dd');
+        dd.appendChild(a);
+        list.appendChild(dd);
+      });
+    }).catch(function () {}).finally(wire);
+  })();
+</script><script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

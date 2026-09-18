@@ -1,0 +1,543 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PBR, and why glTF is inseparable from it &mdash; glTF for Robot Simulation main documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/honu.css?v=44af46ee" />
+
+  
+    <link rel="shortcut icon" href="../_static/honu-robotics-favicon.svg"/>
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=a8da1a53"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="glTF Background" href="gltf-background-notes.html" />
+    <link rel="prev" title="Visual asset pipeline: technical review and proposed guidelines" href="pipeline-review.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            glTF for Robot Simulation
+              <img src="../_static/honu-robotics-white-logo.svg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../profile/index.html">The Profile</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../profile/profile.html">The glTF Robotics Profile</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../profile/profile.html#introduction">1. Introduction</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../profile/profile.html#scope">1.1 Scope</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../profile/profile.html#relationship-to-external-standards">1.2 Relationship to external standards</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../profile/profile.html#project-specific-content-informative">1.3 Project-specific content (Informative)</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../profile/profile.html#document-conventions">2. Document conventions</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../profile/profile.html#audience">2.1 Audience</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../profile/profile.html#normative-terminology">2.2 Normative terminology</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../profile/profile.html#informative-language">2.3 Informative language</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../profile/profile.html#decision-status">2.4 Decision status</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../profile/profile.html#terminology">3. Terminology</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../profile/profile.html#delivery">4. Delivery</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../profile/profile.html#files">4.1 Files</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../profile/profile.html#format">4.2 Format</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../profile/profile.html#asset-header">4.3 Asset header</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../profile/profile.html#coordinate-system-units-and-frame">5. Coordinate system, units and frame</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../profile/profile.html#units">5.1 Units</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../profile/profile.html#up-axis">5.2 Up axis</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../profile/profile.html#forward-axis">5.3 Forward axis</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../profile/profile.html#origin">5.4 Origin</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../profile/profile.html#scenes-and-nodes">5.5 Scenes and nodes</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../profile/profile.html#geometry">6. Geometry</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../profile/profile.html#uv-sets">6.1 UV sets</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../profile/profile.html#budgets">6.2 Budgets</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../profile/profile.html#primitives-and-submeshes">6.3 Primitives and submeshes</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../profile/profile.html#materials">7. Materials</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../profile/profile.html#textures">8. Textures</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../profile/profile.html#transparency">9. Transparency</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../profile/profile.html#prohibited-content">10. Prohibited content</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../profile/profile.html#authoring-toolchain">11. Authoring toolchain</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../profile/profile.html#conformance">12. Conformance</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../profile/profile.html#checks-informative">12.1 Checks (Informative)</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../profile/profile.html#decision-status-informative">13. Decision status (Informative)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../how-to/index.html">How-to guides</a><ul class="simple">
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="coordinate-systems.html">Coordinate Systems: glTF, Gazebo and ROS</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="coordinate-systems.html#objective">Objective</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="coordinate-systems.html#central-issue">Central Issue</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="coordinate-systems.html#how-claims-in-this-document-are-marked">How claims in this document are marked</a></li>
+<li class="toctree-l3"><a class="reference internal" href="coordinate-systems.html#coordinate-conventions-and-typical-practices">Coordinate Conventions and Typical Practices</a></li>
+<li class="toctree-l3"><a class="reference internal" href="coordinate-systems.html#vocabulary-nomenclature-glossary">Vocabulary / Nomenclature / Glossary</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="coordinate-systems.html#our-formal-default">Our formal default</a></li>
+<li class="toctree-l4"><a class="reference internal" href="coordinate-systems.html#terms-by-stage-of-the-flow">Terms by stage of the flow</a></li>
+<li class="toctree-l4"><a class="reference internal" href="coordinate-systems.html#coordinate-system-origin-and-reference-point">Coordinate system, origin, and reference point</a></li>
+<li class="toctree-l4"><a class="reference internal" href="coordinate-systems.html#the-o-x-y-z-notation">The <code class="docutils literal notranslate"><span class="pre">O</span> <span class="pre">-</span> <span class="pre">X</span> <span class="pre">-</span> <span class="pre">Y</span> <span class="pre">-</span> <span class="pre">Z</span></code> notation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="coordinate-systems.html#specifying-a-coordinate-system-datums-and-what-referenced-to-means">Specifying a coordinate system: datums and what “referenced to” means</a></li>
+<li class="toctree-l4"><a class="reference internal" href="coordinate-systems.html#assumptions">Assumptions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="coordinate-systems.html#standards-summary">Standards Summary</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="coordinate-systems.html#iso-9787-2013">ISO 9787:2013</a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="coordinate-systems.html#robotics">Robotics</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="coordinate-systems.html#categorizing-links-by-their-place-in-the-tree">Categorizing links by their place in the tree</a></li>
+<li class="toctree-l5"><a class="reference internal" href="coordinate-systems.html#manipulation-centric-robots-with-static-base">Manipulation-centric (robots with static base)</a></li>
+<li class="toctree-l5"><a class="reference internal" href="coordinate-systems.html#mobile-centric">Mobile-centric</a></li>
+<li class="toctree-l5"><a class="reference internal" href="coordinate-systems.html#other-conventions-worth-knowing">Other conventions worth knowing</a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="coordinate-systems.html#d-graphics">3D Graphics</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="coordinate-systems.html#what-survives-into-gltf-and-what-does-not">What survives into glTF, and what does not</a></li>
+<li class="toctree-l5"><a class="reference internal" href="coordinate-systems.html#standards-for-3d-assets">Standards for 3D assets</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="coordinate-systems.html#reconciling-the-standards">Reconciling the standards</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="coordinate-systems.html#where-they-agree-and-it-is-most-of-it">Where they agree, and it is most of it</a></li>
+<li class="toctree-l4"><a class="reference internal" href="coordinate-systems.html#the-disagreement-is-one-cyclic-relabeling">The disagreement is one cyclic relabeling</a></li>
+<li class="toctree-l4"><a class="reference internal" href="coordinate-systems.html#our-coordinate-system-names">Our coordinate system names</a></li>
+<li class="toctree-l4"><a class="reference internal" href="coordinate-systems.html#the-full-reconciliation">The full reconciliation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="coordinate-systems.html#adopt-narrow-or-invent">Adopt, narrow, or invent</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="coordinate-systems.html#next-increment">Next increment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="coordinate-systems.html#references">References</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline-review.html">Visual asset pipeline: technical review and proposed guidelines</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline-review.html#context-starting-point">Context / Starting Point</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline-review.html#main-issues">Main Issues</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline-review.html#background">0. Background</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline-review.html#sources-of-truth">0.1 Sources of truth</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline-review.html#how-the-audit-works">0.2 How the audit works</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline-review.html#background-gltf-and-what-our-consumers-do-with-it">1. Background: glTF and what our consumers do with it</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline-review.html#the-format">1.1 The format</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline-review.html#the-consumers">1.2 The consumers</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline-review.html#the-gazebo-path-step-by-step">1.3 The Gazebo path, step by step</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline-review.html#what-the-loader-reads-from-a-gltf-material">1.4 What the loader reads from a glTF material</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline-review.html#the-rviz-path">1.5 The RViz path</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline-review.html#the-pipeline-in-this-repo-and-where-forward-is">1.6 The pipeline in this repo, and where forward is</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline-review.html#what-must-be-considered-when-moving-this-project-to-glb">1.7 What must be considered when moving this project to GLB</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline-review.html#the-written-record-what-the-gazebo-project-says-about-gltf">1.8 The written record: what the Gazebo project says about glTF</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline-review.html#frames-and-origins-what-gltf-fixes-and-what-it-leaves-to-us">1.9 Frames and origins: what glTF fixes, and what it leaves to us</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline-review.html#verification-tooling-and-criteria">2. Verification tooling and criteria</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline-review.html#glb-probe-what-gazebo-actually-built">2.1 glb_probe: what Gazebo actually built</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline-review.html#file-level-lint">2.2 File-level lint</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline-review.html#eyes-on-a-render">2.3 Eyes on a render</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline-review.html#external-viewers-are-not-a-gazebo-proxy">2.4 External viewers are not a Gazebo proxy</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline-review.html#acceptance-criteria-as-pass-or-fail">2.5 Acceptance criteria, as pass or fail</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline-review.html#the-khronos-gltf-validator">2.6 The Khronos glTF Validator</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline-review.html#audit-of-the-original-draft-spec-item-by-item">3. Audit of the original draft spec, item by item</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline-review.html#files">Files</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline-review.html#units-frame-origin">Units, frame, origin</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline-review.html#geometry">Geometry</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline-review.html#materials">Materials</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline-review.html#transparency">Transparency</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline-review.html#do-not-use">Do not use</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline-review.html#checklist-before-delivery">Checklist before delivery</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline-review.html#the-delivered-files-measured">4. The delivered files, measured</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline-review.html#what-the-draft-spec-does-not-cover-and-should">5. What the draft spec does not cover and should</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline-review.html#the-two-claude-artifacts">6. The two Claude artifacts</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline-review.html#parts-library-audit-the-12-non-chassis-parts">6.1 Parts Library Audit (the 12 non-chassis parts)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline-review.html#blueboat-chassis-audit">6.2 BlueBoat Chassis Audit</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline-review.html#bluerov2-chassis-audit">6.3 BlueROV2 Chassis Audit</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline-review.html#proposed-guideline-pin-the-authoring-stack">7. Proposed guideline: pin the authoring stack</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline-review.html#the-proposal">7.1 The proposal</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline-review.html#what-actually-varies">7.2 What actually varies</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline-review.html#what-a-version-pin-can-and-cannot-do">7.3 What a version pin can and cannot do</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline-review.html#how-it-would-be-enforced">7.4 How it would be enforced</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline-review.html#the-stack-as-it-would-be-declared">7.5 The stack, as it would be declared</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline-review.html#reconciliation-with-the-existing-repo-guidelines">8. Reconciliation with the existing repo guidelines</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline-review.html#docs-design-parts-md-the-mesh-conventions">8.1 <code class="docutils literal notranslate"><span class="pre">docs/design/parts.md</span></code>, the mesh conventions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline-review.html#docs-how-to-add-part-md-the-acceptance-steps">8.2 <code class="docutils literal notranslate"><span class="pre">docs/how-to/add-part.md</span></code>, the acceptance steps</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline-review.html#the-faq">8.3 The FAQ</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline-review.html#the-older-readme-checklist-commit-b5daead">8.4 The older README checklist, commit <code class="docutils literal notranslate"><span class="pre">b5daead</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline-review.html#the-one-contradiction-to-resolve-first">8.5 The one contradiction to resolve first</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline-review.html#further-proposed-guidelines">9. Further proposed guidelines</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline-review.html#provenance-what-accompanies-a-delivery">9.1 Provenance: what accompanies a delivery</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline-review.html#the-dimensional-source-of-truth">9.2 The dimensional source of truth</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline-review.html#names-are-an-interface-not-decoration">9.3 Names are an interface, not decoration</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline-review.html#redelivery">9.4 Redelivery</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline-review.html#retiring-the-two-collada-parts">9.5 Retiring the two COLLADA parts</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline-review.html#what-the-modeler-checks-and-what-we-check">9.6 What the modeler checks, and what we check</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline-review.html#decisions-the-team-has-to-make">10. Decisions the team has to make</a></li>
+</ul>
+</li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">PBR, and why glTF is inseparable from it</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#the-shift-in-one-sentence">The shift in one sentence</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#what-we-had-before-collada-plus-an-image">What we had before: Collada plus an image</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#what-pbr-replaces-it-with">What PBR replaces it with</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#the-four-terms-in-that-table-reference">The four terms in that table (reference)</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#the-differences-that-actually-bite">The differences that actually bite</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#why-gltf-and-pbr-cannot-be-separated">Why glTF and PBR cannot be separated</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#where-to-go-next">Where to go next</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="gltf-background-notes.html">glTF Background</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="gltf-background-notes.html#references">References</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="gltf-background-notes.html#khronos-org">Khronos.org</a></li>
+<li class="toctree-l4"><a class="reference internal" href="gltf-background-notes.html#gltf-2-0-specification">glTF 2.0 Specification</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="gltf-background-notes.html#https-github-com-khronosgroup-gltf-tutorials">https://github.com/KhronosGroup/glTF-Tutorials</a></li>
+<li class="toctree-l5"><a class="reference internal" href="gltf-background-notes.html#gltf-quickstart">glTF Quickstart</a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="gltf-background-notes.html#video-discussing-vulkan-neural-rendering-slang-ai-more-neil-trevett-khronos-group-interview">Video: Discussing Vulkan, Neural Rendering, SLANG, AI &amp; More - Neil Trevett &amp; Khronos Group Interview</a></li>
+<li class="toctree-l4"><a class="reference internal" href="gltf-background-notes.html#gltf-2-0-quickstart-and-tools">glTF 2.0 Quickstart and tools</a></li>
+<li class="toctree-l4"><a class="reference internal" href="gltf-background-notes.html#openusd-conventions-for-simulation-asset-interoperability-in-open-source-robotics">OpenUSD Conventions for Simulation Asset Interoperability in Open Source Robotics</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="gltf-background-notes.html#closely-related-work-and-examples">Closely Related Work and Examples</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="gltf-background-notes.html#community-standards-documents-discussion-etc">Community standards, documents, discussion, etc.</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="gltf-background-notes.html#gazebo-community-and-developers">Gazebo community and developers</a></li>
+<li class="toctree-l5"><a class="reference internal" href="gltf-background-notes.html#examples">Examples</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="gltf-background-notes.html#fuel">Fuel</a></li>
+<li class="toctree-l6"><a class="reference internal" href="gltf-background-notes.html#repos">Repos</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../evidence/index.html">Evidence</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../evidence/community-exemplars.html">Community exemplars: who else ships glTF to Gazebo and RViz</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../evidence/community-exemplars.html#method">Method</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../evidence/community-exemplars.html#the-cohort">The cohort</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../evidence/community-exemplars.html#gazebosim-jetty-demo-the-closest-thing-to-an-upstream-reference">gazebosim/jetty_demo — the closest thing to an upstream reference</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../evidence/community-exemplars.html#open-rmf-rmf-site-gltf-generated-rather-than-authored">open-rmf/rmf_site — glTF generated rather than authored</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../evidence/community-exemplars.html#husarion-rosbot-ros-a-commercial-product-doing-it-per-link">husarion/rosbot_ros — a commercial product doing it per-link</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../evidence/community-exemplars.html#robotlocomotion-the-informed-dissent-on-packaging">RobotLocomotion — the informed dissent on packaging</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../evidence/community-exemplars.html#usnistgov-ariac-a-migration-caught-in-the-middle">usnistgov/ARIAC — a migration caught in the middle</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../evidence/community-exemplars.html#vanttec-vanttec-usv-the-nearest-maritime-peer-inverted">vanttec/vanttec_usv — the nearest maritime peer, inverted</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../evidence/community-exemplars.html#the-people-and-the-two-organizations-that-turned-out-not-to-be-doing-this">The people, and the two organizations that turned out not to be doing this</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../evidence/community-exemplars.html#what-this-changes-for-us">What this changes for us</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../evidence/community-exemplars.html#where-the-argument-is-being-had">Where the argument is being had</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../evidence/audit-parts-library.html">Parts Library Audit</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../evidence/audit-parts-library.html#per-part">Per part</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../evidence/audit-parts-library.html#units-frame-dimensions">Units, frame, dimensions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../evidence/audit-parts-library.html#where-the-library-is-already-clean">Where the library is already clean</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../evidence/audit-parts-library.html#systemic-defects-pipeline-not-per-part">Systemic defects (pipeline, not per part)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../evidence/audit-parts-library.html#fixes-in-priority-order">Fixes, in priority order</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../evidence/audit-blueboat-chassis.html">BlueBoat Chassis Audit</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../evidence/audit-blueboat-chassis.html#files">Files</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../evidence/audit-blueboat-chassis.html#units-frame-origin">Units, frame, origin</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../evidence/audit-blueboat-chassis.html#geometry">Geometry</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../evidence/audit-blueboat-chassis.html#materials">Materials</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../evidence/audit-blueboat-chassis.html#transparency">Transparency</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../evidence/audit-blueboat-chassis.html#avoid-list">Avoid list</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../evidence/audit-blueboat-chassis.html#fixes-in-priority-order">Fixes, in priority order</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../evidence/assessment-brief.html">Assessment of glTF examples models</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../project/index.html">Project</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../project/asset-spec-superseded.html">Visual asset spec</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../project/asset-spec-superseded.html#files">Files</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../project/asset-spec-superseded.html#units-frame-origin">Units, frame, origin</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../project/asset-spec-superseded.html#geometry">Geometry</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../project/asset-spec-superseded.html#materials">Materials</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../project/asset-spec-superseded.html#transparency">Transparency</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../project/asset-spec-superseded.html#do-not-use">Do not use</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../project/asset-spec-superseded.html#checklist-before-delivery">Checklist before delivery</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">glTF for Robot Simulation</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Reference</a></li>
+      <li class="breadcrumb-item active">PBR, and why glTF is inseparable from it</li>
+      <li class="wy-breadcrumbs-aside">
+              <a href="https://github.com/HonuRobotics/gltf-robotics/blob/main/docs/reference/pbr-and-gltf.md" class="fa fa-github"> Edit on GitHub</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="pbr-and-why-gltf-is-inseparable-from-it">
+<h1>PBR, and why glTF is inseparable from it<a class="headerlink" href="#pbr-and-why-gltf-is-inseparable-from-it" title="Link to this heading"></a></h1>
+<p>Background reading, with a short encoding reference you can skip on a first pass. It explains what physically based rendering is, how it differs from the Collada and image-file models this project used before, and why adopting glTF means adopting PBR whether or not that was the intention. For the rules that follow from all this, see <a class="reference internal" href="../profile/profile.html"><span class="std std-doc">model-spec.md</span></a>. For the evidence behind them, see <a class="reference internal" href="pipeline-review.html"><span class="std std-doc">VISUAL_ASSET_PIPELINE_REVIEW.md</span></a>.</p>
+<section id="the-shift-in-one-sentence">
+<h2>The shift in one sentence<a class="headerlink" href="#the-shift-in-one-sentence" title="Link to this heading"></a></h2>
+<p>The old way was to paint what a surface should look like. PBR is to describe what a surface is made of, and let the renderer work out what it looks like.</p>
+<p>Everything else follows. A file that describes the material can be dropped into daylight, a floodlit test tank, or thirty meters of water and be right in all three without re-authoring. A file that describes the appearance is only right under the lighting the artist had in mind.</p>
+</section>
+<section id="what-we-had-before-collada-plus-an-image">
+<h2>What we had before: Collada plus an image<a class="headerlink" href="#what-we-had-before-collada-plus-an-image" title="Link to this heading"></a></h2>
+<p>A <code class="docutils literal notranslate"><span class="pre">.dae</span></code> file referencing a PNG carries a material built on the Phong or Blinn model. Its parameters are a diffuse color, a specular color, a shininess exponent, and an ambient term.</p>
+<p>Those parameters are not properties of anything real. A shininess of 32 is not a measurement, it is a dial that produces an acceptable highlight under assumed lighting in one renderer. Three consequences followed, and this project has felt all of them:</p>
+<ul class="simple">
+<li><p><strong>Lighting gets baked into the texture.</strong> Shadows in crevices, a bright edge along the top of a hull, a suggestion of reflection. All painted in, because the material model could not produce them. Move the light and the asset is wrong in a way no setting can fix.</p></li>
+<li><p><strong>Every engine interprets the numbers differently.</strong> There is no standard for what a specular color of 0.5 means, so an asset tuned in one tool looks different in the next.</p></li>
+<li><p><strong>One image was the whole material.</strong> Color was the only property that mattered, which is why “a mesh and its texture” was a reasonable mental model.</p></li>
+</ul>
+<p>That mental model is the first Main Issue in the review, and it is the root of most of what went wrong.</p>
+</section>
+<section id="what-pbr-replaces-it-with">
+<h2>What PBR replaces it with<a class="headerlink" href="#what-pbr-replaces-it-with" title="Link to this heading"></a></h2>
+<p>The metallic-roughness model describes a surface with six properties, each corresponding, at least approximately, to something physical.</p>
+<p>Three words are easy to conflate, and the table below is unreadable without them. glTF defines each precisely. An <strong>image</strong> is “a two dimensional array of pixels encoded as a standardized bitstream”, which for us means a PNG or a JPEG. A <strong>sampler</strong> is “an object that controls how image data is sampled”, meaning the filtering and wrapping rules. A <strong>texture</strong> is “an object that combines an image and its sampler”. A material never points at an image directly; it points at a texture, and the texture points at an image. A <strong>material</strong> is “a parametrized approximation of visual properties of the real-world object being represented by a mesh primitive”, which in practice means a named set of values, some of them plain numbers and some of them references to textures.</p>
+<p>Those nest, and the nesting is the whole structure:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">primitive</span>  <span class="o">-&gt;</span>  <span class="n">material</span>  <span class="o">-&gt;</span>  <span class="n">texture</span>  <span class="o">-&gt;</span>  <span class="n">image</span>
+                                     \<span class="o">-&gt;</span>  <span class="n">sampler</span>
+</pre></div>
+</div>
+<p>A primitive names one material. That material holds plain numbers directly, and points at textures for anything that varies across the surface. Each texture combines one image with one sampler. So the files in a delivery are image files, and nothing in a material reaches an image without a texture in between.</p>
+<p>One more piece of vocabulary, kept deliberately apart from the last, because running the two together is what made the sentence you are replacing incomprehensible:</p>
+<ul class="simple">
+<li><p>A <strong>property</strong> is one of the material’s six inputs: base color, metallic, roughness, normal, occlusion, emissive. This is the specification’s own word; it introduces the model as “defined by the following properties”.</p></li>
+<li><p>A <strong>channel</strong> is one component of a pixel, the R, G, B or A of an image. Nothing else in this document is called a channel.</p></li>
+</ul>
+<p>Every property takes its value in one of three ways: from a texture, from a factor written as plain numbers in the material, or from both, in which case the factor multiplies what the texture supplies. A property given neither keeps its default. Two properties may share one image by reading different channels of it, which is exactly how metallic and roughness are stored.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Property</p></th>
+<th class="head"><p>What it means</p></th>
+<th class="head"><p>Where its value comes from</p></th>
+<th class="head"><p>Encoding</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Base color</p></td>
+<td><p>The surface’s own color, with no lighting in it at all</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">baseColorTexture</span></code>, whose image has four channels at 8 bits each, and/or <code class="docutils literal notranslate"><span class="pre">baseColorFactor</span></code>, four numbers from 0 to 1</p></td>
+<td><p>Image sRGB, factor linear</p></td>
+</tr>
+<tr class="row-odd"><td><p>Metallic</p></td>
+<td><p>Whether this is metal. In reality nearly binary, so the map is close to a mask</p></td>
+<td><p>The blue channel of <code class="docutils literal notranslate"><span class="pre">metallicRoughnessTexture</span></code>, and/or <code class="docutils literal notranslate"><span class="pre">metallicFactor</span></code>, one number from 0 to 1</p></td>
+<td><p>Linear</p></td>
+</tr>
+<tr class="row-even"><td><p>Roughness</p></td>
+<td><p>How scattered the reflection is. Low is mirror-like, high is matte</p></td>
+<td><p>The green channel of that same <code class="docutils literal notranslate"><span class="pre">metallicRoughnessTexture</span></code>, and/or <code class="docutils literal notranslate"><span class="pre">roughnessFactor</span></code>, one number from 0 to 1</p></td>
+<td><p>Linear</p></td>
+</tr>
+<tr class="row-odd"><td><p>Normal</p></td>
+<td><p>Fine surface detail, faked without adding geometry</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">normalTexture</span></code>, whose image has three channels holding a vector rather than a color, in tangent space</p></td>
+<td><p>Linear</p></td>
+</tr>
+<tr class="row-even"><td><p>Occlusion</p></td>
+<td><p>How much ambient light reaches into a crevice</p></td>
+<td><p>The red channel of <code class="docutils literal notranslate"><span class="pre">occlusionTexture</span></code>, 0 fully occluded to 1 unoccluded</p></td>
+<td><p>Linear</p></td>
+</tr>
+<tr class="row-odd"><td><p>Emissive</p></td>
+<td><p>Light the surface gives off by itself</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">emissiveTexture</span></code>, three channels at 8 bits each, and/or <code class="docutils literal notranslate"><span class="pre">emissiveFactor</span></code>, three numbers from 0 to 1</p></td>
+<td><p>Image sRGB, factor linear</p></td>
+</tr>
+</tbody>
+</table>
+<p>Occlusion, roughness and metalness are designed to share one image, packed into its red, green and blue channels, which is why a delivery holds fewer image files than the material has properties. That image may carry more than 8 bits per channel, while base color and emissive must be 8-bit. glTF sets no hard limit on image dimensions, but clients are told to resize images whose sides are not powers of two on hardware that handles them poorly, so powers of two stay the safe choice. Every image in this library already is one.</p>
+<section id="the-four-terms-in-that-table-reference">
+<h3>The four terms in that table (reference)<a class="headerlink" href="#the-four-terms-in-that-table-reference" title="Link to this heading"></a></h3>
+<p><strong>Factor.</strong> A number, or a small group of numbers, stored as plain values in the material itself rather than in an image, each from 0 to 1. Where both a factor and a texture are given, the factor multiplies the texture, so it acts as a uniform tint or level across the whole material. Where no texture is given the texture is taken to be 1.0, and the factor alone decides the value. This is why <code class="docutils literal notranslate"><span class="pre">metallicFactor</span></code> on its own can make an entire part metal with no texture involved, which is the defect in four of our files.</p>
+<p>A fair question is whether a factor is just a 1x1 image. It is not, and the difference matters twice over. A factor is decoded by nobody: it is already linear, whereas a base color image is sRGB and must be decoded before it is multiplied in, so the same value in the two places produces different results. And a factor is not a texture, so it does not satisfy a consumer that insists on one. That distinction is exactly why the fix for the RViz crash was to bake a 1x1 white image into the file rather than simply set a factor: RViz needed a base color texture to exist, and a factor would not have done.</p>
+<p><strong>Linear.</strong> The stored number is proportional to the physical quantity, so 0.5 means half. Used for everything the shader computes with: metalness, roughness, occlusion and normals. Averaging two linear values gives a meaningful result, which matters because that is what filtering and mipmapping do.</p>
+<p><strong>sRGB.</strong> A deliberately non-linear encoding for images meant to be seen as color. It spends more of the available 8 bits on darker tones, where human vision discriminates better. A renderer must decode it to linear before any lighting math and re-encode on output. It applies to base color and emissive only. Treating the other maps as sRGB is not a subtle error: it is what made Gazebo render every mesh too dark until it was fixed in 2023. Note also that glTF ignores any color profile or gamma embedded in a PNG or JPEG, so the encoding is decided by how the material refers to the image, never by the image file itself.</p>
+<p>One trap worth naming: the base color texture is sRGB but the base color factor is linear. The renderer decodes the texture first, then multiplies. A factor picked by eye against an sRGB swatch will not do what it appears to.</p>
+<p><strong>Tangent space.</strong> The coordinate frame a normal map is expressed in, defined at each point by the surface normal and the directions the UV coordinates run. Storing the vectors relative to the surface, rather than to the model, is what lets one normal map be reused across different surfaces and survive the object being bent or animated. glTF stores the vector as RGB, red for X, green for Y, blue for Z, each mapped from the 0 to 1 range of the image into the -1 to 1 range of a vector component. That mapping is why an unperturbed normal map is the characteristic pale blue: it is the color of the vector pointing straight out of the surface.</p>
+<p>The renderer takes those and computes the shading with a bidirectional reflectance distribution function, a BRDF. The glTF specification publishes the exact one in an appendix, so the computation is defined rather than left to each implementation.</p>
+<p>Metallic and roughness replace the whole diffuse-plus-specular-plus-shininess apparatus. You no longer pick a specular color at all, because the model already knows that non-metals reflect white and metals reflect their own color.</p>
+</section>
+</section>
+<section id="the-differences-that-actually-bite">
+<h2>The differences that actually bite<a class="headerlink" href="#the-differences-that-actually-bite" title="Link to this heading"></a></h2>
+<p>Moving from the old model to this one is not a format conversion. Four things change in how a material is authored:</p>
+<p><strong>Metallic is not a style choice.</strong> It is a statement about what the object is. Get it wrong and the result is not slightly off, it is unrecognizable: a plastic hull declared metallic renders dark and lifeless under every light. This is not hypothetical. Four of the fifteen delivered parts in this library currently have it wrong, including both chassis.</p>
+<p><strong>Defaults are aggressive.</strong> In glTF a material that says nothing is white, fully metallic and fully rough. Silence does not mean neutral, it means rough metal. A primitive with no material assigned at all gets exactly that, which is why an unassigned region shows up as a pale metallic patch rather than disappearing.</p>
+<p><strong>Lighting must come out of the base color.</strong> Painted-in shadows and highlights now fight the renderer’s own lighting, and the result is worse than either alone. Base color should look flat and slightly boring in isolation. If it looks good on its own, it probably has lighting baked in.</p>
+<p><strong>A material is a set, not an image.</strong> Where one PNG used to be the whole story, a material is now several maps with defined roles, plus scalar factors that multiply them. In this library, textures are 59 percent of every byte stored, which is a direct consequence.</p>
+</section>
+<section id="why-gltf-and-pbr-cannot-be-separated">
+<h2>Why glTF and PBR cannot be separated<a class="headerlink" href="#why-gltf-and-pbr-cannot-be-separated" title="Link to this heading"></a></h2>
+<p>It would be reasonable to assume glTF is a container format that happens to support PBR. It is not.</p>
+<p><strong>glTF 2.0 has exactly one material model, and it is metallic-roughness.</strong> The specification says so directly: “glTF defines materials using a common set of parameters that are based on widely used material representations from Physically Based Rendering (PBR). Specifically, glTF uses the metallic-roughness material model.” There is no Phong material to fall back to. The one alternative workflow that ever existed, specular-glossiness, is now in the archived section of the Khronos extension registry.</p>
+<p>More than that, glTF fixes the <em>encoding</em>, not just the concept. Two tools both claiming to support PBR can still disagree about everything that matters. glTF settles it normatively: which channel holds what, with occlusion in red, roughness in green and metalness in blue; which images are color and which are data, with base color and emissive in sRGB and everything else linear; that normal maps are tangent space with the OpenGL convention; that scalar factors multiply their maps; and what every default is when a field is absent.</p>
+<p>A glTF material is therefore portable where a vague agreement to “use PBR” is not.</p>
+<p>The practical consequence for this project. Choosing glTF was not choosing a new file container for the meshes we already had. It was adopting a different way of describing surfaces, one where the old habits, painting in highlights, tuning a specular value, treating one image as the material, are not merely discouraged but unrepresentable. The parts that were converted without that shift in mind are the ones this review found defects in.</p>
+</section>
+<section id="where-to-go-next">
+<h2>Where to go next<a class="headerlink" href="#where-to-go-next" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="../profile/profile.html"><span class="std std-doc">model-spec.md</span></a> states what a delivered model must satisfy, including the material rules.</p></li>
+<li><p><a class="reference internal" href="pipeline-review.html"><span class="std std-doc">VISUAL_ASSET_PIPELINE_REVIEW.md</span></a> has the evidence, the measurements of the current library, and what our two renderers actually do with a PBR material, which is less than the specification describes.</p></li>
+<li><p>The <a class="reference external" href="https://registry.khronos.org/glTF/specs/2.0/glTF-2.0.html">glTF 2.0 specification</a> is readable, and its materials chapter is short.</p></li>
+<li><p>The <a class="reference external" href="https://github.khronos.org/glTF-Sample-Viewer-Release/">Khronos glTF Sample Viewer</a> will show any file as a conformant renderer sees it, and runs the validator at the same time.</p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="pipeline-review.html" class="btn btn-neutral float-left" title="Visual asset pipeline: technical review and proposed guidelines" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="gltf-background-notes.html" class="btn btn-neutral float-right" title="glTF Background" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright Honu Robotics.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    <span class="fa fa-book"> Other Versions</span>
+    v: main
+    <span class="fa fa-caret-down"></span>
+  </span>
+  <div class="rst-other-versions">
+    <dl id="honu-version-list">
+      <dt>Distributions</dt>
+      <dd><a href="/gltf-robotics/main/" data-version="main">Main</a></dd>
+    </dl>
+  </div>
+</div>
+<script>
+  (function () {
+    var current = "main";
+    var base = "/gltf-robotics/";
+
+    /* Keep the reader on the same page when switching versions; the
+       version root href stays as the fallback for pages a version lacks. */
+    function wire() {
+      document.querySelectorAll('.rst-other-versions a[data-version]').forEach(function (a) {
+        var target = a.getAttribute('data-version');
+        var path = window.location.pathname;
+        if (target !== current && path.indexOf('/' + current + '/') !== -1) {
+          a.href = path.replace('/' + current + '/', '/' + target + '/');
+        }
+      });
+    }
+
+    if (!window.fetch) { wire(); return; }
+
+    /* The deploy tool maintains versions.json at the site root; reading it
+       at runtime lets builds published before a new distribution existed
+       still offer it in the flyout. Offline or local preview builds fall
+       back to the build time list rendered above. */
+    fetch(base + 'versions.json', {cache: 'no-cache'}).then(function (response) {
+      if (!response.ok) { throw new Error(response.status); }
+      return response.json();
+    }).then(function (entries) {
+      var list = document.getElementById('honu-version-list');
+      if (!list || !entries.length) { return; }
+      list.querySelectorAll('dd').forEach(function (dd) { dd.remove(); });
+      entries.forEach(function (entry) {
+        var a = document.createElement('a');
+        a.href = entry.url;
+        a.setAttribute('data-version', entry.name);
+        a.textContent = entry.name.charAt(0).toUpperCase() + entry.name.slice(1);
+        var dd = document.createElement('dd');
+        dd.appendChild(a);
+        list.appendChild(dd);
+      });
+    }).catch(function () {}).finally(wire);
+  })();
+</script><script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

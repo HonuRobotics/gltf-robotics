@@ -1,0 +1,1184 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Coordinate Systems: glTF, Gazebo and ROS &mdash; glTF for Robot Simulation main documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/honu.css?v=44af46ee" />
+
+  
+    <link rel="shortcut icon" href="../_static/honu-robotics-favicon.svg"/>
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=a8da1a53"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Visual asset pipeline: technical review and proposed guidelines" href="pipeline-review.html" />
+    <link rel="prev" title="Reference" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            glTF for Robot Simulation
+              <img src="../_static/honu-robotics-white-logo.svg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../profile/index.html">The Profile</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../profile/profile.html">The glTF Robotics Profile</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../profile/profile.html#introduction">1. Introduction</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../profile/profile.html#scope">1.1 Scope</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../profile/profile.html#relationship-to-external-standards">1.2 Relationship to external standards</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../profile/profile.html#project-specific-content-informative">1.3 Project-specific content (Informative)</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../profile/profile.html#document-conventions">2. Document conventions</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../profile/profile.html#audience">2.1 Audience</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../profile/profile.html#normative-terminology">2.2 Normative terminology</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../profile/profile.html#informative-language">2.3 Informative language</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../profile/profile.html#decision-status">2.4 Decision status</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../profile/profile.html#terminology">3. Terminology</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../profile/profile.html#delivery">4. Delivery</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../profile/profile.html#files">4.1 Files</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../profile/profile.html#format">4.2 Format</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../profile/profile.html#asset-header">4.3 Asset header</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../profile/profile.html#coordinate-system-units-and-frame">5. Coordinate system, units and frame</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../profile/profile.html#units">5.1 Units</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../profile/profile.html#up-axis">5.2 Up axis</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../profile/profile.html#forward-axis">5.3 Forward axis</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../profile/profile.html#origin">5.4 Origin</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../profile/profile.html#scenes-and-nodes">5.5 Scenes and nodes</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../profile/profile.html#geometry">6. Geometry</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../profile/profile.html#uv-sets">6.1 UV sets</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../profile/profile.html#budgets">6.2 Budgets</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../profile/profile.html#primitives-and-submeshes">6.3 Primitives and submeshes</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../profile/profile.html#materials">7. Materials</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../profile/profile.html#textures">8. Textures</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../profile/profile.html#transparency">9. Transparency</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../profile/profile.html#prohibited-content">10. Prohibited content</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../profile/profile.html#authoring-toolchain">11. Authoring toolchain</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../profile/profile.html#conformance">12. Conformance</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../profile/profile.html#checks-informative">12.1 Checks (Informative)</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../profile/profile.html#decision-status-informative">13. Decision status (Informative)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../how-to/index.html">How-to guides</a><ul class="simple">
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Reference</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Coordinate Systems: glTF, Gazebo and ROS</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#objective">Objective</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#central-issue">Central Issue</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#how-claims-in-this-document-are-marked">How claims in this document are marked</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#coordinate-conventions-and-typical-practices">Coordinate Conventions and Typical Practices</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#vocabulary-nomenclature-glossary">Vocabulary / Nomenclature / Glossary</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#our-formal-default">Our formal default</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#terms-by-stage-of-the-flow">Terms by stage of the flow</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#coordinate-system-origin-and-reference-point">Coordinate system, origin, and reference point</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#the-o-x-y-z-notation">The <code class="docutils literal notranslate"><span class="pre">O</span> <span class="pre">-</span> <span class="pre">X</span> <span class="pre">-</span> <span class="pre">Y</span> <span class="pre">-</span> <span class="pre">Z</span></code> notation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#specifying-a-coordinate-system-datums-and-what-referenced-to-means">Specifying a coordinate system: datums and what “referenced to” means</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#assumptions">Assumptions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#standards-summary">Standards Summary</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="#iso-9787-2013">ISO 9787:2013</a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="#robotics">Robotics</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="#categorizing-links-by-their-place-in-the-tree">Categorizing links by their place in the tree</a></li>
+<li class="toctree-l5"><a class="reference internal" href="#manipulation-centric-robots-with-static-base">Manipulation-centric (robots with static base)</a></li>
+<li class="toctree-l5"><a class="reference internal" href="#mobile-centric">Mobile-centric</a></li>
+<li class="toctree-l5"><a class="reference internal" href="#other-conventions-worth-knowing">Other conventions worth knowing</a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="#d-graphics">3D Graphics</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="#what-survives-into-gltf-and-what-does-not">What survives into glTF, and what does not</a></li>
+<li class="toctree-l5"><a class="reference internal" href="#standards-for-3d-assets">Standards for 3D assets</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#reconciling-the-standards">Reconciling the standards</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#where-they-agree-and-it-is-most-of-it">Where they agree, and it is most of it</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#the-disagreement-is-one-cyclic-relabeling">The disagreement is one cyclic relabeling</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#our-coordinate-system-names">Our coordinate system names</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#the-full-reconciliation">The full reconciliation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#adopt-narrow-or-invent">Adopt, narrow, or invent</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#next-increment">Next increment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#references">References</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline-review.html">Visual asset pipeline: technical review and proposed guidelines</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline-review.html#context-starting-point">Context / Starting Point</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline-review.html#main-issues">Main Issues</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline-review.html#background">0. Background</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline-review.html#sources-of-truth">0.1 Sources of truth</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline-review.html#how-the-audit-works">0.2 How the audit works</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline-review.html#background-gltf-and-what-our-consumers-do-with-it">1. Background: glTF and what our consumers do with it</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline-review.html#the-format">1.1 The format</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline-review.html#the-consumers">1.2 The consumers</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline-review.html#the-gazebo-path-step-by-step">1.3 The Gazebo path, step by step</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline-review.html#what-the-loader-reads-from-a-gltf-material">1.4 What the loader reads from a glTF material</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline-review.html#the-rviz-path">1.5 The RViz path</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline-review.html#the-pipeline-in-this-repo-and-where-forward-is">1.6 The pipeline in this repo, and where forward is</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline-review.html#what-must-be-considered-when-moving-this-project-to-glb">1.7 What must be considered when moving this project to GLB</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline-review.html#the-written-record-what-the-gazebo-project-says-about-gltf">1.8 The written record: what the Gazebo project says about glTF</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline-review.html#frames-and-origins-what-gltf-fixes-and-what-it-leaves-to-us">1.9 Frames and origins: what glTF fixes, and what it leaves to us</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline-review.html#verification-tooling-and-criteria">2. Verification tooling and criteria</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline-review.html#glb-probe-what-gazebo-actually-built">2.1 glb_probe: what Gazebo actually built</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline-review.html#file-level-lint">2.2 File-level lint</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline-review.html#eyes-on-a-render">2.3 Eyes on a render</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline-review.html#external-viewers-are-not-a-gazebo-proxy">2.4 External viewers are not a Gazebo proxy</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline-review.html#acceptance-criteria-as-pass-or-fail">2.5 Acceptance criteria, as pass or fail</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline-review.html#the-khronos-gltf-validator">2.6 The Khronos glTF Validator</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline-review.html#audit-of-the-original-draft-spec-item-by-item">3. Audit of the original draft spec, item by item</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline-review.html#files">Files</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline-review.html#units-frame-origin">Units, frame, origin</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline-review.html#geometry">Geometry</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline-review.html#materials">Materials</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline-review.html#transparency">Transparency</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline-review.html#do-not-use">Do not use</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline-review.html#checklist-before-delivery">Checklist before delivery</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline-review.html#the-delivered-files-measured">4. The delivered files, measured</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline-review.html#what-the-draft-spec-does-not-cover-and-should">5. What the draft spec does not cover and should</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline-review.html#the-two-claude-artifacts">6. The two Claude artifacts</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline-review.html#parts-library-audit-the-12-non-chassis-parts">6.1 Parts Library Audit (the 12 non-chassis parts)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline-review.html#blueboat-chassis-audit">6.2 BlueBoat Chassis Audit</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline-review.html#bluerov2-chassis-audit">6.3 BlueROV2 Chassis Audit</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline-review.html#proposed-guideline-pin-the-authoring-stack">7. Proposed guideline: pin the authoring stack</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline-review.html#the-proposal">7.1 The proposal</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline-review.html#what-actually-varies">7.2 What actually varies</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline-review.html#what-a-version-pin-can-and-cannot-do">7.3 What a version pin can and cannot do</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline-review.html#how-it-would-be-enforced">7.4 How it would be enforced</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline-review.html#the-stack-as-it-would-be-declared">7.5 The stack, as it would be declared</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline-review.html#reconciliation-with-the-existing-repo-guidelines">8. Reconciliation with the existing repo guidelines</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline-review.html#docs-design-parts-md-the-mesh-conventions">8.1 <code class="docutils literal notranslate"><span class="pre">docs/design/parts.md</span></code>, the mesh conventions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline-review.html#docs-how-to-add-part-md-the-acceptance-steps">8.2 <code class="docutils literal notranslate"><span class="pre">docs/how-to/add-part.md</span></code>, the acceptance steps</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline-review.html#the-faq">8.3 The FAQ</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline-review.html#the-older-readme-checklist-commit-b5daead">8.4 The older README checklist, commit <code class="docutils literal notranslate"><span class="pre">b5daead</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline-review.html#the-one-contradiction-to-resolve-first">8.5 The one contradiction to resolve first</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline-review.html#further-proposed-guidelines">9. Further proposed guidelines</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pipeline-review.html#provenance-what-accompanies-a-delivery">9.1 Provenance: what accompanies a delivery</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline-review.html#the-dimensional-source-of-truth">9.2 The dimensional source of truth</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline-review.html#names-are-an-interface-not-decoration">9.3 Names are an interface, not decoration</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline-review.html#redelivery">9.4 Redelivery</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline-review.html#retiring-the-two-collada-parts">9.5 Retiring the two COLLADA parts</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline-review.html#what-the-modeler-checks-and-what-we-check">9.6 What the modeler checks, and what we check</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline-review.html#decisions-the-team-has-to-make">10. Decisions the team has to make</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pbr-and-gltf.html">PBR, and why glTF is inseparable from it</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pbr-and-gltf.html#the-shift-in-one-sentence">The shift in one sentence</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pbr-and-gltf.html#what-we-had-before-collada-plus-an-image">What we had before: Collada plus an image</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pbr-and-gltf.html#what-pbr-replaces-it-with">What PBR replaces it with</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pbr-and-gltf.html#the-four-terms-in-that-table-reference">The four terms in that table (reference)</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pbr-and-gltf.html#the-differences-that-actually-bite">The differences that actually bite</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pbr-and-gltf.html#why-gltf-and-pbr-cannot-be-separated">Why glTF and PBR cannot be separated</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pbr-and-gltf.html#where-to-go-next">Where to go next</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="gltf-background-notes.html">glTF Background</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="gltf-background-notes.html#references">References</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="gltf-background-notes.html#khronos-org">Khronos.org</a></li>
+<li class="toctree-l4"><a class="reference internal" href="gltf-background-notes.html#gltf-2-0-specification">glTF 2.0 Specification</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="gltf-background-notes.html#https-github-com-khronosgroup-gltf-tutorials">https://github.com/KhronosGroup/glTF-Tutorials</a></li>
+<li class="toctree-l5"><a class="reference internal" href="gltf-background-notes.html#gltf-quickstart">glTF Quickstart</a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="gltf-background-notes.html#video-discussing-vulkan-neural-rendering-slang-ai-more-neil-trevett-khronos-group-interview">Video: Discussing Vulkan, Neural Rendering, SLANG, AI &amp; More - Neil Trevett &amp; Khronos Group Interview</a></li>
+<li class="toctree-l4"><a class="reference internal" href="gltf-background-notes.html#gltf-2-0-quickstart-and-tools">glTF 2.0 Quickstart and tools</a></li>
+<li class="toctree-l4"><a class="reference internal" href="gltf-background-notes.html#openusd-conventions-for-simulation-asset-interoperability-in-open-source-robotics">OpenUSD Conventions for Simulation Asset Interoperability in Open Source Robotics</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="gltf-background-notes.html#closely-related-work-and-examples">Closely Related Work and Examples</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="gltf-background-notes.html#community-standards-documents-discussion-etc">Community standards, documents, discussion, etc.</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="gltf-background-notes.html#gazebo-community-and-developers">Gazebo community and developers</a></li>
+<li class="toctree-l5"><a class="reference internal" href="gltf-background-notes.html#examples">Examples</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="gltf-background-notes.html#fuel">Fuel</a></li>
+<li class="toctree-l6"><a class="reference internal" href="gltf-background-notes.html#repos">Repos</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../evidence/index.html">Evidence</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../evidence/community-exemplars.html">Community exemplars: who else ships glTF to Gazebo and RViz</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../evidence/community-exemplars.html#method">Method</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../evidence/community-exemplars.html#the-cohort">The cohort</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../evidence/community-exemplars.html#gazebosim-jetty-demo-the-closest-thing-to-an-upstream-reference">gazebosim/jetty_demo — the closest thing to an upstream reference</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../evidence/community-exemplars.html#open-rmf-rmf-site-gltf-generated-rather-than-authored">open-rmf/rmf_site — glTF generated rather than authored</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../evidence/community-exemplars.html#husarion-rosbot-ros-a-commercial-product-doing-it-per-link">husarion/rosbot_ros — a commercial product doing it per-link</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../evidence/community-exemplars.html#robotlocomotion-the-informed-dissent-on-packaging">RobotLocomotion — the informed dissent on packaging</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../evidence/community-exemplars.html#usnistgov-ariac-a-migration-caught-in-the-middle">usnistgov/ARIAC — a migration caught in the middle</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../evidence/community-exemplars.html#vanttec-vanttec-usv-the-nearest-maritime-peer-inverted">vanttec/vanttec_usv — the nearest maritime peer, inverted</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../evidence/community-exemplars.html#the-people-and-the-two-organizations-that-turned-out-not-to-be-doing-this">The people, and the two organizations that turned out not to be doing this</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../evidence/community-exemplars.html#what-this-changes-for-us">What this changes for us</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../evidence/community-exemplars.html#where-the-argument-is-being-had">Where the argument is being had</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../evidence/audit-parts-library.html">Parts Library Audit</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../evidence/audit-parts-library.html#per-part">Per part</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../evidence/audit-parts-library.html#units-frame-dimensions">Units, frame, dimensions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../evidence/audit-parts-library.html#where-the-library-is-already-clean">Where the library is already clean</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../evidence/audit-parts-library.html#systemic-defects-pipeline-not-per-part">Systemic defects (pipeline, not per part)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../evidence/audit-parts-library.html#fixes-in-priority-order">Fixes, in priority order</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../evidence/audit-blueboat-chassis.html">BlueBoat Chassis Audit</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../evidence/audit-blueboat-chassis.html#files">Files</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../evidence/audit-blueboat-chassis.html#units-frame-origin">Units, frame, origin</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../evidence/audit-blueboat-chassis.html#geometry">Geometry</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../evidence/audit-blueboat-chassis.html#materials">Materials</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../evidence/audit-blueboat-chassis.html#transparency">Transparency</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../evidence/audit-blueboat-chassis.html#avoid-list">Avoid list</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../evidence/audit-blueboat-chassis.html#fixes-in-priority-order">Fixes, in priority order</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../evidence/assessment-brief.html">Assessment of glTF examples models</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../project/index.html">Project</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../project/asset-spec-superseded.html">Visual asset spec</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../project/asset-spec-superseded.html#files">Files</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../project/asset-spec-superseded.html#units-frame-origin">Units, frame, origin</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../project/asset-spec-superseded.html#geometry">Geometry</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../project/asset-spec-superseded.html#materials">Materials</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../project/asset-spec-superseded.html#transparency">Transparency</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../project/asset-spec-superseded.html#do-not-use">Do not use</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../project/asset-spec-superseded.html#checklist-before-delivery">Checklist before delivery</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">glTF for Robot Simulation</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Reference</a></li>
+      <li class="breadcrumb-item active">Coordinate Systems: glTF, Gazebo and ROS</li>
+      <li class="wy-breadcrumbs-aside">
+              <a href="https://github.com/HonuRobotics/gltf-robotics/blob/main/docs/reference/coordinate-systems.md" class="fa fa-github"> Edit on GitHub</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="coordinate-systems-gltf-gazebo-and-ros">
+<h1>Coordinate Systems: glTF, Gazebo and ROS<a class="headerlink" href="#coordinate-systems-gltf-gazebo-and-ros" title="Link to this heading"></a></h1>
+<p>An incremental build up of the understanding and explanation of how these coordinate systems are used, from 3D authoring through to robotic simulation.</p>
+<p>This is the only version. An earlier draft was abandoned for building detail on assumptions that were never checked, and it lives in git history at <code class="docutils literal notranslate"><span class="pre">ab5f6a6</span></code>. Do not treat its framing as current, but four things in it are verified from source and worth carrying over rather than re-deriving: the loader mechanism with the <code class="docutils literal notranslate"><span class="pre">gz-common</span></code> and <code class="docutils literal notranslate"><span class="pre">rviz_rendering</span></code> source quoted (its §4), the probe results on hand-authored assets (§5), the three-consumer tutorial (§12), and the audit of what the project’s own documents say (§14). The probe generator and its output are still live at <code class="docutils literal notranslate"><span class="pre">probe/coords/</span></code>.</p>
+<section id="objective">
+<h2>Objective<a class="headerlink" href="#objective" title="Link to this heading"></a></h2>
+<p>The purpose of this document is to be a clear explanation of how coordinate systems can be conceptualized and labeled from 3D graphics (authoring 3D assets in Blender) to robotic simulation (rendering visual assets aligned with collision models in Gazebo and RViz).</p>
+<section id="central-issue">
+<h3>Central Issue<a class="headerlink" href="#central-issue" title="Link to this heading"></a></h3>
+<p>The main challenge that motivates this documentation is that in order to build a repeatable 3D asset workflow we need to document the conventions at every stage of this flow, and at every interface between stages:</p>
+<p>3D graphics conventions -&gt; glTF spec -&gt; assimp loader -&gt; Gazebo / ROS</p>
+<p>Each item in the flow has its own combination of vocabulary, standards, conventions and best practices. To complicate things, these conventions are incomplete — not all of them constrain the same things — and sometimes they conflict. This requires understanding and documenting each step and, importantly, connecting the interfaces between each item so that the standards and conventions are followed, or, where necessary, documenting the variation from them.</p>
+</section>
+</section>
+<section id="how-claims-in-this-document-are-marked">
+<h2>How claims in this document are marked<a class="headerlink" href="#how-claims-in-this-document-are-marked" title="Link to this heading"></a></h2>
+<p>The abandoned first draft went wrong by building detail on assumptions that were never checked. So every claim here carries its standing:</p>
+<ul class="simple">
+<li><p><strong>[Firm]</strong> — a standard or source says it, cited in <a class="reference internal" href="#references">References</a>.</p></li>
+<li><p><strong>[Practice]</strong> — really done that way, but no standard says so. Do not present it as a rule.</p></li>
+<li><p><strong>[Open]</strong> — we do not know yet, or it needs a measurement nobody has made.</p></li>
+<li><p><strong>[Corrected]</strong> — was asserted in the first draft or earlier in this one and is wrong. Kept visible on purpose.</p></li>
+</ul>
+</section>
+<section id="coordinate-conventions-and-typical-practices">
+<h2>Coordinate Conventions and Typical Practices<a class="headerlink" href="#coordinate-conventions-and-typical-practices" title="Link to this heading"></a></h2>
+<p>Here we clearly describe some of the usual conventions. The reason is that there are multiple conventions across multiple communities and fields.</p>
+</section>
+<section id="vocabulary-nomenclature-glossary">
+<h2>Vocabulary / Nomenclature / Glossary<a class="headerlink" href="#vocabulary-nomenclature-glossary" title="Link to this heading"></a></h2>
+<p>Terms that have to be pinned down because they are used differently at different stages of the flow in <a class="reference internal" href="#central-issue">Central Issue</a>. Organized by where in the flow each term comes from, so a reader can see which vocabulary they are standing in.</p>
+<section id="our-formal-default">
+<h3>Our formal default<a class="headerlink" href="#our-formal-default" title="Link to this heading"></a></h3>
+<p>This document uses <strong>coordinate system</strong> as the formal term. <em>Coordinate system</em>, <em>coordinate frame</em> and <em>frame</em> are used as synonyms.</p>
+<p>Why?</p>
+<ul class="simple">
+<li><p>ISO 9787 says “coordinate system” throughout.</p></li>
+<li><p>“coordinate system” is the native term at three of the four stages of the flow:</p></li>
+</ul>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Stage</p></th>
+<th class="head"><p>Its own term</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>3D graphics conventions</p></td>
+<td><p>“coordinate system” — X3D §4.3.6, <em>Standard units and coordinate system</em></p></td>
+</tr>
+<tr class="row-odd"><td><p>glTF spec</p></td>
+<td><p>“coordinate system” — §3.4 is titled <em>Coordinate System and Units</em></p></td>
+</tr>
+<tr class="row-even"><td><p>assimp loader</p></td>
+<td><p>no vocabulary of its own</p></td>
+</tr>
+<tr class="row-odd"><td><p>Gazebo / ROS</p></td>
+<td><p>“frame” — REP 103, REP 105 and tf, which identifies each by a <code class="docutils literal notranslate"><span class="pre">frame_id</span></code>; SDF also has a <code class="docutils literal notranslate"><span class="pre">&lt;frame&gt;</span></code> element</p></td>
+</tr>
+</tbody>
+</table>
+<ul class="simple">
+<li><p>And “frame” collides on the asset side.  In the DCC world…</p>
+<ul>
+<li><p><strong>A frame is a unit of time</strong> in every DCC tool, and in glTF’s own tooling.  In this context “frame” means a point on the timeline.</p></li>
+<li><p>3D graphics uses “space” for this concept, not “frame”, e.g., object space, world space, tangent space.</p></li>
+</ul>
+</li>
+<li><p><em>Space</em> is therefore the equivalent term coming from the DCC side, and it was considered. It is rejected because it is confounded on the robotics side, where “space” is already taken and means something else: configuration space, work space, task space, state space.</p></li>
+<li><p>So <strong>coordinate system</strong> is the least common denominator.</p></li>
+</ul>
+<p>“Frame” stays legal in three narrow places: inside verbatim quotations, since REP 105 really does say “the coordinate frame called <code class="docutils literal notranslate"><span class="pre">base_link</span></code>”; when naming a ROS or SDF artifact (<code class="docutils literal notranslate"><span class="pre">frame_id</span></code>, <code class="docutils literal notranslate"><span class="pre">&lt;frame&gt;</span></code>, <code class="docutils literal notranslate"><span class="pre">base_link</span></code>, <code class="docutils literal notranslate"><span class="pre">base_footprint</span></code>, and the REP titles in the references); and in informal prose where nothing is ambiguous.</p>
+<p><strong>Decided.</strong> Our own names follow the rule, in two registers copying ISO’s own habit: the <strong>full name in prose</strong> — “the part coordinate system is referenced to the mounting face” — and the <strong>subscripted origin symbol in tables, equations and diagram labels</strong>, which is what ISO uses <code class="docutils literal notranslate"><span class="pre">O₁</span></code>, <code class="docutils literal notranslate"><span class="pre">O_m</span></code> and <code class="docutils literal notranslate"><span class="pre">O_p</span></code> for. See <a class="reference internal" href="#our-coordinate-system-names">Our coordinate system names</a>.</p>
+</section>
+<section id="terms-by-stage-of-the-flow">
+<h3>Terms by stage of the flow<a class="headerlink" href="#terms-by-stage-of-the-flow" title="Link to this heading"></a></h3>
+<p>Started here; extend as terms come up. The point is to record which stage a word comes from, because most of the confusion is a term carrying its home stage’s meaning into a later one.</p>
+<p><strong>3D graphics / authoring stage</strong></p>
+<ul class="simple">
+<li><p><strong>DCC</strong> — <em>digital content creation</em>. The collective term for 3D authoring applications: Blender, Maya, 3ds Max, Houdini, Cinema 4D. Used in ISO 17506.</p></li>
+<li><p><strong>pivot</strong> (Maya, 3ds Max) and <strong>object origin</strong> (Blender) — the per-vendor names for a manipulation handle: the point an object rotates and scales about in the viewport. Neither term has a standard behind it, and the two tools do not mean quite the same thing by them — see <a class="reference internal" href="#what-survives-into-gltf-and-what-does-not">What survives into glTF</a>.</p></li>
+</ul>
+<p>The reason we don’t use “frame” is because that term is severly overloaded in</p>
+</section>
+<section id="coordinate-system-origin-and-reference-point">
+<h3>Coordinate system, origin, and reference point<a class="headerlink" href="#coordinate-system-origin-and-reference-point" title="Link to this heading"></a></h3>
+<p><strong>[Firm]</strong> A coordinate system is an origin <strong>plus</strong> an orientation: six numbers, a pose. An origin alone is just the point where the axes meet.</p>
+<p><strong>[Corrected]</strong> That distinction is true but it is not what we actually do, and an earlier draft of this section offered it as the whole answer. When this project “defines the origin” of a part it is not choosing a point in empty space — it is stating <strong>which physical feature of the geometry the coordinate system is anchored to</strong>. That act has standard names, and we borrow them rather than author our own.</p>
+<p><strong>[Firm]</strong> ISO 9787 never once defines a coordinate system by where its origin numerically sits. Every clause-3 definition uses one formula, “coordinate system <strong>referenced to</strong> <em>a physical thing</em>”:</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Clause</p></th>
+<th class="head"><p>Definition, verbatim</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>3.4 world</p></td>
+<td><p>“stationary coordinate system referenced to earth, which is independent of the robot motion”</p></td>
+</tr>
+<tr class="row-odd"><td><p>3.5 base</p></td>
+<td><p>“coordinate system referenced to the base mounting surface”</p></td>
+</tr>
+<tr class="row-even"><td><p>3.6 mechanical interface</p></td>
+<td><p>“coordinate system referenced to the mechanical interface”</p></td>
+</tr>
+<tr class="row-odd"><td><p>3.7 tool (TCS)</p></td>
+<td><p>“coordinate system referenced to the tool or to the end effector attached to the mechanical interface”</p></td>
+</tr>
+<tr class="row-even"><td><p>3.11 task</p></td>
+<td><p>“coordinate system referenced to the site of the task”</p></td>
+</tr>
+<tr class="row-odd"><td><p>3.12 object</p></td>
+<td><p>“coordinate system referenced to the object”</p></td>
+</tr>
+<tr class="row-even"><td><p>3.13 camera</p></td>
+<td><p>“coordinate system referenced to the sensor which monitors the site of the task”</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Decided.</strong> We adopt that pattern. Every coordinate system this project defines is stated as <em>referenced to</em> a named feature, never as a set of coordinates.</p>
+<p><strong>[Firm]</strong> ISO 9787 also supplies the word for the origin considered as a located thing. §3.10: “mobile platform origin; mobile platform <strong>reference point</strong>: origin point of the mobile platform coordinate system”. So <em>reference point</em> is the standard’s own term, and we use it wherever “origin” would be ambiguous.</p>
+</section>
+<section id="the-o-x-y-z-notation">
+<h3>The <code class="docutils literal notranslate"><span class="pre">O</span> <span class="pre">-</span> <span class="pre">X</span> <span class="pre">-</span> <span class="pre">Y</span> <span class="pre">-</span> <span class="pre">Z</span></code> notation<a class="headerlink" href="#the-o-x-y-z-notation" title="Link to this heading"></a></h3>
+<p><strong>[Firm]</strong> ISO 9787 names each coordinate system by its origin and its three axes together, subscripted per system: “World coordinate system, <code class="docutils literal notranslate"><span class="pre">O₀</span> <span class="pre">-</span> <span class="pre">X₀</span> <span class="pre">-</span> <span class="pre">Y₀</span> <span class="pre">-</span> <span class="pre">Z₀</span></code>”, “Base coordinate system, <code class="docutils literal notranslate"><span class="pre">O₁</span> <span class="pre">-</span> <span class="pre">X₁</span> <span class="pre">-</span> <span class="pre">Y₁</span> <span class="pre">-</span> <span class="pre">Z₁</span></code>”, “Mechanical interface coordinate system, <code class="docutils literal notranslate"><span class="pre">O_m</span> <span class="pre">-</span> <span class="pre">X_m</span> <span class="pre">-</span> <span class="pre">Y_m</span> <span class="pre">-</span> <span class="pre">Z_m</span></code>”, and so on. The notation is doing exactly the split above:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">O₀</span></code> is the <strong>reference point</strong> — it fixes the coordinate system’s <em>location</em> with respect to the geometry.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">X₀</span> <span class="pre">-</span> <span class="pre">Y₀</span> <span class="pre">-</span> <span class="pre">Z₀</span></code> are the axes — they fix its <em>orientation</em> with respect to the geometry.</p></li>
+</ul>
+<p>That is why the standard’s clauses come in two halves, one sentence placing <code class="docutils literal notranslate"><span class="pre">O</span></code> and one or two more fixing the axes. §5.2 is the clearest case: “The origin of the base coordinate system, <code class="docutils literal notranslate"><span class="pre">O₁</span></code>, shall be defined by the manufacturer of the robot. The <code class="docutils literal notranslate"><span class="pre">+Z₁</span></code> axis is in the direction of the mechanical structure of the robot perpendicularly away from the base mounting surface.”</p>
+<p>Subscripts in use: <code class="docutils literal notranslate"><span class="pre">0</span></code> world, <code class="docutils literal notranslate"><span class="pre">1</span></code> base, <code class="docutils literal notranslate"><span class="pre">m</span></code> mechanical interface, <code class="docutils literal notranslate"><span class="pre">t</span></code> tool, <code class="docutils literal notranslate"><span class="pre">p</span></code> mobile platform, <code class="docutils literal notranslate"><span class="pre">k</span></code> task, <code class="docutils literal notranslate"><span class="pre">j</span></code> object, <code class="docutils literal notranslate"><span class="pre">c</span></code> camera.</p>
+</section>
+<section id="specifying-a-coordinate-system-datums-and-what-referenced-to-means">
+<h3>Specifying a coordinate system: datums and what “referenced to” means<a class="headerlink" href="#specifying-a-coordinate-system-datums-and-what-referenced-to-means" title="Link to this heading"></a></h3>
+<blockquote>
+<div><p><strong>OUTLINE — not yet written.</strong> The plan for the subsection that makes “referenced to” precise. Review the structure before it gets filled in.</p>
+</div></blockquote>
+<p><strong>Why it is needed.</strong> “Referenced to the mounting face” is better than “origin at the centroid”, but it is still loose: it does not say how much of the six degrees of freedom one face actually pins down, nor what may be named as a feature in the first place. Both questions have citable answers in the GPS (geometrical product specification) standards, so this subsection borrows rather than invents.</p>
+<p><strong>0. Three things have been called “defining the coordinate system”, and they are different.</strong>
+This part comes first because it is the confusion the rest depends on: “referenced to the mounting face” reads as a qualitative description, a pose is six numbers, and mixing the two feels wrong. It is not a mixture. They are three layers with a direction of travel between them.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p></p></th>
+<th class="head"><p>What it is</p></th>
+<th class="head"><p>Numbers?</p></th>
+<th class="head"><p>Who produces it</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Datum specification</strong></p></td>
+<td><p>which situation features the coordinate system is referenced to</p></td>
+<td><p>none</p></td>
+<td><p>a person, once, and it is recorded</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Realized pose</strong></p></td>
+<td><p>what that specification evaluates to against a particular piece of geometry — the coordinate system’s location and orientation in whatever ambient coordinates the geometry is expressed in</p></td>
+<td><p>six</p></td>
+<td><p>derived by measurement, never authored</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Relative pose</strong></p></td>
+<td><p>the transform between two coordinate systems; this is what an SDF <code class="docutils literal notranslate"><span class="pre">&lt;visual&gt;&lt;pose&gt;</span></code> or a <code class="docutils literal notranslate"><span class="pre">&lt;joint&gt;&lt;origin&gt;</span></code> holds</p></td>
+<td><p>six</p></td>
+<td><p>computed from the two realized poses</p></td>
+</tr>
+</tbody>
+</table>
+<p>So <em>referenced to</em> is not a qualitative stand-in for the six numbers. It is the <strong>rule that generates them</strong>, and the numbers are its output:</p>
+<p><code class="docutils literal notranslate"><span class="pre">datum</span> <span class="pre">specification</span> <span class="pre">+</span> <span class="pre">vertex</span> <span class="pre">data</span> <span class="pre">→</span> <span class="pre">realized</span> <span class="pre">pose</span> <span class="pre">→</span> <span class="pre">(invert,</span> <span class="pre">compose</span> <span class="pre">with</span> <span class="pre">the</span> <span class="pre">axis-convention</span> <span class="pre">rotation)</span> <span class="pre">→</span> <span class="pre">the</span> <span class="pre">visual</span> <span class="pre">pose</span></code></p>
+<p>To write: the direct parallel in mechanical practice, which is where the whole vocabulary comes from. A drawing names datum A as a face and datum B as a bore; it does not give coordinates. A CMM then measures the part and computes the datum reference frame numerically. The qualitative statement is the specification; the six numbers are a measurement result. Nobody experiences that as a category mix-up, and it is exactly our situation.</p>
+<p>Two consequences worth stating in the same breath. First, “referenced to” has a <strong>formal completeness test</strong>, so it is not merely qualitative: the named features must constrain all six degrees of freedom between them, or the coordinate system is under-determined and the leftover degrees of freedom are arbitrary — a defect in the specification, and a detectable one. Second, this names the project’s actual defect precisely: today the visual poses and mounting offsets are hand-authored six-number values with no datum specification upstream of them, so a redelivered mesh cannot reproduce them and the numbers have to be re-derived by eye. The numbers are not the problem; the missing rule above them is.</p>
+<p><strong>A. What may serve as a datum — four kinds, and nothing else.</strong>
+ISO 17450-1 §3.3.1.1.3 defines a <strong>situation feature</strong> as a “point, straight line, plane or helix, from which the location and/or orientation of a geometrical feature can be defined”, adding that it “is a geometrical attribute of an ideal feature” and that “no dimensional parameters are linked to a situation feature”. To write: that the list is exhaustive, with the standard’s own examples (situation point of a sphere or a cone, situation straight line of a cylinder, situation plane of a plane pair). The consequence to draw out: a centroid, a bounding-box center or a “center in plan” is a <em>derived quantity</em>, not a situation feature — which is the precise reason those rules drift on redelivery while a face or a bore axis does not. Also to reconcile with the Standards Summary note below, which reaches for “a datum point … associated with a recognizable feature or a survey landmark”: that instinct is right, and the refinement is that a <em>point</em> is only one of the four kinds and the weakest, because a point alone fixes no orientation at all. Vocabulary to introduce alongside: <strong>datum</strong>, <strong>datum feature</strong> and <strong>datum system</strong> from ISO 5459, and ASME Y14.5’s <strong>datum reference frame</strong>, “a Cartesian coordinate system oriented on a part from selected part features”, as the phrase closest to our meaning.</p>
+<p><strong>B. What “referenced to” means — location, orientation, or both.</strong>
+To write: ISO’s own “location <strong>and/or</strong> orientation” is the crux, and the <em>and/or</em> is load-bearing. A coordinate system has six degrees of freedom to pin down, three translational and three rotational, and each kind of situation feature constrains a different subset — a plane fixes one translation and two rotations; an axis fixes two translations and two rotations; a point fixes three translations and no rotation. So a single feature is almost never enough, and “referenced to” is shorthand for a <em>set</em> of features that together constrain all six. This is where ISO 5459’s primary / secondary / tertiary datum ordering belongs, and where a table belongs: feature kind, what it constrains, what is left free. <strong>[Open]</strong> those degree-of-freedom counts are stated from the GPS invariance-class model (ISO 17450-1 §3.3.1.2 and Annex E) and must be checked against that annex before this is published as [Firm].</p>
+<p><strong>C. Definition and realization are two different things, and every mature practice has both.</strong></p>
+<p>The four mobile cases below look incommensurable until this split is made, so it belongs ahead of the examples:</p>
+<ul class="simple">
+<li><p><strong>Definition</strong> — which situation features fix the reference point and the axes. This is what makes the coordinate system <em>meaningful</em>, and it is the datum specification of part 0.</p></li>
+<li><p><strong>Realization</strong> — a physical mark an instrument can actually be placed on. This is what makes it <em>measurable</em>.</p></li>
+</ul>
+<p><strong>[Firm]</strong> ISO 5459 has the standard name for the realization: a <strong>datum target</strong>, indicated as a datum target <em>point</em>, <em>line</em> or <em>area</em>. Its stated purpose is to establish a datum from limited contact where a whole feature cannot be used, so that every supplier seats the part identically. A tab welded to an ROV frame and a survey monument in a ship’s gyro room are datum target points. That matters for morale as much as rigor: those practices are not hacks, they are standard practice missing only its paperwork.</p>
+<p>To write: that a definition without a realization cannot be measured in the shop, and a realization without a definition cannot be reproduced on a redesign — which is why each of the cases below feels incomplete on its own.</p>
+<p><strong>C.1 Derivation depth predicts instability.</strong></p>
+<p>A usable test, to be written up as the reason to prefer one candidate over another:</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Candidate</p></th>
+<th class="head"><p>Referenced to</p></th>
+<th class="head"><p>Depth</p></th>
+<th class="head"><p>Stable under design change?</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Ship survey monument</p></td>
+<td><p>a physical mark</p></td>
+<td><p>0</p></td>
+<td><p>yes</p></td>
+</tr>
+<tr class="row-odd"><td><p>ROV welded tab</p></td>
+<td><p>a physical mark</p></td>
+<td><p>0</p></td>
+<td><p>yes</p></td>
+</tr>
+<tr class="row-even"><td><p>Wheel axis ∩ ground plane</p></td>
+<td><p>a straight line and a plane</p></td>
+<td><p>1</p></td>
+<td><p>yes</p></td>
+</tr>
+<tr class="row-odd"><td><p>“Center of the outline projected on the ground”</p></td>
+<td><p>silhouette → projection → center</p></td>
+<td><p>3</p></td>
+<td><p><strong>no</strong> — add a sensor mast and it moves</p></td>
+</tr>
+<tr class="row-even"><td><p>“At the center of mass”</p></td>
+<td><p>mass distribution of a configuration</p></td>
+<td><p>3+, and not geometric at all</p></td>
+<td><p><strong>no</strong> — reprovision and it moves</p></td>
+</tr>
+</tbody>
+</table>
+<p>The rule to state: prefer the least-derived datum available; where a derived one is unavoidable, freeze it by naming the artifact and configuration it was derived from.</p>
+<p><strong>C.2 The cases, as we actually meet them.</strong></p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Case</p></th>
+<th class="head"><p>Definition</p></th>
+<th class="head"><p>Realization</p></th>
+<th class="head"><p>To write</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Manipulator base, ISO 9787 §5.2</p></td>
+<td><p>the base mounting surface, a <strong>plane</strong> — “connection surface between the arm and its supporting structure” (§3.2); <code class="docutils literal notranslate"><span class="pre">+X₁</span></code> then fixed by a <em>constructed</em> direction through the working-space center, not by a feature</p></td>
+<td><p>left to the manufacturer</p></td>
+<td><p>the one case the standard specifies nearly completely</p></td>
+</tr>
+<tr class="row-odd"><td><p>Mechanical interface, §5.3</p></td>
+<td><p>the interface <strong>plane</strong> plus its <strong>axis</strong>; reference point at “the centre of the mechanical interface”</p></td>
+<td><p>the flange face and bolt circle</p></td>
+<td><p>write up from the standard</p></td>
+</tr>
+<tr class="row-even"><td><p>Mobile platform, §5.5</p></td>
+<td><p><strong>none given.</strong> ISO fixes the axes functionally — “<code class="docutils literal notranslate"><span class="pre">+X_p</span></code> … in the forward direction”, “<code class="docutils literal notranslate"><span class="pre">+Z_p</span></code> … in the upward direction” — and names no feature at all</p></td>
+<td><p>none given</p></td>
+<td><p>the gap, and it is the gap for exactly our vehicles</p></td>
+</tr>
+<tr class="row-odd"><td><p>Wheeled robot</p></td>
+<td><p>the wheel <strong>axis</strong> intersected with the <strong>ground plane</strong>. Note the folk version, “center of the projection of the outline on the ground”, is depth 3 and the outline is not a feature; REP 120 is more careful, using “the barycenter of the <strong>feet</strong> projections”</p></td>
+<td><p>usually none; a machined face or scribed mark would be an improvement</p></td>
+<td><p>also separate <code class="docutils literal notranslate"><span class="pre">base_link</span></code> from <code class="docutils literal notranslate"><span class="pre">base_footprint</span></code> — see C.3</p></td>
+</tr>
+<tr class="row-even"><td><p>ROV</p></td>
+<td><p>not usually written down</p></td>
+<td><p><strong>a tab welded to the frame.</strong> Arbitrary but unambiguous: it exists on the hardware, in the CAD model, and under a tape measure</p></td>
+<td><p>state the tab as a datum target and say nothing about where it roughly sits — “roughly midpoint” does no work and invites someone to re-derive it</p></td>
+</tr>
+<tr class="row-odd"><td><p>Surface vessel</p></td>
+<td><p>naval architecture’s three planes: the <strong>baseline</strong>, the <strong>centreline</strong> plane, and a transverse plane through the <strong>aft perpendicular</strong>, reference point at the intersection of the latter two. ISO 7462 carries the terminology and its terms are free on the ISO OBP</p></td>
+<td><p><strong>a survey monument</strong>, typically in the gyro room, with every sensor surveyed from it</p></td>
+<td><p>the mature two-layer practice, and the model for the others. Capture why the gyro room: the INS is the sensor whose orientation error compounds through everything else, so the monument goes where uncertainty against the datum is smallest. Capture also that the design coordinate system and the as-built survey can disagree by build tolerance, and the survey is what is true</p></td>
+</tr>
+<tr class="row-even"><td><p>UUV, torpedo-shaped</p></td>
+<td><p><strong>[Corrected]</strong> “at the center of mass” is unusable, because the CoM is a function of provisioning and moves between missions. “The CoM of the CAD model at a stated configuration” is a <em>frozen</em> derived value — honest and reproducible, but it makes the CAD artifact and its configuration part of the specification, and therefore version-controlled. The depth-1 alternative for a body of revolution: the hull’s <strong>axis of revolution</strong> plus a transverse <strong>plane</strong> at a named station (a ring frame, a section joint, the nose tangency point), which gives five of six degrees of freedom, with roll needing one more — a keyway, a connector boss, a scribed line</p></td>
+<td><p>none by default</p></td>
+<td><p>note that the CoM is chosen for control and hydrodynamic convenience, which is a legitimate reason to place a frame but should be declared as a choice rather than presented as geometry</p></td>
+</tr>
+<tr class="row-odd"><td><p>Our parts</p></td>
+<td><p>to be decided; the one genuine invention</p></td>
+<td><p>—</p></td>
+<td><p>open</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>C.3 <code class="docutils literal notranslate"><span class="pre">base_link</span></code> is a datum; <code class="docutils literal notranslate"><span class="pre">base_footprint</span></code> is not.</strong></p>
+<p>To write: a conflation the wheeled case invites. <code class="docutils literal notranslate"><span class="pre">base_link</span></code> is a <strong>fixed datum on the body</strong>, so it wants a low-derivation featural definition. <code class="docutils literal notranslate"><span class="pre">base_footprint</span></code> is a <strong>derived runtime frame</strong> that legitimately moves as the vehicle pitches, rolls or walks — REP 120 defines it that way on purpose. “Center of the outline on the ground” is an acceptable definition for the second and a bad one for the first, and saying so removes most of the vagueness in current practice.</p>
+<p><strong>C.4 Why the vehicle coordinate system is a configuration item, not a modeling convention.</strong></p>
+<p><strong>[Firm]</strong> This is the strongest argument in the document for declaring the datum a priori, and it is not about modeling at all. Because the vehicle coordinate system is what localization reports — <code class="docutils literal notranslate"><span class="pre">base_link</span></code>’s pose in <code class="docutils literal notranslate"><span class="pre">odom</span></code> and <code class="docutils literal notranslate"><span class="pre">map</span></code>, per REP 105 — the datum is an interface between four artifacts:</p>
+<ul class="simple">
+<li><p>the <strong>CAD model</strong>, where the offsets originate</p></li>
+<li><p>the <strong>simulation model</strong>, which must agree or the simulation lies</p></li>
+<li><p>the <strong>navigation software’s sensor extrinsics</strong>, all measured against it</p></li>
+<li><p>the <strong>as-built survey</strong>, which is the ground truth</p></li>
+</ul>
+<p>Move the datum by 10 cm and every reported vehicle position moves 10 cm, and every sensor offset is wrong by the same amount. To write: the conclusion that follows — the datum is owned, versioned, declared before 3D asset work is commissioned, and <em>cited</em> by all four consumers rather than re-derived by each.</p>
+<p><strong>C.5 The rule shape this produces.</strong></p>
+<p>Proposed, to be refined:</p>
+<blockquote>
+<div><p>The vehicle coordinate system shall be declared before the 3D asset is commissioned. The declaration names: the situation features that define it; the datum target that realizes it on the hardware, where one exists; and the CAD artifact and configuration, where any part of the definition is derived rather than featural. The same declaration is cited by the simulation model, the navigation extrinsics and the survey, and is never independently re-derived.</p>
+</div></blockquote>
+<p><strong>[Open]</strong> Two things to settle before any of part C is promoted from outline to [Firm]. ISO 7462 is solid for the terminology of baseline, centreline and perpendiculars, but whether a standard governs vessel survey monuments and alignment practice has not been checked — that is naval combat-systems alignment territory. And the degree-of-freedom counts in part B still need checking against ISO 17450-1 Annex E.</p>
+<p><strong>D. Why this replaces the origin question.</strong>
+To write: “where does the origin sit within the part?” invites derived answers that move whenever the geometry changes. “Which situation features is the part coordinate system referenced to?” invites an answer a modeler, an integrator and an inspector can each point at, and it is checkable by measurement on redelivery — the property the rule needed and never had. Close on what this does to the delivery spec: the manifest records the named features, not a set of coordinates.</p>
+</section>
+<section id="assumptions">
+<h3>Assumptions<a class="headerlink" href="#assumptions" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>All coordinate systems are right-handed.</p></li>
+<li><p>All coordinate systems define rotations about x, y and z as roll, pitch and yaw respectively.</p></li>
+</ul>
+</section>
+<section id="standards-summary">
+<h3>Standards Summary<a class="headerlink" href="#standards-summary" title="Link to this heading"></a></h3>
+<section id="iso-9787-2013">
+<h4>ISO 9787:2013<a class="headerlink" href="#iso-9787-2013" title="Link to this heading"></a></h4>
+<p>This is our foundations for the robotics coordinate systems and motion nomenclature</p>
+<p>Named Coordinate Systems and Notation:</p>
+<ul class="simple">
+<li><p><strong>World</strong> ($O_0 = X_0 - Y_0 - Z_0$):</p>
+<ul>
+<li><p>$O_0$ is user defined - unconstrained on where the world coordinate system is located</p></li>
+<li><p>$+Z_0$ is defined as “ collinear but in the opposite direction to the acceleration of gravity vector” - which is a more exact way of saying $+Z_0$ is up.</p></li>
+<li><p>$+X_0$ is  user defined - unconstrained orientation of frame, other than <code class="docutils literal notranslate"><span class="pre">+Z_0</span></code> is up.</p></li>
+<li><p>Comments:</p>
+<ul>
+<li><p>This is the standard we adopt in total.</p>
+<ul>
+<li><p>consistent with most (not all) other conventions and our preference.</p></li>
+<li><p>clearly documented so all we need to do is say we follow 5.1 and cite the standard.</p></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><strong>Base</strong> ($O_1 = X_1 - Y_1 - Z_1$):</p>
+<ul>
+<li><p>Base denotes the base of a robot.</p></li>
+<li><p>$O_1$: The origin of the base shall be defined by the manufacturer of the robot.</p>
+<ul>
+<li><p>For the spec and workflow we are building this is important.  We can adapt something along the lines of “The location of the base coordinate system relative to the robot geometry SHOULD be explicity defined when commissioning the 3D asset creation.  Ideally both the robot hardware and the 3D model share the same origin location definition. This is a datum point on the robot, typically associated with a recognizable feature or a survey landmark, in order to serve as the canoncial reference location for sensors and actuators.”
+This is a sticking point - and one we’ve gotten wrong.</p></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</section>
+</section>
+<section id="robotics">
+<h3>Robotics<a class="headerlink" href="#robotics" title="Link to this heading"></a></h3>
+<p>There are multiple practices in robotics, so there is not just one convention. Also, these are soft conventions and there is likely a multitude of practices, good and bad, out in the wild.</p>
+<section id="categorizing-links-by-their-place-in-the-tree">
+<h4>Categorizing links by their place in the tree<a class="headerlink" href="#categorizing-links-by-their-place-in-the-tree" title="Link to this heading"></a></h4>
+<p><strong>[Firm]</strong> The structural claim holds, with one caveat. In URDF a link has zero or one parent and any number of children, because URDF is a tree — its schema has no way to give a link two parents, so closed kinematic loops cannot be expressed at all. <strong>[Firm]</strong> SDF does not have that restriction: a link may be the child of more than one joint, so loops are expressible on the SDF side. A part bolted to two different parents is therefore a URDF impossibility and an SDF ordinary case.</p>
+<p><strong>[Firm]</strong> The four categories below are close to an existing standard. ISO 9787 §5 defines eight coordinate systems, and four of them correspond almost exactly to these categories. That is a good outcome: it means this taxonomy does not need inventing, and each category has a standard name and a defined origin rule.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Category here</p></th>
+<th class="head"><p>ISO 9787 name</p></th>
+<th class="head"><p>ISO clause</p></th>
+<th class="head"><p>What the standard fixes</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>1. Base link, mobile</p></td>
+<td><p>Mobile platform coordinate system, <code class="docutils literal notranslate"><span class="pre">O_p</span></code></p></td>
+<td><p>§5.5, term §3.10</p></td>
+<td><p>names the origin the “mobile platform reference point”</p></td>
+</tr>
+<tr class="row-odd"><td><p>2. Base link, fixed or passive</p></td>
+<td><p>Base coordinate system, <code class="docutils literal notranslate"><span class="pre">O₁</span></code></p></td>
+<td><p>§5.2</p></td>
+<td><p>origin “shall be defined by the manufacturer”; <code class="docutils literal notranslate"><span class="pre">+Z₁</span></code> away from the base mounting surface</p></td>
+</tr>
+<tr class="row-even"><td><p>3. Intermediate link</p></td>
+<td><p><em>(none)</em></p></td>
+<td><p>—</p></td>
+<td><p>ISO numbers the <strong>axes</strong>, not the links: §4.4</p></td>
+</tr>
+<tr class="row-odd"><td><p>4. End effector</p></td>
+<td><p>Tool coordinate system (TCS), <code class="docutils literal notranslate"><span class="pre">O_t</span></code></p></td>
+<td><p>§5.4, term §3.7</p></td>
+<td><p>“referenced to the tool or to the end effector attached to the mechanical interface”</p></td>
+</tr>
+<tr class="row-even"><td><p><em>(missing from the list)</em></p></td>
+<td><p><strong>Mechanical interface coordinate system</strong>, <code class="docutils literal notranslate"><span class="pre">O_m</span></code></p></td>
+<td><p>§5.3, term §3.6</p></td>
+<td><p>origin “is the centre of the mechanical interface”; <code class="docutils literal notranslate"><span class="pre">+Z_m</span></code> “points perpendicularly away from the mechanical interface”</p></td>
+</tr>
+</tbody>
+</table>
+<ol class="arabic">
+<li><p><strong>Base link, mobile.</strong> Zero parent joints, many children. Examples: the root part (body) of flying, driving, walking, swimming robots. There is not one fixed point of the geometry that interacts with the rest of the objects, so the location of the origin of the base link relative to the geometry is a stated datum — it must be specified — and should be stable under design change.</p>
+<p><strong>[Firm]</strong> The standards agree that it must be stated and decline to state it for you. REP 105: “The coordinate frame called <code class="docutils literal notranslate"><span class="pre">base_link</span></code> is rigidly attached to the mobile robot base. The <code class="docutils literal notranslate"><span class="pre">base_link</span></code> can be attached to the base in any arbitrary position or orientation; for every hardware platform there will be a different place on the base that provides an obvious point of reference.” ISO 9787 §5.1 says the same of the world system: its origin “shall be defined by the users in accordance with their requirements”.</p>
+<p><strong>[Corrected]</strong> “No clear parent” is right about joints and wrong about frames. A mobile <code class="docutils literal notranslate"><span class="pre">base_link</span></code> does have a parent in the transform tree — REP 105 puts it under <code class="docutils literal notranslate"><span class="pre">odom</span></code>, then <code class="docutils literal notranslate"><span class="pre">map</span></code>, then <code class="docutils literal notranslate"><span class="pre">earth</span></code> — but that edge is a <em>published transform</em> produced by odometry, not a joint in the model. The model is rootless; the runtime tree is not.</p>
+<p><strong>[Firm]</strong> ISO 9787 §5.5 does give the mobile platform axis rule, and it is REP 103: “The <code class="docutils literal notranslate"><span class="pre">+X_p</span></code> axis is normally taken in the forward direction of the mobile platform. The <code class="docutils literal notranslate"><span class="pre">+Z_p</span></code> axis is normally taken in the upward direction of the mobile platform.” Figure 6 draws it on a four-wheeled vehicle with <code class="docutils literal notranslate"><span class="pre">Y_p</span></code> to the platform’s left. So for the mobile case the robotics standard and the ROS convention agree outright, and the only thing ISO leaves open is where the origin sits — the same gap REP 105 leaves.</p>
+</li>
+</ol>
+<p><strong>[Firm]</strong> “Axis midpoint projected to the ground” is a real documented pattern, though the standard example is a different frame rather than <code class="docutils literal notranslate"><span class="pre">base_link</span></code> itself. REP 120 defines <code class="docutils literal notranslate"><span class="pre">base_footprint</span></code> as “the representation of the robot position on the floor”, where “The translation component of the frame should be the barycenter of the feet projections on the floor”, with roll and pitch zero. Its stated rationale is stability: <code class="docutils literal notranslate"><span class="pre">base_footprint</span></code> “provides a fairly stable 2D planar representation of the humanoid even while walking and swaying with the <code class="docutils literal notranslate"><span class="pre">base_link</span></code>”. <strong>[Practice]</strong> The wheeled-robot equivalent, the wheel-axis midpoint projected to the ground, is very widely used but is not written down in any REP.</p>
+<ol class="arabic" start="2">
+<li><p><strong>Base link, fixed or passive.</strong> One parent, one or many children. Example: the root part (body) of a manipulator kinematic chain. There is one point in the geometry that can be taken as the definitive location of the rest of the kinematic chain in the world. The location of the base origin is often fixed — either with an overt fixed joint to something else in the world, or passively by gravity and friction.</p>
+<p><strong>[Firm]</strong> This is the best-specified case in the standards, and the origin is tied to a physical surface rather than to the geometry as a whole. ISO 8373 defines the <em>base mounting surface</em> as the “connection surface between the arm and its supporting structure” (ISO 9787 §3.2), and ISO 9787 §5.2 references the base coordinate system to it: <code class="docutils literal notranslate"><span class="pre">+Z₁</span></code> perpendicular away from that surface, <code class="docutils literal notranslate"><span class="pre">+X₁</span></code> pointing through the projection of the centre of the working space onto it.</p>
+</li>
+<li><p><strong>Intermediate link.</strong> One parent, one or more children.</p>
+<p><strong>[Corrected]</strong> The draft said “one parent, one child”. A link can branch — a torso with two arms, a hull with four thruster mounts — so one parent and <em>n</em> children is the general case, and “intermediate” should mean only “has a parent joint and at least one child”.</p>
+<p><strong>[Firm]</strong> ISO 9787 defines no coordinate system for an intermediate link. It numbers the axes instead: “axis 1 shall be the first motion closest to the base mounting surface, axis 2 the second motion, and so on, and the last the motion to which the mechanical interface is attached” (§4.4). Per-link coordinate system placement is the business of a kinematics convention such as Denavit-Hartenberg, not of this standard.</p>
+</li>
+<li><p><strong>Leaf link.</strong> One parent, no children. An end effector is one kind of leaf; so is a wheel, a sensor, a flag or a propeller.</p>
+<p><strong>[Corrected]</strong> The draft called this category “end effector” and defined it as “intermediate link with no children”. Those are two different ideas: <em>leaf</em> is structural, <em>end effector</em> is a role. Most leaves on our vehicles are not end effectors.</p>
+<p><strong>[Firm]</strong> For the end-effector case the standard does give a frame, and a second point inside it: the tool coordinate system is “referenced to the tool or to the end effector attached to the mechanical interface” (§3.7), and the tool centre point is a “point defined for a given application with regard to the mechanical interface coordinate system” (§3.9).</p>
+</li>
+</ol>
+<p><strong>[Open]</strong> The two structural questions — does the link have a parent joint, and does it have children — are independent, so they generate four cells, and the categories above mix that structure with the link’s <em>role</em> (base, tool, wheel). Whether the eventual rule should be stated on structure, on role, or on both is not settled here.</p>
+</section>
+<section id="manipulation-centric-robots-with-static-base">
+<h4>Manipulation-centric (robots with static base)<a class="headerlink" href="#manipulation-centric-robots-with-static-base" title="Link to this heading"></a></h4>
+<p><strong>[Firm]</strong> For kinematic chains in manipulation scenarios it is common to define the object geometry relative to the frame collocated at the joint to the parent. URDF builds this in: a joint’s <code class="docutils literal notranslate"><span class="pre">&lt;origin&gt;</span></code> is the transform from the parent link frame to the child link frame, and everything belonging to the child — <code class="docutils literal notranslate"><span class="pre">&lt;visual&gt;</span></code>, <code class="docutils literal notranslate"><span class="pre">&lt;collision&gt;</span></code>, <code class="docutils literal notranslate"><span class="pre">&lt;inertial&gt;</span></code> — is then expressed in that child frame.</p>
+<p><strong>[Firm]</strong> In this convention the center of mass is <em>not</em> the frame; it is data declared against the frame. URDF states the CoM as <code class="docutils literal notranslate"><span class="pre">&lt;inertial&gt;&lt;origin</span> <span class="pre">xyz=&quot;...&quot;</span> <span class="pre">rpy=&quot;...&quot;/&gt;</span></code>, a pose relative to the link frame, alongside <code class="docutils literal notranslate"><span class="pre">&lt;mass&gt;</span></code> and <code class="docutils literal notranslate"><span class="pre">&lt;inertia&gt;</span></code>. So a link frame at a joint and a CoM somewhere else is the normal, intended arrangement, not a compromise.</p>
+<p><strong>[Practice]</strong> In this convention frames sit on the axes of rotation, which is the Denavit-Hartenberg inheritance. ISO 9787 §4.4’s axis numbering assumes the same ordering along the chain.</p>
+<p>Examples:</p>
+<ul class="simple">
+<li><p><strong>wheel</strong> — the origin goes on the axle, because the axle is the joint axis. <strong>[Practice]</strong> For a symmetric wheel the axle happens to coincide with the geometric center, which is probably why “center of the geometry” feels like the rule here; it is a coincidence of symmetry and does not generalize to a bracket or a mast.</p></li>
+<li><p><strong>manipulator arm</strong></p>
+<ul>
+<li><p><em>intermediate link</em> — the origin is at the joint to the previous link in the kinematic chain.</p></li>
+<li><p><em>base link</em> — the origin is the datum the whole chain is measured from, referenced to the base mounting surface per ISO 9787 §5.2. Because the base does not move, this origin doubles as the link between the robot and the world, which is why the standard makes the manufacturer declare it.</p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="mobile-centric">
+<h4>Mobile-centric<a class="headerlink" href="#mobile-centric" title="Link to this heading"></a></h4>
+<p>For a mobile robot (flying, driving, walking, swimming) there is no <em>joint</em> to a parent, because the body moves freely.</p>
+<p><strong>[Corrected]</strong> “There is not a parent” needs the same refinement as category 1: there is no parent <em>joint</em>, but there is a parent <em>frame</em> at runtime — <code class="docutils literal notranslate"><span class="pre">odom</span></code>, per REP 105 — supplied by odometry rather than by the model.</p>
+<p>In this case it is common to choose an origin that is a physically identifiable datum and stable under design change: a machined reference face, the projection of the drive axis onto the ground plane, or for a surface vessel the waterline. <strong>[Practice]</strong> No standard names any of these; REP 105 explicitly leaves the choice open and only insists that the platform has “an obvious point of reference”. <strong>[Firm]</strong> What the standards do supply is the reasoning for preferring stability: REP 120 justifies <code class="docutils literal notranslate"><span class="pre">base_footprint</span></code> on exactly that ground.</p>
+<p><strong>[Open]</strong> Whether <em>this</em> project’s convention should be a stated datum per vehicle, or a single geometric rule applied to all of them, is undecided and is the question the first draft never managed to answer cleanly.</p>
+</section>
+<section id="other-conventions-worth-knowing">
+<h4>Other conventions worth knowing<a class="headerlink" href="#other-conventions-worth-knowing" title="Link to this heading"></a></h4>
+<p><strong>[Firm]</strong> ISO 9787 §5 defines eight coordinate systems, not four, and the four not yet mentioned are all relevant to a simulation asset pipeline:</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>System</p></th>
+<th class="head"><p>Clause</p></th>
+<th class="head"><p>Referenced to</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Mechanical interface, <code class="docutils literal notranslate"><span class="pre">O_m</span></code></p></td>
+<td><p>§5.3</p></td>
+<td><p>the mechanical interface; origin at its center, <code class="docutils literal notranslate"><span class="pre">+Z_m</span></code> perpendicular away from it</p></td>
+</tr>
+<tr class="row-odd"><td><p>Tool (TCS), <code class="docutils literal notranslate"><span class="pre">O_t</span></code></p></td>
+<td><p>§5.4</p></td>
+<td><p>origin <strong>is</strong> the TCP; <code class="docutils literal notranslate"><span class="pre">+Z_t</span></code> “tool dependent, normally in the direction of the tool”</p></td>
+</tr>
+<tr class="row-even"><td><p>Mobile platform, <code class="docutils literal notranslate"><span class="pre">O_p</span></code></p></td>
+<td><p>§5.5</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">+X_p</span></code> forward, <code class="docutils literal notranslate"><span class="pre">+Z_p</span></code> up — REP 103’s body frame</p></td>
+</tr>
+<tr class="row-odd"><td><p>Task, <code class="docutils literal notranslate"><span class="pre">O_k</span></code></p></td>
+<td><p>§5.6</p></td>
+<td><p>“the site of the task” — <strong>defined by figure only, no axis rule</strong></p></td>
+</tr>
+<tr class="row-even"><td><p>Object, <code class="docutils literal notranslate"><span class="pre">O_j</span></code></p></td>
+<td><p>§5.7</p></td>
+<td><p>“the object” — figure only</p></td>
+</tr>
+<tr class="row-odd"><td><p>Camera, <code class="docutils literal notranslate"><span class="pre">O_c</span></code></p></td>
+<td><p>§5.8</p></td>
+<td><p>“the sensor which monitors the site of the task” — figure only</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>[Firm]</strong> Worth noting what the standard declines to do: §5.6 through §5.8 give no axis convention at all, only a reference to Figure 7. So ISO fixes axes for the world, base, mechanical interface, tool and mobile platform, and leaves the task, object and camera systems to the application. Annex A then works the base and mechanical interface systems through five mechanical structures — rectangular, cylindrical, polar, articulated and SCARA — and none of them is a mobile robot.</p>
+<p><strong>[Firm]</strong> The mechanical interface coordinate system is the standard name for the thing the earlier attempt in this project called an “attach” or a “slot”. It has a defined origin rule — the center of the mating interface — and a defined axis rule: <code class="docutils literal notranslate"><span class="pre">+Z</span></code> along the mating normal, pointing away from the surface.</p>
+<p><strong>[Firm]</strong> The disagreement is narrower than it first looks, and worth stating precisely. ISO 9787’s <em>mounting</em> coordinate systems are built around <code class="docutils literal notranslate"><span class="pre">+Z</span></code> along the mating normal (§5.3), and its <em>tool</em> coordinate systems around <code class="docutils literal notranslate"><span class="pre">+Z</span></code> “normally in the direction of the tool” (§5.4), both of which differ from a REP 103 body frame by a rotation. But its <em>mobile platform</em> frame (§5.5) is <code class="docutils literal notranslate"><span class="pre">+X</span></code> forward and <code class="docutils literal notranslate"><span class="pre">+Z</span></code> up, which is REP 103 exactly. So ISO and ROS agree about vehicles and differ only about mounting interfaces and tools, where ISO is describing a mating surface rather than a body.</p>
+<p><strong>[Firm]</strong> REP 103 also carries a deliberate second convention for sensors, and it is the clearest precedent in ROS for a frame that breaks the body-frame rule on purpose: “In the case of cameras, there is often a second frame defined with a <code class="docutils literal notranslate"><span class="pre">_optical</span></code> suffix. This uses a slightly different convention: z forward, x right, y down.”</p>
+<p><strong>[Firm]</strong> REP 105 supplies the world-fixed frames a vehicle needs above <code class="docutils literal notranslate"><span class="pre">base_link</span></code> — <code class="docutils literal notranslate"><span class="pre">odom</span></code> (continuous, drifts), <code class="docutils literal notranslate"><span class="pre">map</span></code> (no drift, discrete jumps) and <code class="docutils literal notranslate"><span class="pre">earth</span></code> — and REP 120 adds <code class="docutils literal notranslate"><span class="pre">base_footprint</span></code>.</p>
+<p><strong>[Practice]</strong> Outside robotics, CAD assembly tools express the same idea as mating features: Onshape’s “mate connector” is a named frame on a part used to assemble it against another, which is the mechanical interface coordinate system under a different name.</p>
+</section>
+</section>
+<section id="d-graphics">
+<h3>3D Graphics<a class="headerlink" href="#d-graphics" title="Link to this heading"></a></h3>
+<p>A different concept, and the difference is one of purpose rather than of mathematics.</p>
+<p><strong>[Firm]</strong> The frame is called a <em>pivot</em> (Maya, 3ds Max) or an <em>object origin</em> (Blender), and it is a manipulation handle: the point about which the object rotates and scales in the viewport. The Blender manual describes the origin as the point around which an object is transformed or manipulated. Nothing about it is required to mean anything physical.</p>
+<p><strong>[Practice]</strong> A common asset convention is to place the pivot at the bottom-center of the object so that a prop dropped at <code class="docutils literal notranslate"><span class="pre">z</span> <span class="pre">=</span> <span class="pre">0</span></code> sits on the floor; after that, at the natural articulation point (door → hinge, wheel → axle).</p>
+<p><strong>[Corrected]</strong> The draft called bottom-center “the dominant asset convention”. That over-claims: it is a real and widespread practice in real-time and game pipelines, but no standard states it, and the practice varies by engine and by studio. Treat it as a habit to expect in a delivery, not as a rule to cite.</p>
+<p><strong>[Firm]</strong> Blender offers <em>Object → Set Origin → Origin to Center of Mass (Volume)</em>, alongside <em>Origin to Geometry</em>, <em>Origin to 3D Cursor</em> and <em>Origin to Center of Mass (Surface)</em>. <strong>[Firm]</strong> The volume option requires a manifold, watertight mesh, which is a real constraint on using it as a rule. <strong>[Open]</strong> Whether asset pipelines actually use it is not something this document has evidence for either way; the claim that they do not was asserted without support.</p>
+<section id="what-survives-into-gltf-and-what-does-not">
+<h4>What survives into glTF, and what does not<a class="headerlink" href="#what-survives-into-gltf-and-what-does-not" title="Link to this heading"></a></h4>
+<p><strong>[Corrected]</strong> The first draft said “the pivot concept doesn’t survive into glTF at all”. That is wrong, and the correction matters because the rest of the pipeline depends on it.</p>
+<p><strong>[Firm]</strong> Blender’s object origin <em>does</em> survive: it becomes the origin of the glTF node’s frame. A glTF node carries a local transform and may instantiate at most one mesh, and the mesh’s vertex positions are expressed in that node’s frame. So on export, with transforms applied, the object origin is the node’s origin and the vertices are measured from it; without transforms applied, the offset between them appears as the node’s <code class="docutils literal notranslate"><span class="pre">translation</span></code>, <code class="docutils literal notranslate"><span class="pre">rotation</span></code> and <code class="docutils literal notranslate"><span class="pre">scale</span></code>. Either way the frame comes through intact.</p>
+<p>Three things genuinely do not survive:</p>
+<ol class="arabic simple">
+<li><p><strong>[Firm]</strong> <em>A pivot held separately from the transform.</em> Maya and 3ds Max keep rotate and scale pivots as attributes distinct from the object’s transform, so the pivot can be moved without moving the object. glTF has no such separation — one frame per node, vertices expressed in it — so any DCC pivot that differs from the object’s transform is baked away on export.</p></li>
+<li><p><strong>[Firm]</strong> <em>Any statement of meaning.</em> There is no property anywhere in glTF that records what an origin is for. Nothing can say “this origin is the mounting face” or “this axis is forward”. The origin is wherever the numbers evaluate to zero.</p></li>
+<li><p><strong>[Firm]</strong> <em>Anything checkable.</em> Because of (2), no validator can test an origin or a facing convention. Those rules can only live in a document and in whatever places the asset into a scene.</p></li>
+</ol>
+<p><strong>[Open]</strong> Where that leaves the project’s own rule is the next increment of this document, and it should not be written until the single-body case is airtight.</p>
+</section>
+<section id="standards-for-3d-assets">
+<h4>Standards for 3D assets<a class="headerlink" href="#standards-for-3d-assets" title="Link to this heading"></a></h4>
+<p><strong>[Corrected]</strong> The working assumption behind this document — solid references on the robotics side, nothing comparable for 3D assets — is wrong. The asset formats are standardized, and one of them is the format this project delivers in.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Standard</p></th>
+<th class="head"><p>What it is</p></th>
+<th class="head"><p>Coordinate system it fixes</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>ISO/IEC 12113:2022</strong></p></td>
+<td><p><em>Information technology — Runtime 3D asset delivery format — Khronos glTF™ 2.0.</em> glTF 2.0 published as an International Standard</p></td>
+<td><p>right-handed, <code class="docutils literal notranslate"><span class="pre">+Y</span></code> up, meters, radians; front faces <code class="docutils literal notranslate"><span class="pre">+Z</span></code>, left side faces <code class="docutils literal notranslate"><span class="pre">+X</span></code> (§3.4)</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>ISO/IEC 19775-1:2023</strong></p></td>
+<td><p><em>Extensible 3D (X3D) — Part 1: Architecture and base components</em></p></td>
+<td><p>§4.3.6 right-handed, <code class="docutils literal notranslate"><span class="pre">+Y</span></code> up, base unit “metres”; default viewer sits on <code class="docutils literal notranslate"><span class="pre">+Z</span></code> looking down <code class="docutils literal notranslate"><span class="pre">−Z</span></code>, so an object facing the camera faces <code class="docutils literal notranslate"><span class="pre">+Z</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><strong>ISO 17506:2022</strong></p></td>
+<td><p><em>COLLADA digital asset schema specification for 3D visualization of industrial data</em> (was ISO/PAS 17506:2012)</p></td>
+<td><p>declares its up axis per file, <code class="docutils literal notranslate"><span class="pre">&lt;up_axis&gt;</span></code>, rather than fixing one</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>[Firm]</strong> Three consequences follow, and they reframe the whole problem.</p>
+<p>First, citing glTF §3.4 <em>is</em> citing an ISO standard. The Khronos registry text and ISO/IEC 12113 are the same specification under two covers, so the asset side of this pipeline is no less formally grounded than the robotics side.</p>
+<p>Second, the asset standards agree with each other. glTF and X3D independently land on right-handed, <code class="docutils literal notranslate"><span class="pre">+Y</span></code> up, meters, and a front that faces <code class="docutils literal notranslate"><span class="pre">+Z</span></code> — X3D by way of where it puts the default camera rather than by saying so. That agreement is worth leaning on: it is not one vendor’s habit.</p>
+<p>Third, COLLADA is the outlier and the reason it behaved differently for us. It makes the up axis a per-file <em>declaration</em> instead of a convention, which is exactly the freedom that lets a consumer ignore it — and both Gazebo and RViz do.</p>
+<p><strong>[Firm]</strong> What genuinely has no standard is narrower than “3D assets”:</p>
+<ul class="simple">
+<li><p><strong>Authoring-tool vocabulary.</strong> “Pivot” (Maya, 3ds Max) and “object origin” (Blender) are vendor terms. No standard names them, and no standard relates them to each other.</p></li>
+<li><p><strong>Blender’s viewport sense of “front”.</strong> Blender’s Front view (numpad 1) looks along <code class="docutils literal notranslate"><span class="pre">+Y</span></code>, so the face presented to you is the <code class="docutils literal notranslate"><span class="pre">−Y</span></code> face. Taking that as the object’s front makes Blender’s convention forward <code class="docutils literal notranslate"><span class="pre">−Y</span></code>, left <code class="docutils literal notranslate"><span class="pre">+X</span></code>, up <code class="docutils literal notranslate"><span class="pre">+Z</span></code>. That is a UI habit, documented only by the behavior of the view shortcuts.</p></li>
+<li><p><strong>Which way a delivered asset should face.</strong> glTF states it without a requirement keyword and provides no property to record it, so nothing can enforce or check it.</p></li>
+</ul>
+<p><strong>[Open]</strong> OpenUSD is not standardized. The Alliance for OpenUSD is working toward a specification, but there is no ISO or equivalent text today, which matters because REP 158 is written around USD as the authoring baseline.</p>
+</section>
+</section>
+</section>
+<section id="reconciling-the-standards">
+<h2>Reconciling the standards<a class="headerlink" href="#reconciling-the-standards" title="Link to this heading"></a></h2>
+<p><strong>[Firm]</strong> The problem is not a missing standard. It is that two well-standardized communities label the same three axes differently, and an unstandardized authoring tool adds a third labeling.</p>
+<section id="where-they-agree-and-it-is-most-of-it">
+<h3>Where they agree, and it is most of it<a class="headerlink" href="#where-they-agree-and-it-is-most-of-it" title="Link to this heading"></a></h3>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Property</p></th>
+<th class="head"><p>Robotics (ISO 9787, REP 103)</p></th>
+<th class="head"><p>3D assets (ISO/IEC 12113, ISO/IEC 19775)</p></th>
+<th class="head"><p>Agree?</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Handedness</p></td>
+<td><p>right-handed (ISO §4.1, REP 103 “All systems are right handed”)</p></td>
+<td><p>right-handed (glTF §3.4, X3D §4.3.6)</p></td>
+<td><p><strong>yes</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p>Length unit</p></td>
+<td><p>meter (REP 103 base units)</p></td>
+<td><p>meter (glTF §3.4, X3D §4.3.6)</p></td>
+<td><p><strong>yes</strong></p></td>
+</tr>
+<tr class="row-even"><td><p>Angle unit</p></td>
+<td><p>radian (REP 103)</p></td>
+<td><p>radian (glTF §3.4)</p></td>
+<td><p><strong>yes</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p>Rotation names</p></td>
+<td><p>roll, pitch, yaw about X, Y, Z (ISO §4.3, REP 103)</p></td>
+<td><p>not addressed</p></td>
+<td><p>no conflict</p></td>
+</tr>
+<tr class="row-even"><td><p>Which axis is up</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">+Z</span></code> (ISO §5.1 “collinear but in the opposite direction to the acceleration of gravity”; §5.5 <code class="docutils literal notranslate"><span class="pre">+Z_p</span></code> up)</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">+Y</span></code></p></td>
+<td><p><strong>no</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p>Which axis is forward</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">+X</span></code> (ISO §5.5, REP 103)</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">+Z</span></code></p></td>
+<td><p><strong>no</strong></p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="the-disagreement-is-one-cyclic-relabeling">
+<h3>The disagreement is one cyclic relabeling<a class="headerlink" href="#the-disagreement-is-one-cyclic-relabeling" title="Link to this heading"></a></h3>
+<p><strong>[Firm]</strong> Write each convention as the ordered triple its <code class="docutils literal notranslate"><span class="pre">(X,</span> <span class="pre">Y,</span> <span class="pre">Z)</span></code> axes mean:</p>
+<ul class="simple">
+<li><p>robotics — <code class="docutils literal notranslate"><span class="pre">(forward,</span> <span class="pre">left,</span> <span class="pre">up)</span></code></p></li>
+<li><p>3D assets — <code class="docutils literal notranslate"><span class="pre">(left,</span> <span class="pre">up,</span> <span class="pre">forward)</span></code></p></li>
+</ul>
+<p>The same three directions in the same cyclic order, shifted by one position. Nothing is mirrored, no unit differs, no handedness differs. That is why a single rotation reconciles them, and why the reconciliation can never need a reflection or a scale.</p>
+<p><strong>[Corrected]</strong> Blender’s viewport convention is <em>not</em> a third position in that cycle, which is a tidier claim than the algebra supports. Its triple is <code class="docutils literal notranslate"><span class="pre">(left,</span> <span class="pre">back,</span> <span class="pre">up)</span></code> — the front view presents the <code class="docutils literal notranslate"><span class="pre">−Y</span></code> face — and that is not a cyclic shift of <code class="docutils literal notranslate"><span class="pre">(forward,</span> <span class="pre">left,</span> <span class="pre">up)</span></code>; it shares the robotics up axis and differs in the other two. A yaw of <code class="docutils literal notranslate"><span class="pre">+90°</span></code> about that shared up axis carries Blender’s axes onto REP 103’s, which is why a part authored to REP 103 shows its front in Blender’s <strong>Right</strong> view rather than its Front view. Blender is also the one convention here with no standard behind it.</p>
+</section>
+<section id="our-coordinate-system-names">
+<h3>Our coordinate system names<a class="headerlink" href="#our-coordinate-system-names" title="Link to this heading"></a></h3>
+<p><strong>[Firm where a clause is cited, otherwise ours]</strong> Based on ISO 9787 and deliberately not identical to it. ISO is written for industrial manipulators, so three of its eight systems have no use here and it lacks a name for the thing we handle most: an ordinary rigid component that is neither a base, a tool, nor a mating surface.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Our name</p></th>
+<th class="head"><p>Basis</p></th>
+<th class="head"><p>Status</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>world coordinate system</strong></p></td>
+<td><p>ISO 9787 §5.1 world coordinate system</p></td>
+<td><p><strong>adopt as-is</strong>: <code class="docutils literal notranslate"><span class="pre">+Z</span></code> opposite gravity, origin ours to define</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>vehicle coordinate system</strong></p></td>
+<td><p>ISO 9787 §5.5 mobile platform coordinate system</p></td>
+<td><p><strong>adopt the axes as-is</strong> (<code class="docutils literal notranslate"><span class="pre">+X</span></code> forward, <code class="docutils literal notranslate"><span class="pre">+Z</span></code> up, = REP 103); rename, because “mobile platform” reads oddly for a boat and an ROV</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>part coordinate system</strong></p></td>
+<td><p>none — ISO numbers axes, not links</p></td>
+<td><p><strong>ours.</strong> ISO has no term for a non-root rigid body that is not a tool or an interface. This is the gap we must fill ourselves</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>mount coordinate system</strong></p></td>
+<td><p>ISO 9787 §5.3 mechanical interface coordinate system</p></td>
+<td><p><strong>narrow</strong>: keep the origin rule (center of the interface) and drop the <code class="docutils literal notranslate"><span class="pre">+Z</span></code> mating-normal axis rule in favor of the part coordinate system’s axes, so that one convention governs every coordinate system in a model</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>asset coordinate system</strong></p></td>
+<td><p>glTF / ISO/IEC 12113 §3.5, the scene’s implicit space</p></td>
+<td><p><strong>ours, grounded in the format.</strong> No robotics standard has this concept; it exists only inside a file</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>node coordinate system</strong></p></td>
+<td><p>glTF / ISO/IEC 12113 §3.5 node</p></td>
+<td><p><strong>adopt as-is</strong>, the format’s own term</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>sensor coordinate system</strong></p></td>
+<td><p>ISO 9787 §5.8 camera coordinate system; REP 103 <code class="docutils literal notranslate"><span class="pre">_optical</span></code></p></td>
+<td><p><strong>adopt REP 103’s</strong>, since ISO gives no axis rule and REP 103 does (<code class="docutils literal notranslate"><span class="pre">z</span></code> forward, <code class="docutils literal notranslate"><span class="pre">x</span></code> right, <code class="docutils literal notranslate"><span class="pre">y</span></code> down)</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>tool coordinate system</em></p></td>
+<td><p>ISO 9787 §5.4</p></td>
+<td><p><strong>reserved, unused.</strong> No manipulators in scope yet; adopt as-is if one arrives</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>[Open]</strong> The mount-coordinate-system narrowing is a real decision and not yet taken. Keeping ISO’s <code class="docutils literal notranslate"><span class="pre">+Z</span></code>-along-the-mating-normal rule would make every mounting face self-describing but put a second axis convention inside one model; dropping it keeps one convention but means a mount coordinate system carries no information about which way the surface faces.</p>
+</section>
+<section id="the-full-reconciliation">
+<h3>The full reconciliation<a class="headerlink" href="#the-full-reconciliation" title="Link to this heading"></a></h3>
+<p>Each row is one frame; each column is what that frame is called, or what stands in for it, in each place.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Our name</p></th>
+<th class="head"><p>Symbol</p></th>
+<th class="head"><p>ISO 9787</p></th>
+<th class="head"><p>ROS (REP 103/105)</p></th>
+<th class="head"><p>SDF / Gazebo</p></th>
+<th class="head"><p>glTF (ISO/IEC 12113)</p></th>
+<th class="head"><p>Blender</p></th>
+<th class="head"><p>Action</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>world coordinate system</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">O₀</span></code></p></td>
+<td><p>world CS, §5.1</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">map</span></code>, <code class="docutils literal notranslate"><span class="pre">earth</span></code> (REP 105)</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">&lt;world&gt;</span></code>, implicit world frame element</p></td>
+<td><p>—</p></td>
+<td><p>the scene, Z-up</p></td>
+<td><p>adopt</p></td>
+</tr>
+<tr class="row-odd"><td><p>vehicle coordinate system</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">O_v</span></code></p></td>
+<td><p>mobile platform CS, §5.5</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">base_link</span></code> (REP 105)</p></td>
+<td><p>model frame; root <code class="docutils literal notranslate"><span class="pre">&lt;link&gt;</span></code></p></td>
+<td><p>—</p></td>
+<td><p>—</p></td>
+<td><p>adopt axes, rename</p></td>
+</tr>
+<tr class="row-even"><td><p>part coordinate system</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">O_pt</span></code></p></td>
+<td><p>—</p></td>
+<td><p>a non-root <code class="docutils literal notranslate"><span class="pre">&lt;link&gt;</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">&lt;link&gt;</span></code></p></td>
+<td><p>—</p></td>
+<td><p>the object, and its origin</p></td>
+<td><p><strong>ours</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p>mount coordinate system</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">O_m</span></code></p></td>
+<td><p>mechanical interface CS, §5.3</p></td>
+<td><p>a massless link + fixed joint</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">&lt;frame&gt;</span></code>, and a <code class="docutils literal notranslate"><span class="pre">&lt;joint&gt;</span></code> parent</p></td>
+<td><p>—</p></td>
+<td><p>—</p></td>
+<td><p>narrow</p></td>
+</tr>
+<tr class="row-even"><td><p>asset coordinate system</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">O_a</span></code></p></td>
+<td><p>—</p></td>
+<td><p>—</p></td>
+<td><p>the <code class="docutils literal notranslate"><span class="pre">&lt;mesh&gt;&lt;uri&gt;</span></code> as placed by <code class="docutils literal notranslate"><span class="pre">&lt;visual&gt;&lt;pose&gt;</span></code></p></td>
+<td><p>scene’s implicit space, §3.5</p></td>
+<td><p>the exported scene</p></td>
+<td><p>ours</p></td>
+</tr>
+<tr class="row-odd"><td><p>node coordinate system</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">O_n</span></code></p></td>
+<td><p>—</p></td>
+<td><p>—</p></td>
+<td><p>—</p></td>
+<td><p>node, §3.5</p></td>
+<td><p>the object’s origin</p></td>
+<td><p>adopt</p></td>
+</tr>
+<tr class="row-even"><td><p>sensor coordinate system</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">O_s</span></code></p></td>
+<td><p>camera CS, §5.8</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">*_optical</span></code> (REP 103)</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">&lt;sensor&gt;&lt;pose&gt;</span></code></p></td>
+<td><p>—</p></td>
+<td><p>—</p></td>
+<td><p>adopt REP 103</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>[Firm]</strong> Two asymmetries in that table are the whole reason this is hard. The middle rows have no glTF column, because glTF has no concept of a link, a joint or a mount — it has nodes and geometry and nothing else. And the <code class="docutils literal notranslate"><span class="pre">asset</span> <span class="pre">coordinate</span> <span class="pre">system</span></code> and <code class="docutils literal notranslate"><span class="pre">node</span> <span class="pre">coordinate</span> <span class="pre">system</span></code> rows have no robotics column, because nothing in ISO 9787 or the REPs describes the inside of a mesh file. The pipeline has to join two vocabularies that do not overlap at the point where they meet.</p>
+</section>
+<section id="adopt-narrow-or-invent">
+<h3>Adopt, narrow, or invent<a class="headerlink" href="#adopt-narrow-or-invent" title="Link to this heading"></a></h3>
+<p><strong>[Firm]</strong> Summarizing what this project actually has to write down, which is much less than the first draft assumed:</p>
+<ul class="simple">
+<li><p><strong>Adopt as-is, no project text needed:</strong> handedness, length and angle units, roll/pitch/yaw naming, the world coordinate system, the vehicle coordinate system’s axes, the sensor optical coordinate system, glTF’s node and scene model. All are settled by ISO 9787, REP 103 or ISO/IEC 12113 and need only a citation.</p></li>
+<li><p><strong>Narrow:</strong> the mount coordinate system, by dropping ISO’s mating-normal axis rule (undecided, above).</p></li>
+<li><p><strong>Invent, because no standard reaches:</strong> the part coordinate system as a named concept; where an origin sits within a part’s geometry; which asset-coordinate-system axis a delivery’s forward direction occupies; and the rule joining the asset coordinate system to the part coordinate system — that is, the value of the visual pose.</p></li>
+<li><p><strong>[Open]</strong> That last list is short and it is exactly the list the first draft failed to isolate. The next increments should address it in that order.</p></li>
+</ul>
+</section>
+</section>
+<section id="next-increment">
+<h2>Next increment<a class="headerlink" href="#next-increment" title="Link to this heading"></a></h2>
+<p>The vocabulary and the standards groundwork are now settled, and the list of things this project must decide for itself is short — see “Adopt, narrow, or invent” above. Deliberately not covered yet, in the order it should be taken up:</p>
+<ol class="arabic simple">
+<li><p>One rigid body, one mesh, no joints: world, vehicle and asset coordinate systems, mesh vertices, written in the names agreed above. Get this airtight before adding anything.</p></li>
+<li><p>The transform from the asset coordinate system to the part coordinate system — the value of the visual pose — and which of glTF, Gazebo and RViz applies what. The first draft’s findings on this are sound and can be carried over from <code class="docutils literal notranslate"><span class="pre">ab5f6a6</span></code>; its framing cannot.</p></li>
+<li><p>Where the origin sits within a part, and which asset-coordinate-system axis carries forward. These are the two genuine inventions.</p></li>
+<li><p>A second body and a joint between them, which is where the mount-coordinate-system narrowing has to be settled.</p></li>
+<li><p>Only then: the project’s delivery rule.</p></li>
+</ol>
+</section>
+<section id="references">
+<h2>References<a class="headerlink" href="#references" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>ISO 9787:2013, <em>Robots and robotic devices — Coordinate systems and motion nomenclatures</em>. §3 terms, §4.1 right-handedness, §4.3 roll/pitch/yaw, §4.4 axis numbering, §5.1–5.8 the eight coordinate systems, Annex A worked examples. Purchased single-user copy at <code class="docutils literal notranslate"><span class="pre">tools/maritime-workspace/refs/</span></code>, which is git-ignored — cite it by clause rather than copying text. https://www.iso.org/standard/59444.html</p></li>
+<li><p>ISO/IEC 12113:2022, <em>Information technology — Runtime 3D asset delivery format — Khronos glTF™ 2.0</em> — the same specification as the Khronos registry text: https://www.iso.org/standard/83990.html</p></li>
+<li><p>ISO/IEC 19775-1:2023, <em>Extensible 3D (X3D) — Part 1</em> §4.3.6 standard units and coordinate system. Web3D publishes the text free: https://www.web3d.org/standards/number/19775-1</p></li>
+<li><p>ISO 17506:2022, <em>COLLADA digital asset schema specification</em>: https://www.iso.org/standard/78834.html</p></li>
+<li><p>ISO 8373:2012 / :2021, <em>Robotics — Vocabulary</em>. The source ISO 9787 draws its terms from: https://www.iso.org/standard/75539.html</p></li>
+<li><p>REP 103, <em>Standard Units of Measure and Coordinate Conventions</em> — chirality, axis orientation, the <code class="docutils literal notranslate"><span class="pre">_optical</span></code> suffix frame, rotation representation: https://www.ros.org/reps/rep-0103.html</p></li>
+<li><p>REP 105, <em>Coordinate Frames for Mobile Platforms</em> — <code class="docutils literal notranslate"><span class="pre">base_link</span></code>, <code class="docutils literal notranslate"><span class="pre">odom</span></code>, <code class="docutils literal notranslate"><span class="pre">map</span></code>, <code class="docutils literal notranslate"><span class="pre">earth</span></code>: https://www.ros.org/reps/rep-0105.html</p></li>
+<li><p>REP 120, <em>Coordinate Frames for Humanoid Robots</em> — <code class="docutils literal notranslate"><span class="pre">base_footprint</span></code> and its rationale: https://www.ros.org/reps/rep-0120.html</p></li>
+<li><p>URDF specification, <code class="docutils literal notranslate"><span class="pre">&lt;joint&gt;&lt;origin&gt;</span></code> and <code class="docutils literal notranslate"><span class="pre">&lt;link&gt;&lt;inertial&gt;&lt;origin&gt;</span></code>: https://wiki.ros.org/urdf/XML/joint and https://wiki.ros.org/urdf/XML/link</p></li>
+<li><p>SDFormat specification, <code class="docutils literal notranslate"><span class="pre">&lt;frame&gt;</span></code> and <code class="docutils literal notranslate"><span class="pre">&lt;joint&gt;</span></code>: http://sdformat.org/spec</p></li>
+<li><p>glTF 2.0 specification, §3.4 Coordinate System and Units, §3.5 Scenes and Nodes: https://registry.khronos.org/glTF/specs/2.0/glTF-2.0.html</p></li>
+<li><p>Blender manual, Object Origin and <em>Set Origin</em>: https://docs.blender.org/manual/en/latest/scene_layout/object/origin.html</p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="Reference" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="pipeline-review.html" class="btn btn-neutral float-right" title="Visual asset pipeline: technical review and proposed guidelines" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright Honu Robotics.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    <span class="fa fa-book"> Other Versions</span>
+    v: main
+    <span class="fa fa-caret-down"></span>
+  </span>
+  <div class="rst-other-versions">
+    <dl id="honu-version-list">
+      <dt>Distributions</dt>
+      <dd><a href="/gltf-robotics/main/" data-version="main">Main</a></dd>
+    </dl>
+  </div>
+</div>
+<script>
+  (function () {
+    var current = "main";
+    var base = "/gltf-robotics/";
+
+    /* Keep the reader on the same page when switching versions; the
+       version root href stays as the fallback for pages a version lacks. */
+    function wire() {
+      document.querySelectorAll('.rst-other-versions a[data-version]').forEach(function (a) {
+        var target = a.getAttribute('data-version');
+        var path = window.location.pathname;
+        if (target !== current && path.indexOf('/' + current + '/') !== -1) {
+          a.href = path.replace('/' + current + '/', '/' + target + '/');
+        }
+      });
+    }
+
+    if (!window.fetch) { wire(); return; }
+
+    /* The deploy tool maintains versions.json at the site root; reading it
+       at runtime lets builds published before a new distribution existed
+       still offer it in the flyout. Offline or local preview builds fall
+       back to the build time list rendered above. */
+    fetch(base + 'versions.json', {cache: 'no-cache'}).then(function (response) {
+      if (!response.ok) { throw new Error(response.status); }
+      return response.json();
+    }).then(function (entries) {
+      var list = document.getElementById('honu-version-list');
+      if (!list || !entries.length) { return; }
+      list.querySelectorAll('dd').forEach(function (dd) { dd.remove(); });
+      entries.forEach(function (entry) {
+        var a = document.createElement('a');
+        a.href = entry.url;
+        a.setAttribute('data-version', entry.name);
+        a.textContent = entry.name.charAt(0).toUpperCase() + entry.name.slice(1);
+        var dd = document.createElement('dd');
+        dd.appendChild(a);
+        list.appendChild(dd);
+      });
+    }).catch(function () {}).finally(wire);
+  })();
+</script><script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
