@@ -10,4 +10,5 @@ over the network at run time. Each remains under its own license, held by its
 own author.
 
 figures/ reproduces figures from ISO 9787:2013 as independently drawn
-illustrations for study and citation. The standard itself is not redistributed.
+illustrations for study and citation. The standard itself is not redistributed:
+licensed reference documents live in refs/, which is git-ignored.

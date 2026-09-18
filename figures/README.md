@@ -2,7 +2,7 @@
 
 A small drawing kit for standalone, editable line drawings of coordinate systems — the kind ISO 9787:2013 uses in its Figures 3 to 7. White solids with black outlines, coordinate triads drawn as three arrows from a named origin, and italic labels with subscripts. Output is plain SVG with no external dependencies, so a drawing drops into Sphinx, a Markdown note, a slide or a PR comment, and can be opened in Inkscape afterwards.
 
-The five ISO figures are reproduced here as scene scripts, both as a check that the kit can do the job and as a starting point to copy. [`refs/ISO+9787-2013.pdf`](../../refs/ISO+9787-2013.pdf) holds the originals to compare against. The drawings are reproductions for our own use, not copies of the standard's artwork.
+The five ISO figures are reproduced here as scene scripts, both as a check that the kit can do the job and as a starting point to copy. [`refs/`](../refs/) holds the purchased standard, git-ignored, with the originals to compare against. The drawings are reproductions for our own use, not copies of the standard's artwork.
 
 ## Quick start
 

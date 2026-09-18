@@ -457,7 +457,7 @@ The vocabulary and the standards groundwork are now settled, and the list of thi
 
 ## References
 
-- ISO 9787:2013, *Robots and robotic devices — Coordinate systems and motion nomenclatures*. §3 terms, §4.1 right-handedness, §4.3 roll/pitch/yaw, §4.4 axis numbering, §5.1–5.8 the eight coordinate systems, Annex A worked examples. Purchased single-user copy at `tools/maritime-workspace/refs/`, which is git-ignored — cite it by clause rather than copying text. https://www.iso.org/standard/59444.html
+- ISO 9787:2013, *Robots and robotic devices — Coordinate systems and motion nomenclatures*. §3 terms, §4.1 right-handedness, §4.3 roll/pitch/yaw, §4.4 axis numbering, §5.1–5.8 the eight coordinate systems, Annex A worked examples. Purchased single-user copy at `refs/` in this repository, which is git-ignored — cite it by clause rather than copying text. https://www.iso.org/standard/59444.html
 - ISO/IEC 12113:2022, *Information technology — Runtime 3D asset delivery format — Khronos glTF™ 2.0* — the same specification as the Khronos registry text: https://www.iso.org/standard/83990.html
 - ISO/IEC 19775-1:2023, *Extensible 3D (X3D) — Part 1* §4.3.6 standard units and coordinate system. Web3D publishes the text free: https://www.web3d.org/standards/number/19775-1
 - ISO 17506:2022, *COLLADA digital asset schema specification*: https://www.iso.org/standard/78834.html

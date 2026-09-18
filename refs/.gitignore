@@ -1,0 +1,9 @@
+# Purchased standards and other licensed reference documents.
+#
+# These are bought per-seat and must not be redistributed, so they stay out of
+# the repository while living beside the work that cites them. Cite by clause;
+# keep the document local. Everything here is ignored except this file and the
+# README, so dropping a PDF in needs no further thought.
+*
+!.gitignore
+!README.md
