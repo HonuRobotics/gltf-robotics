@@ -109,7 +109,13 @@ The other two such materials are in `ABeautifulGame`, the Khronos Draco and KTX2
 
 `Distribution_Warehouse` -- the same asset in Fuel and in jetty_demo, byte for byte -- declares `KHR_texture_transform` in `extensionsRequired`, not in `extensionsUsed`, and applies the transform to texture slots. A conforming reader must refuse to load the file outright. Our own audit says Gazebo parses the extension and then ignores it, which predicts that the textures land in the wrong place rather than that the file fails.
 
-Both predictions cannot be right, and this is the one asset that settles it. The two Draco and KTX2 probes sit beside it as the easier half of the same question: those extensions are genuinely unimplemented rather than parsed and dropped, so a consumer has no way to be quietly wrong about them. It is the highest-value thing on the list for `glb_probe` inside drydock: load it, and see whether gz-common refuses the file, misplaces the textures, or does something else entirely. Until that is run, spec section 10's prohibition rests on a reading of the code rather than on a measurement.
+Both predictions cannot be right, and this is the one asset that settles it. The two Draco and KTX2 probes sit beside it as the easier half of the same question: those extensions are genuinely unimplemented rather than parsed and dropped, so a consumer has no way to be quietly wrong about them.
+
+**Settled, 2026-09-18.** Run through `glb_probe` against the installed gz-common, `Distribution_Warehouse` loads. The probe reports 3,010 submeshes, 19 materials and a bounding box of roughly 62 by 74 by 13 metres, with no error and no refusal, from a file whose `extensionsRequired` is `["KHR_texture_transform"]`. So the glTF specification's requirement -- that a conforming reader refuse a file requiring an extension it does not implement -- is not what Gazebo does, and the reading of the code in the review was right.
+
+That changes what section 10's prohibition is for. It is not protecting us from a file that will fail to load; it is protecting us from one that loads and is quietly wrong, which is the worse case and the harder one to notice. The rule stands and its reason should be restated in those terms.
+
+Two things the probe does not settle. Whether the textures actually land in the wrong place needs a rendered view, since the loader reports what it built and not what it looks like; the prediction is that the transform is dropped and the textures are misplaced. And the same file carries two UV sets and 3,010 root nodes, so it violates several other sections independently -- it is a probe of one rule, not a representative delivery.
 
 ### Texture format: the corpus is JPEG and the standards are PNG
 

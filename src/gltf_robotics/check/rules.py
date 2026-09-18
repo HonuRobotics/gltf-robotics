@@ -169,31 +169,48 @@ def rule_5_5_scenes_and_nodes(m):
             out.append(Finding("5.5", FAIL, "the scene does not list exactly the root node",
                                f"scene lists {listed}, roots are {roots}"))
 
+    # One finding per class rather than per node: a scene with thousands of
+    # roots would otherwise bury every other rule's verdict under its own.
+    matrices, rotations, unnamed, suffixed, spaced, misnamed = [], [], [], [], [], []
     for i in roots:
         node = m.get("nodes")[i]
+        name = node.get("name")
+        label = repr(name) if name else f"node {i}"
         if "matrix" in node:
-            out.append(Finding("5.5", FAIL, "the root node carries a matrix transform",
-                               "apply transforms in Blender before export"))
+            matrices.append(label)
         elif "rotation" in node:
             rot = node["rotation"]
             if abs(rot[0]) > 1e-6 or abs(rot[1]) > 1e-6 or abs(rot[2]) > 1e-6:
-                out.append(Finding("5.5", FAIL, "the root node carries a rotation",
-                                   f"{rot}; this is the Blender Y-up conversion node, "
-                                   "and the two consumers compose it differently"))
-        name = node.get("name")
+                rotations.append(f"{label} {rot}")
         if name is None:
-            out.append(Finding("5.5", FAIL, "the root node is unnamed",
-                               "Gazebo names each submesh after its node"))
-        else:
-            if re.search(r"\.\d{3}$", name):
-                out.append(Finding("5.5", FAIL, "the root node has a Blender numeric suffix",
-                                   repr(name)))
-            elif " " in name:
-                out.append(Finding("5.5", FAIL, "the root node name contains a space",
-                                   repr(name)))
-            elif name != m.part_name:
-                out.append(Finding("5.5", WARN, "the root node is not named after the part",
-                                   f"node {name!r}, file implies {m.part_name!r}"))
+            unnamed.append(label)
+        elif re.search(r"\.\d{3}$", name):
+            suffixed.append(label)
+        elif " " in name:
+            spaced.append(label)
+        elif name != m.part_name:
+            misnamed.append(label)
+
+    def summarise(items, level, singular, plural, detail=""):
+        if not items:
+            return
+        shown = ", ".join(items[:6]) + (f", and {len(items) - 6} more" if len(items) > 6 else "")
+        subject = f"{len(items)} root nodes {plural}" if len(items) > 1 else f"the root node {singular}"
+        out.append(Finding("5.5", level, subject,
+                           f"{shown}{'. ' + detail if detail else ''}"))
+
+    summarise(matrices, FAIL, "carries a matrix transform", "carry a matrix transform",
+              "apply transforms in Blender before export")
+    summarise(rotations, FAIL, "carries a rotation", "carry a rotation",
+              "this is the Blender Y-up conversion node, and the two consumers compose it "
+              "differently -- Gazebo pre-multiplies it, RViz post-multiplies it")
+    summarise(unnamed, FAIL, "is unnamed", "are unnamed",
+              "Gazebo names each submesh after its node")
+    summarise(suffixed, FAIL, "has a Blender numeric suffix", "have a Blender numeric suffix")
+    summarise(spaced, FAIL, "has a space in the name", "have a space in the name")
+    summarise(misnamed, WARN, "is not named after the part", "are not named after the part",
+              f"the filename implies {m.part_name!r}")
+
     return out or [Finding("5.5", PASS, "one scene, one named root node, no root transform")]
 
 
@@ -393,8 +410,11 @@ def rule_10_prohibited(m):
     if required:
         out.append(Finding(
             "10", FAIL, "extensionsRequired is not empty", ", ".join(required) +
-            ". A conforming reader must refuse a file requiring an extension it does not "
-            "implement. What Gazebo actually does here is unverified -- see probe/."))
+            ". A conforming reader must refuse a file outright when it requires an extension "
+            "it does not implement. Gazebo does not: measured with glb_probe against "
+            "jetty_demo's Distribution_Warehouse, which requires KHR_texture_transform, the "
+            "loader built all 3010 submeshes and 19 materials rather than refusing. The risk "
+            "is a file that loads and is quietly wrong, not one that fails loudly."))
 
     used = set(m.gltf.get("extensionsUsed", [])) | set(required)
     for ext, label in PROHIBITED_EXTENSIONS.items():
