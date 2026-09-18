@@ -1,0 +1,25 @@
+# Answers from the visual protocol in criteria.md, "Determining the origin and
+# orientation by eye". Hand-edited; the tool only reads this file.
+#
+# The measurement says where the file's zero sits inside its own bounding box.
+# It cannot say which face of a part is its mounting face, which end is the bow,
+# or whether a model is upright, because nothing in a glTF file records any of
+# that. A person in front of the rig can say all three in about a minute.
+#
+#   ./gltf_assess.py --rig jetty/Forklift     # writes the world, prints the commands
+#
+# One block per asset id, ids exactly as ASSESSMENT.md lists them:
+#
+#   "jetty/Forklift":
+#     up: +Z            # the file axis that points up when the model looks upright
+#     forward: -Y       # the file axis the front of the part faces
+#     datum: ground, at the wheel contact patch; centered across the width
+#     checked: 2026-09-17 bsb
+#     note: free text, one line
+#
+# `up` and `forward` are stated in the file's own axes, not in ROS axes, because
+# the file is what we are describing. Leave a field blank rather than guessing;
+# a part with no meaningful front (a drum, a pallet) should say so in `note` and
+# leave `forward` empty.
+
+# ==== answers below ====

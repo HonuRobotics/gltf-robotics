@@ -1,0 +1,185 @@
+# The list of glTF examples to assess. Hand-edited; this is the half of the tool
+# that carries judgement. `gltf_assess.py` reads it, measures every asset it
+# names and rewrites ASSESSMENT.md.
+#
+# Each entry names an asset or a library of them, in one of four ways:
+#
+#   url:    https://...            one file, anywhere
+#   fuel:   Owner/Model_Name       a Fuel model; add `file:` for one file in it,
+#                                  omit it to take every glTF file the model has
+#   github: owner/repo@ref         a repository; `glob:` selects, `limit:` caps
+#   path:   ~/some/dir or a glob   local files
+#
+# and carries a `group` for the report and a `note` saying why it is on the list.
+# `skip: true` parks an entry without deleting it.
+#
+# Adding an example is one block here and a re-run: measurements are cached per
+# source URI, so only the new entry is fetched. Nothing else in the report moves
+# unless the asset itself did.
+
+report: ASSESSMENT.md
+cache: cache
+
+# Per-asset ceiling on how much vertex data may be fetched for the measurements
+# that need it (UV range). Structure, materials, textures and triangle counts
+# are read from the JSON chunk and the image headers and cost nothing against it.
+budget_mb: 24
+
+# Assess only what is still current. An asset nobody has touched in this long is
+# evidence about what people used to do, and the question is what they do now.
+# Nothing is deleted: entries below stay on the list, older ones are still
+# measured and cached, and the report names them with their dates at the end.
+max_age_years: 3
+
+groups:
+  khronos:
+    title: Khronos reference assets
+    # Kept out of the corpus summary numbers. What the authors of the standard
+    # intended is a useful control against a single file, and it is not evidence
+    # about what the robotics community does, which is what the summary is for.
+    control: true
+    note: The control group. Files written by the people who wrote the specification, read one at a time rather than counted.
+  gazebo:
+    title: Gazebo team assets
+    note: What the maintainers of our primary consumer ship themselves.
+  fuel:
+    title: Gazebo Fuel
+    note: The public model library. Surveyed in full 2026-09-12; these are the ones worth reading closely.
+  ros:
+    title: Other ROS projects
+    note: Robots shipped as glTF by people outside the Gazebo team.
+  ours:
+    title: Our own parts
+    note: Parked deliberately. `glb_inventory.py` already measures these against the spec, and the point of this list is the outside view.
+
+assets:
+
+  # ---- Khronos reference assets ------------------------------------------
+  # Not robots, and not meant to be copied, but they establish what a file
+  # written by the specification's own authors looks like on every criterion.
+
+  - id: khronos/damaged_helmet
+    group: khronos
+    url: https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Assets/main/Models/DamagedHelmet/glTF-Binary/DamagedHelmet.glb
+    note: The canonical PBR sample. One mesh, one material, five 2048 JPEG maps including a packed ORM.
+
+  - id: khronos/boom_box
+    group: khronos
+    url: https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Assets/main/Models/BoomBox/glTF-Binary/BoomBox.glb
+    note: The same content authored at 1 cm scale, as a check on what "real-world scale" costs.
+
+  # Khronos packaging the same content with the features spec 8 and 10 forbid.
+  # Nothing else in the corpus uses Draco or KTX2, so without these two the
+  # checks for them are untested and the prohibitions rest on reading alone.
+
+  - id: khronos/abeautifulgame_draco_ktx
+    group: khronos
+    url: https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Assets/main/Models/ABeautifulGame/glTF-Binary-KTX-ETC1S-Draco/ABeautifulGame.glb
+    note: Draco geometry and KTX2 textures in one GLB, with both extensions declared required. What a conforming file that we must reject looks like.
+
+  - id: khronos/avocado_draco
+    group: khronos
+    url: https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Assets/main/Models/Avocado/glTF-Draco/Avocado.gltf
+    note: Draco geometry delivered as .gltf with side files.
+
+  # ---- Gazebo team assets -------------------------------------------------
+  # jetty_demo is the closest thing to an upstream reference for what a glTF
+  # asset for Gazebo is supposed to be: seventeen models, each a single
+  # self-contained base_visual.glb beside a model.sdf with hand-placed primitive
+  # colliders. Taken whole, because the trend across seventeen files authored by
+  # one team in one workflow is the point.
+
+  - id: jetty
+    group: gazebo
+    github: gazebosim/jetty_demo@main
+    glob: "jetty_demo/models/*/base_visual.glb"
+    note: The Gazebo Jetty release demo world, by Ian Chen, Steve Peters, Arjo Chakravarty and Aaron Chong.
+
+  - id: simple_warehouse
+    group: gazebo
+    github: iche033/simple_warehouse@main
+    glob: "models/*/*.glb"
+    note: Ian Chen's warehouse models, the same workflow outside the release repo. Includes a 50 MB table.
+
+  # ---- Gazebo Fuel --------------------------------------------------------
+  # The full-library survey found 54 glTF files among 2,333 models and exactly
+  # three robots. These are the six that answer a question we have open.
+
+  - id: fuel/forklift
+    group: fuel
+    fuel: OpenRobotics/Forklift
+    note: The best-authored glTF asset in Fuel. Embedded albedo, normal and packed metalness-roughness, ~30 primitive colliders in the SDF.
+
+  - id: fuel/ionic_mascot
+    group: fuel
+    fuel: OpenRobotics/Ionic Mascot
+    note: The factor-only case. Twelve materials, no textures, explicit metallicFactor 0 on the non-metals, and 148 nodes named Cylinder002.
+
+  - id: fuel/caddy
+    group: fuel
+    fuel: Open-RMF/Caddy
+    note: The only articulated glTF robot in Fuel, and the only single-file-plus-submesh precedent. Ships a .gltf referencing a texture that is not in the upload.
+
+  - id: fuel/atmos
+    group: fuel
+    fuel: proque/atmos
+    note: A glTF robot platform - thrusters, IMU, barometer, navsat - with factor-only materials and 195k triangles.
+
+  - id: fuel/distribution_warehouse
+    group: fuel
+    fuel: OpenRobotics/Distribution_Warehouse
+    note: Declares KHR_texture_transform in extensionsRequired, which a conforming reader must refuse outright. A ready-made conformance probe for what Gazebo really does.
+
+  - id: fuel/trial
+    group: fuel
+    fuel: dhyutin/trial
+    note: The metalness default trap at its purest - eight of eight materials metallic with nothing to override it.
+
+  # ---- Other ROS projects -------------------------------------------------
+
+  - id: rosbot
+    group: ros
+    github: husarion/rosbot_ros@jazzy
+    glob: "rosbot_description/meshes/rosbot/*.glb"
+    note: A commercial product, one GLB per link, written by trimesh rather than Blender. Millimeter units corrected with a URDF scale.
+
+  - id: pai
+    group: ros
+    github: ros-physical-ai/demos@main
+    glob: "pai_assets/models/*/*.glb"
+    note: SO-ARM101 demo assets, untextured GLB visuals with primitive colliders. The same collider naming convention as jetty_demo.
+
+  - id: ariac
+    group: ros
+    github: usnistgov/ARIAC@ariac2025
+    glob: "ariac_gz/models/*/meshes/*.gl*"
+    limit: 6
+    note: The NIST competition environment, mid-migration - 37 .glb, 9 .gltf with sidecars, 13 .dae and 29 .stl in one repository.
+
+  - id: tri/skydio_2
+    group: ros
+    url: https://raw.githubusercontent.com/RobotLocomotion/models/master/skydio_2/skydio_2_1000_poly.gltf
+    note: Toyota Research Institute, the largest user of glTF in URDF found anywhere, packaged the way Drake wants it - .gltf with external .bin and .png, never .glb.
+
+  - id: jpl/mhs
+    group: ros
+    github: nasa-jpl/m2020-urdf-models@main
+    glob: "mhs/meshes/MHS_*.glb"
+    limit: 3
+    note: The Ingenuity helicopter as flown in RViz for operations visualization.
+
+  - id: vanttec/hull_collision
+    group: ros
+    url: https://raw.githubusercontent.com/vanttec/vanttec_usv/develop/src/usv_description/models/vtec_s4/meshes/hull_collision.glb
+    note: The nearest maritime peer, and inverted - glTF used for the collision hull while the visual stays COLLADA.
+
+  # ---- Our own parts ------------------------------------------------------
+  # Parked deliberately. glb_inventory.py already measures these against the
+  # spec, and the point of this list is the outside view. Unpark it when the
+  # question is how far our files sit from the corpus rather than from the spec.
+
+  - id: ours
+    group: ours
+    skip: true
+    path: ~/maritime_ws/src/bluerobotics_models/bluerobotics_parts/models/*/*.visual.glb
+    note: The delivered parts library.
