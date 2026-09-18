@@ -39,9 +39,37 @@ Terms that have to be pinned down because they are used differently at different
 
 ### Our formal default
 
-This document uses **coordinate system** as the formal term. *Coordinate system*, *coordinate frame* and *frame* are exact synonyms here.
+**Decided.** This document uses **coordinate system** as the formal term. *Coordinate system*, *coordinate frame* and *frame* all mean the same thing here.
 
-The choice follows ISO 9787, which says "coordinate system" throughout and never "frame". The ROS side says the opposite — REP 103, REP 105 and tf all say *frame*, and tf identifies each one by a `frame_id` string. So the reconciliation table later is translating between two vocabularies.
+ The reasons 
+ * ISO 9787 says "coordinate system" throughout. 
+ * "coordinate system" is the native term at three of the four stages of the flow:
+| Stage | Its own term |
+|---|---|
+| 3D graphics conventions | "coordinate system" — X3D §4.3.6, *Standard units and coordinate system* |
+| glTF spec | "coordinate system" — §3.4 is titled *Coordinate System and Units* |
+| assimp loader | no vocabulary of its own |
+| Gazebo / ROS | "frame" — REP 103, REP 105 and tf, which identifies each by a `frame_id`; SDF also has a `<frame>` element |
+* And "frame" collides three ways on the asset side, which is where the readers least able to disambiguate it are.  In the DCC world...
+    - **A frame is a unit of time** in every DCC tool, and in glTF's own tooling.  To a modeler, "frame" means a point on the timeline first.
+    - **3D graphics does not use "frame" for this concept anyway.** Its idiom is *space* — object space, world space, tangent space — so adopting "frame" buys nothing on that side.
+
+*Space* was considered as the formal term for that last reason and rejected: it would import the mirror-image problem, since no roboticist says "object space". % CLAUDE: Rephrase, "Space" is an equivalent term for the conceptm cinubg from the DCC side, but confounded on the robotics side ("configuration space", etc.)
+
+"Frame" stays legal in three narrow places: inside verbatim quotations, since REP 105 really does say "the coordinate frame called `base_link`"; when naming a ROS or SDF artifact (`frame_id`, `<frame>`, `base_link`, `base_footprint`, and the REP titles in the references); and in informal prose where nothing is ambiguous.
+
+Two registers, copying ISO's own habit: the **full name in prose** — "the part coordinate system is referenced to the mounting face" — and the **subscripted origin symbol in tables, equations and diagram labels**, which is exactly what ISO uses `O₁`, `O_m` and `O_p` for. That removes the verbosity objection without inventing an abbreviation.
+
+**[Open]** The document does not yet obey its own rule. Its title and objective still say "Coordinate Frames", and the eight names coined in [Our frame names](#our-frame-names) are all "*x* frame". Renaming those is pending, and it is a rename rather than a decision. % CLAUDE: Fix on next PMR
+
+### Terms by stage of the flow
+
+Started here; extend as terms come up. The point is to record which stage a word comes from, because most of the confusion is a term carrying its home stage's meaning into a later one.
+
+**3D graphics / authoring stage**
+
+- **DCC** — *digital content creation*. The collective term for 3D authoring applications: Blender, Maya, 3ds Max, Houdini, Cinema 4D. Used in ISO 17506.
+- **pivot** (Maya, 3ds Max) and **object origin** (Blender) — the per-vendor names for a manipulation handle: the point an object rotates and scales about in the viewport. Neither term has a standard behind it, and the two tools do not mean quite the same thing by them — see [What survives into glTF](#what-survives-into-gltf-and-what-does-not).
 
 The reason we don't use "frame" is because that term is severly overloaded in 
 ### Coordinate system, origin, and reference point
@@ -82,6 +110,23 @@ Subscripts in use: `0` world, `1` base, `m` mechanical interface, `t` tool, `p` 
 > **OUTLINE — not yet written.** The plan for the subsection that makes "referenced to" precise. Review the structure before it gets filled in.
 
 **Why it is needed.** "Referenced to the mounting face" is better than "origin at the centroid", but it is still loose: it does not say how much of the six degrees of freedom one face actually pins down, nor what may be named as a feature in the first place. Both questions have citable answers in the GPS (geometrical product specification) standards, so this subsection borrows rather than invents.
+
+**0. Three things have been called "defining the coordinate system", and they are different.**
+This part comes first because it is the confusion the rest depends on: "referenced to the mounting face" reads as a qualitative description, a pose is six numbers, and mixing the two feels wrong. It is not a mixture. They are three layers with a direction of travel between them.
+
+| | What it is | Numbers? | Who produces it |
+|---|---|---|---|
+| **Datum specification** | which situation features the coordinate system is referenced to | none | a person, once, and it is recorded |
+| **Realized pose** | what that specification evaluates to against a particular piece of geometry — the coordinate system's location and orientation in whatever ambient coordinates the geometry is expressed in | six | derived by measurement, never authored |
+| **Relative pose** | the transform between two coordinate systems; this is what an SDF `<visual><pose>` or a `<joint><origin>` holds | six | computed from the two realized poses |
+
+So *referenced to* is not a qualitative stand-in for the six numbers. It is the **rule that generates them**, and the numbers are its output:
+
+`datum specification + vertex data → realized pose → (invert, compose with the axis-convention rotation) → the visual pose`
+
+To write: the direct parallel in mechanical practice, which is where the whole vocabulary comes from. A drawing names datum A as a face and datum B as a bore; it does not give coordinates. A CMM then measures the part and computes the datum reference frame numerically. The qualitative statement is the specification; the six numbers are a measurement result. Nobody experiences that as a category mix-up, and it is exactly our situation.
+
+Two consequences worth stating in the same breath. First, "referenced to" has a **formal completeness test**, so it is not merely qualitative: the named features must constrain all six degrees of freedom between them, or the coordinate system is under-determined and the leftover degrees of freedom are arbitrary — a defect in the specification, and a detectable one. Second, this names the project's actual defect precisely: today the visual poses and mounting offsets are hand-authored six-number values with no datum specification upstream of them, so a redelivered mesh cannot reproduce them and the numbers have to be re-derived by eye. The numbers are not the problem; the missing rule above them is.
 
 **A. What may serve as a datum — four kinds, and nothing else.**
 ISO 17450-1 §3.3.1.1.3 defines a **situation feature** as a "point, straight line, plane or helix, from which the location and/or orientation of a geometrical feature can be defined", adding that it "is a geometrical attribute of an ideal feature" and that "no dimensional parameters are linked to a situation feature". To write: that the list is exhaustive, with the standard's own examples (situation point of a sphere or a cone, situation straight line of a cylinder, situation plane of a plane pair). The consequence to draw out: a centroid, a bounding-box center or a "center in plan" is a *derived quantity*, not a situation feature — which is the precise reason those rules drift on redelivery while a face or a bore axis does not. Also to reconcile with the Standards Summary note below, which reaches for "a datum point … associated with a recognizable feature or a survey landmark": that instinct is right, and the refinement is that a *point* is only one of the four kinds and the weakest, because a point alone fixes no orientation at all. Vocabulary to introduce alongside: **datum**, **datum feature** and **datum system** from ISO 5459, and ASME Y14.5's **datum reference frame**, "a Cartesian coordinate system oriented on a part from selected part features", as the phrase closest to our meaning.
