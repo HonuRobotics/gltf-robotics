@@ -1,692 +1,471 @@
-# Coordinate Frames: glTF, Gazebo and ROS 
+# Coordinate Systems: glTF, Gazebo and ROS
 
-This is a starting point for a joint agentic workflow.
+An incremental build up of the understanding and explanation of how these coordinate systems are used, from 3D authoring through to robotic simulation.
 
-## Plan: 
+This is the only version. An earlier draft was abandoned for building detail on assumptions that were never checked, and it lives in git history at `ab5f6a6`. Do not treat its framing as current, but four things in it are verified from source and worth carrying over rather than re-deriving: the loader mechanism with the `gz-common` and `rviz_rendering` source quoted (its §4), the probe results on hand-authored assets (§5), the three-consumer tutorial (§12), and the audit of what the project's own documents say (§14). The probe generator and its output are still live at `~/maritime_ws/spike/coords/`.
 
-### Objectives:  
+##  Objective
 
-* Develop materials to explain how coordinates in 3D assets in glTF format are consumed and converted to coordinate frames in Gazebo sim entities.
-* The simpest use case, which we may expand, is when the 3D asset is a single visual mesh.   
-* Draft a section of src/bluerobotics_models/docs/reference/model-spec.md that provides clear, normative direction on how a 3D author in Blender should arrange coordintes.
+The purpose of this document is to be a clear explanation of how coordinate systems can be conceptualized and labeled from 3D graphics (authoring 3D assets in Blender) to robotic simulation (rendering visual assets aligned with collision models in Gazebo and RViz).
 
-### Background and context:
+### Central Issue
 
-* See discussion in CC history on our old workflow: Collada (single mesh), with single coodinate frame of the mesh.  The coordinate frame of the mesh was in the centroid of the 3D object and followed ROS REP 103 convention.    Those instrucuctions were very simple and easy to implement: 
-- Single mesh
-- Single coordinate frame orign (that of the mesh)
-- Simple rule - REP 103
-- Simple verification - check each mesh in Gazebo
-How do we refactor that workflow for glTF so our 3D author and developers can work together?  
+The main challenge that motivates this documentation is that in order to build a repeatable 3D asset workflow we need to document the conventions at every stage of this flow, and at every interface between stages:
+
+3D graphics conventions -> glTF spec -> assimp loader -> Gazebo / ROS
+
+Each item in the flow has its own combination of vocabulary, standards, conventions and best practices. To complicate things, these conventions are incomplete — not all of them constrain the same things — and sometimes they conflict. This requires understanding and documenting each step and, importantly, connecting the interfaces between each item so that the standards and conventions are followed, or, where necessary, documenting the variation from them.  
+
+## How claims in this document are marked
+
+The abandoned first draft went wrong by building detail on assumptions that were never checked. So every claim here carries its standing:
+
+- **[Firm]** — a standard or source says it, cited in [References](#references).
+- **[Practice]** — really done that way, but no standard says so. Do not present it as a rule.
+- **[Open]** — we do not know yet, or it needs a measurement nobody has made.
+- **[Corrected]** — was asserted in the first draft or earlier in this one and is wrong. Kept visible on purpose.
 
 
-* This new REP on SDF usage and glTF may have some useful sections which we should use. https://github.com/openrobotics/reps/blob/main/_posts/rep-0158%3A2006.md
-
-* glTF spec Section 3.4
-glTF uses a right-handed coordinate system.
-glTF defines +Y as up; the front side of a glTF asset faces +Z, the left side of a glTF asset faces +X.
 
 
-* ROS REP 103
-Axis Orientation
-In relation to a body the standard is:
-x forward
-y left
-z up
+## Coordinate Conventions and Typical Practices
 
-### Actions
+Here we clearly describe some of the usual conventions. The reason is that there are multiple conventions across multiple communities and fields.
 
-* Research on the references above.  
-* Research on asset coordinates vs body-frame coordinate
-* Draft, below in this document
-    * Description of how this works.  Start with summary, step-by-step of collada workflow (old).  Then step-by-step of the 
-* After done with first draft, run two critic agents - one the role of the software engineer.  They need to know what they are getting.  They may question why or point ot decisions.  The second critic is the 3D modeler who just wants a clear explanation of how they set it up in Blender
-* Revise with critical feedback
-* Then read again and look for places to put relevant references, as links; and add any visual that will help - either from the web or make your own illustrations, block diagrams, etc.
-* Ask me for any clarification along the way
----
+## Vocabulary / Nomenclature / Glossary
 
-# Coordinate frames across Blender, glTF, Gazebo and RViz, derived from first principles
+Terms that have to be pinned down because they are used differently at different stages of the flow in [Central Issue](#central-issue). Organized by where in the flow each term comes from, so a reader can see which vocabulary they are standing in.
 
-Everything below is derived from the standards and from the source of the programs that implement them, then checked with assets written for the purpose. The parts library's delivered files and the project's earlier documents are not used as evidence; they are audited against the result in section 14. Section 1 sets out the frames and the transform tree in kinematic terms first, since the standards themselves state everything in the language of axes. Two critics, a software engineer and a 3D modeler, reviewed the first draft; what they changed is recorded in section 16.
+### Our formal default
+This document uses **coordinate system** as the formal term. *Coordinate system*, *coordinate frame* and *frame* are used as synonyms.
 
-Evidence tags, in descending order of authority:
+Why?
+ * ISO 9787 says "coordinate system" throughout. 
+ * "coordinate system" is the native term at three of the four stages of the flow:
 
-- `[S]` a standard, cited by section
-- `[C]` implementation source, quoted, with the version
-- `[P]` a probe run on a hand-authored asset, output in `spike/coords/out/probe_results.txt`
-- `[O]` an observation only a person with a screen can make; these are the tutorial's job
+| Stage | Its own term |
+|---|---|
+| 3D graphics conventions | "coordinate system" — X3D §4.3.6, *Standard units and coordinate system* |
+| glTF spec | "coordinate system" — §3.4 is titled *Coordinate System and Units* |
+| assimp loader | no vocabulary of its own |
+| Gazebo / ROS | "frame" — REP 103, REP 105 and tf, which identifies each by a `frame_id`; SDF also has a `<frame>` element |
+* And "frame" collides on the asset side.  In the DCC world...
+    - **A frame is a unit of time** in every DCC tool, and in glTF's own tooling.  In this context "frame" means a point on the timeline.
+    - 3D graphics uses "space" for this concept, not "frame", e.g., object space, world space, tangent space.
+ * *Space* is therefore the equivalent term coming from the DCC side, and it was considered. It is rejected because it is confounded on the robotics side, where "space" is already taken and means something else: configuration space, work space, task space, state space.
+* So **coordinate system** is the least common denominator. 
 
-Versions everything was checked against: gz-common 7.3.0 (`ros-lyrical-gz-common-vendor 0.3.6`), Gazebo Sim 10.5.0, rviz_rendering 15.2.5, assimp 6.0.4, glTF-Blender-IO `main` and Blender 4.2 sources as of this writing.
 
-One convention for describing a wrong orientation, used throughout: an error is named by the correction the visual pose would need, as SDF fixed-axis roll, pitch, yaw. "Needs roll +90°" means the part is displayed such that `<pose>0 0 0 1.5708 0 0</pose>` would fix it.
+"Frame" stays legal in three narrow places: inside verbatim quotations, since REP 105 really does say "the coordinate frame called `base_link`"; when naming a ROS or SDF artifact (`frame_id`, `<frame>`, `base_link`, `base_footprint`, and the REP titles in the references); and in informal prose where nothing is ambiguous.
 
-## 1. The frames, as a kinematic chain
+**Decided.** Our own names follow the rule, in two registers copying ISO's own habit: the **full name in prose** — "the part coordinate system is referenced to the mounting face" — and the **subscripted origin symbol in tables, equations and diagram labels**, which is what ISO uses `O₁`, `O_m` and `O_p` for. See [Our coordinate system names](#our-coordinate-system-names).
 
-This document's sources talk about "axes" and "up" and "forward". That is the language of a file format. A robotics engineer thinks in frames, poses and a transform tree, and almost everything below is easier to read once the chain has been laid out that way. So that is this section, and nothing in it is specific to glTF's conventions; it is the scaffolding the rest hangs on.
+### Terms by stage of the flow
 
-### 1.1 Notation
+Started here; extend as terms come up. The point is to record which stage a word comes from, because most of the confusion is a term carrying its home stage's meaning into a later one.
 
-Write `T_a_b` for the transform that takes a point's coordinates in frame `b` to its coordinates in frame `a`, so that `p_a = T_a_b · p_b` and a chain composes right to left, `T_a_c = T_a_b · T_b_c`. Every transform in this document is static. There are no joints, no time and no velocities anywhere in the problem: it is a tree of fixed transforms, the equivalent of a tf tree published entirely by static transform publishers.
+**3D graphics / authoring stage**
 
-### 1.2 What carries a frame in glTF, and what does not
+- **DCC** — *digital content creation*. The collective term for 3D authoring applications: Blender, Maya, 3ds Max, Houdini, Cinema 4D. Used in ISO 17506.
+- **pivot** (Maya, 3ds Max) and **object origin** (Blender) — the per-vendor names for a manipulation handle: the point an object rotates and scales about in the viewport. Neither term has a standard behind it, and the two tools do not mean quite the same thing by them — see [What survives into glTF](#what-survives-into-gltf-and-what-does-not).
 
-glTF's scene graph is a transform tree in exactly the tf sense, and the intuition transfers. Three points about it are worth making precisely, because the first is where the intuition usually goes wrong.
+The reason we don't use "frame" is because that term is severly overloaded in 
+### Coordinate system, origin, and reference point
 
-**Frames live on nodes, and only on nodes.** A node's local transform is `T_parent_node`, given either as a `matrix` or as `translation`, `rotation` and `scale`. The specification's composition rule is a tf lookup written out `[S]`: "the global transformation matrix of a node is the product of the global transformation matrix of its parent node and its own local transformation matrix. When the node has no parent node, its global transformation matrix is identical to its local transformation matrix."
+**[Firm]** A coordinate system is an origin **plus** an orientation: six numbers, a pose. An origin alone is just the point where the axes meet.
 
-**The node frame is the mesh frame; what does not exist is a second frame.** A node holds at most one mesh — `node.mesh` is a single index — and a mesh carries no transform of its own `[S]`. Its vertex positions, which the specification types as `POSITION`, VEC3 of float32, "Unitless XYZ vertex positions" `[S]`, are expressed directly in that node's frame. So if it helps to say "mesh frame", it names the same frame as the node instantiating the mesh, and nothing is left open by the format declining to relate them: there is no transform between a mesh and its node, and the arrangement of the geometry within the frame *is* the vertex data. A pose from mesh to node is not unspecified; it does not exist.
+**[Corrected]** That distinction is true but it is not what we actually do, and an earlier draft of this section offered it as the whole answer. When this project "defines the origin" of a part it is not choosing a point in empty space — it is stating **which physical feature of the geometry the coordinate system is anchored to**. That act has standard names, and we borrow them rather than author our own.
 
-Two words remain worth keeping apart for one reason. "The same mesh could be used by many nodes, which could have different transforms" `[S]`, so the frame belongs to the instantiation rather than to the mesh: a reused mesh has one set of coordinates and as many frames as there are nodes referencing it. For a part delivered as one mesh under one node they coincide exactly, and the distinction is bookkeeping.
+**[Firm]** ISO 9787 never once defines a coordinate system by where its origin numerically sits. Every clause-3 definition uses one formula, "coordinate system **referenced to** *a physical thing*":
 
-**Primitives change none of this.** A part split into several primitives to carry several materials is still one frame's worth of geometry, because there is nowhere on a primitive to put a transform.
+| Clause | Definition, verbatim |
+|---|---|
+| 3.4 world | "stationary coordinate system referenced to earth, which is independent of the robot motion" |
+| 3.5 base | "coordinate system referenced to the base mounting surface" |
+| 3.6 mechanical interface | "coordinate system referenced to the mechanical interface" |
+| 3.7 tool (TCS) | "coordinate system referenced to the tool or to the end effector attached to the mechanical interface" |
+| 3.11 task | "coordinate system referenced to the site of the task" |
+| 3.12 object | "coordinate system referenced to the object" |
+| 3.13 camera | "coordinate system referenced to the sensor which monitors the site of the task" |
 
-**A scene's space is the file's top frame.** A scene is a list of root nodes, and the space their local transforms are expressed in is what this note calls the asset frame. glTF never names it, and it is the closest thing in the format to a world frame — but only in a structural sense, because glTF has no world: no ground, no gravity, no environment, nothing for that frame to be relative to.
+**Decided.** We adopt that pattern. Every coordinate system this project defines is stated as *referenced to* a named feature, never as a set of coordinates.
 
-Where the analogy stops:
+**[Firm]** ISO 9787 also supplies the word for the origin considered as a located thing. §3.10: "mobile platform origin; mobile platform **reference point**: origin point of the mobile platform coordinate system". So *reference point* is the standard's own term, and we use it wherever "origin" would be ambiguous.
 
-| | tf | glTF |
+### The `O - X - Y - Z` notation
+
+**[Firm]** ISO 9787 names each coordinate system by its origin and its three axes together, subscripted per system: "World coordinate system, `O₀ - X₀ - Y₀ - Z₀`", "Base coordinate system, `O₁ - X₁ - Y₁ - Z₁`", "Mechanical interface coordinate system, `O_m - X_m - Y_m - Z_m`", and so on. The notation is doing exactly the split above:
+
+- `O₀` is the **reference point** — it fixes the coordinate system's *location* with respect to the geometry.
+- `X₀ - Y₀ - Z₀` are the axes — they fix its *orientation* with respect to the geometry.
+
+That is why the standard's clauses come in two halves, one sentence placing `O` and one or two more fixing the axes. §5.2 is the clearest case: "The origin of the base coordinate system, `O₁`, shall be defined by the manufacturer of the robot. The `+Z₁` axis is in the direction of the mechanical structure of the robot perpendicularly away from the base mounting surface."
+
+Subscripts in use: `0` world, `1` base, `m` mechanical interface, `t` tool, `p` mobile platform, `k` task, `j` object, `c` camera.
+
+### Specifying a coordinate system: datums and what "referenced to" means
+
+> **OUTLINE — not yet written.** The plan for the subsection that makes "referenced to" precise. Review the structure before it gets filled in.
+
+**Why it is needed.** "Referenced to the mounting face" is better than "origin at the centroid", but it is still loose: it does not say how much of the six degrees of freedom one face actually pins down, nor what may be named as a feature in the first place. Both questions have citable answers in the GPS (geometrical product specification) standards, so this subsection borrows rather than invents.
+
+**0. Three things have been called "defining the coordinate system", and they are different.**
+This part comes first because it is the confusion the rest depends on: "referenced to the mounting face" reads as a qualitative description, a pose is six numbers, and mixing the two feels wrong. It is not a mixture. They are three layers with a direction of travel between them.
+
+| | What it is | Numbers? | Who produces it |
+|---|---|---|---|
+| **Datum specification** | which situation features the coordinate system is referenced to | none | a person, once, and it is recorded |
+| **Realized pose** | what that specification evaluates to against a particular piece of geometry — the coordinate system's location and orientation in whatever ambient coordinates the geometry is expressed in | six | derived by measurement, never authored |
+| **Relative pose** | the transform between two coordinate systems; this is what an SDF `<visual><pose>` or a `<joint><origin>` holds | six | computed from the two realized poses |
+
+So *referenced to* is not a qualitative stand-in for the six numbers. It is the **rule that generates them**, and the numbers are its output:
+
+`datum specification + vertex data → realized pose → (invert, compose with the axis-convention rotation) → the visual pose`
+
+To write: the direct parallel in mechanical practice, which is where the whole vocabulary comes from. A drawing names datum A as a face and datum B as a bore; it does not give coordinates. A CMM then measures the part and computes the datum reference frame numerically. The qualitative statement is the specification; the six numbers are a measurement result. Nobody experiences that as a category mix-up, and it is exactly our situation.
+
+Two consequences worth stating in the same breath. First, "referenced to" has a **formal completeness test**, so it is not merely qualitative: the named features must constrain all six degrees of freedom between them, or the coordinate system is under-determined and the leftover degrees of freedom are arbitrary — a defect in the specification, and a detectable one. Second, this names the project's actual defect precisely: today the visual poses and mounting offsets are hand-authored six-number values with no datum specification upstream of them, so a redelivered mesh cannot reproduce them and the numbers have to be re-derived by eye. The numbers are not the problem; the missing rule above them is.
+
+**A. What may serve as a datum — four kinds, and nothing else.**
+ISO 17450-1 §3.3.1.1.3 defines a **situation feature** as a "point, straight line, plane or helix, from which the location and/or orientation of a geometrical feature can be defined", adding that it "is a geometrical attribute of an ideal feature" and that "no dimensional parameters are linked to a situation feature". To write: that the list is exhaustive, with the standard's own examples (situation point of a sphere or a cone, situation straight line of a cylinder, situation plane of a plane pair). The consequence to draw out: a centroid, a bounding-box center or a "center in plan" is a *derived quantity*, not a situation feature — which is the precise reason those rules drift on redelivery while a face or a bore axis does not. Also to reconcile with the Standards Summary note below, which reaches for "a datum point … associated with a recognizable feature or a survey landmark": that instinct is right, and the refinement is that a *point* is only one of the four kinds and the weakest, because a point alone fixes no orientation at all. Vocabulary to introduce alongside: **datum**, **datum feature** and **datum system** from ISO 5459, and ASME Y14.5's **datum reference frame**, "a Cartesian coordinate system oriented on a part from selected part features", as the phrase closest to our meaning.
+
+**B. What "referenced to" means — location, orientation, or both.**
+To write: ISO's own "location **and/or** orientation" is the crux, and the *and/or* is load-bearing. A coordinate system has six degrees of freedom to pin down, three translational and three rotational, and each kind of situation feature constrains a different subset — a plane fixes one translation and two rotations; an axis fixes two translations and two rotations; a point fixes three translations and no rotation. So a single feature is almost never enough, and "referenced to" is shorthand for a *set* of features that together constrain all six. This is where ISO 5459's primary / secondary / tertiary datum ordering belongs, and where a table belongs: feature kind, what it constrains, what is left free. **[Open]** those degree-of-freedom counts are stated from the GPS invariance-class model (ISO 17450-1 §3.3.1.2 and Annex E) and must be checked against that annex before this is published as [Firm].
+
+**C. Definition and realization are two different things, and every mature practice has both.**
+
+The four mobile cases below look incommensurable until this split is made, so it belongs ahead of the examples:
+
+- **Definition** — which situation features fix the reference point and the axes. This is what makes the coordinate system *meaningful*, and it is the datum specification of part 0.
+- **Realization** — a physical mark an instrument can actually be placed on. This is what makes it *measurable*.
+
+**[Firm]** ISO 5459 has the standard name for the realization: a **datum target**, indicated as a datum target *point*, *line* or *area*. Its stated purpose is to establish a datum from limited contact where a whole feature cannot be used, so that every supplier seats the part identically. A tab welded to an ROV frame and a survey monument in a ship's gyro room are datum target points. That matters for morale as much as rigor: those practices are not hacks, they are standard practice missing only its paperwork.
+
+To write: that a definition without a realization cannot be measured in the shop, and a realization without a definition cannot be reproduced on a redesign — which is why each of the cases below feels incomplete on its own.
+
+**C.1 Derivation depth predicts instability.**
+
+A usable test, to be written up as the reason to prefer one candidate over another:
+
+| Candidate | Referenced to | Depth | Stable under design change? |
+|---|---|---|---|
+| Ship survey monument | a physical mark | 0 | yes |
+| ROV welded tab | a physical mark | 0 | yes |
+| Wheel axis ∩ ground plane | a straight line and a plane | 1 | yes |
+| "Center of the outline projected on the ground" | silhouette → projection → center | 3 | **no** — add a sensor mast and it moves |
+| "At the center of mass" | mass distribution of a configuration | 3+, and not geometric at all | **no** — reprovision and it moves |
+
+The rule to state: prefer the least-derived datum available; where a derived one is unavoidable, freeze it by naming the artifact and configuration it was derived from.
+
+**C.2 The cases, as we actually meet them.**
+
+| Case | Definition | Realization | To write |
+|---|---|---|---|
+| Manipulator base, ISO 9787 §5.2 | the base mounting surface, a **plane** — "connection surface between the arm and its supporting structure" (§3.2); `+X₁` then fixed by a *constructed* direction through the working-space center, not by a feature | left to the manufacturer | the one case the standard specifies nearly completely |
+| Mechanical interface, §5.3 | the interface **plane** plus its **axis**; reference point at "the centre of the mechanical interface" | the flange face and bolt circle | write up from the standard |
+| Mobile platform, §5.5 | **none given.** ISO fixes the axes functionally — "`+X_p` … in the forward direction", "`+Z_p` … in the upward direction" — and names no feature at all | none given | the gap, and it is the gap for exactly our vehicles |
+| Wheeled robot | the wheel **axis** intersected with the **ground plane**. Note the folk version, "center of the projection of the outline on the ground", is depth 3 and the outline is not a feature; REP 120 is more careful, using "the barycenter of the **feet** projections" | usually none; a machined face or scribed mark would be an improvement | also separate `base_link` from `base_footprint` — see C.3 |
+| ROV | not usually written down | **a tab welded to the frame.** Arbitrary but unambiguous: it exists on the hardware, in the CAD model, and under a tape measure | state the tab as a datum target and say nothing about where it roughly sits — "roughly midpoint" does no work and invites someone to re-derive it |
+| Surface vessel | naval architecture's three planes: the **baseline**, the **centreline** plane, and a transverse plane through the **aft perpendicular**, reference point at the intersection of the latter two. ISO 7462 carries the terminology and its terms are free on the ISO OBP | **a survey monument**, typically in the gyro room, with every sensor surveyed from it | the mature two-layer practice, and the model for the others. Capture why the gyro room: the INS is the sensor whose orientation error compounds through everything else, so the monument goes where uncertainty against the datum is smallest. Capture also that the design coordinate system and the as-built survey can disagree by build tolerance, and the survey is what is true |
+| UUV, torpedo-shaped | **[Corrected]** "at the center of mass" is unusable, because the CoM is a function of provisioning and moves between missions. "The CoM of the CAD model at a stated configuration" is a *frozen* derived value — honest and reproducible, but it makes the CAD artifact and its configuration part of the specification, and therefore version-controlled. The depth-1 alternative for a body of revolution: the hull's **axis of revolution** plus a transverse **plane** at a named station (a ring frame, a section joint, the nose tangency point), which gives five of six degrees of freedom, with roll needing one more — a keyway, a connector boss, a scribed line | none by default | note that the CoM is chosen for control and hydrodynamic convenience, which is a legitimate reason to place a frame but should be declared as a choice rather than presented as geometry |
+| Our parts | to be decided; the one genuine invention | — | open |
+
+**C.3 `base_link` is a datum; `base_footprint` is not.**
+
+To write: a conflation the wheeled case invites. `base_link` is a **fixed datum on the body**, so it wants a low-derivation featural definition. `base_footprint` is a **derived runtime frame** that legitimately moves as the vehicle pitches, rolls or walks — REP 120 defines it that way on purpose. "Center of the outline on the ground" is an acceptable definition for the second and a bad one for the first, and saying so removes most of the vagueness in current practice.
+
+**C.4 Why the vehicle coordinate system is a configuration item, not a modeling convention.**
+
+**[Firm]** This is the strongest argument in the document for declaring the datum a priori, and it is not about modeling at all. Because the vehicle coordinate system is what localization reports — `base_link`'s pose in `odom` and `map`, per REP 105 — the datum is an interface between four artifacts:
+
+- the **CAD model**, where the offsets originate
+- the **simulation model**, which must agree or the simulation lies
+- the **navigation software's sensor extrinsics**, all measured against it
+- the **as-built survey**, which is the ground truth
+
+Move the datum by 10 cm and every reported vehicle position moves 10 cm, and every sensor offset is wrong by the same amount. To write: the conclusion that follows — the datum is owned, versioned, declared before 3D asset work is commissioned, and *cited* by all four consumers rather than re-derived by each.
+
+**C.5 The rule shape this produces.**
+
+Proposed, to be refined:
+
+> The vehicle coordinate system shall be declared before the 3D asset is commissioned. The declaration names: the situation features that define it; the datum target that realizes it on the hardware, where one exists; and the CAD artifact and configuration, where any part of the definition is derived rather than featural. The same declaration is cited by the simulation model, the navigation extrinsics and the survey, and is never independently re-derived.
+
+**[Open]** Two things to settle before any of part C is promoted from outline to [Firm]. ISO 7462 is solid for the terminology of baseline, centreline and perpendiculars, but whether a standard governs vessel survey monuments and alignment practice has not been checked — that is naval combat-systems alignment territory. And the degree-of-freedom counts in part B still need checking against ISO 17450-1 Annex E.
+
+**D. Why this replaces the origin question.**
+To write: "where does the origin sit within the part?" invites derived answers that move whenever the geometry changes. "Which situation features is the part coordinate system referenced to?" invites an answer a modeler, an integrator and an inspector can each point at, and it is checkable by measurement on redelivery — the property the rule needed and never had. Close on what this does to the delivery spec: the manifest records the named features, not a set of coordinates.
+
+### Assumptions
+
+* All coordinate systems are right-handed.
+* All coordinate systems define rotations about x, y and z as roll, pitch and yaw respectively. 
+
+### Standards Summary
+
+#### ISO 9787:2013
+
+This is our foundations for the robotics coordinate systems and motion nomenclature
+
+Named Coordinate Systems and Notation:
+* **World** ($O_0 = X_0 - Y_0 - Z_0$): 
+    * $O_0$ is user defined - unconstrained on where the world coordinate system is located
+    * $+Z_0$ is defined as " collinear but in the opposite direction to the acceleration of gravity vector" - which is a more exact way of saying $+Z_0$ is up.
+    * $+X_0$ is  user defined - unconstrained orientation of frame, other than `+Z_0` is up.
+    * Comments:
+        * This is the standard we adopt in total.   
+            * consistent with most (not all) other conventions and our preference.
+            * clearly documented so all we need to do is say we follow 5.1 and cite the standard.
+* **Base** ($O_1 = X_1 - Y_1 - Z_1$):
+    * Base denotes the base of a robot.
+    * $O_1$: The origin of the base shall be defined by the manufacturer of the robot. 
+        * For the spec and workflow we are building this is important.  We can adapt something along the lines of "The location of the base coordinate system relative to the robot geometry SHOULD be explicity defined when commissioning the 3D asset creation.  Ideally both the robot hardware and the 3D model share the same origin location definition. This is a datum point on the robot, typically associated with a recognizable feature or a survey landmark, in order to serve as the canoncial reference location for sensors and actuators."
+        This is a sticking point - and one we've gotten wrong.  
+
+
+
+
+
+
+
+
+### Robotics 
+
+There are multiple practices in robotics, so there is not just one convention. Also, these are soft conventions and there is likely a multitude of practices, good and bad, out in the wild.
+
+#### Categorizing links by their place in the tree
+
+**[Firm]** The structural claim holds, with one caveat. In URDF a link has zero or one parent and any number of children, because URDF is a tree — its schema has no way to give a link two parents, so closed kinematic loops cannot be expressed at all. **[Firm]** SDF does not have that restriction: a link may be the child of more than one joint, so loops are expressible on the SDF side. A part bolted to two different parents is therefore a URDF impossibility and an SDF ordinary case.
+
+**[Firm]** The four categories below are close to an existing standard. ISO 9787 §5 defines eight coordinate systems, and four of them correspond almost exactly to these categories. That is a good outcome: it means this taxonomy does not need inventing, and each category has a standard name and a defined origin rule.
+
+| Category here | ISO 9787 name | ISO clause | What the standard fixes |
+|---|---|---|---|
+| 1. Base link, mobile | Mobile platform coordinate system, `O_p` | §5.5, term §3.10 | names the origin the "mobile platform reference point" |
+| 2. Base link, fixed or passive | Base coordinate system, `O₁` | §5.2 | origin "shall be defined by the manufacturer"; `+Z₁` away from the base mounting surface |
+| 3. Intermediate link | *(none)* | — | ISO numbers the **axes**, not the links: §4.4 |
+| 4. End effector | Tool coordinate system (TCS), `O_t` | §5.4, term §3.7 | "referenced to the tool or to the end effector attached to the mechanical interface" |
+| *(missing from the list)* | **Mechanical interface coordinate system**, `O_m` | §5.3, term §3.6 | origin "is the centre of the mechanical interface"; `+Z_m` "points perpendicularly away from the mechanical interface" |
+
+1. **Base link, mobile.** Zero parent joints, many children. Examples: the root part (body) of flying, driving, walking, swimming robots. There is not one fixed point of the geometry that interacts with the rest of the objects, so the location of the origin of the base link relative to the geometry is a stated datum — it must be specified — and should be stable under design change.
+
+    **[Firm]** The standards agree that it must be stated and decline to state it for you. REP 105: "The coordinate frame called `base_link` is rigidly attached to the mobile robot base. The `base_link` can be attached to the base in any arbitrary position or orientation; for every hardware platform there will be a different place on the base that provides an obvious point of reference." ISO 9787 §5.1 says the same of the world system: its origin "shall be defined by the users in accordance with their requirements".
+
+    **[Corrected]** "No clear parent" is right about joints and wrong about frames. A mobile `base_link` does have a parent in the transform tree — REP 105 puts it under `odom`, then `map`, then `earth` — but that edge is a *published transform* produced by odometry, not a joint in the model. The model is rootless; the runtime tree is not.
+
+    **[Firm]** ISO 9787 §5.5 does give the mobile platform axis rule, and it is REP 103: "The `+X_p` axis is normally taken in the forward direction of the mobile platform. The `+Z_p` axis is normally taken in the upward direction of the mobile platform." Figure 6 draws it on a four-wheeled vehicle with `Y_p` to the platform's left. So for the mobile case the robotics standard and the ROS convention agree outright, and the only thing ISO leaves open is where the origin sits — the same gap REP 105 leaves.
+
+**[Firm]** "Axis midpoint projected to the ground" is a real documented pattern, though the standard example is a different frame rather than `base_link` itself. REP 120 defines `base_footprint` as "the representation of the robot position on the floor", where "The translation component of the frame should be the barycenter of the feet projections on the floor", with roll and pitch zero. Its stated rationale is stability: `base_footprint` "provides a fairly stable 2D planar representation of the humanoid even while walking and swaying with the `base_link`". **[Practice]** The wheeled-robot equivalent, the wheel-axis midpoint projected to the ground, is very widely used but is not written down in any REP.
+
+2. **Base link, fixed or passive.** One parent, one or many children. Example: the root part (body) of a manipulator kinematic chain. There is one point in the geometry that can be taken as the definitive location of the rest of the kinematic chain in the world. The location of the base origin is often fixed — either with an overt fixed joint to something else in the world, or passively by gravity and friction.
+
+    **[Firm]** This is the best-specified case in the standards, and the origin is tied to a physical surface rather than to the geometry as a whole. ISO 8373 defines the *base mounting surface* as the "connection surface between the arm and its supporting structure" (ISO 9787 §3.2), and ISO 9787 §5.2 references the base coordinate system to it: `+Z₁` perpendicular away from that surface, `+X₁` pointing through the projection of the centre of the working space onto it.
+
+3. **Intermediate link.** One parent, one or more children.
+
+    **[Corrected]** The draft said "one parent, one child". A link can branch — a torso with two arms, a hull with four thruster mounts — so one parent and *n* children is the general case, and "intermediate" should mean only "has a parent joint and at least one child".
+
+    **[Firm]** ISO 9787 defines no coordinate system for an intermediate link. It numbers the axes instead: "axis 1 shall be the first motion closest to the base mounting surface, axis 2 the second motion, and so on, and the last the motion to which the mechanical interface is attached" (§4.4). Per-link coordinate system placement is the business of a kinematics convention such as Denavit-Hartenberg, not of this standard.
+
+4. **Leaf link.** One parent, no children. An end effector is one kind of leaf; so is a wheel, a sensor, a flag or a propeller.
+
+    **[Corrected]** The draft called this category "end effector" and defined it as "intermediate link with no children". Those are two different ideas: *leaf* is structural, *end effector* is a role. Most leaves on our vehicles are not end effectors.
+
+    **[Firm]** For the end-effector case the standard does give a frame, and a second point inside it: the tool coordinate system is "referenced to the tool or to the end effector attached to the mechanical interface" (§3.7), and the tool centre point is a "point defined for a given application with regard to the mechanical interface coordinate system" (§3.9).
+
+**[Open]** The two structural questions — does the link have a parent joint, and does it have children — are independent, so they generate four cells, and the categories above mix that structure with the link's *role* (base, tool, wheel). Whether the eventual rule should be stated on structure, on role, or on both is not settled here.
+
+#### Manipulation-centric (robots with static base)
+
+**[Firm]** For kinematic chains in manipulation scenarios it is common to define the object geometry relative to the frame collocated at the joint to the parent. URDF builds this in: a joint's `<origin>` is the transform from the parent link frame to the child link frame, and everything belonging to the child — `<visual>`, `<collision>`, `<inertial>` — is then expressed in that child frame.
+
+**[Firm]** In this convention the center of mass is *not* the frame; it is data declared against the frame. URDF states the CoM as `<inertial><origin xyz="..." rpy="..."/>`, a pose relative to the link frame, alongside `<mass>` and `<inertia>`. So a link frame at a joint and a CoM somewhere else is the normal, intended arrangement, not a compromise.
+
+**[Practice]** In this convention frames sit on the axes of rotation, which is the Denavit-Hartenberg inheritance. ISO 9787 §4.4's axis numbering assumes the same ordering along the chain.
+
+Examples:
+
+- **wheel** — the origin goes on the axle, because the axle is the joint axis. **[Practice]** For a symmetric wheel the axle happens to coincide with the geometric center, which is probably why "center of the geometry" feels like the rule here; it is a coincidence of symmetry and does not generalize to a bracket or a mast.
+- **manipulator arm**
+    - *intermediate link* — the origin is at the joint to the previous link in the kinematic chain.
+    - *base link* — the origin is the datum the whole chain is measured from, referenced to the base mounting surface per ISO 9787 §5.2. Because the base does not move, this origin doubles as the link between the robot and the world, which is why the standard makes the manufacturer declare it.
+
+#### Mobile-centric
+
+For a mobile robot (flying, driving, walking, swimming) there is no *joint* to a parent, because the body moves freely.
+
+**[Corrected]** "There is not a parent" needs the same refinement as category 1: there is no parent *joint*, but there is a parent *frame* at runtime — `odom`, per REP 105 — supplied by odometry rather than by the model.
+
+In this case it is common to choose an origin that is a physically identifiable datum and stable under design change: a machined reference face, the projection of the drive axis onto the ground plane, or for a surface vessel the waterline. **[Practice]** No standard names any of these; REP 105 explicitly leaves the choice open and only insists that the platform has "an obvious point of reference". **[Firm]** What the standards do supply is the reasoning for preferring stability: REP 120 justifies `base_footprint` on exactly that ground.
+
+**[Open]** Whether *this* project's convention should be a stated datum per vehicle, or a single geometric rule applied to all of them, is undecided and is the question the first draft never managed to answer cleanly.
+
+#### Other conventions worth knowing
+
+**[Firm]** ISO 9787 §5 defines eight coordinate systems, not four, and the four not yet mentioned are all relevant to a simulation asset pipeline:
+
+| System | Clause | Referenced to |
 |---|---|---|
-| What an edge is | a rigid transform, SE(3) | translation, rotation **and scale**, so an edge is an affine similarity and need not be rigid |
-| What identifies a frame | the `frame_id` string; the tree is assembled by name | the array index in `node.children`; names are optional, non-unique decoration |
-| Time | every transform is stamped and interpolated | none; one static snapshot |
+| Mechanical interface, `O_m` | §5.3 | the mechanical interface; origin at its center, `+Z_m` perpendicular away from it |
+| Tool (TCS), `O_t` | §5.4 | origin **is** the TCP; `+Z_t` "tool dependent, normally in the direction of the tool" |
+| Mobile platform, `O_p` | §5.5 | `+X_p` forward, `+Z_p` up — REP 103's body frame |
+| Task, `O_k` | §5.6 | "the site of the task" — **defined by figure only, no axis rule** |
+| Object, `O_j` | §5.7 | "the object" — figure only |
+| Camera, `O_c` | §5.8 | "the sensor which monitors the site of the task" — figure only |
 
-The scale row is the one that catches a robotics engineer out. A glTF node edge can rescale its subtree, which no tf transform can do, so "frame" is doing slightly less work here than in tf.
+**[Firm]** Worth noting what the standard declines to do: §5.6 through §5.8 give no axis convention at all, only a reference to Figure 7. So ISO fixes axes for the world, base, mechanical interface, tool and mobile platform, and leaves the task, object and camera systems to the application. Annex A then works the base and mechanical interface systems through five mechanical structures — rectangular, cylindrical, polar, articulated and SCARA — and none of them is a mobile robot.
 
-### 1.3 The chain for one of our parts
+**[Firm]** The mechanical interface coordinate system is the standard name for the thing the earlier attempt in this project called an "attach" or a "slot". It has a defined origin rule — the center of the mating interface — and a defined axis rule: `+Z` along the mating normal, pointing away from the surface.
 
-```mermaid
-flowchart TD
-    W["world frame<br/><i>SDF world</i>"] -->|"model pose"| M["model frame"]
-    M -->|"link pose"| L["<b>link frame = body frame</b><br/>REP 103 semantics:<br/>x forward, y left, z up"]
-    L -->|"<b>visual pose</b><br/>the only edge that carries meaning"| A["asset frame<br/><i>glTF file's top frame</i><br/>unnamed, no semantics"]
-    A -->|"root node local transform"| R["root node frame"]
-    R -->|"child node local transforms"| C["child node frames"]
-    C -.->|"vertex coordinates, expressed<br/>in the instantiating node's frame"| G[("geometry")]
-```
+**[Firm]** The disagreement is narrower than it first looks, and worth stating precisely. ISO 9787's *mounting* coordinate systems are built around `+Z` along the mating normal (§5.3), and its *tool* coordinate systems around `+Z` "normally in the direction of the tool" (§5.4), both of which differ from a REP 103 body frame by a rotation. But its *mobile platform* frame (§5.5) is `+X` forward and `+Z` up, which is REP 103 exactly. So ISO and ROS agree about vehicles and differ only about mounting interfaces and tools, where ISO is describing a mating surface rather than a body.
 
-The mesh is attached at the visual frame, so the visual-to-asset edge is the identity and the visual pose is the whole of `T_link_asset`. In SDF that pose is, by the specification's own words, "expressed in the frame of the parent XML element" `[S]`, the link; in URDF it is the visual `<origin>`. A vertex therefore reaches the body frame as
+**[Firm]** REP 103 also carries a deliberate second convention for sensors, and it is the clearest precedent in ROS for a frame that breaks the body-frame rule on purpose: "In the case of cameras, there is often a second frame defined with a `_optical` suffix. This uses a slightly different convention: z forward, x right, y down."
 
-`p_link = T_link_asset · T_asset_rootnode · … · p_node`
+**[Firm]** REP 105 supplies the world-fixed frames a vehicle needs above `base_link` — `odom` (continuous, drifts), `map` (no drift, discrete jumps) and `earth` — and REP 120 adds `base_footprint`.
 
-with every factor to the right of `T_link_asset` coming out of the file, and `T_link_asset` coming from the SDF or URDF that mounts it.
+**[Practice]** Outside robotics, CAD assembly tools express the same idea as mating features: Onshape's "mate connector" is a named frame on a part used to assemble it against another, which is the mechanical interface coordinate system under a different name.
 
-### 1.4 Only one edge in that chain carries meaning
+### 3D Graphics
 
-Above the visual pose, every frame is named and the names are contracts. `base_link` means something, and REP 103 assigns semantics to its axes: x is the direction the body travels, not merely the first axis.
+A different concept, and the difference is one of purpose rather than of mathematics.
 
-Below the visual pose, nothing means anything. No glTF frame has semantics. The format has no property that says "this node is the body frame", or "this axis is forward", or "the origin belongs at the mounting face". The origin of a glTF frame is wherever the numbers evaluate to zero, and nothing in the file records where it was meant to be. This is the answer to the question the directive asks — where asset coordinates end and body-frame coordinates begin — and the answer is sharper than it first looks: a glTF file has no body frame, and cannot have one. It supplies a frame; the meaning of that frame is asserted from outside.
+**[Firm]** The frame is called a *pivot* (Maya, 3ds Max) or an *object origin* (Blender), and it is a manipulation handle: the point about which the object rotates and scales in the viewport. The Blender manual describes the origin as the point around which an object is transformed or manipulated. Nothing about it is required to mean anything physical.
 
-So the entire coordinate problem is one edge, `T_link_asset`. That is where somebody declares what the asset's axes mean in the body frame. It is the only place the declaration can live, because the file has no vocabulary for it and the consumer has no knowledge of it. And no validator can check it, which is why the rule has to be written down in a document like this one rather than enforced by a tool.
+**[Practice]** A common asset convention is to place the pivot at the bottom-center of the object so that a prop dropped at `z = 0` sits on the floor; after that, at the natural articulation point (door → hinge, wheel → axle).
 
-That also settles where the geometry's own semantics get stated, which is the question "x is forward, z is up — said about what?". Because no transform separates a mesh from its node, the statement attaches to the node frame; and because the model specification forbids a `rotation` or a `matrix` on the root node, that frame shares its orientation with the asset frame, so one declaration of orientation covers the mesh, the node and the asset alike. Were a rotation permitted there, they would separate, and a delivery would need two statements where one had sufficed: what the asset frame means, and how the geometry is turned within it. Section 1.5 works through which of our rules does that work; it is a design reason for the no-rotation rule, independent of the three tooling reasons in section 4.
+**[Corrected]** The draft called bottom-center "the dominant asset convention". That over-claims: it is a real and widespread practice in real-time and game pipelines, but no standard states it, and the practice varies by engine and by studio. Treat it as a habit to expect in a delivery, not as a rule to cite.
 
-Read this way, glTF's "+Y is up" and "the front faces +Z" are not facts about geometry at all. They are a recommended value for that one edge, stated in prose instead of in data. Section 3 takes them at face value and does the arithmetic.
+**[Firm]** Blender offers *Object → Set Origin → Origin to Center of Mass (Volume)*, alongside *Origin to Geometry*, *Origin to 3D Cursor* and *Origin to Center of Mass (Surface)*. **[Firm]** The volume option requires a manifold, watertight mesh, which is a real constraint on using it as a rule. **[Open]** Whether asset pipelines actually use it is not something this document has evidence for either way; the claim that they do not was asserted without support.
 
-Notice that those two sentences together fix the frame completely. Up plus front, with right-handedness, determines all three axes, exactly as REP 103's "x forward, y left, z up" does. glTF is not vague about orientation and does not leave it out: it states a full convention. What differs between its two halves is enforcement. Every exporter and every viewer acts on the up half, so a file that disobeys it looks wrong immediately. Nothing whatever acts on the front half, because no property in the format marks a front — so a file that disobeys it looks fine everywhere and is wrong only in an assembly.
+#### What survives into glTF, and what does not
 
-So for a part that has a front — a thruster, a camera, a hull — a convention has to be chosen, and not because glTF is silent but because what glTF says is unrepresentable. The convention's only possible home is a document, plus the poses written against it. What it buys is worth naming: it lets an integrator write a part's attach pose without asking the modeler which way they happened to point it. Without a convention every part needs its own correction, found by looking at it, and "check it in Gazebo" becomes the only specification there is. Two edge cases follow from the same reasoning. The specification says the front of an *asset*, not of a mesh, which costs us nothing while a delivery is one part per file, and would bite immediately if a whole vehicle shipped in one file. And a part with no natural front — a bracket, a pod, a plain cylinder — still needs its orientation recorded, because what the integrator has to know is not which way is natural but which way it was authored.
+**[Corrected]** The first draft said "the pivot concept doesn't survive into glTF at all". That is wrong, and the correction matters because the rest of the pipeline depends on it.
 
-### 1.5 Which frame the convention actually constrains
+**[Firm]** Blender's object origin *does* survive: it becomes the origin of the glTF node's frame. A glTF node carries a local transform and may instantiate at most one mesh, and the mesh's vertex positions are expressed in that node's frame. So on export, with transforms applied, the object origin is the node's origin and the vertices are measured from it; without transforms applied, the offset between them appears as the node's `translation`, `rotation` and `scale`. Either way the frame comes through intact.
 
-glTF §3.4 is stated about the asset frame. The vertex positions are expressed in a node frame. Those are two different frames, related by the node's local transform composed up the tree, so §3.4 constrains the numbers in the buffer only to the extent that something pins that relationship down — and nothing in glTF does. The format is perfectly happy with a file whose asset frame is impeccably Y-up and whose geometry sits under a node rotated ninety degrees.
+Three things genuinely do not survive:
 
-What closes the gap is a set of rules, none of them the format's. Four are settled in the model specification and one is still open:
+1. **[Firm]** *A pivot held separately from the transform.* Maya and 3ds Max keep rotate and scale pivots as attributes distinct from the object's transform, so the pivot can be moved without moving the object. glTF has no such separation — one frame per node, vertices expressed in it — so any DCC pivot that differs from the object's transform is baked away on export.
+2. **[Firm]** *Any statement of meaning.* There is no property anywhere in glTF that records what an origin is for. Nothing can say "this origin is the mounting face" or "this axis is forward". The origin is wherever the numbers evaluate to zero.
+3. **[Firm]** *Anything checkable.* Because of (2), no validator can test an origin or a facing convention. Those rules can only live in a document and in whatever places the asset into a scene.
 
-| Rule | Status | Effect on the asset-to-node relationship |
+**[Open]** Where that leaves the project's own rule is the next increment of this document, and it should not be written until the single-body case is airtight.
+
+#### Standards for 3D assets
+
+**[Corrected]** The working assumption behind this document — solid references on the robotics side, nothing comparable for 3D assets — is wrong. The asset formats are standardized, and one of them is the format this project delivers in.
+
+| Standard | What it is | Coordinate system it fixes |
 |---|---|---|
-| Exactly one scene, listing only the root node | normative | there is one asset frame, with one node directly beneath it |
-| Exactly one root node | normative | one node frame to relate the asset frame to |
-| No `rotation` and no `matrix` on the root node | normative | the root node frame has the **same orientation** as the asset frame |
-| A `translation` on the root node is permitted | normative permission | the origins may differ; no axis is touched |
-| Whether child nodes are permitted at all | Open, decision 15 | a child carrying a rotation has an orientation of its own, which §3.4 does not reach |
+| **ISO/IEC 12113:2022** | *Information technology — Runtime 3D asset delivery format — Khronos glTF™ 2.0.* glTF 2.0 published as an International Standard | right-handed, `+Y` up, meters, radians; front faces `+Z`, left side faces `+X` (§3.4) |
+| **ISO/IEC 19775-1:2023** | *Extensible 3D (X3D) — Part 1: Architecture and base components* | §4.3.6 right-handed, `+Y` up, base unit "metres"; default viewer sits on `+Z` looking down `−Z`, so an object facing the camera faces `+Z` |
+| **ISO 17506:2022** | *COLLADA digital asset schema specification for 3D visualization of industrial data* (was ISO/PAS 17506:2012) | declares its up axis per file, `<up_axis>`, rather than fixing one |
 
-The third row carries the weight, and it is worth seeing why it suffices. §3.4 is a statement purely about orientation: up and front are directions, and the paragraph says nothing whatever about where an origin sits. A root node with no rotation and no matrix therefore shares its orientation with the asset frame exactly, and that is what licenses reading "+Y is up" as a claim about the vertex data rather than only about an abstract frame above it. The permitted translation shifts the origin without turning any axis, so it leaves the orientation convention intact; where the origin belongs is a separate question that glTF never constrained and that section 5.4 of the model specification still has open.
+**[Firm]** Three consequences follow, and they reframe the whole problem.
 
-So the honest form of the assumption, and the answer to whether this note has been sliding between two frames: it has, and what licenses it is our no-rotation rule rather than anything in glTF. Throughout the rest of this note, "the file's frame" means the asset frame and the root node frame taken together, which share an orientation by that rule and may differ by a translation. Where the translation matters it matters a great deal, and section 1.6 is about precisely that.
+First, citing glTF §3.4 *is* citing an ISO standard. The Khronos registry text and ISO/IEC 12113 are the same specification under two covers, so the asset side of this pipeline is no less formally grounded than the robotics side.
 
-The open row deserves its own note. If a delivery may carry child nodes, then §3.4's convention reaches only the composed result and not the children's own vertex data: a child rotated ninety degrees inside an otherwise conformant file is still conformant, and its buffer is expressed in a frame that nothing has described. That is a coordinate-frame argument for settling decision 15, and it is not among the reasons currently listed there.
+Second, the asset standards agree with each other. glTF and X3D independently land on right-handed, `+Y` up, meters, and a front that faces `+Z` — X3D by way of where it puts the default camera rather than by saying so. That agreement is worth leaning on: it is not one vendor's habit.
 
-### 1.6 The two consumers disagree about where the correction edge goes
+Third, COLLADA is the outlier and the reason it behaved differently for us. It makes the up axis a per-file *declaration* instead of a convention, which is exactly the freedom that lets a consumer ignore it — and both Gazebo and RViz do.
 
-Both consumers need the same correction — a rotation of +90° about X, taking a Y-up asset frame to a Z-up link frame — and they attach it to different links of the chain.
+**[Firm]** What genuinely has no standard is narrower than "3D assets":
 
-Gazebo inserts it **above** the root node, as the visual pose, leaving the file's own transforms untouched:
+- **Authoring-tool vocabulary.** "Pivot" (Maya, 3ds Max) and "object origin" (Blender) are vendor terms. No standard names them, and no standard relates them to each other.
+- **Blender's viewport sense of "front".** Blender's Front view (numpad 1) looks along `+Y`, so the face presented to you is the `−Y` face. Taking that as the object's front makes Blender's convention forward `−Y`, left `+X`, up `+Z`. That is a UI habit, documented only by the behavior of the view shortcuts.
+- **Which way a delivered asset should face.** glTF states it without a requirement keyword and provides no property to record it, so nothing can enforce or check it.
 
-`p_link = Rx(90) · T_asset_rootnode · p_node`
+**[Open]** OpenUSD is not standardized. The Alliance for OpenUSD is working toward a specification, but there is no ISO or equivalent text today, which matters because REP 158 is written around USD as the authoring baseline.
 
-RViz inserts it **below** the root node, by post-multiplying the root node's own transform `[C]`, and its visual origin stays identity:
+## Reconciling the standards
 
-`p_link = T_asset_rootnode · Rx(90) · p_node`
+**[Firm]** The problem is not a missing standard. It is that two well-standardized communities label the same three axes differently, and an unstandardized authoring tool adds a third labeling.
 
-The two agree exactly when `T_asset_rootnode` commutes with `Rx(90)`: when the root node is the identity, a pure scale, or a rotation about X alone. Any other root transform, a translation included, places the geometry in two different spots. That is the whole of the hazard that section 4.4 derives from the source and section 5 measures, stated kinematically: the same correction frame, attached at a different point in the tree. It is also the reason the root node has to be the identity, which is a rule about tree shape rather than about axes.
+### Where they agree, and it is most of it
 
-### 1.7 Vocabulary
+| Property | Robotics (ISO 9787, REP 103) | 3D assets (ISO/IEC 12113, ISO/IEC 19775) | Agree? |
+|---|---|---|---|
+| Handedness | right-handed (ISO §4.1, REP 103 "All systems are right handed") | right-handed (glTF §3.4, X3D §4.3.6) | **yes** |
+| Length unit | meter (REP 103 base units) | meter (glTF §3.4, X3D §4.3.6) | **yes** |
+| Angle unit | radian (REP 103) | radian (glTF §3.4) | **yes** |
+| Rotation names | roll, pitch, yaw about X, Y, Z (ISO §4.3, REP 103) | not addressed | no conflict |
+| Which axis is up | `+Z` (ISO §5.1 "collinear but in the opposite direction to the acceleration of gravity"; §5.5 `+Z_p` up) | `+Y` | **no** |
+| Which axis is forward | `+X` (ISO §5.5, REP 103) | `+Z` | **no** |
 
-| Kinematics | glTF | This note |
+### The disagreement is one cyclic relabeling
+
+**[Firm]** Write each convention as the ordered triple its `(X, Y, Z)` axes mean:
+
+- robotics — `(forward, left, up)`
+- 3D assets — `(left, up, forward)`
+
+The same three directions in the same cyclic order, shifted by one position. Nothing is mirrored, no unit differs, no handedness differs. That is why a single rotation reconciles them, and why the reconciliation can never need a reflection or a scale.
+
+**[Corrected]** Blender's viewport convention is *not* a third position in that cycle, which is a tidier claim than the algebra supports. Its triple is `(left, back, up)` — the front view presents the `−Y` face — and that is not a cyclic shift of `(forward, left, up)`; it shares the robotics up axis and differs in the other two. A yaw of `+90°` about that shared up axis carries Blender's axes onto REP 103's, which is why a part authored to REP 103 shows its front in Blender's **Right** view rather than its Front view. Blender is also the one convention here with no standard behind it.
+
+### Our coordinate system names
+
+**[Firm where a clause is cited, otherwise ours]** Based on ISO 9787 and deliberately not identical to it. ISO is written for industrial manipulators, so three of its eight systems have no use here and it lacks a name for the thing we handle most: an ordinary rigid component that is neither a base, a tool, nor a mating surface.
+
+| Our name | Basis | Status |
 |---|---|---|
-| world frame | nothing; the format has no world | the SDF world, outside the file |
-| body frame | nothing; not expressible in the format | the link frame, with REP 103 semantics |
-| the frame a file's contents are expressed in | the scene's implicit space | asset frame |
-| a frame in the transform tree | a node | node frame, which is also the mesh frame |
-| geometry expressed in a frame | a mesh and its primitives | the vertices |
-| fixed joint, static transform | a node's `matrix` or TRS properties | node transform |
-| a frame's name | `node.name`: optional, non-unique, and not how the tree is assembled | see section 4.2 on submesh naming |
-
-## 2. The answer in one page
-
-In the terms of section 1: a glTF file supplies an asset frame and says nothing about what it means. The standard fixes which way is up in that space and says, without a requirement keyword, which way an asset's front faces. ROS, through REP 103, fixes what a body frame means: x forward, y left, z up. Nothing connects the two. The connection has to be made by someone, somewhere in the chain from Blender to the screen, and the whole difficulty is that the two programs that consume our files make it in different places.
-
-- Blender is Z-up, like ROS. A part modeled x forward, y left, z up in Blender is in the body frame while it is in Blender.
-- Blender's glTF exporter rewrites every position as `(x, y, z) → (x, z, -y)` to produce the Y-up file the standard describes. `[C]` The file therefore has forward on +X, up on +Y, and the part's right-hand side on +Z.
-- Gazebo reads that file exactly as written, making the asset frame the link frame. It performs no up-axis conversion of any kind. `[C][P]` Left alone, the part needs roll +90°: its top points along y, its left side at the ground.
-- RViz reads the same file and rotates it +90° about X on load, taking glTF Y-up to ROS Z-up. `[C]` Left alone, the part appears correctly.
-- So roll +90° has to be applied on the Gazebo side and not on the RViz side. In this project that is done in `parts.xacro` by expanding the URDF with `gltf_up:=z` for Gazebo only.
-
-That is the mechanism. Four further facts shape what a modeler may and may not do:
-
-- Node transforms inside the file are honored by both consumers and baked into the vertices. `[C][P]` A rotation left on an object in Blender becomes a rotation node and is faithfully applied — with one exception: installed gz-common 7.3.0 drops the root node's rotation for a `.gltf` file and keeps it for a `.glb`, because of a case bug. `[C][P]`
-- A transform on the root node is composed differently by the two consumers, because RViz inserts its +90° *inside* the root node while Gazebo's correction is applied outside the whole file. A root translation of 0.5 m along file Y ends up 0.5 m up in Gazebo and 0.5 m to the left in RViz. `[C][P]` The root node has to be identity.
-- The glTF sentence "the front side of a glTF asset faces +Z" is a convention no consumer implements and no validator checks, because nothing in a file marks a front. Our files face +X, and whether to change that is an open decision (section 9).
-- The old Collada workflow needed none of this because both consumers ignore a Collada file's `<up_axis>` declaration and read its geometry raw. `[C][P]` A Z-up Collada file was in the body frame from Blender to screen. That is the simplicity glTF broke.
-
-## 3. Three frames, from the standards
-
-| Frame | Up | Forward | Left | Handedness | Source |
-|---|---|---|---|---|---|
-| ROS body frame | +z | +x | +y | right | REP 103, "Axis Orientation": "x forward, y left, z up" `[S]` |
-| Blender world | +Z | none defined; the viewport's *Front* view looks along +Y at the −Y face | none defined | right | Blender's own convention; the exporter's swizzle below is what proves it Z-up `[C]` |
-| glTF | +Y | +Z | +X | right | glTF 2.0 §3.4 `[S]`, stated of the asset frame |
-
-Blender's "front" is a third convention, neither ROS's +X nor glTF's +Z, and it is the one a modeler looks at all day. Section 10 deals with it.
-
-The glTF text, in full, from §3.4 Coordinate System and Units `[S]`:
-
-> glTF uses a right-handed coordinate system. glTF defines +Y as up; the front side of a glTF asset faces +Z, the left side of a glTF asset faces +X. The units for all linear distances are meters. All angles are in radians.
-
-Two things about that paragraph matter later. It uses no requirement keyword, so nothing in it is a MUST in the BCP 14 sense. And it speaks of "a glTF asset" as a whole: it does not say what "front" means for a mesh, a node, or a part with no obvious front, and there is no property anywhere in the format that records one. The up axis, by contrast, is something every exporter and every viewer acts on, so it is a convention with teeth even though it is stated in the same voice.
-
-REP 103 `[S]` states the body frame and the units (meters, radians) and requires right-handedness. Its rotation section defines "fixed axis roll, pitch, yaw about X, Y, Z axes respectively", which is the convention SDF's `<pose>` and URDF's `<origin rpy>` use.
-
-REP 158 `[S]`, a draft, is a USD document with glTF as its export target. Its Z-up rule applies to the USD stage, not to a glTF file, so it does not bear on what a `.glb` contains. Two of its rules do transfer, both stated of the source asset: "Assets must follow the strict ROS Right-Handed convention: X-forward, Y-left, Z-up", and "Assets must not rely on root-node rotations (e.g., `xformOp:rotateX = -90`) to align geometry. Points and normals should be transform-applied (frozen) to Z-up at the source level."
-
-### 3.1 The algebra
-
-All three frames are right-handed, so every mapping between them is a proper rotation, and each can be written as one or two of the fixed-axis rotations REP 103 names. Writing a body-frame vector as (forward, left, up) and a file-frame vector as (X, Y, Z), where "file frame" means the asset frame and, by the no-rotation rule of section 1.5, the root node frame with it:
-
-| The file was produced by | File (X, Y, Z) holds | Rotation that returns it to the body frame |
-|---|---|---|
-| A. Blender's default export of a body-frame model | (forward, up, right) | roll +90° |
-| B. Authoring to the glTF sentence, +Z front and +X left | (left, up, forward) | roll +90°, then yaw +90° |
-| C. Exporting with the Y-up conversion off | (forward, left, up) | none |
-
-Roll +90° about x maps (X, Y, Z) to (X, −Z, Y). Applied to A that gives (forward, −right, up) = (forward, left, up), the body frame. Applied to B it gives (left, −forward, up), which is still wrong by a yaw; yaw +90° maps (a, b, c) to (−b, a, c), giving (forward, left, up). SDF and URDF compose fixed-axis roll, pitch, yaw as Rz(yaw)·Ry(pitch)·Rx(roll), so roll is applied first and A is written `1.5708 0 0`, B `1.5708 0 1.5708`.
-
-C is what the vertex data looks like before any exporter touches it. It is not a glTF convention; it is the body frame stored in a glTF container.
-
-## 4. What each implementation does, from source
-
-### 4.1 Gazebo: routing by extension
-
-`gz-common` `MeshManager::Load` lowercases the extension and picks a loader `[C]`, gz-common 7.3.0 `MeshManager.cc`:
-
-```cpp
-if (extension == "stl" || extension == "stlb" || extension == "stla")
-  loader = &this->dataPtr->stlLoader;
-else if (extension == "dae")
-  loader = &this->dataPtr->colladaLoader;
-else if (extension == "obj")
-  loader = &this->dataPtr->objLoader;
-else if (extension == "gltf" || extension == "glb" || extension == "fbx")
-  loader = &this->dataPtr->assimpLoader;
-```
-
-`GZ_MESH_FORCE_ASSIMP=true` sends everything through assimp instead. Collada goes to Gazebo's own loader by default.
-
-### 4.2 Gazebo: the glTF path applies no axis conversion
-
-`AssimpLoader::Load` `[C]`, gz-common 7.3.0 `AssimpLoader.cc` lines 846–852, computes the root transform like this:
-
-```cpp
-std::transform(extension.begin(), extension.end(),
-    extension.begin(), ::tolower);
-
-// compute assimp root node transform
-bool useIdentityRotation = (extension != "glb" && extension != "glTF");
-auto transform = this->dataPtr->UpdatedRootNodeTransform(scene,
-  useIdentityRotation);
-```
-
-and `UpdatedRootNodeTransform` (lines 955–976):
-
-```cpp
-// Some assets apear to be rotated by 90 degrees as documented here
-// https://github.com/assimp/assimp/issues/849.
-auto transform = _scene->mRootNode->mTransformation;
-if (_useIdentityRotation)
-{
-  // drop rotation, but keep scaling and position
-  aiVector3D rootScaling, rootAxis, rootPos;
-  float angle;
-  transform.Decompose(rootScaling, rootAxis, angle, rootPos);
-  transform = aiMatrix4x4(rootScaling, aiQuaternion(), rootPos);
-}
-// for glTF / glb meshes, it was found that the transform is needed to
-// produce a result that is consistent with other engines / glTF viewers.
-else
-{
-  transform = _scene->mRootNode->mTransformation;
-}
-```
-
-Read it twice. There is no rotation being *added* anywhere. For glTF the file's own root transform is kept; for every other format its rotation part is thrown away, and its translation and scale are kept in both branches. Then `RecursiveCreate` walks the node tree multiplying each node's transform onto its parent's (`nodeTrans = _transform * nodeTrans;`, line 302) and applies the product to every vertex (`vertex = _transform * vertex;`, line 766). So the vertices Gazebo ends up with are the file's buffer values, composed through the file's own nodes, and nothing else. Each submesh is named from the node that carries it (`auto nodeName = ToString(_node->mName); ... subMesh.SetName(nodeName);`, lines 249–251), never from the mesh or the material.
-
-What "root node" means here depends on assimp. Its glTF2 importer `[C]`, `glTF2Importer.cpp` line 1327, hoists a single scene root into `mRootNode` with its transform intact, and only invents an identity `ROOT` when the scene has zero or several:
-
-```cpp
-if (numRootNodes == 1) { // a single root node: use it
-    mScene->mRootNode = ImportNode(r, rootNodes[0]);
-} else if (numRootNodes > 1) { // more than one root node: create a fake root
-    aiNode *root = mScene->mRootNode = new aiNode("ROOT");
-```
-
-So for the one-object files this project delivers, the glTF root node *is* assimp's root node, and everything said about `mRootNode` applies to it directly.
-
-The case bug: the extension has been lowercased, so it can never equal `"glTF"`. A single-root `.gltf` file takes the `useIdentityRotation` branch and loses its root rotation; a `.glb` keeps it. A file with several top-level nodes is unaffected, because assimp's invented root is identity and the real rotations sit one level down. Fixed in gz-common 7.3.1, where the literal reads `"gltf"`. Confirmed by probe in section 5.
-
-### 4.3 Gazebo: the Collada path ignores `<up_axis>`
-
-Gazebo's own `ColladaLoader.cc` `[C]` reads `<asset><unit meter="…">` (line 717) and scales by it, and contains no handling of `<up_axis>` at all — the string does not appear in the file. Geometry is consumed in the axes it was written in.
-
-If Collada is forced through assimp instead, assimp's importer does honor the declaration `[C]`, `AssetLib/Collada/ColladaLoader.cpp` lines 196–202:
-
-```cpp
-} else if (parser.mUpDirection == ColladaParser::UP_Z) {
-    pScene->mRootNode->mTransformation *= aiMatrix4x4(
-            1, 0, 0, 0,
-            0, 0, 1, 0,
-            0, -1, 0, 0,
-            0, 0, 0, 1);
-}
-```
-
-It puts a −90° X rotation on the root node. Gazebo's loader does not set `AI_CONFIG_IMPORT_COLLADA_IGNORE_UP_DIRECTION` (its only importer properties are `PP_FD_REMOVE` and `REMOVE_EMPTY_BONES`, lines 806–808), so that rotation is present, and then dropped by the identity-rotation branch because `.dae` is not `glb` or `gltf`. Either way, Gazebo shows a Collada file's buffer raw. The probe in section 5 shows the identical result for both paths; that it is identical *because* assimp added a rotation Gazebo then removed, rather than never adding one, is inference from the two sources, not something the probe can distinguish.
-
-### 4.4 RViz: rotates glTF inside the root node, ignores Collada up-axis
-
-`rviz_rendering` `mesh_loader_helpers/assimp_loader.cpp` `[C]`, lines 200 and 214–222 on `rolling`:
-
-```cpp
-importer_->SetPropertyBool(AI_CONFIG_IMPORT_COLLADA_IGNORE_UP_DIRECTION, true);
-...
-const std::string ext = std::filesystem::path(name).extension().string();
-if (ext == ".gltf" || ext == ".glb" || ext == ".vrm") {
-  // Transform mesh from glTF Y-Up space to ROS Z-Up space
-  // by applying a 90 degree rotation about the X-axis,
-  // effectively going from (x, y, z) to (x, -z, y)
-  aiMatrix4x4 transform;
-  aiMatrix4x4::RotationX(static_cast<float>(AI_MATH_HALF_PI), transform);
-  scene->mRootNode->mTransformation = scene->mRootNode->mTransformation * transform;
-}
-```
-
-Two decisions in twelve lines. Collada's up-axis is explicitly ignored, so RViz agrees with Gazebo about Collada. glTF is rotated +90° about X, so RViz disagrees with Gazebo about glTF.
-
-Look at where the rotation goes: it is *post-multiplied onto the root node's own transform*. `computeTransformOverSceneGraph` (lines 518–523) then composes parent × child down the tree and `p *= transform` (line 587) applies the product to each vertex, so RViz computes `Root · Rx(90) · Child … · v`. Gazebo computes `Root · Child … · v` and the visual pose then applies `Rx(90)` outside, giving `Rx(90) · Root · Child … · v`. The two agree exactly when `Root` commutes with `Rx(90)`, which is to say when the root node is identity, or a pure scale, or a rotation about X. For a root carrying a translation T, Gazebo shows the geometry at `Rx·T` and RViz at `T`: the same file, 0.5 m up in one and 0.5 m to the left in the other. Child nodes are unaffected, since both compose them on the same side of the correction. Section 1.6 states the same result as a tree: the same correction frame, attached above the root node in one consumer and below it in the other. Confirmed for the Gazebo half by probe in section 5; the RViz half is the tutorial's stage 3.
-
-The installed `librviz_rendering.so` 15.2.5 in the container contains the `.gltf`, `.glb` and `.vrm` extension literals; that shows the comparison is compiled in, and stage 3 of the tutorial is what shows the rotation follows it. The branch was added by ros2/rviz PR 1482, merged to `rolling` on 2025-06-16; the `jazzy` (rviz_rendering 14.1.24) and `kilted` (15.0.15) branches do not contain it `[C]`. The distro floor for these files in RViz is therefore Lyrical.
-
-### 4.5 Blender: the exporter's swizzle
-
-glTF-Blender-IO `[C]`, `__init__.py`, `com/gltf2_blender_math.py` and `exp/primitive_extract.py`:
-
-```python
-export_yup: BoolProperty(
-    name='+Y Up',
-    description='Export using glTF convention, +Y up',
-    default=True
-)
-...
-def swizzle_yup_location(loc: Vector) -> Vector:
-    return Vector((loc[0], loc[2], -loc[1]))
-
-def swizzle_yup_rotation(rot: Quaternion) -> Quaternion:
-    return Quaternion((rot[0], rot[1], rot[3], -rot[2]))
-
-def swizzle_yup_scale(scale: Vector) -> Vector:
-    return Vector((scale[0], scale[2], scale[1]))
-...
-if self.export_settings['gltf_yup']:
-    PrimitiveCreator.zup2yup(self.locs)        # positions,  line 1219
-...
-    PrimitiveCreator.zup2yup(self.normals)     # normals,    line 1558
-```
-
-With the default `+Y Up` checked, node translations, rotations and scales go through the `swizzle_yup_*` functions and vertex positions, normals and tangents through `zup2yup`, which is the same `(x, y, z) → (x, z, -y)`. Unchecked, the Blender axes are written as they are — convention C above. The checkbox lives in the export dialog's Transform panel.
-
-Blender's Collada exporter, for contrast, writes the Blender axes and declares `<up_axis>Z_UP</up_axis>` `[C]` (Blender 4.2, `io/collada/DocumentExporter.cpp:234`, `asset.setUpAxisType(COLLADASW::Asset::Z_UP)`); since both consumers ignore that declaration, a Collada file from Blender was always in convention C, and convention C is the body frame. That exporter no longer exists: Blender's `main` branch has no `io/collada` module, so the old workflow cannot be reproduced with a current Blender at all.
-
-## 5. The probe: an asset that cannot be misread
-
-`spike/coords/make_markers.py` writes every variant from scratch, with no exporter involved, so there is no question what is in each file. The marker is four box arms authored in the body frame:
-
-```
-        +z  0.25 m  blue
-         |
-         |
-  -x ----+--------------------- +x  1.00 m  red
- 0.10 m  |\
- grey    | \
-         |  +y  0.50 m  green
-```
-
-Every arm has a different length and a different color, and there is a stub on −x, so a bounding box alone identifies every axis and its sign, and any mirroring or mis-rotation is unmistakable in a printout or on a screen. In every file the node is named `marker` and the mesh `marker_mesh`, so the two cannot be confused in the output.
-
-| File | What is in it | Isolates |
-|---|---|---|
-| `marker_yup.glb`, `.gltf` | buffer swizzled `(x, z, -y)`, root node identity | convention A, and the `.gltf`/`.glb` question |
-| `marker_zup.glb`, `.gltf` | buffer raw, root node identity | convention C |
-| `marker_rotnode.glb`, `.gltf` | buffer raw, root node `rotation` −90° about X | is a node rotation honored, and by whom |
-| `marker_roottrans.glb`, `.gltf` | as `marker_yup`, root node `translation` (0, 0.5, 0) | the root-node composition difference of section 4.4 |
-| `marker_twonode.glb` | as `marker_yup`, plus a child node `pointer` with its own mesh, translated (0, 0.5, 0) and rotated +90° about Y | node composition below the root, submesh naming |
-| `marker_zup_declZ.dae`, `marker_zup_declY.dae` | identical raw buffers, `<up_axis>` `Z_UP` and `Y_UP` | whether the declaration does anything |
-
-`glb_probe` (`spike/glb_probe`, linked against the installed gz-common, extended here to print per-submesh bounds) loads each through `MeshManager` exactly as Gazebo does. Results `[P]`:
-
-| File | Loader bounding box, (X, Y, Z) min → max | Reading |
-|---|---|---|
-| `marker_yup.glb` | (−0.10, −0.025, −0.50) → (1.00, 0.25, 0.025) | raw; up on +Y, left arm on −Z |
-| `marker_yup.gltf` | same | same |
-| `marker_zup.glb` | (−0.10, −0.025, −0.025) → (1.00, 0.50, 0.25) | raw; the body frame, unchanged |
-| `marker_zup.gltf` | same | same |
-| `marker_rotnode.glb` | (−0.10, −0.025, −0.50) → (1.00, 0.25, 0.025) | rotation node honored: equals `marker_yup` |
-| `marker_rotnode.gltf` | (−0.10, −0.025, −0.025) → (1.00, 0.50, 0.25) | rotation node dropped: equals `marker_zup` |
-| `marker_roottrans.glb` and `.gltf` | (−0.10, 0.475, −0.50) → (1.00, 0.75, 0.025) | root translation applied along file Y, in both containers; the visual pose will then roll it to link z |
-| `marker_twonode.glb`, submesh `pointer` | (−0.025, 0.475, −0.30) → (0.025, 0.525, 0.00) | child TRS composed and baked |
-| `marker_zup_declZ.dae` | (−0.10, −0.025, −0.025) → (1.00, 0.50, 0.25) | raw |
-| `marker_zup_declY.dae` | identical | declaration ignored |
-| both `.dae`, `GZ_MESH_FORCE_ASSIMP=true` | identical | raw either way; see section 4.3 for why |
-
-Every row is what section 4 predicts. The two that carry the most weight: `marker_rotnode.gltf` versus `.glb` is the case bug made visible, and the two `.dae` files being identical in the loader is the old workflow's foundation made visible.
-
-Also from the probe: the four primitives of the one-node marker all arrive as submeshes named `marker`, the node, while the mesh is `marker_mesh`; the child arrives as `pointer`. That is the naming line quoted in section 4.2, seen from outside.
-
-## 6. The old workflow, step by step, and why four rules were enough
-
-```mermaid
-flowchart LR
-    B["Blender scene<br/>x fwd, y left, z up"] -->|"Collada export<br/>axes untouched, declares Z_UP"| D[".dae<br/>(fwd, left, up)"]
-    D -->|"gz ColladaLoader<br/>no up_axis handling"| G["Gazebo link<br/>(fwd, left, up)"]
-    D -->|"rviz AssimpLoader<br/>IGNORE_UP_DIRECTION"| R["RViz link<br/>(fwd, left, up)"]
-```
-
-1. Model in Blender with x forward, y left, z up. The Blender world frame is the body frame.
-2. Put the object origin where the link origin should be.
-3. Export Collada. The file's axes are Blender's axes.
-4. Reference it from `<visual><geometry><mesh>` with no pose.
-5. Look at it in Gazebo.
-
-The four rules — one mesh, one origin, REP 103, check it in Gazebo — were sufficient because nothing in the chain transformed anything. The file's frame was the body frame, both consumers read it raw, and the only way to get it wrong was to author it wrong, which one look in Gazebo caught. The rules never mentioned axis conversion because there was none to mention. That was not a property of Collada as a format, which has an `<up_axis>` and a full node hierarchy; it was a property of the two loaders ignoring the declaration and of Blender writing its own axes.
-
-## 7. The glTF workflow, step by step
-
-```mermaid
-flowchart LR
-    B["Blender scene<br/>x fwd, y left, z up"] -->|"glTF export, +Y Up on<br/>(x, y, z) → (x, z, −y)"| F[".glb<br/>(fwd, up, right)"]
-    F -->|"gz AssimpLoader<br/>no conversion"| G0["Gazebo link, raw<br/>(fwd, up, right) — needs roll +90°"]
-    G0 -->|"visual pose<br/>roll +90°, from parts.xacro gltf_up:=z"| G["Gazebo link<br/>(fwd, left, up)"]
-    F -->|"rviz AssimpLoader<br/>Root · RotationX(+90°) on load"| R["RViz link<br/>(fwd, left, up)"]
-    F -->|"any glTF viewer<br/>Y-up assumed"| V["Viewer<br/>upright, front to screen-right"]
-```
-
-1. Model in Blender with x forward, y left, z up, as before.
-2. Apply all transforms, so the object's location, rotation and scale are identity and the geometry lives in the vertex data.
-3. Export glTF Binary with `+Y Up` checked, the default. The exporter rewrites every coordinate. The file is now in convention A: forward +X, up +Y, right +Z.
-4. Reference it from the visual. For Gazebo, give the visual a pose of roll +90°. For RViz, give it none.
-5. Look at it in both.
-
-Three of the four old rules survive intact. The one that changed is "REP 103": it is still true of the Blender scene and now false of the file, and the file is in a frame nobody chose on purpose. The correction that repairs it is invisible in the file, differs between the two consumers, and lives in a macro argument. "Check it in Gazebo" now checks Gazebo plus the macro, and says nothing about RViz. That is the whole of what got harder.
-
-## 8. Where the correction can live
-
-```mermaid
-flowchart LR
-    subgraph chain["The chain, with the places a rotation could be inserted"]
-      direction LR
-      A["① in the file<br/>(buffer, or a node — same thing)"] --> P["② in the SDF / URDF<br/>visual pose"] --> K["③ inside the consumer"]
-    end
-```
-
-| Place | Who does it today | What rules it in or out |
-|---|---|---|
-| ① the file, whether as raw Z-up buffers (convention C) or as a rotation node the consumers bake in | nobody, on purpose; a modeler by accident if a transform is left unapplied | Both consumers compose node transforms into the vertices, so a rotation on a node has exactly the effect of the same rotation in the buffer `[C][P]`; the two encodings are one place. RViz applies its own +90° regardless, so a file corrected here needs roll −90° in RViz, and lies on its side in every glTF viewer and on re-import into Blender. Gazebo alone would be happy. And a root-node rotation adds the hazards of section 4.4: composed on the wrong side of RViz's correction, and dropped for a `.gltf` on gz-common 7.3.0. REP 158 forbids it at the source. `[S]` |
-| ② the visual pose | `parts.xacro`, for Gazebo only | Has to differ between consumers, because ③ already differs. Hence the `gltf_up` argument and two expansions of one URDF. Explicit, checkable, and the only place a body-frame statement belongs by section 1.4. |
-| ③ the consumer | RViz | Not ours to change. It is the reason ② cannot be one value for both. |
-
-The project's arrangement — ② for Gazebo, ③ for RViz, nothing in the file — is the only one that keeps the file conventional, keeps a viewer honest, and stays clear of the root-node hazards. It costs one xacro argument.
-
-## 9. The open decision: which way does the file face
-
-Section 3.1 gave three conventions. C is ruled out above. Between A and B, stated as evenly as possible:
-
-| | A. forward on +X, what Blender's export of a body-frame model produces | B. forward on +Z, the glTF sentence |
-|---|---|---|
-| How the modeler authors | in the body frame; nothing deliberate | the Blender scene rotated −90° about Z, so forward is on Blender −Y; one deliberate step every time, with no tool that checks it |
-| Gazebo visual pose | roll +90° | roll +90°, yaw +90° |
-| RViz / installed URDF origin | none | yaw +90° |
-| In a glTF viewer, Fuel thumbnail, or USD import | upright, seen from its left side; the default camera does not face it | upright, facing the camera |
-| Meets glTF §3.4 | up axis yes; front sentence no | both |
-| REP 158, which is stated of the source asset | the Blender source is X-forward, Z-up, frozen: matches | the Blender source is −Y-forward: departs; the file matches glTF's own convention instead |
-| Cost of switching to it | none, it is the status quo | one bake per existing delivery, a yaw about file Y, the same kind of script as `gltf_to_yup.py`; one string in `gltf_visual_rpy`; a non-identity visual origin in the installed URDF |
-| What a modeler's mistake looks like | a B-style file arrives: faces starboard in both consumers | an A-style file arrives: faces port in both consumers |
-
-Neither is wrong. Under A the modeler who authors in the body frame gets a correct file without knowing any of this, and the file looks odd only outside the robotics toolchain. Under B the file is right everywhere and the modeler has one thing to get right by hand. This note does not settle it; it is review decision 2, and it stays open.
-
-## 10. For the modeler: what to do in Blender
-
-You do not need to read the rest of this document. Five words you will meet:
-
-- *link* — the rigid piece of the robot your file gets attached to. Your file's axes become its axes.
-- *node* — a glTF object. Any transform you leave unapplied in Blender becomes one, and that is what the rules below are about.
-- *Gazebo* and *RViz* — the two programs that display your file. They handle orientation differently; that is the engineer's problem, not yours, as long as you follow the rules.
-- *port* and *starboard* — the part's own left and right, as if you were aboard it facing forward. "Left" below always means port.
-
-Today the file faces +X, which is simply what you get by modeling forward on +X and pressing export. Ignore the bracketed "under B" remarks unless the team tells you the forward-axis rule has changed.
-
-### 10.1 The rule on one line
-
-Real size in meters, forward on +X, left on +Y, up on +Z, reference point at (0, 0, 0), one object, Ctrl+A → All Transforms, export `.glb` with `+Y Up` on.
-
-### 10.2 The steps
-
-1. Scene Properties → Units: Metric, Unit Scale 1.0. Model at real-world size. The exporter writes Blender units as meters and does not apply the Unit Scale, so with any other setting the numbers you read in the N panel are not the numbers in the file.
-2. Model the part with +X forward, +Y toward its port side, +Z up, in Blender's world axes. Blender's *Right* view (numpad 3) then shows the part's front and Blender's *Front* view (numpad 1) shows its starboard side. That is not a typo; it is the whole point of the axis rule. *(Under B: the front faces −Y, so Front view looks at it.)*
-3. Which way is forward: the part's documentation says. For a sensor, the direction it senses; for a thruster, the direction it pushes; for a cylinder, its axis on +X. If nothing defines it, ask; do not choose.
-4. Position the geometry so the part's reference point sits at Blender's world origin. Which point that is comes from the part's documentation; if it says nothing, ask. Step 6 moves the object origin to the world origin, so this is what fixes where the file's zero is.
-5. One object per file. Join everything (select all, Ctrl+J). No empties, no parenting, no collection instances. If a part genuinely needs separate pieces, ask first. Materials survive a join as material slots on the result. Name the object after the part; that name is what the engineers see.
-6. With the object selected, Object → Apply → All Transforms (Ctrl+A → All Transforms). Afterwards the N panel's Item tab must read Location 0, 0, 0, Rotation 0, 0, 0, Scale 1, 1, 1. A file with a leftover transform is rejected on delivery.
-7. File → Export → glTF 2.0. Format: glTF Binary (`.glb`). Include → Limit to → Selected Objects if the scene has anything else in it. Transform → `+Y Up`: leave it checked. Do not "fix" the orientation for any particular program.
-
-### 10.3 Check it yourself before sending
-
-Two checks, because each catches what the other cannot.
-
-- In a viewer with a grid and axis gizmo — the three.js editor is one — drop the `.glb` in. In its default camera you are looking at the part's port side: the front points to the right of the screen, the top points up, and the port side faces you. *(Under B: the front faces you.)* If it lies on its side, `+Y Up` was off. If it stands up but faces you or away, step 2 was off. Check the size against the grid, and that the reference point is on the origin.
-- File → Import → glTF 2.0 into an empty Blender scene. The object must come in at Location 0, Rotation 0, Scale 1 and look identical to what you exported. A viewer applies node transforms silently, so this is the only check that catches an unapplied transform — the one mistake a file is rejected for.
-
-`spike/coords/out/marker_yup.glb` is a reference: four colored arms, red forward, green port, blue up. Open it in your viewer to see what correct looks like.
-
-### 10.4 Never
-
-- Leave a transform unapplied. It becomes a node, and the file is rejected.
-- Export with `+Y Up` off to make one program happy. The others break, and that program is already handled.
-- Rotate the model to face +Z because the glTF specification says so, unless decision 2 has gone that way. It would face starboard in every assembly.
-
-### 10.5 Checklist per delivery
-
-- meters, Unit Scale 1.0
-- forward +X, port +Y, up +Z; forward defined by the part's documentation
-- reference point at (0, 0, 0)
-- one object, named after the part
-- Ctrl+A → All Transforms; N panel reads 0 / 0 / 1
-- `.glb`, `+Y Up` on
-- viewer: upright, front to screen-right, size right, origin right
-- re-import: no transform on the object
-
-## 11. For the engineer: what you are getting, and what can go wrong
-
-- A delivered `.glb` in convention A. Its axes go straight onto the link axes in Gazebo; RViz rotates it itself. The roll +90° lives in `parts.xacro` behind `gltf_up`, and only the Gazebo expansion sets it.
-- `gltf_up:=z` is passed wherever a URDF is expanded for Gazebo, and those sites have to stay in step: `blueboat_gazebo/CMakeLists.txt:55`, `bluerov2_gazebo/CMakeLists.txt:72`, both `*_gazebo/scripts/configure_vehicle.py:79`, and `bluerobotics_parts/scripts/parts_check_world.py:94`. The `*_description/launch/display.launch.xml` files default it to `y`. The classic mistake is spawning the ROS-flavored `robot_description` into Gazebo with `ros_gz_sim create -topic`; every glTF visual then needs roll +90°.
-- `part_visual` is the only macro that applies `gltf_visual_rpy`, and its `xyz` argument is in the part frame, not rolled. Collision geometry is SDF primitives today, so no glTF collision mesh exists to need the roll; if decision 1 changes that, the collision macro needs the same treatment.
-- The root node must be identity. A root rotation is honored by Gazebo for `.glb` and dropped for `.gltf` on the installed 7.3.0 (fixed in 7.3.1). A root translation is applied by both consumers but on opposite sides of RViz's +90°, so it lands in different places (section 4.4). A root scale is applied by both, on the same side, and is merely a modeler's error. Below the root, node transforms are honored and baked in `[P]`.
-- Submeshes are named after glTF nodes, never meshes or materials `[C][P]`. Several primitives under one node share a name, and `<submesh><name>` in SDF cannot tell them apart.
-- RViz's glTF rotation exists on Lyrical (rviz_rendering 15.2.x) and Rolling from June 2025; Jazzy and Kilted do not have it, and on those every glTF part needs roll +90° in RViz while the Gazebo path is unchanged. There is no URDF that is right for both. State Lyrical as the floor.
-- Collada is on borrowed time in Gazebo and already gone from Blender's development branch, but if you meet one: both consumers ignore its `<up_axis>`, so a Z-up Collada from Blender is in the body frame and needs no pose. That is not a reason to keep using it.
-- Acceptance, without a GPU: run `glb_probe` on the file and check that there is one root node named after the part; that the file's JSON puts no `translation`, `rotation`, `scale` or `matrix` on it; that the bounding box has the part's length on X, height on Y and width on Z, at the published dimensions; and that the container is `.glb`. `glb_probe` lives in `spike/`, which this workspace treats as disposable; if it becomes the acceptance tool it needs a home.
-
-## 12. Tutorial: see it for yourself
-
-Each stage names its role: *modeler* for Blender work, *engineer* for the simulation side, *analysis* for reading files back. Stages 1 and 4's Blender halves need Blender, which is not installed here or in the container; the rest runs in drydock and a browser. All generated files are in `~/maritime_ws/spike/coords/out/`; regenerate with `python3 ~/maritime_ws/spike/coords/make_markers.py ~/maritime_ws/spike/coords/out`.
-
-### Stage 0 — tools
-
-| Tool | What it tells you | Where |
-|---|---|---|
-| Blender | what the exporter does | your machine |
-| a browser glTF viewer with a grid and axis gizmo, for example the three.js editor | what the file says, under the Y-up assumption every viewer makes; not what Gazebo does with it | browser, drag and drop the `.glb` |
-| `glb_probe` | what Gazebo's loader built, as numbers | drydock, `~/maritime_ws/spike/glb_probe/build/glb_probe FILE` |
-| `gz sim` | what Gazebo shows | drydock, X forwarded |
-| `rviz2` | what RViz shows | drydock, X forwarded |
-
-### Stage 1 — author the marker in Blender (modeler)
-
-Build the marker from section 5, so that the numbers you type are the numbers that should come out.
-
-1. New scene. Scene Properties → Units: Metric, Unit Scale 1.0. Delete the default cube.
-2. Add → Mesh → Cube, then in the N panel set Dimensions X 1.0, Y 0.05, Z 0.05 and Location X 0.5. Name it `arm_pos_x`. Give it a red material. Setting Dimensions changes the object's Scale, so the N panel shows non-unit scale for now; step 4 fixes that.
-3. Repeat: `arm_pos_y`, dimensions 0.05 × 0.5 × 0.05, location Y 0.25, green. `arm_pos_z`, dimensions 0.05 × 0.05 × 0.25, location Z 0.125, blue. `arm_neg_x`, dimensions 0.1 × 0.05 × 0.05, location X −0.05, grey.
-4. Shift+C to put the 3D cursor at the world origin. Select all four, Object → Join (Ctrl+J), rename the result `marker`, Object → Set Origin → Origin to 3D Cursor, then Object → Apply → All Transforms. The N panel must now read location 0, rotation 0, scale 1. The four materials survive as slots.
-5. Export as `marker_blender_yup.glb`: glTF Binary, Transform → `+Y Up` checked, Include → Limit to → Selected Objects, Data → Mesh → Apply Modifiers on.
-6. Export again as `marker_blender_zup.glb`, identical except `+Y Up` unchecked.
-7. Put both in `~/maritime_ws/spike/coords/out/`.
-
-### Stage 2 — read what the exporter did (analysis)
-
-I read the buffer and node data out of both files and print the bounding box and the node transforms, next to `marker_yup.glb` and `marker_zup.glb` from the generator. Expected: `marker_blender_yup.glb` matches `marker_yup.glb`, (−0.10, −0.025, −0.50) → (1.00, 0.25, 0.025), and the Z-up export matches `marker_zup.glb`. Both should have one root node with no transform.
-
-A surprise here and its meaning: a root node with a transform means step 4's Apply did not happen. A bounding box with the 0.5 m arm on +Z instead of −Z means a handedness flip somewhere, which would be a real finding.
-
-### Stage 3 — watch three consumers disagree (engineer)
-
-All three use `marker_yup.glb` and nothing else. No corrections anywhere.
-
-Browser: drop the file into the viewer. Expect it upright — blue up — with the red arm to the right of the screen and the green arm pointing away from you, into the screen, along −Z.
-
-Gazebo, uncorrected:
-
-```bash
-~/maritime_ws/tools/drydock/drydock join maritime bash -lc 'gz sim -r ~/maritime_ws/spike/coords/out/world_marker.sdf'
-```
-
-The model sits 0.6 m up so the long arm clears the ground. Expect the red arm along +x, the *blue* arm along +y, and the green arm pointing straight down. That is convention A read raw: file Y on link y, file −Z on link −z. The part needs roll +90°.
-
-Gazebo, corrected — the same world with `<pose>0 0 0 1.5708 0 0</pose>` on the visual:
-
-```bash
-~/maritime_ws/tools/drydock/drydock join maritime bash -lc 'gz sim -r ~/maritime_ws/spike/coords/out/world_marker_rolled.sdf'
-```
-
-Expect red +x, green +y, blue +z. The body frame.
-
-RViz, with the URDF whose visual origin is identity. The publisher is started in the background and stopped when RViz closes:
-
-```bash
-~/maritime_ws/tools/drydock/drydock join maritime bash -lc 'ros2 run robot_state_publisher robot_state_publisher --ros-args -p robot_description:="$(cat ~/maritime_ws/spike/coords/out/marker.urdf)" & RSP=$!; sleep 1; rviz2; kill $RSP'
-```
-
-Add a RobotModel display, set Fixed Frame to `base_link`. Expect red +x, green +y, blue +z — the same as corrected Gazebo, from a file with no correction. That is RViz's own +90° at work.
-
-Then the root-node case. `marker_roottrans.glb` is the same marker with a translation of (0, 0.5, 0) on its root node. Run `world_roottrans_rolled.sdf` in Gazebo and `marker_roottrans.urdf` in RViz the same way. Expect the marker 0.5 m *above* the link origin in Gazebo and 0.5 m to the *left* of it in RViz: the same file, in two places, which is section 4.4 on screen.
-
-Record what you see as rows: viewer, uncorrected Gazebo, corrected Gazebo, RViz, and the two root-translation runs. If uncorrected Gazebo and RViz agree, one of the loaders has changed and section 4 needs re-reading.
-
-### Stage 4 — more than one mesh (modeler, then analysis)
-
-`marker_twonode.glb` adds a child node `pointer`, an orange 0.3 m bar, translated 0.5 m up the file's Y and rotated to point along the file's −Z. Under RViz's rotation and under corrected Gazebo, expect it 0.5 m above the marker's origin, pointing along +y, to port. Under uncorrected Gazebo, expect it 0.5 m along +y, pointing down.
-
-Then the Blender version. This is a demonstration of what a hierarchy does, not a delivery pattern; section 10 says one object per file.
-
-1. In stage 1's scene, Add → Mesh → Cube, N panel Dimensions 0.3 × 0.05 × 0.05, name it `pointer`. Ctrl+A → Scale, and only Scale. In Edit mode select all and move the mesh +0.15 along X (G, X, 0.15) so the bar runs from the object origin to +0.3 on its own X.
-2. Select `pointer`, then shift-select `marker`, Ctrl+P → Object. In `pointer`'s N panel set Location (0, 0, 0.5) and Rotation Z +90°. Leave both unapplied on purpose.
-3. Select both objects and export `marker_blender_twonode.glb` with the stage 1 settings.
-
-I read it back. Expected: the child's translation swizzled to (0, 0.5, 0) and its rotation to +90° about the file's Y, so the file agrees with the generated one, and `glb_probe` reports a submesh `pointer` at (−0.025, 0.475, −0.30) → (0.025, 0.525, 0.00). This shows that a hierarchy authored in Blender arrives consistent, and it also shows the price: the pointer's placement is now a node transform, honored by both consumers but invisible in the vertex data, and two files with different content give the same picture.
-
-### Stage 5 — write down the rule that survived
-
-After stages 1 to 4 you have seen every claim in section 2 with your own eyes. The rule a second modeler could follow without asking is section 10, and the engineer's side is section 11. If anything you saw contradicts them, that is the finding, and it goes in section 14 next to the others.
-
-## 13. References
-
-- glTF 2.0 Specification, §3.4 Coordinate System and Units and §3.5 Scenes, Nodes: https://registry.khronos.org/glTF/specs/2.0/glTF-2.0.html#coordinate-system-and-units — the local annotated copy is `tools/glTF` on branch `bsb/notes`, sidebars `honu-coordinate-system` and `honu-node-transforms`
-- REP 103, Standard Units of Measure and Coordinate Conventions: https://www.ros.org/reps/rep-0103.html
-- REP 158 (draft), OpenUSD Conventions for Simulation Asset Interoperability: https://github.com/openrobotics/reps/blob/main/_posts/rep-0158%3A2006.md
-- SDFormat `<pose>`: http://sdformat.org/spec?elem=pose and the pose frame semantics tutorial it links
-- gz-common 7.3.0 `AssimpLoader.cc`, `MeshManager.cc`, `ColladaLoader.cc`: https://github.com/gazebosim/gz-common/tree/gz-common7_7.3.0/graphics/src; the `.gltf` fix is in tag `gz-common7_7.3.1`
-- rviz_rendering `assimp_loader.cpp`: https://github.com/ros2/rviz/blob/rolling/rviz_rendering/src/rviz_rendering/mesh_loader_helpers/assimp_loader.cpp, added by https://github.com/ros2/rviz/pull/1482
-- assimp `glTF2Importer.cpp` and `Collada/ColladaLoader.cpp`: https://github.com/assimp/assimp/tree/master/code/AssetLib
-- glTF-Blender-IO `com/gltf2_blender_math.py`, `exp/primitive_extract.py`, `__init__.py`: https://github.com/KhronosGroup/glTF-Blender-IO/tree/main/addons/io_scene_gltf2
-- Blender 4.2 `io/collada/DocumentExporter.cpp`: https://github.com/blender/blender/blob/v4.2.0/source/blender/io/collada/DocumentExporter.cpp
-- The probe assets and results: `~/maritime_ws/spike/coords/`
-
-## 14. Audit of what the project currently says
-
-Against sections 1 to 5. "Mechanism" means the description of who rotates what.
-
-| Where | Statement | Verdict |
-|---|---|---|
-| `docs/design/parts.md` rule 2 | "Origin at the mesh centroid, x forward, y left, z up (REP 103)" | True of the Blender scene, false of the file, and does not say which it means. A modeler holding a Y-up export reads it as a contradiction. Should say both: author in the body frame; the file therefore has forward on +X and up on +Y. |
-| `docs/design/parts.md` rule 3 | "The `.glb` must be Y-up, as the glTF specification requires ... A Z-up file shows correctly in Gazebo but rolled 90 degrees in RViz" | Mechanism correct `[C][P]`. "Requires" overstates: §3.4 has no keyword. The reason is that every consumer assumes it. |
-| `parts.xacro` comment | "glTF meshes are Y-up by specification and the delivered .glb files conform. RViz and other ROS tools rotate them to Z-up on load; Gazebo does not" | Mechanism correct `[C]`. "Conform" can only mean the up axis; the front sentence is a separate question the comment does not address. |
-| `model-spec.md` §5.2 | "Every consumer converts on the assumption that glTF is Y-up. RViz rotates a glTF mesh as it loads, and the part macro applies the matching rotation for Gazebo." | The second sentence is right and the first is wrong: Gazebo does not convert; the macro does. That is the exact confusion this note exists to remove. |
-| `model-spec.md` §5.3 | "+Z ... stated without a normative keyword" | Half right. Neither the up axis nor the front sentence has a keyword. The difference is that every implementation acts on the first and none can act on the second. |
-| `model-spec.md` §5.5 | root node MUST NOT carry a rotation, "because `gltf_to_yup.py` refuses"; "A `translation` on the root node is permitted and is applied by both consumers." | The rotation rule is right and its reason too weak: the loader-level reasons are the `.gltf` case bug and RViz's root post-multiply, and the standards-level reason is REP 158. The translation permission is unsafe: applied by both, yes, but on opposite sides of RViz's correction, so the part lands in two different places (section 4.4, `[C][P]`). |
-| `model-spec.md` §6.3, §3 | primitive-to-submesh mapping, and the proposal to rule submesh selection out | Added 2026-09-16 in response to this note. One submesh per primitive, named after the node; `SubMeshByName` returns the first match and stops, so primitives sharing a node cannot be selected apart (gz-common PR 659, open). Verified `[C][P]`: `marker_yup.glb` is one node, one mesh, four primitives and probes as four submeshes named `marker`. |
-| `gltf_to_yup.py` docstring | bakes `(x, y, z) → (x, z, −y)` | Exactly Blender's swizzle `[C]`. Correct. |
-| `asset-spec.md` (superseded) | "Author to the glTF spec: +Y up, +Z forward" | Convention B. With the current roll-only macro a B file faces starboard in both consumers. Not wrong as a convention; wrong for this pipeline as it stands. |
-| `docs/how-to/faq.md` | "rolled 90 degrees in RViz but fine in Gazebo → run `gltf_to_yup.py`" | Correct diagnosis of a convention-C file `[P]`. |
-| `docs/design/gazebo-composition.md` | Y-up by specification, RViz rotates, Gazebo does not | Mechanism correct. |
-| `VISUAL_ASSET_PIPELINE_REVIEW.md` §1.6 | the full chain, `(x, z, −y)`, `gltf_up:=z`, RViz identical rotation | Matches the derivation throughout, with one slip: a +Z-front file under the current macro "faces left in every assembly" — its front lands on −y, which is starboard. |
-| `VISUAL_ASSET_PIPELINE_REVIEW.md` §1.2, §1.5, §1.9 | the case bug; RViz's `RotationX`; one shared space per file, no origin concept | All confirmed here `[C][P][S]`. §1.5's "identical rotation" is identical in angle but not in placement — RViz's is inside the root node — which §1.9's "a translation on the root node is applied by both consumers" then misses. |
-
-## 15. Drafted replacement text for `model-spec.md` §5
-
-Explanation only. No new requirement keywords; both `Undecided` blocks stay. 5.1 and 5.4 unchanged and omitted here. One sentence in the current 5.5 — the permission for a root translation — is contradicted by section 4.4 and is flagged rather than changed, since changing it is a spec decision.
-
-> ### 5.2 Up axis
->
-> The model MUST be Y-up, as glTF specifies.
->
-> **Implementation Note.** glTF states its up axis without a requirement keyword, but every exporter and every viewer acts on it, so it is the one convention in §3.4 with teeth. The two consumers of this project's files act on it differently. RViz rotates a glTF mesh +90 degrees about X as it loads. Gazebo performs no conversion at all and presents the file's axes as the link's axes, so the part macro applies that same rotation in the visual pose when expanded for Gazebo. A Z-up file therefore renders correctly in Gazebo without the macro's rotation and rolled in RViz and in every viewer; a Y-up file renders correctly in both once the macro is in play. The derivation and its evidence are in the workspace note `glTF_Gazebo_ROS_Coordinates.md`.
->
-> ### 5.3 Forward axis
->
-> > **Undecided.** Whether the delivered file faces +X, which is what authoring in the part frame produces and what every current delivery does, or +Z, which is the convention stated in glTF. Tracked as review decision 2.
->
-> **Implementation Note.** glTF says "the front side of a glTF asset faces +Z". Like the up-axis sentence it carries no keyword, but unlike it, nothing can act on it: a file has no property that marks a front, so no exporter writes one, no consumer reads one and no validator checks one. Whichever way this is decided, the choice is enforced by people, not tools. The mechanics of each branch: a file facing +X reaches the part frame with one rotation, roll +90 degrees, which the macro already applies for Gazebo and RViz applies itself. A file facing +Z would need roll +90 and yaw +90 for Gazebo and yaw +90 for RViz, so the installed ROS URDF would acquire a non-identity visual origin and every existing delivery would be re-baked. REP 158's "X-forward, Y-left, Z-up" is stated of the source asset, which under +X is the Blender scene as authored and under +Z is not. Until this is decided, modelers SHOULD continue to author in the part frame, which yields a file facing +X, and MUST NOT re-orient a delivery to face +Z without agreement. A file delivered facing +Z under the current macro faces starboard in both consumers.
->
-> ### 5.5 Node transforms
->
-> The delivered file MUST contain exactly one root node, and that node MUST NOT carry a `rotation` or a `matrix` transform. Transforms MUST be applied in Blender before export.
->
-> A `translation` on the root node is permitted and is applied by both consumers. *[Flagged: applied by both, but composed on opposite sides of RViz's own rotation, so a root translation places the part differently in the two consumers. See the note below. Whether to withdraw this permission is for the spec owner.]*
->
-> **Implementation Note.** Three independent reasons for an identity root, any one of which would suffice. RViz applies its Y-up correction by post-multiplying the root node's own transform, while Gazebo's correction is applied by the visual pose outside the whole file, so any root transform that does not commute with a rotation about X — a translation, or a rotation about any other axis — places the geometry differently in the two consumers. Gazebo's loader keeps the root node's rotation for a `.glb` and, on gz-common 7.3.0, drops it for a `.gltf` because of a case bug in the extension check, fixed in 7.3.1. And REP 158 requires that assets "not rely on root-node rotations to align geometry" and that points and normals be frozen at the source. Node transforms below the root are honored identically by both consumers and baked into the vertices; whether a part may use them is decision 15.
-
-## 16. Critic record
-
-Two reviews of the first draft, run in parallel, and what each changed.
-
-The software engineer's review found one substantive error and several gaps. The error: the draft said both consumers honor node transforms "exactly" alike and the drafted §5.5 permitted a root translation; reading `assimp_loader.cpp:221` shows RViz post-multiplies its +90° onto the root node, so a root translation is composed on the other side of the correction from Gazebo's and the part shows up in two different places. Section 4.4 now derives this, section 5 probes the Gazebo half (`marker_roottrans`), the tutorial's stage 3 observes both halves, and §5.5's permission is flagged. The gaps, all now filled: the submesh-naming claim was tagged `[P]` but the probe used the same name for node and mesh, so the mesh is now `marker_mesh` and the loader line is quoted; assimp's single-root hoist was misdescribed and is now quoted with the bug's scope narrowed to single-root files; the distro floor (Lyrical; Jazzy and Kilted lack rviz PR 1482) and the gz-common fix release (7.3.1) are named; the `gltf_up` call sites, the `ros_gz_sim create` trap, the un-rolled `xyz`, collision meshes, root scale and an acceptance procedure are in section 11; the "rolled" sign convention is defined once; section 8's option ② was shown to collapse into ① and its wrong reasons replaced with the root-node one; section 9's cost table was leaning on the status quo (re-export is a bake, a URDF origin costs nothing, the REP 158 row misread which asset the REP is stated of, and A's viewer cost was missing) and is rewritten even-handed; stage 3's viewer description had the −Z arm "toward you" when the default camera looks along −Z; the model now sits 0.6 m up so its long arm is visible; the RViz command cleans up its publisher; line references were off by a few lines; and evidence tags that outran the fetched sources (Blender vertex swizzle, assimp Collada, REP 158, Blender Collada) were backed by fetching and quoting them.
-
-The 3D modeler's review found section 10 unusable as delivered and the tutorial's Blender steps partly wrong. Changed: the origin instruction contradicted Apply All Transforms, which moves the object origin to the world origin, so the rule is now to put the reference point at (0, 0, 0); the self-check could not detect an unapplied transform, which every viewer applies silently, so a Blender re-import check was added and the viewer check restated in screen terms with a viewer that has a grid; "one object per file" was assumed and never said; parts with no obvious front had no rule, and "left" was ambiguous, so forward now comes from the part's documentation and left means port; "convention A" and "decision 2" were undefined for a reader starting there; stage 4's instructions would have produced a scaled, centered cube that did not match the reference file, and did not say what to leave unapplied or how to parent and export; stage 3 was labeled "you" but needs ROS tools, so stages are now labeled by role; setting Dimensions in the N panel sets Scale, which is now said; the Right-view instruction read as a typo and is now explained; three menu paths were wrong or incomplete; the reason for Unit Scale 1.0 was missing; and a glossary, a one-line rule, a checklist and a reference `.glb` were added. Not done from that review: a rendered screenshot of a real part with labeled axes, and a `marker.blend` to compare against — both need Blender, which the tutorial's stage 1 will produce.
+| **world coordinate system** | ISO 9787 §5.1 world coordinate system | **adopt as-is**: `+Z` opposite gravity, origin ours to define |
+| **vehicle coordinate system** | ISO 9787 §5.5 mobile platform coordinate system | **adopt the axes as-is** (`+X` forward, `+Z` up, = REP 103); rename, because "mobile platform" reads oddly for a boat and an ROV |
+| **part coordinate system** | none — ISO numbers axes, not links | **ours.** ISO has no term for a non-root rigid body that is not a tool or an interface. This is the gap we must fill ourselves |
+| **mount coordinate system** | ISO 9787 §5.3 mechanical interface coordinate system | **narrow**: keep the origin rule (center of the interface) and drop the `+Z` mating-normal axis rule in favor of the part coordinate system's axes, so that one convention governs every coordinate system in a model |
+| **asset coordinate system** | glTF / ISO/IEC 12113 §3.5, the scene's implicit space | **ours, grounded in the format.** No robotics standard has this concept; it exists only inside a file |
+| **node coordinate system** | glTF / ISO/IEC 12113 §3.5 node | **adopt as-is**, the format's own term |
+| **sensor coordinate system** | ISO 9787 §5.8 camera coordinate system; REP 103 `_optical` | **adopt REP 103's**, since ISO gives no axis rule and REP 103 does (`z` forward, `x` right, `y` down) |
+| *tool coordinate system* | ISO 9787 §5.4 | **reserved, unused.** No manipulators in scope yet; adopt as-is if one arrives |
+
+**[Open]** The mount-coordinate-system narrowing is a real decision and not yet taken. Keeping ISO's `+Z`-along-the-mating-normal rule would make every mounting face self-describing but put a second axis convention inside one model; dropping it keeps one convention but means a mount coordinate system carries no information about which way the surface faces.
+
+### The full reconciliation
+
+Each row is one frame; each column is what that frame is called, or what stands in for it, in each place.
+
+| Our name | Symbol | ISO 9787 | ROS (REP 103/105) | SDF / Gazebo | glTF (ISO/IEC 12113) | Blender | Action |
+|---|---|---|---|---|---|---|---|
+| world coordinate system | `O₀` | world CS, §5.1 | `map`, `earth` (REP 105) | `<world>`, implicit world frame element | — | the scene, Z-up | adopt |
+| vehicle coordinate system | `O_v` | mobile platform CS, §5.5 | `base_link` (REP 105) | model frame; root `<link>` | — | — | adopt axes, rename |
+| part coordinate system | `O_pt` | — | a non-root `<link>` | `<link>` | — | the object, and its origin | **ours** |
+| mount coordinate system | `O_m` | mechanical interface CS, §5.3 | a massless link + fixed joint | `<frame>`, and a `<joint>` parent | — | — | narrow |
+| asset coordinate system | `O_a` | — | — | the `<mesh><uri>` as placed by `<visual><pose>` | scene's implicit space, §3.5 | the exported scene | ours |
+| node coordinate system | `O_n` | — | — | — | node, §3.5 | the object's origin | adopt |
+| sensor coordinate system | `O_s` | camera CS, §5.8 | `*_optical` (REP 103) | `<sensor><pose>` | — | — | adopt REP 103 |
+
+**[Firm]** Two asymmetries in that table are the whole reason this is hard. The middle rows have no glTF column, because glTF has no concept of a link, a joint or a mount — it has nodes and geometry and nothing else. And the `asset coordinate system` and `node coordinate system` rows have no robotics column, because nothing in ISO 9787 or the REPs describes the inside of a mesh file. The pipeline has to join two vocabularies that do not overlap at the point where they meet.
+
+### Adopt, narrow, or invent
+
+**[Firm]** Summarizing what this project actually has to write down, which is much less than the first draft assumed:
+
+- **Adopt as-is, no project text needed:** handedness, length and angle units, roll/pitch/yaw naming, the world coordinate system, the vehicle coordinate system's axes, the sensor optical coordinate system, glTF's node and scene model. All are settled by ISO 9787, REP 103 or ISO/IEC 12113 and need only a citation.
+- **Narrow:** the mount coordinate system, by dropping ISO's mating-normal axis rule (undecided, above).
+- **Invent, because no standard reaches:** the part coordinate system as a named concept; where an origin sits within a part's geometry; which asset-coordinate-system axis a delivery's forward direction occupies; and the rule joining the asset coordinate system to the part coordinate system — that is, the value of the visual pose.
+- **[Open]** That last list is short and it is exactly the list the first draft failed to isolate. The next increments should address it in that order.
+
+## Next increment
+
+The vocabulary and the standards groundwork are now settled, and the list of things this project must decide for itself is short — see "Adopt, narrow, or invent" above. Deliberately not covered yet, in the order it should be taken up:
+
+1. One rigid body, one mesh, no joints: world, vehicle and asset coordinate systems, mesh vertices, written in the names agreed above. Get this airtight before adding anything.
+2. The transform from the asset coordinate system to the part coordinate system — the value of the visual pose — and which of glTF, Gazebo and RViz applies what. The first draft's findings on this are sound and can be carried over from `ab5f6a6`; its framing cannot.
+3. Where the origin sits within a part, and which asset-coordinate-system axis carries forward. These are the two genuine inventions.
+4. A second body and a joint between them, which is where the mount-coordinate-system narrowing has to be settled.
+5. Only then: the project's delivery rule.
+
+## References
+
+- ISO 9787:2013, *Robots and robotic devices — Coordinate systems and motion nomenclatures*. §3 terms, §4.1 right-handedness, §4.3 roll/pitch/yaw, §4.4 axis numbering, §5.1–5.8 the eight coordinate systems, Annex A worked examples. Purchased single-user copy at `tools/maritime-workspace/refs/`, which is git-ignored — cite it by clause rather than copying text. https://www.iso.org/standard/59444.html
+- ISO/IEC 12113:2022, *Information technology — Runtime 3D asset delivery format — Khronos glTF™ 2.0* — the same specification as the Khronos registry text: https://www.iso.org/standard/83990.html
+- ISO/IEC 19775-1:2023, *Extensible 3D (X3D) — Part 1* §4.3.6 standard units and coordinate system. Web3D publishes the text free: https://www.web3d.org/standards/number/19775-1
+- ISO 17506:2022, *COLLADA digital asset schema specification*: https://www.iso.org/standard/78834.html
+- ISO 8373:2012 / :2021, *Robotics — Vocabulary*. The source ISO 9787 draws its terms from: https://www.iso.org/standard/75539.html
+- REP 103, *Standard Units of Measure and Coordinate Conventions* — chirality, axis orientation, the `_optical` suffix frame, rotation representation: https://www.ros.org/reps/rep-0103.html
+- REP 105, *Coordinate Frames for Mobile Platforms* — `base_link`, `odom`, `map`, `earth`: https://www.ros.org/reps/rep-0105.html
+- REP 120, *Coordinate Frames for Humanoid Robots* — `base_footprint` and its rationale: https://www.ros.org/reps/rep-0120.html
+- URDF specification, `<joint><origin>` and `<link><inertial><origin>`: https://wiki.ros.org/urdf/XML/joint and https://wiki.ros.org/urdf/XML/link
+- SDFormat specification, `<frame>` and `<joint>`: http://sdformat.org/spec
+- glTF 2.0 specification, §3.4 Coordinate System and Units, §3.5 Scenes and Nodes: https://registry.khronos.org/glTF/specs/2.0/glTF-2.0.html
+- Blender manual, Object Origin and *Set Origin*: https://docs.blender.org/manual/en/latest/scene_layout/object/origin.html
