@@ -18,7 +18,9 @@ author = 'Honu Robotics'
 
 extensions = ['sphinx_honu']
 
-# Anchors for headings down to ###, so a page can link to a section
-# (`page.md#section-title`) in a way GitHub renders too.
-myst_heading_anchors = 3
+# Anchors for headings down to ####, so a page can link to a section
+# (`page.md#section-title`) in a way GitHub renders too. Four rather than the
+# three used elsewhere: the reference notes nest to #### and cross-link at that
+# depth, and an anchor that is not generated is a build error here.
+myst_heading_anchors = 4
 honu_github = ('HonuRobotics', 'gltf-robotics')

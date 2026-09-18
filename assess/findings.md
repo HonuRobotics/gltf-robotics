@@ -62,7 +62,7 @@ One caution about reading Fuel for SDF convention rather than for assets. Across
 
 ### The question left open when this moved
 
-The section it came from ended with one unanswered question: which popular projects, measurable by GitHub analytics, use glTF assets in Gazebo. It was answered separately, by code search rather than by analytics, in [community-exemplars.md](../../../src/bluerobotics_models/docs/reference/community-exemplars.md), and the cohort it names is what group `ros` of [examples.yaml](examples.yaml) is drawn from. What that document could not do is say what those assets contain, one criterion at a time, in a form that stays true when they change. That is what this directory is for.
+The section it came from ended with one unanswered question: which popular projects, measurable by GitHub analytics, use glTF assets in Gazebo. It was answered separately, by code search rather than by analytics, in [community-exemplars.md](../docs/evidence/community-exemplars.md), and the cohort it names is what group `ros` of [examples.yaml](examples.yaml) is drawn from. What that document could not do is say what those assets contain, one criterion at a time, in a form that stays true when they change. That is what this directory is for.
 
 ---
 

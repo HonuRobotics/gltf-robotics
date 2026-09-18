@@ -2,7 +2,7 @@
 
 Tooling to look at glTF assets somebody else wrote, and a list of the ones worth looking at.
 
-This is the bottom-up half of the visual model work. [`model-spec.md`](../../../src/bluerobotics_models/docs/reference/model-spec.md) is the top-down half: it states what a delivered model must be, rule by rule, with the reasoning in the pipeline review beside it. Several of its rules are still open, and the arguments for and against them keep turning on what other people actually do. This directory answers that empirically, over a list of examples that grows, with an assessment that is re-run rather than rewritten.
+This is the bottom-up half of the visual model work. [`model-spec.md`](../docs/profile/profile.md) is the top-down half: it states what a delivered model must be, rule by rule, with the reasoning in the pipeline review beside it. Several of its rules are still open, and the arguments for and against them keep turning on what other people actually do. This directory answers that empirically, over a list of examples that grows, with an assessment that is re-run rather than rewritten.
 
 | file | |
 |---|---|

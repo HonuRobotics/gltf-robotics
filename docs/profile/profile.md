@@ -1,8 +1,10 @@
-# Visual model specification
+# The glTF Robotics Profile
 
-Version 0.2, draft, 2026-09-16. Supersedes the earlier "Visual asset spec" draft, which is kept alongside this document as [asset-spec.md](asset-spec.md) and audited in section 3 of the review.
+Version 0.2, draft, 2026-09-16. Formerly "Visual model specification"; renamed because a profile is what this is — a narrowing of glTF 2.0 for one domain — and because "spec" had come to mean too many things. It supersedes the earlier "Visual asset spec" draft, kept as [the superseded asset spec](../project/asset-spec-superseded.md) and audited in section 3 of the review.
 
-This specification states what a delivered visual model must be. The reasoning behind each rule, the evidence for it, and the record of what was measured and verified is kept separately in [VISUAL_ASSET_PIPELINE_REVIEW.md](VISUAL_ASSET_PIPELINE_REVIEW.md). Rules live here. Rationale lives there, and in the Implementation Notes below.
+This is Honu Robotics' profile, published openly with the evidence behind it. It is not a standard and it does not speak for the field; where [REP 158](https://github.com/openrobotics/reps/blob/main/_posts/rep-0158%3A2006.md) reaches, this cites it. What it offers a reader outside the project is a worked, measured account of what Gazebo and RViz actually accept, and the reasoning is checkable because the measurements are in the same repository.
+
+This document states what a delivered visual model must be. The reasoning behind each rule, the evidence for it, and the record of what was measured and verified is kept separately in the [pipeline review](../reference/pipeline-review.md). Rules live here. Rationale lives there, and in the Implementation Notes below.
 
 Every rule in this document is in one of three states, marked inline and collected in section 13: decided, under discussion with a proposal on the table, or open with no proposal yet. Section 2.4 defines the marks.
 
@@ -10,7 +12,7 @@ Every rule in this document is in one of three states, marked inline and collect
 
 ### 1.1 Scope
 
-This specification constrains the visual models delivered for the parts library. It does not replace the standards it builds on. It stands in three different relationships to them, and every rule below is one of the three:
+This profile constrains the visual models delivered for the parts library. It does not replace the standards it builds on. It stands in three different relationships to them, and every rule below is one of the three:
 
 - **Narrowing.** Using less than the standard allows, because this project does not need the rest. Most of this document is narrowing.
 - **Adding.** Requiring something the standard does not, because a consumer of ours needs it. These exist because Gazebo and RViz each implement only part of glTF, so a conforming file is not always a usable one. Such rules are marked as target constraints and name the consumer that motivates them.
@@ -25,7 +27,7 @@ It specifies:
 - geometry, material, texture and transparency requirements
 - what accompanies a delivery, and how a delivery is checked
 
-It does not specify collision geometry, mass properties, inertia, joints, slots or anything else expressed in a part's macro, beyond requiring in section 4.1 that a delivery carries the collision file. Those are defined by the part contract in [Parts](../design/parts.md).
+It does not specify collision geometry, mass properties, inertia, joints, slots or anything else expressed in a part's macro, beyond requiring in section 4.1 that a delivery carries the collision file. Those are defined by the part contract in [Parts](https://honurobotics.github.io/bluerobotics_models/design/parts.html).
 
 ### 1.2 Relationship to external standards
 
@@ -42,15 +44,15 @@ Three obligations follow from that design goal, and this document is bound by al
 
 **Implementation Note.** Gazebo's glTF support carries no roadmap commitment, and this document does not treat it as one. The published Gazebo roadmap has no glTF, GLB, PBR or mesh-format item. The direction is on record only in project management committee minutes: [2026-08-17](https://discourse.openrobotics.org/t/gazebo-pmc-meeting-minutes-2026-08-17/57494) discusses deprecating COLLADA in favor of glTF and GLB and leaves it unresolved, and [2026-06-15](https://discourse.openrobotics.org/t/gazebo-pmc-meeting-minutes-2026-06-15/55498) decided to move mesh loading to Assimp by default. Behavior is what `MeshManager.cc` does today, which routes `gltf`, `glb` and `fbx` to the Assimp loader while `dae`, `obj` and `stl` keep their custom ones. Rules below cite that behavior as intent or as fact accordingly, never a roadmap.
 
-**Implementation Note.** There is no community practice for glTF robots to copy, and this specification is doing original work where it goes beyond the standards above. A survey of the Gazebo Fuel library on 2026-09-12 found three robot platforms in glTF among 427, and a survey of public repositories found a cohort small enough to name, whose files break several rules stated here (JPEG normal maps, `KHR_texture_transform`, no size discipline). Both surveys are in [community-exemplars.md](community-exemplars.md). Where the field's practice and a rule here disagree, the rule says so and states the remedy, rather than assuming deliveries will arrive conforming.
+**Implementation Note.** There is no community practice for glTF robots to copy, and this specification is doing original work where it goes beyond the standards above. A survey of the Gazebo Fuel library on 2026-09-12 found three robot platforms in glTF among 427, and a survey of public repositories found a cohort small enough to name, whose files break several rules stated here (JPEG normal maps, `KHR_texture_transform`, no size discipline). Both surveys are in [community-exemplars.md](../evidence/community-exemplars.md). Where the field's practice and a rule here disagree, the rule says so and states the remedy, rather than assuming deliveries will arrive conforming.
 
 ### 1.3 Project-specific content (Informative)
 
-This specification is written for the Blue Robotics parts library, but most of it is not specific to that library or to this repository. The general content is the format subset, the coordinate and frame rules, and the material, texture and transparency requirements, all of which follow from glTF and from how robotics renderers consume it. The project-specific content is confined to section 4.1, naming and delivery location, and the toolchain versions in section 11.
+This profile is written for the Blue Robotics parts library, but most of it is not specific to that library or to this repository. The general content is the format subset, the coordinate and frame rules, and the material, texture and transparency requirements, all of which follow from glTF and from how robotics renderers consume it. The project-specific content is confined to section 4.1, naming and delivery location, and the toolchain versions in section 11.
 
 A future generalization would keep the former and replace the latter. Contributors should resist mixing the two.
 
-> **Decided.** This specification, with the modeling workflow it serves, subsumes the mesh conventions in [Parts](../design/parts.md). Parts keeps the part contract, the macro, slots and frames, and points here for everything about the delivered model. Until that edit lands the two still overlap, and where they disagree this document governs; Parts rule 2 on the origin is the known case. Tracked as review decision 11.
+> **Decided.** This specification, with the modeling workflow it serves, subsumes the mesh conventions in [Parts](https://honurobotics.github.io/bluerobotics_models/design/parts.html). Parts keeps the part contract, the macro, slots and frames, and points here for everything about the delivered model. Until that edit lands the two still overlap, and where they disagree this document governs; Parts rule 2 on the origin is the known case. Tracked as review decision 11.
 
 > **Open.** Whether a modeler may deliver a compound object, a whole vehicle rather than a single part, as one glTF file with its components as separate nodes, so that the xacro, URDF and SDF assembly can be built from what the file already states. The alternative, and what the library does today, is one part per model with the assembly expressed only in the macro. Settling it needs two things: whether any of the assembly can be driven from node structure that the macro does not already state better, and the node question in section 5.5, of which a compound delivery is the larger case. It would also bring `assembly`, defined in section 3 as out of scope, partly into scope. Not yet on the review's decision list.
 
@@ -89,7 +91,7 @@ The plan is to settle every Discuss item and as many Open items as possible befo
 
 A delivery cannot fail to conform on a point marked Discuss or Open. Where an interim instruction is needed while a question is open, it is stated in normative language outside the block and marked as interim.
 
-Decision numbers refer to section 10 of [VISUAL_ASSET_PIPELINE_REVIEW.md](VISUAL_ASSET_PIPELINE_REVIEW.md). Section 13 lists every block in this document with its status.
+Decision numbers refer to section 10 of [VISUAL_ASSET_PIPELINE_REVIEW.md](../reference/pipeline-review.md). Section 13 lists every block in this document with its status.
 
 ## 3. Terminology
 
@@ -125,7 +127,7 @@ The set of files handed over for one part, together with whatever accompanies th
 assembly::
 Parts plus the joints between them. Out of scope here.
 
-The word "asset" is not used in this specification. In 3D work it spans meshes, textures, rigs, scenes and library entries at every scale, and glTF itself uses it both for a whole file and for the `asset` object inside one that holds the file's metadata, so it cannot be used precisely here. See [Parts](../design/parts.md).
+The word "asset" is not used in this specification. In 3D work it spans meshes, textures, rigs, scenes and library entries at every scale, and glTF itself uses it both for a whole file and for the `asset` object inside one that holds the file's metadata, so it cannot be used precisely here. See [Parts](https://honurobotics.github.io/bluerobotics_models/design/parts.html).
 
 ## 4. Delivery
 
@@ -133,9 +135,9 @@ The word "asset" is not used in this specification. In 3D work it spans meshes, 
 
 A delivery MUST include a visual model named `<part>.visual.glb`, where `<part>` is the part name.
 
-The part name MUST be lowercase snake_case, and MUST match the directory it is delivered into. Naming rules for parts are given in [Parts](../design/parts.md) and are not repeated here.
+The part name MUST be lowercase snake_case, and MUST match the directory it is delivered into. Naming rules for parts are given in [Parts](https://honurobotics.github.io/bluerobotics_models/design/parts.html) and are not repeated here.
 
-A delivery MUST also include a `model.sdf` for the part in which collision geometry is expressed as SDF primitive shapes: box, cylinder or sphere. The content of that file, and the collision conventions it must follow, are defined by [Parts](../design/parts.md) and [Add a part](../how-to/add-part.md); `sdf_to_part.py` bootstraps the part macro from it.
+A delivery MUST also include a `model.sdf` for the part in which collision geometry is expressed as SDF primitive shapes: box, cylinder or sphere. The content of that file, and the collision conventions it must follow, are defined by [Parts](https://honurobotics.github.io/bluerobotics_models/design/parts.html) and [Add a part](https://honurobotics.github.io/bluerobotics_models/how-to/add-part.html); `sdf_to_part.py` bootstraps the part macro from it.
 
 At this time, this document assumes the modeler provides `model.sdf` with collisions as SDF primitives.  Extending the rule to other collision representations, mesh collision in particular, is tracked as a repository issue, "Collision delivery: extend beyond SDF primitives to mesh collision". 
 
@@ -154,7 +156,7 @@ The model MUST be glTF 2.0 in the binary container, `.glb`. The `.gltf` form, wi
 - One artifact cannot arrive incomplete. A directory of six files can, and the acceptance tooling reads a `.glb` with no search path at all.
 - The legibility `.gltf` would give is already available from the container: `glb_inventory.py` reports per-image size, format and texel density, and `glb_probe` reports what the loader built.
 
-What the rule gives up: with `.gltf` the images version independently in git, which matters because textures are 59 percent of every byte stored, so re-exporting geometry to change one map is waste. Both defects above have upstream fixes that the pinned container does not yet carry, so this is worth revisiting when the container moves. Evidence in section 1.8 of [VISUAL_ASSET_PIPELINE_REVIEW.md](VISUAL_ASSET_PIPELINE_REVIEW.md).
+What the rule gives up: with `.gltf` the images version independently in git, which matters because textures are 59 percent of every byte stored, so re-exporting geometry to change one map is waste. Both defects above have upstream fixes that the pinned container does not yet carry, so this is worth revisiting when the container moves. Evidence in section 1.8 of [VISUAL_ASSET_PIPELINE_REVIEW.md](../reference/pipeline-review.md).
 
 The file MUST validate against the Khronos glTF Validator with zero errors. Validator warnings and infos MUST be reviewed but do not by themselves fail a delivery.
 
@@ -218,7 +220,7 @@ The root node MUST be named `<part>`, with no Blender numeric suffix such as `.0
 
 **Implementation Note.** The prohibition on rotation and matrix nodes is a tooling constraint, not a format one. glTF permits them and both consumers honor them. The project's `gltf_to_yup.py` refuses to convert a file containing them, because it does not conjugate rotations.
 
-> **Open.** Whether a part may be delivered as more than one node, and what "one mesh" in [Parts](../design/parts.md) means when a part carries several primitives. Facts already established: a part with more than one material must have more than one primitive, so a one-primitive rule is a ban on multi-material parts; every primitive under one node becomes a Gazebo submesh carrying that node's name, so an SDF `<submesh>` cannot tell them apart; and an SDF `<material>` collapses every primitive to one material. What remains is whether any part needs submesh selection from SDF, whether the rule should be stated on nodes rather than meshes, and what Parts should say once settled. The mechanism behind those facts, and the proposal to rule submesh selection out, are in section 6.3. Tracked as review decision 15.
+> **Open.** Whether a part may be delivered as more than one node, and what "one mesh" in [Parts](https://honurobotics.github.io/bluerobotics_models/design/parts.html) means when a part carries several primitives. Facts already established: a part with more than one material must have more than one primitive, so a one-primitive rule is a ban on multi-material parts; every primitive under one node becomes a Gazebo submesh carrying that node's name, so an SDF `<submesh>` cannot tell them apart; and an SDF `<material>` collapses every primitive to one material. What remains is whether any part needs submesh selection from SDF, whether the rule should be stated on nodes rather than meshes, and what Parts should say once settled. The mechanism behind those facts, and the proposal to rule submesh selection out, are in section 6.3. Tracked as review decision 15.
 
 ## 6. Geometry
 
@@ -390,4 +392,4 @@ Every Decided, Discuss and Open block in this document, in order:
 | 12.1 | Probe and lint in CI | Discuss | 7 |
 | 12.1 | Committed probe dump per part | Discuss | 14 |
 
-Decision numbers refer to section 10 of [VISUAL_ASSET_PIPELINE_REVIEW.md](VISUAL_ASSET_PIPELINE_REVIEW.md). Review decision 9, contributing the loader table upstream, is not a rule of this specification and is not listed. Items marked "none yet" were raised in the glTF reading notes after the review's list was written and should be added to it.
+Decision numbers refer to section 10 of [VISUAL_ASSET_PIPELINE_REVIEW.md](../reference/pipeline-review.md). Review decision 9, contributing the loader table upstream, is not a rule of this specification and is not listed. Items marked "none yet" were raised in the glTF reading notes after the review's list was written and should be added to it.

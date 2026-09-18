@@ -27,6 +27,27 @@ A: No.   The difference is that the ISO froze in 2022.  The Khronos version is l
 Q: I still don't understand what an "accessor" is.  "An object describing the number and the format of data elements stored in a binary buffer."   Could you give a couple concrete examples?
 
 A (CC): Three levels, and the accessor is the top one. A **buffer** is an undifferentiated blob of bytes. A **buffer view** is a byte range within it, offset and length, still untyped. An **accessor** says how to read that range: what the elements are, how many, and what they are made of. It is a C-style cast plus a count. 
+
+From `minimal.gltf` in this directory, small enough to check by hand:
+
+```
+accessors[0]    {bufferView: 0, componentType: 5126, type: "VEC3",   count: 4}
+bufferViews[0]  {byteOffset: 0, byteLength: 48}
+```
+Read bytes 0-48 as 4 groups of 3 float32s. That is 4 x 3 x 4 = 48 bytes, and it is the quad's four corner positions. In C: `(float3 *)(buffer + 0)` with `n = 4`.
+
+```
+accessors[3]    {bufferView: 3, componentType: 5123, type: "SCALAR", count: 6}
+bufferViews[3]  {byteOffset: 128, byteLength: 12}
+```
+Read bytes 128-140 as 6 uint16s. That is 6 x 2 = 12 bytes, and they are vertex indices: 6 indices, three per triangle, so two triangles.
+
+A real part is the same shape at scale. `t200_prop_cw` has a POSITION accessor of 302 VEC3 float32s (3,624 bytes) and an index accessor of 780 uint16s, which is 260 triangles.
+
+Why the indirection exists, since two levels would seem enough: several accessors can read one buffer view at different offsets and strides, which is how interleaved vertex data is expressed. And the accessor is where `min`/`max` live, required on POSITION, which is why a reader can get a bounding box without decoding a byte of geometry.
+
+One asymmetry worth knowing: an embedded image names a buffer view directly and has no accessor, because a JPEG is not an array of typed elements. That is the only structural thing separating texture bytes from geometry bytes inside a GLB.
+
 - This is the reason why our collada workflow won't work - "Complete 3D scene representation. Not restricted to single objects, glTF can represent entire scenes, including nodes, transformations, transform hierarchy, meshes, materials, cameras, and animations."
 
 A (CC): Careful here, this reason does not hold up, though the conclusion does. COLLADA is *also* a full scene format with a node hierarchy, cameras, animations and a transform tree; scene representation is not what separates them. Two things actually broke the workflow. First, the material model: COLLADA carried a Phong/Blinn material with a diffuse texture, and glTF carries metallic-roughness PBR, where metalness defaults to 1.0 and a plastic hull nobody set renders as dark metal. Four of fifteen delivered parts have exactly that defect. Second, scope: glTF's specification covers far more than we need, so a naive reading applies rules that do not apply to us, which is the argument for a narrowing spec rather than for abandoning COLLADA.
@@ -151,7 +172,7 @@ Every clause there is checkable straight out of the GLB, which the current asset
 
 **Flags to look into later.**
 
-> **Gazebo.** (a) [GLB_INVENTORY.md](GLB_INVENTORY.md) records that Gazebo reads none of the glTF sampler and always repeats, so `wrapS`/`wrapT`/filter settings are not a lever here; whether that also means mipmaps are generated or ignored is unchecked, and it changes how much a high-resolution map is actually worth. (b) Gazebo decodes with `stb_image`, which reads 16-bit PNG but may deliver 8 bits to the renderer - so the spec's "**MAY** use more than 8 bits per channel" permission may not survive the loader, which would remove one of the arguments above. (c) Whether Gazebo honors `occlusionTexture` at all, given that ambient occlusion in a rasterizer is optional, is unverified. (d) The project rule in `CLAUDE.md` that PBR must be declared in the SDF rather than read from the GLB cuts across this whole section: if the SDF is the material source of record, then these rules govern what the modeler delivers and a second, parallel set governs what Gazebo renders. That needs settling before the spec text above is adopted.
+> **Gazebo.** (a) `GLB_INVENTORY.md` in bluerobotics_models records that Gazebo reads none of the glTF sampler and always repeats, so `wrapS`/`wrapT`/filter settings are not a lever here; whether that also means mipmaps are generated or ignored is unchecked, and it changes how much a high-resolution map is actually worth. (b) Gazebo decodes with `stb_image`, which reads 16-bit PNG but may deliver 8 bits to the renderer - so the spec's "**MAY** use more than 8 bits per channel" permission may not survive the loader, which would remove one of the arguments above. (c) Whether Gazebo honors `occlusionTexture` at all, given that ambient occlusion in a rasterizer is optional, is unverified. (d) The project rule in `CLAUDE.md` that PBR must be declared in the SDF rather than read from the GLB cuts across this whole section: if the SDF is the material source of record, then these rules govern what the modeler delivers and a second, parallel set governs what Gazebo renders. That needs settling before the spec text above is adopted.
 >
 > **RViz.** Not examined. RViz loads meshes through its own resource pipeline rather than through gz-rendering, so glTF support, embedded-texture support and PBR support are all separate questions there, and a rule tuned to Gazebo may simply not apply. Worth one experiment with a delivered part before the spec claims to cover both.
 >
@@ -166,7 +187,7 @@ The spec routes all transparency through one value: "The alpha value is taken fr
 That gives three cases, and only the first needs a channel in the image:
 
 1. **Opacity varies per texel within one material.** Cutouts - vents, perforated plates, mesh guards, a printed decal with an irregular edge - where the silhouette is painted rather than modeled. This is `alphaMode: MASK` with `alphaCutoff`, and it is the only case where a per-texel alpha earns its bytes. The channel should be binary, since `MASK` thresholds it anyway.
-2. **Opacity is uniform across the material.** An acrylic tube, a lens, a window. Put the value in `baseColorFactor[3]` and leave the texture RGB. Giving each translucent region its own material is the move here, which is what [asset-spec.md](../../src/bluerobotics_models/docs/reference/asset-spec.md) already says.
+2. **Opacity is uniform across the material.** An acrylic tube, a lens, a window. Put the value in `baseColorFactor[3]` and leave the texture RGB. Giving each translucent region its own material is the move here, which is what [asset-spec.md](../project/asset-spec-superseded.md) already says.
 3. **The material is opaque.** `alphaMode: OPAQUE`, and the spec then ignores alpha entirely. An RGBA base color here is dead weight, and worse than dead weight because a reader looking at the file cannot tell whether the channel is meaningful.
 
 So: a base color texture carries an alpha channel when, and only when, the material is `MASK` or `BLEND` *and* the opacity varies across it. Uniform translucency is a factor, not a channel.
@@ -179,7 +200,7 @@ What our library actually does, from the fifteen delivered files:
 | `bluerov2_chassis` | `OPAQUE` | 1x1 PNG RGBA | single texel, alpha 255 |
 | the other thirteen | `OPAQUE` | JPEG RGB | none |
 
-Both RGBA maps are defects, in opposite directions. `blueboat_chassis` is case 1 wearing case 2's clothes: 0.56% of the map is non-opaque, which is a cutout region, and it has been handled by tagging the entire hull `BLEND` - the defect [asset-spec.md](../../src/bluerobotics_models/docs/reference/asset-spec.md) already records. `MASK` at cutoff 0.5 is the correct treatment, and the 0.21% of partial-alpha texels are exactly what `MASK` would quantize away, so nothing is lost by the change. `bluerov2_chassis` is case 3: an RGBA channel on an `OPAQUE` material, which the spec says is ignored - harmless at 1x1, but it would not be harmless at 2048.
+Both RGBA maps are defects, in opposite directions. `blueboat_chassis` is case 1 wearing case 2's clothes: 0.56% of the map is non-opaque, which is a cutout region, and it has been handled by tagging the entire hull `BLEND` - the defect [asset-spec.md](../project/asset-spec-superseded.md) already records. `MASK` at cutoff 0.5 is the correct treatment, and the 0.21% of partial-alpha texels are exactly what `MASK` would quantize away, so nothing is lost by the change. `bluerov2_chassis` is case 3: an RGBA channel on an `OPAQUE` material, which the spec says is ignored - harmless at 1x1, but it would not be harmless at 2048.
 
 One consequence for the format rule. The alpha requirement does not make PNG the default for base color across the board; it makes PNG mandatory for the small number of materials that are genuinely `MASK`. Fourteen of fifteen parts here are `OPAQUE` and have no alpha requirement at all - their base color format is decided on the size and quality grounds above, not on this one.
 

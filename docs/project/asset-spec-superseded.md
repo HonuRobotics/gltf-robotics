@@ -1,6 +1,6 @@
 # Visual asset spec
 
-> **Source document, superseded.** This is the original draft written by Carlos, kept unmodified below this note so the audit that examines it has something to point at. It is no longer the specification. The rules now live in [model-spec.md](model-spec.md), and section 3 of [VISUAL_ASSET_PIPELINE_REVIEW.md](VISUAL_ASSET_PIPELINE_REVIEW.md) audits this text item by item, including the several places where it turned out to be wrong. Read it as history, not as instruction.
+> **Source document, superseded.** This is the original draft written by Carlos, kept unmodified below this note so the audit that examines it has something to point at. It is no longer the specification. The rules now live in [model-spec.md](../profile/profile.md), and section 3 of [VISUAL_ASSET_PIPELINE_REVIEW.md](../reference/pipeline-review.md) audits this text item by item, including the several places where it turned out to be wrong. Read it as history, not as instruction.
 
 What we expect from a visual mesh delivered for the parts library, whether
 from an artist or a contributor. Collision meshes are separate, simplified

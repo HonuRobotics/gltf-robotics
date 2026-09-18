@@ -1,6 +1,6 @@
 # What we assess in a glTF example
 
-This is the draft of the assessment itself: the list of things worth knowing about a glTF asset that somebody else wrote. It is the input to `gltf_assess.py`, which implements the mechanical part of it, and the counterpart to [model-spec.md](../../../src/bluerobotics_models/docs/reference/model-spec.md), which states top-down what a delivered model must be. This list is bottom-up. It asks what assets in the wild actually are, so that every rule in the spec can be checked against practice rather than against argument alone.
+This is the draft of the assessment itself: the list of things worth knowing about a glTF asset that somebody else wrote. It is the input to `gltf_assess.py`, which implements the mechanical part of it, and the counterpart to [model-spec.md](../docs/profile/profile.md), which states top-down what a delivered model must be. This list is bottom-up. It asks what assets in the wild actually are, so that every rule in the spec can be checked against practice rather than against argument alone.
 
 The two differ in what a row means. A rule in the spec is a requirement, and a delivery either meets it or does not. A criterion here is a question, and an example either answers it or does not. Where an example diverges from the spec, that is a disagreement to resolve, not a defect in somebody else's file: several of the spec's open decisions exist precisely because the corpus disagrees with the draft rule.
 

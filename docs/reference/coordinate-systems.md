@@ -2,7 +2,7 @@
 
 An incremental build up of the understanding and explanation of how these coordinate systems are used, from 3D authoring through to robotic simulation.
 
-This is the only version. An earlier draft was abandoned for building detail on assumptions that were never checked, and it lives in git history at `ab5f6a6`. Do not treat its framing as current, but four things in it are verified from source and worth carrying over rather than re-deriving: the loader mechanism with the `gz-common` and `rviz_rendering` source quoted (its §4), the probe results on hand-authored assets (§5), the three-consumer tutorial (§12), and the audit of what the project's own documents say (§14). The probe generator and its output are still live at `~/maritime_ws/spike/coords/`.
+This is the only version. An earlier draft was abandoned for building detail on assumptions that were never checked, and it lives in git history at `ab5f6a6`. Do not treat its framing as current, but four things in it are verified from source and worth carrying over rather than re-deriving: the loader mechanism with the `gz-common` and `rviz_rendering` source quoted (its §4), the probe results on hand-authored assets (§5), the three-consumer tutorial (§12), and the audit of what the project's own documents say (§14). The probe generator and its output are still live at `probe/coords/`.
 
 ##  Objective
 

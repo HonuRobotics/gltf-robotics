@@ -1,6 +1,6 @@
 # PBR, and why glTF is inseparable from it
 
-Background reading, with a short encoding reference you can skip on a first pass. It explains what physically based rendering is, how it differs from the Collada and image-file models this project used before, and why adopting glTF means adopting PBR whether or not that was the intention. For the rules that follow from all this, see [model-spec.md](model-spec.md). For the evidence behind them, see [VISUAL_ASSET_PIPELINE_REVIEW.md](VISUAL_ASSET_PIPELINE_REVIEW.md).
+Background reading, with a short encoding reference you can skip on a first pass. It explains what physically based rendering is, how it differs from the Collada and image-file models this project used before, and why adopting glTF means adopting PBR whether or not that was the intention. For the rules that follow from all this, see [model-spec.md](../profile/profile.md). For the evidence behind them, see [VISUAL_ASSET_PIPELINE_REVIEW.md](pipeline-review.md).
 
 ## The shift in one sentence
 
@@ -97,7 +97,7 @@ The practical consequence for this project. Choosing glTF was not choosing a new
 
 ## Where to go next
 
-- [model-spec.md](model-spec.md) states what a delivered model must satisfy, including the material rules.
-- [VISUAL_ASSET_PIPELINE_REVIEW.md](VISUAL_ASSET_PIPELINE_REVIEW.md) has the evidence, the measurements of the current library, and what our two renderers actually do with a PBR material, which is less than the specification describes.
+- [model-spec.md](../profile/profile.md) states what a delivered model must satisfy, including the material rules.
+- [VISUAL_ASSET_PIPELINE_REVIEW.md](pipeline-review.md) has the evidence, the measurements of the current library, and what our two renderers actually do with a PBR material, which is less than the specification describes.
 - The [glTF 2.0 specification](https://registry.khronos.org/glTF/specs/2.0/glTF-2.0.html) is readable, and its materials chapter is short.
 - The [Khronos glTF Sample Viewer](https://github.khronos.org/glTF-Sample-Viewer-Release/) will show any file as a conformant renderer sees it, and runs the validator at the same time.

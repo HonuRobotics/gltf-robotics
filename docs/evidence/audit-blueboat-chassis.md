@@ -1,6 +1,6 @@
 # BlueBoat Chassis Audit
 
-> **Reproduced source document, not project truth.** This is one of the "Visual asset audit · bluerobotics_models" reports, produced with Claude on 2026-09-03 and delivered as a browser artifact. The text below is reproduced from that artifact unedited, including its errors, so that the audit trail has a fixed copy to cite. Its measurements were re-checked and its verdicts re-judged in [VISUAL_ASSET_PIPELINE_REVIEW.md](VISUAL_ASSET_PIPELINE_REVIEW.md), section 6.2; read that before acting on anything here. In particular the tangents row is not a defect, the ORM row is over-strict, the 1.146 m hull length is not the published figure, and the headline PASS count does not match the rows.
+> **Reproduced source document, not project truth.** This is one of the "Visual asset audit · bluerobotics_models" reports, produced with Claude on 2026-09-03 and delivered as a browser artifact. The text below is reproduced from that artifact unedited, including its errors, so that the audit trail has a fixed copy to cite. Its measurements were re-checked and its verdicts re-judged in [VISUAL_ASSET_PIPELINE_REVIEW.md](../reference/pipeline-review.md), section 6.2; read that before acting on anything here. In particular the tangents row is not a defect, the ORM row is over-strict, the 1.146 m hull length is not the published figure, and the headline PASS count does not match the rows.
 
 Visual asset audit · bluerobotics_models
 
