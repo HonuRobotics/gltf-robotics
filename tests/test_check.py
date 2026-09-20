@@ -227,5 +227,5 @@ def test_undecided_rules_never_fail(write_model):
     from gltf_robotics.check.rules import ADVISORY
     findings = check_file(write_model())
     advisory = {f.section for f in findings if f.level == ADVISORY}
-    assert advisory == {"5.1", "5.3"}
+    assert advisory == {"5.1", "5.3", "5.6"}
     assert not any(f.failed for f in findings if f.section in advisory)

@@ -457,6 +457,17 @@ def rule_5_1_scale(m):
                    "open question.")
 
 
+def rule_5_6_datum_specification(m):
+    """Section 5.6 is a placeholder; there is nothing in the file to check yet."""
+    return Finding("5.6", ADVISORY, "datum specification is not decided",
+                   "the profile is working out how a part's coordinate system is specified by "
+                   "reference to named datum features rather than as coordinates. glTF is a "
+                   "delivery format and carries no annotation, so the specification would live "
+                   "in the delivery manifest and this rule would check the file against it: "
+                   "that the named datums constrain all six degrees of freedom, and that the "
+                   "geometry realizes each one. Neither the manifest nor its schema exists yet.")
+
+
 RULES = [
     rule_4_1_filename,
     rule_4_2_container,
@@ -464,6 +475,7 @@ RULES = [
     rule_5_1_scale,
     rule_5_3_forward_axis,
     rule_5_5_scenes_and_nodes,
+    rule_5_6_datum_specification,
     rule_6_geometry,
     rule_6_1_uv,
     rule_7_materials,

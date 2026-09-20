@@ -18,6 +18,10 @@ Profile section 5.5 requires exactly one root node carrying no rotation and no m
 
 Set the scene unit scale to 1.0 and apply object scale as well. A file at the wrong scale is silently wrong — nothing downstream can detect it, and two assets in the wider corpus are millimetre files corrected by a URDF `scale` further down.
 
+## Where the origin goes is not yours to choose
+
+**Placeholder — the rule is not settled.** Today the profile's proposed rule is in [section 5.4](../profile/profile.md), and a different approach is open in section 5.6: the part's coordinate system is specified before modelling begins, by naming the features it is referenced to, and your job is to place the object origin where that specification puts it. Either way the origin is handed to you with the commission rather than decided at the keyboard. When 5.6 settles, the steps for realising it in Blender — including how to carry a direction the shape does not determine, which is an empty rather than geometry — belong here.
+
 ## Name the object, not the mesh
 
 Gazebo names each submesh after the node that instantiates the mesh — never after the mesh datablock and never after the material. The node name comes from the Blender object name, so renaming the mesh datablock changes nothing anyone sees.

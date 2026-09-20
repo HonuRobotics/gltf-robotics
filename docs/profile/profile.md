@@ -145,6 +145,8 @@ At this time, this document assumes the modeler provides `model.sdf` with collis
 
 > **Discuss.** Whether every part must cite a published dimensional figure, and what to do for parts where none exists. Proposed: yes where one exists, because it is the one check that would have caught a defect the earlier audits missed. Tracked as review decision 13.
 
+**Implementation Note.** Both of the questions above may be answered together by the datum specification in 5.6, which needs a manifest to live in and needs a cited expression of the part's nominal geometry to be written against.
+
 ### 4.2 Format
 
 The model MUST be glTF 2.0 in the binary container, `.glb`. The `.gltf` form, with geometry in a side `.bin` and images as separate files, MUST NOT be delivered.
@@ -204,6 +206,8 @@ Interim rule. Until this is decided, modelers SHOULD continue to author in the p
 
 > **Discuss.** Where a part's origin sits within its geometry. Our documents state three rules, centroid, author's choice, and centroid near a sensible mounting point, and the library follows none of them. Measured, it is centered in plan and referenced to the mounting plane vertically on all but two parts. Proposed: adopt the measured convention, stated as "centered in plan, zero on the mounting plane, with the mounting face named in the part's macro comment", because it is what makes a part sit correctly at a slot, it matches fourteen of fifteen files already, and it is checkable by measurement once the face is named. Tracked as review decision 2.
 
+**Implementation Note.** The proposal above states where the origin sits as a measured property of the geometry. Section 5.6 records a different approach, still open, which states instead which features the coordinate system is referenced to and lets the position follow.
+
 **Implementation Note.** glTF has no concept of a mesh origin, pivot or reference point. The origin is simply the zero of the coordinate space, and geometry is placed relative to it by vertex positions and node transforms. Nothing in a file can declare where the origin is meant to be, and no validator can check it, which is why the rule must be stated here and in the part macro, and verified by measurement. The measurement reads the `POSITION` accessor bounds and composes the node's local transform; accessor bounds alone are wrong for the three files carrying a node translation.
 
 ### 5.5 Scenes and nodes
@@ -221,6 +225,12 @@ The root node MUST be named `<part>`, with no Blender numeric suffix such as `.0
 **Implementation Note.** The prohibition on rotation and matrix nodes is a tooling constraint, not a format one. glTF permits them and both consumers honor them. The project's `gltf_to_yup.py` refuses to convert a file containing them, because it does not conjugate rotations.
 
 > **Open.** Whether a part may be delivered as more than one node, and what "one mesh" in [Parts](https://honurobotics.github.io/bluerobotics_models/design/parts.html) means when a part carries several primitives. Facts already established: a part with more than one material must have more than one primitive, so a one-primitive rule is a ban on multi-material parts; every primitive under one node becomes a Gazebo submesh carrying that node's name, so an SDF `<submesh>` cannot tell them apart; and an SDF `<material>` collapses every primitive to one material. What remains is whether any part needs submesh selection from SDF, whether the rule should be stated on nodes rather than meshes, and what Parts should say once settled. The mechanism behind those facts, and the proposal to rule submesh selection out, are in section 6.3. Tracked as review decision 15.
+
+### 5.6 Datum specification
+
+> **Open.** How a part's coordinate system is specified by *reference to its geometry* rather than as a set of coordinates. The approach being worked out borrows ASME Y14.5's datum vocabulary and carries the specification in the delivery manifest of 4.1: named datum features in an order of precedence, the degrees of freedom each constrains, and a separate declaration of which direction is forward and which is up. If it is adopted it replaces the proposed rule in 5.4 rather than sitting beside it, and it bears on 4.1 and 5.3 as well. Nothing here is settled. Not yet on the review's decision list.
+
+**Implementation Note.** Placeholder, recorded so the work is tracked. The derivation is in [Coordinate systems](../reference/coordinate-systems.md) under "Specifying a coordinate system: datums and what 'referenced to' means". When this section is written it will have to state: which artifact expresses the nominal geometry a part is authored to, and what to do when there is no CAD; how a datum feature is designated, given that glTF is a delivery format with no annotation mechanism and cannot carry the specification itself; that the named datums together constrain all six degrees of freedom, since a partially constrained datum coordinate system is of no use to a delivery even though ASME permits one; how a direction the shape does not determine is declared rather than derived; and what `gltf-check` can verify.
 
 ## 6. Geometry
 
@@ -383,6 +393,7 @@ Every Decided, Discuss and Open block in this document, in order:
 | 5.3 | Forward axis +X | Discuss | 2 |
 | 5.4 | Origin placement | Discuss | 2 |
 | 5.5 | Multiple nodes, and what "one mesh" means | Open | 15 |
+| 5.6 | Datum specification for the part coordinate system | Open | none yet |
 | 6.2 | Triangle budget, by visual requirement tier | Discuss | 5, 18 |
 | 6.3 | Primitive count, and ruling out submesh selection | Discuss | none yet |
 | 7 | PBR-in-SDF workspace rule for GLB parts | Discuss | none yet |
