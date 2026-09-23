@@ -1,33 +1,30 @@
-# The glTF Robotics Profile
+# The glTF Robotics Profile (for robotics simulation)
 
-Version 0.2, draft, 2026-09-16. Formerly "Visual model specification"; renamed because a profile is what this is — a narrowing of glTF 2.0 for one domain — and because "spec" had come to mean too many things. It supersedes the earlier "Visual asset spec" draft, kept as [the superseded asset spec](../project/asset-spec-superseded.md) and audited in section 3 of the review.
-
-This is Honu Robotics' profile, published openly with the evidence behind it. It is not a standard and it does not speak for the field; where [REP 158](https://github.com/openrobotics/reps/blob/main/_posts/rep-0158%3A2006.md) reaches, this cites it. What it offers a reader outside the project is a worked, measured account of what Gazebo and RViz actually accept, and the reasoning is checkable because the measurements are in the same repository.
-
-This document states what a delivered visual model must be. The reasoning behind each rule, the evidence for it, and the record of what was measured and verified is kept separately in the [pipeline review](../reference/pipeline-review.md). Rules live here. Rationale lives there, and in the Implementation Notes below.
-
-Every rule in this document is in one of three states, marked inline and collected in section 13: decided, under discussion with a proposal on the table, or open with no proposal yet. Section 2.4 defines the marks.
+This "profile" is based on the glTF 2.0 specification and interprets and constrains the specification for use in 3D asset authoring for robotic simulation.
 
 ## 1. Introduction
 
 ### 1.1 Scope
 
-This profile constrains the visual models delivered for the parts library. It does not replace the standards it builds on. It stands in three different relationships to them, and every rule below is one of the three:
+This profile constrains the visual models autored for robotics (currently mainly mobile robots and specifically maritime robots). It does not replace the standards it builds on. It stands in three different relationships to them, and every rule below is one of the three:
 
-- **Narrowing.** Using less than the standard allows, because this project does not need the rest. Most of this document is narrowing.
-- **Adding.** Requiring something the standard does not, because a consumer of ours needs it. These exist because Gazebo and RViz each implement only part of glTF, so a conforming file is not always a usable one. Such rules are marked as target constraints and name the consumer that motivates them.
+% CLAUDE: Include in the scope that we are currently writing this specifically for the gz-maritime project (Gazebo and maritime robots), but expect it will be useful for other projects and hopefully other simulators.   Our ultimate goal is to be able to have this profile be able to guide 3D authoring and simulation integration worflow for assets that can be used in many robotics frameworks (Unreal Engine, Unity, Omniverse, etc.) but that generalization will happen later. 
+
+- **Narrowing.** Using less than the standard allows, because this project does not need the rest% CLAUDE: It is not that the project robotics doesn't need the rest, it is that leaving it open to interpretation does not make it actionable.   Just because an asset is glTF compliant does not mean we can use it in robotics simulators. Without specifying these things the 3D assets cannot be imported and integrated into the requisite aspects of robotics - sensing, actuation, etc.   We can always import an
+
+Most of this document is narrowing.
+- **Adding.** Requiring something the standard does not, because a downstream consumer (% CLAUDE: add an example or two, "e.g., ....") 
+of ours needs it. These exist because Gazebo and RViz each implement only part of glTF, so a glTF compliant asset is not guaranteed to be importable. Such rules are marked as target constraints and name the downstream consumer that motivates them.
 - **Departing.** Differing from what the standard says, which is done rarely and never silently. The forward axis in section 5.3 is the only current candidate.
 
-Anything not falling into one of those three is the standard's, and this document does not restate it.
-
-It specifies:
+In any place that we do not need to narrow, add to or depart from the existing standards, the existing standard is the governing document. This profile specifies the following: 
 
 - the file format, and the subset of it that may be used
 - the coordinate system, units and frame of a delivered model
 - geometry, material, texture and transparency requirements
-- what accompanies a delivery, and how a delivery is checked
+- what accompanies a delivery, and how a delivery is checked % CLAUDE: I prefer verify to check.   I think it is more specific in that we are verifying that the instructions were followed, not validating that the were the correct instructions.  
 
-It does not specify collision geometry, mass properties, inertia, joints, slots or anything else expressed in a part's macro, beyond requiring in section 4.1 that a delivery carries the collision file. Those are defined by the part contract in [Parts](https://honurobotics.github.io/bluerobotics_models/design/parts.html).
+It does not specify collision geometry, mass properties, inertia, joints, slots or anything else expressed in a part's macro, beyond requiring in section 4.1 that a delivery carries the collision file. Those are defined by the part contract in [bluerobotics_models - parts](https://github.com/HonuRobotics/bluerobotics_models/blob/lyrical/docs/design/parts.md). % CLAUDE: Say this all more generically - something like that this doesn't include some of the things you list (intertia, joints, etc) , for example see (the parts link).  
 
 ### 1.2 Relationship to external standards
 
