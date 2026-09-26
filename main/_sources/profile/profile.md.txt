@@ -48,9 +48,7 @@ This profile is written for the Blue Robotics parts library, but most of it is n
 
 A future generalization would keep the former and replace the latter. Contributors should resist mixing the two.
 
-> **Decided.** This specification, with the modeling workflow it serves, subsumes the mesh conventions in [Parts](https://honurobotics.github.io/bluerobotics_models/lyrical/design/parts.html). Parts keeps the part contract, the macro, slots and frames, and points here for everything about the delivered model. Until that edit lands the two still overlap, and where they disagree this document governs; Parts rule 2 on the origin is the known case. Tracked as review decision 11.
-
-> **Open.** Whether a modeler may deliver a compound object, a whole vehicle rather than a single part, as one glTF file with its components as separate nodes, so that the xacro, URDF and SDF assembly can be built from what the file already states. The alternative, and what the library does today, is one part per model with the assembly expressed only in the macro. Settling it needs two things: whether any of the assembly can be driven from node structure that the macro does not already state better, and the node question in section 5.5, of which a compound delivery is the larger case. It would also bring `assembly`, defined in section 3 as out of scope, partly into scope. Not yet on the review's decision list.
+This profile, with the modeling workflow it serves, subsumes the mesh conventions in [Parts](https://honurobotics.github.io/bluerobotics_models/lyrical/design/parts.html). Parts keeps the part contract, the macro, slots and frames, and points here for everything about the delivered model. Until that edit lands the two still overlap, and where they disagree this document governs; Parts rule 2 on the origin is the known case. The reasoning is review decision 11 in the [pipeline review](../reference/pipeline-review.md).
 
 ## 2. Document conventions
 
@@ -75,9 +73,7 @@ Some text is purely informative, giving background or explaining why a rule exis
 
 ### 2.4 Decision status
 
-Where this specification states a requirement in normative language, the team has decided it. Three kinds of block mark everything else, so that the state of every question is visible in the text rather than discoverable only by asking:
-
-> **Decided.** A decision taken after the first draft, with the reason in one or two sentences and where the evidence is. The rule it produced appears as normative text next to it. The block exists so a reader can see what changed and why. 
+Where this specification states a requirement in normative language, the team has decided it. Settled decisions carry no mark: the rule is the record, with its reason beside it in an Implementation Note or in the [pipeline review](../reference/pipeline-review.md). Two kinds of block mark everything not yet settled, so that the state of every open question is visible in the text rather than discoverable only by asking:
 
 > **Discuss.** A proposal is on the table and states the rule as it would read, but the team has not agreed to it. Until it does, the proposed rule imposes no requirement. Tracked as review decision N.
 
@@ -87,7 +83,7 @@ The plan is to settle every Discuss item and as many Open items as possible befo
 
 A delivery cannot fail to conform on a point marked Discuss or Open. Where an interim instruction is needed while a question is open, it is stated in normative language outside the block and marked as interim.
 
-Decision numbers refer to section 10 of [VISUAL_ASSET_PIPELINE_REVIEW.md](../reference/pipeline-review.md). Section 13 lists every block in this document with its status.
+Decision numbers refer to section 10 of [VISUAL_ASSET_PIPELINE_REVIEW.md](../reference/pipeline-review.md). Section 13 collects every Discuss and Open block, and is the to-do list for finishing this draft.
 
 ## 3. Terminology
 
@@ -134,6 +130,14 @@ A delivery MUST include a visual model named `<part>.visual.glb`, where `<part>`
 The part name MUST be lowercase snake_case, and MUST match the directory it is delivered into. Naming rules for parts are given in [Parts](https://honurobotics.github.io/bluerobotics_models/lyrical/design/parts.html) and are not repeated here.
 
 A delivery MUST also include a `model.sdf` for the part in which collision geometry is expressed as SDF primitive shapes: box, cylinder or sphere. The content of that file, and the collision conventions it must follow, are defined by [Parts](https://honurobotics.github.io/bluerobotics_models/lyrical/design/parts.html) and [Add a part](https://honurobotics.github.io/bluerobotics_models/lyrical/how-to/add-part.html); `sdf_to_part.py` bootstraps the part macro from it.
+
+A delivery MUST describe exactly one part. A compound object -- a whole vehicle, or several parts carried as separate nodes in one file -- MUST NOT be delivered as a single glTF file.
+
+**Implementation Note.** This is not the same question as how many nodes one part may use, which section 5.5 leaves open. Section 5.5 requires a single root node named for the part, but permits children, so a compound object could satisfy it by hanging its components under one root. That rule therefore narrows the possibilities without closing them, and this one closes them. Nor is this mechanically checkable: nothing in a glTF file says how many parts it depicts, so `gltf-check` cannot enforce it and acceptance rests on the integrator recognising a delivery that is really an assembly.
+
+% CLAUDE: I recorded the decision but not its reason. Fill in why one-part-per-file won over a compound delivery, so the rule can be argued rather than just obeyed. The alternative considered was one glTF file carrying a whole vehicle with its components as separate nodes, from which the xacro, URDF and SDF assembly could be generated.
+
+**Implementation Note.** This keeps `assembly`, defined in section 3, out of scope: the assembly is expressed in the part macro, never in the delivered geometry. It is a decision for the first draft rather than a permanent one, and the case for revisiting it would be an assembly that the macro cannot state as well as the node structure could.
 
 At this time, this document assumes the modeler provides `model.sdf` with collisions as SDF primitives.  Extending the rule to other collision representations, mesh collision in particular, is tracked as a repository issue, "Collision delivery: extend beyond SDF primitives to mesh collision". 
 
@@ -373,15 +377,12 @@ The mechanical checks implied by this specification, and where they are describe
 
 > **Discuss.** Whether to commit a probe dump per part, so that a redelivered binary mesh produces a readable diff. Tracked as review decision 14.
 
-## 13. Decision status (Informative)
+## 13. Open questions (Informative)
 
-Every Decided, Discuss and Open block in this document, in order:
+Every Discuss and Open block in this document, in order. Settled rules are not listed: they are the normative text. This table is the to-do list for finishing the draft.
 
 | Section | Question | Status | Decision |
 |---|---|---|---|
-| 1.3 | This document subsumes the mesh conventions in Parts | Decided | 11 |
-| 1.3 | Compound object delivered as one glTF assembly | Open | none yet |
-| 4.1 | Collision geometry and `model.sdf` in a delivery | Decided | 1, 3 |
 | 4.1 | Delivery manifest; Blender source archival | Discuss | 12 |
 | 4.1 | Cited dimensional source per part | Discuss | 13 |
 | 4.2 | Textures embedded or external | Open | 16 |
