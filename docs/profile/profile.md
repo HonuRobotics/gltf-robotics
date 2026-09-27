@@ -8,24 +8,17 @@ This "profile" is based on the glTF 2.0 specification and interprets and constra
 
 This profile constrains the visual models authored for robotics simulation, currently mobile robots and specifically maritime robots.
 
-It is being written for the `gz-maritime` project, against Gazebo and RViz.   It is expected to be useful beyond this individual project, to other Gazebo projects and to other simulators. The longer goal is a profile that guides 3D authoring and the simulation integration workflow for assets usable across robotics frameworks -- Unreal Engine, Unity and Omniverse among them. The current draft is specific and we aspire to generalize after it stabilizes. 
+It is being written for the `gz-maritime` project, against Gazebo and RViz and applied in the `bluerobotics_models` repository.  The aspiration is to generalize this, but at the current time we are prototyping the profile and workflow for this project and set of models. 
 
-This profile does not replace the standards it builds on. It stands in three different relationships to them, and every rule below is one of the three:
+This profile builds upon [glTF 2.0](https://registry.khronos.org/glTF/specs/2.0/glTF-2.0.html) to make it actionable for 3D visual model integration in Gazebo for robotics.   This profile extends this and other referenced standards by
 
-- **Narrowing.** Using less than the standard allows, so that what remains is actionable. The need for this narrowing is because the standard covers a wide variety of use cases, so much of what is permited under the standard is not sufficient for robotics.  The standard leaves too much open to interpretation. A file can be  glTF-compliant and still be unusable in a robotics simulator.  Most of this document is narrowing.
-- **Adding.** Requiring something the standard does not, to satisfy the constraints of the robotics simulation and visualization consumers of the assets (e.g., Gazebo, RVIZ, etc. ). This additional constraints, beyond the current standard, exist because each consumer implements only part of glTF, so a glTF-compliant asset is not guaranteed to be importable. Such rules are marked as target constraints and name the downstream consumer that motivates them.
+* **Narrowing.** Focusing and interpreting the standard affordances for the specific needs of robotics simulation to make the standard actionalbe in the context of developing 3D visual robotic assets.  A file can be  glTF-compliant and still be unusable in a robotics simulator.
+- **Adding.** Requiring something the standard does not, to satisfy the constraints of the robotics simulation and visualization consumers of the assets (e.g., Gazebo, RVIZ, etc. ). this is required because some consumers only implement part of glTF, so a glTF-compliant asset is not guaranteed to be importable. Added constraints include the downstream consumer that motivates them.
 - **Departing.** Differing from what the standard says, which is done rarely and never silently. The forward axis in section 5.3 is the only current candidate.
 
-In any place that we do not need to narrow, add to or depart from the existing standards, the existing standard is the governing document. This profile specifies the following:
+This profile is only about the visual 3D asset model and does not cover Collision geometry, inertia properties, joints, etc. 
 
-- the file format, and the subset of it that may be used
-- the coordinate system, units and frame of a delivered model
-- geometry, material, texture and transparency requirements
-- what accompanies a delivery, and how a delivery is verified
-
-It does not specify what a part is or how it behaves. Collision geometry, inertia properties, joints are outside this profile, beyond requiring in section 4.1 that a delivery carries the collision file. Those additonal specification belong to the pertinent project-specific conventions, e.g.,  [parts](https://honurobotics.github.io/bluerobotics_models/lyrical/design/parts.html) in `bluerobotics_models`.
-
-### 1.2 Relationship to external standards
+### 1.2 References  % CLAUDE: Refactor.   Move references to the end and remove this section
 
 The workflow this specification serves is built on published standards owned by other people, and defines project convention only where no standard reaches. This is deliberate. A project-local convention must be taught to every modeler, defended in every review and remembered by everyone who touches the pipeline. A standard is documented by someone else, understood by people not yet hired, and supported by software nobody here has to maintain.
 
@@ -38,17 +31,10 @@ The workflow this specification serves is built on published standards owned by 
 
 Three obligations follow from that design goal, and this document is bound by all of them. Where this specification departs from a standard, the departure is stated explicitly and the reason given, never left as a silent local habit. Where it adds a requirement the standard does not make, the rule says which consumer needs it, so that a reader can tell a limitation of our tools from a property of the format. And where a standard is silent, this specification says so plainly rather than implying an authority that does not exist.
 
-**Implementation Note.** Gazebo's glTF support carries no roadmap commitment, and this document does not treat it as one. The published Gazebo roadmap has no glTF, GLB, PBR or mesh-format item. The direction is on record only in project management committee minutes: [2026-08-17](https://discourse.openrobotics.org/t/gazebo-pmc-meeting-minutes-2026-08-17/57494) discusses deprecating COLLADA in favor of glTF and GLB and leaves it unresolved, and [2026-06-15](https://discourse.openrobotics.org/t/gazebo-pmc-meeting-minutes-2026-06-15/55498) decided to move mesh loading to Assimp by default. Behavior is what `MeshManager.cc` does today, which routes `gltf`, `glb` and `fbx` to the Assimp loader while `dae`, `obj` and `stl` keep their custom ones. Rules below cite that behavior as intent or as fact accordingly, never a roadmap.
+**Implementation Note.** Gazebo's glTF support carries no roadmap commitment, and this document does not treat it as one. The published Gazebo roadmap has no glTF, GLB, PBR or mesh-format item. The direction is on record only in project management committee minutes: [2026-08-17](https://discourse.openrobotics.org/t/gazebo-pmc-meeting-minutes-2026-08-17/57494) discusses deprecating COLLADA in favor of glTF and GLB and leaves it unresolved, and [2026-06-15](https://discourse.openrobotics.org/t/gazebo-pmc-meeting-minutes-2026-06-15/55498) decided to move mesh loading to Assimp by default. Behavior is what `MeshManager.cc` does today, which routes `gltf`, `glb` and `fbx` to the Assimp loader while `dae`, `obj` and `stl` keep their custom ones. Rules below cite that behavior as intent or as fact accordingly, never a roadmap. % CLAUDE: include this note in the references at the end.
 
-**Implementation Note.** There is no community practice for glTF robots to copy, and this specification is doing original work where it goes beyond the standards above. A survey of the Gazebo Fuel library on 2026-09-12 found three robot platforms in glTF among 427, and a survey of public repositories found a cohort small enough to name, whose files break several rules stated here (JPEG normal maps, `KHR_texture_transform`, no size discipline). Both surveys are in [community-exemplars.md](../evidence/community-exemplars.md). Where the field's practice and a rule here disagree, the rule says so and states the remedy, rather than assuming deliveries will arrive conforming.
 
-### 1.3 Project-specific content (Informative)
 
-This profile is written for the Blue Robotics parts library, but most of it is not specific to that library or to this repository. The general content is the format subset, the coordinate and frame rules, and the material, texture and transparency requirements, all of which follow from glTF and from how robotics renderers consume it. The project-specific content is confined to section 4.1, naming and delivery location, and the toolchain versions in section 11.
-
-A future generalization would keep the former and replace the latter. Contributors should resist mixing the two.
-
-This profile, with the modeling workflow it serves, subsumes the mesh conventions in [Parts](https://honurobotics.github.io/bluerobotics_models/lyrical/design/parts.html). Parts keeps the part contract, the macro, slots and frames, and points here for everything about the delivered model. Until that edit lands the two still overlap, and where they disagree this document governs; Parts rule 2 on the origin is the known case. The reasoning is review decision 11 in the [pipeline review](../reference/pipeline-review.md).
 
 ## 2. Document conventions
 
@@ -56,16 +42,15 @@ This profile, with the modeling workflow it serves, subsumes the mesh convention
 
 This specification addresses two parties:
 
-- **the modeler**, who authors and delivers a model
-- **the integrator**, who accepts a delivery and maintains the part that uses it
+- **the modeler**, who authors and delivers a 3D visual asset
+- **the integrator**, who integrates the asset as a functional robot component
 
-Requirements are imposed only on the audience of the text stating them. Where the audience is not obvious from context, it is named.
+
 
 ### 2.2 Normative terminology
 
 The key words MUST, MUST NOT, REQUIRED, SHALL, SHALL NOT, SHOULD, SHOULD NOT, RECOMMENDED, MAY and OPTIONAL are to be interpreted as described in [BCP 14](https://www.rfc-editor.org/info/bcp14).
 
-References to external documents are normative if this specification uses those keywords to refer to them or to their requirements.
 
 ### 2.3 Informative language
 
@@ -73,53 +58,15 @@ Some text is purely informative, giving background or explaining why a rule exis
 
 ### 2.4 Decision status
 
-Where this specification states a requirement in normative language, the team has decided it. Settled decisions carry no mark: the rule is the record, with its reason beside it in an Implementation Note or in the [pipeline review](../reference/pipeline-review.md). Two kinds of block mark everything not yet settled, so that the state of every open question is visible in the text rather than discoverable only by asking:
+Two kinds of block mark everything not yet settled:
 
-> **Discuss.** A proposal is on the table and states the rule as it would read, but the team has not agreed to it. Until it does, the proposed rule imposes no requirement. Tracked as review decision N.
+> **Discuss.** A proposal is on the table and states the rule as it would read, but the team has not agreed to it. Tracked as review decision N.
 
-> **Open.** No proposal yet. The block names what has to be settled and, where known, what would settle it. Tracked as review decision N.
+> **Open.** . The block names what has to be settled and, where known, what would settle it. Tracked as review decision N.
 
-The plan is to settle every Discuss item and as many Open items as possible before the first pilot of the modeling workflow, so that a modeler in the pilot works to a document whose rules are agreed. Some Open items will stay open through the pilot, because settling them all is beyond the time and budget available, and the pilot itself is expected to inform them. An item left open is a known gap, not an oversight.
-
-A delivery cannot fail to conform on a point marked Discuss or Open. Where an interim instruction is needed while a question is open, it is stated in normative language outside the block and marked as interim.
+The plan is to settle every Discuss item and as many Open items as possible before the first pilot of the modeling workflow. Some Open items will stay open through the pilo
 
 Decision numbers refer to section 10 of [VISUAL_ASSET_PIPELINE_REVIEW.md](../reference/pipeline-review.md). Section 13 collects every Discuss and Open block, and is the to-do list for finishing this draft.
-
-## 3. Terminology
-
-The definitions below govern within this specification and supersede any other meaning these terms may carry elsewhere. Terms drawn from glTF keep their glTF meaning and are marked.
-
-part::
-A single physical component, geometry only, no joints. The unit this specification delivers.
-
-model::
-The visual geometry delivered for a part: the file `<part>.visual.glb` and its contents. Used in preference to "mesh" throughout, because whether a part is one glTF mesh, one node or several is undecided (section 5.5), and "mesh" would prejudge it.
-
-mesh::
-As in glTF 2.0: an array of primitives, carrying no transform of its own. Used only in that sense.
-
-primitive::
-As in glTF 2.0: the unit of a draw call, holding `attributes`, `indices`, an optional `material` and a `mode`. Carries no transform.
-
-node::
-As in glTF 2.0: an object in the node hierarchy that may carry a local transform and may instantiate a mesh.
-
-submesh::
-Not a glTF term. The unit Gazebo's loader produces from a file: one submesh per primitive, named after the node that instantiates the primitive's mesh. It is neither a node arrangement nor a second mesh, and a single mesh of four primitives becomes four submeshes. Section 6.3 states what follows from that.
-
-scene::
-As in glTF 2.0: a list of root nodes. A file may hold several scenes and names one as default; a file with none is a library of entities that a viewer cannot show.
-
-part frame::
-The coordinate frame in which a part's macro expresses its attach point, slots and frames. Defined by REP 103: x forward, y left, z up.
-
-delivery::
-The set of files handed over for one part, together with whatever accompanies them under section 4.
-
-assembly::
-Parts plus the joints between them. Out of scope here.
-
-The word "asset" is not used in this specification. In 3D work it spans meshes, textures, rigs, scenes and library entries at every scale, and glTF itself uses it both for a whole file and for the `asset` object inside one that holds the file's metadata, so it cannot be used precisely here. See [Parts](https://honurobotics.github.io/bluerobotics_models/lyrical/design/parts.html).
 
 ## 4. Delivery
 
@@ -127,19 +74,18 @@ The word "asset" is not used in this specification. In 3D work it spans meshes, 
 
 A delivery MUST include a visual model named `<part>.visual.glb`, where `<part>` is the part name.
 
-The part name MUST be lowercase snake_case, and MUST match the directory it is delivered into. Naming rules for parts are given in [Parts](https://honurobotics.github.io/bluerobotics_models/lyrical/design/parts.html) and are not repeated here.
+The part name MUST be lowercase snake_case, and MUST match the directory it is delivered into. Naming rules for parts are given in [Parts](https://honurobotics.github.io/bluerobotics_models/lyrical/design/parts.html) and are not repeated here. % CLAUDE: Don't rely on the Parts for anything.   The Parts contract is an optional narrowing and extention of this profile, we don't want this profile to depend on Parts - other way around. 
 
-A delivery MUST also include a `model.sdf` for the part in which collision geometry is expressed as SDF primitive shapes: box, cylinder or sphere. The content of that file, and the collision conventions it must follow, are defined by [Parts](https://honurobotics.github.io/bluerobotics_models/lyrical/design/parts.html) and [Add a part](https://honurobotics.github.io/bluerobotics_models/lyrical/how-to/add-part.html); `sdf_to_part.py` bootstraps the part macro from it.
-
-A delivery MUST describe exactly one part. A compound object -- a whole vehicle, or several parts carried as separate nodes in one file -- MUST NOT be delivered as a single glTF file.
 
 **Implementation Note.** This is not the same question as how many nodes one part may use, which section 5.5 leaves open. Section 5.5 requires a single root node named for the part, but permits children, so a compound object could satisfy it by hanging its components under one root. That rule therefore narrows the possibilities without closing them, and this one closes them. Nor is this mechanically checkable: nothing in a glTF file says how many parts it depicts, so `gltf-check` cannot enforce it and acceptance rests on the integrator recognising a delivery that is really an assembly.
 
 % CLAUDE: I recorded the decision but not its reason. Fill in why one-part-per-file won over a compound delivery, so the rule can be argued rather than just obeyed. The alternative considered was one glTF file carrying a whole vehicle with its components as separate nodes, from which the xacro, URDF and SDF assembly could be generated.
 
-**Implementation Note.** This keeps `assembly`, defined in section 3, out of scope: the assembly is expressed in the part macro, never in the delivered geometry. It is a decision for the first draft rather than a permanent one, and the case for revisiting it would be an assembly that the macro cannot state as well as the node structure could.
+% CLAUDE:  Reasoning - start simple. For now we are sticking with the one-to-one of part-model-glb file   We can leave it open to explore later, but for now we are keeping it simpel.  
 
-At this time, this document assumes the modeler provides `model.sdf` with collisions as SDF primitives.  Extending the rule to other collision representations, mesh collision in particular, is tracked as a repository issue, "Collision delivery: extend beyond SDF primitives to mesh collision". 
+% CLAUDE: Add "part" and "assembly" to our glossary so we have a convention for how they are used - cite a reference if possible
+
+**Implementation Note.** This keeps `assembly`, defined in section 3, out of scope: the assembly is expressed in the part macro, never in the delivered geometry. It is a decision for the first draft rather than a permanent one, and the case for revisiting it would be an assembly that the macro cannot state as well as the node structure could.
 
 > **Discuss.** Whether a delivery carries a manifest recording the source of the geometry, the source of its dimensions and the texture provenance. Proposed: yes, because it is cheap and answers questions the audit could not. Archiving the Blender source file is a separate and heavier commitment, storage, licensing of purchased textures and an implied ability to re-export, and is not proposed. Tracked as review decision 12. 
 
@@ -154,16 +100,17 @@ The model MUST be glTF 2.0 in the binary container, `.glb`. The `.gltf` form, wi
 **Implementation Note.** Why the binary container, in order of weight:
 
 - gz-common 7.3.0 drops the glTF root rotation for a `.gltf` file and keeps it for a `.glb`, because it compares an already-lowercased extension against the literal `"glTF"`. A `.gltf` delivery would load into Gazebo mis-oriented and report nothing.
-- Gazebo decodes external textures eagerly when the mesh loads.
+- Gazebo decodes external textures eagerly when the mesh loads. % CLAUDE: what does this mean?
 - One artifact cannot arrive incomplete. A directory of six files can, and the acceptance tooling reads a `.glb` with no search path at all.
 - The legibility `.gltf` would give is already available from the container: `glb_inventory.py` reports per-image size, format and texel density, and `glb_probe` reports what the loader built.
 
-What the rule gives up: with `.gltf` the images version independently in git, which matters because textures are 59 percent of every byte stored, so re-exporting geometry to change one map is waste. Both defects above have upstream fixes that the pinned container does not yet carry, so this is worth revisiting when the container moves. Evidence in section 1.8 of [VISUAL_ASSET_PIPELINE_REVIEW.md](../reference/pipeline-review.md).
+What the rule gives up: with `.gltf` the images version independently in git, which matters because textures are the majority of the file size. 
 
 The file MUST validate against the Khronos glTF Validator with zero errors. Validator warnings and infos MUST be reviewed but do not by themselves fail a delivery.
 
-> **Open.** Whether textures are embedded in the container, delivered as external files, or either. The container decision above does not settle this: a `.glb` packs only its first buffer into the binary chunk, and an image may still carry a `uri` pointing at an external file. All deliveries to date embed, and the acceptance tooling reads a delivery with no search path. Against that, Drake refuses `.glb` outright and argues external files load faster, and JPL packages the same way for RViz, so if a model is ever consumed outside Gazebo and RViz, packaging is the first thing that breaks. Tracked as review decision 16.
+> **Open.** Whether textures are embedded in the container, delivered as external files, or either. The container decision above does not settle this: a `.glb` packs only its first buffer into the binary chunk, and an image may still carry a `uri` pointing at an external file. All deliveries to date embed, and the acceptance tooling reads a delivery with no search path. Against that, Drake refuses `.glb` outright and argues external files load faster, and JPL packages the same way for RViz, so if a model is ever consumed outside Gazebo and RViz, packaging is the first thing that breaks. Tracked as review decision 16. %
 
+**Implemeentation Note
 **Implementation Note.** Embedding gives one artifact that cannot arrive incomplete. External files version independently, so a texture can be re-authored without re-exporting geometry. The geometry remains an opaque binary either way.
 
 ### 4.3 Asset header
