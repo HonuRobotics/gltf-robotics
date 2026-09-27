@@ -53,17 +53,19 @@ References to external documents are normative if this specification uses those 
 
 Some text is purely informative, giving background or explaining why a rule exists. A section whose title is suffixed "(Informative)" contains only informative language. All Notes, Implementation Notes and Examples are informative. Everything not so marked is normative.
 
-### 2.4 Decision status
+### 2.4 Open issues
 
-Two kinds of block mark everything not yet settled:
+One kind of block marks everything not yet settled:
 
-> **Discuss.** A proposal is on the table and states the rule as it would read, but the team has not agreed to it. Tracked as review decision N.
+> **Open.** A question this draft does not answer. Where a proposal exists it is stated as the rule would read; where none does, the block names what has to be settled and, if known, what would settle it. Tracked as review decision N.
 
-> **Open.** No proposal yet. The block names what has to be settled and, where known, what would settle it. Tracked as review decision N.
+Three things become an Open issue, and they are not distinguished because acting on them is the same work: a question nobody has proposed an answer to; a proposal on the table that the team has not agreed to; and a rule this draft states in its simplest form, deliberately, where a more capable version is plausible later. The third kind is easy to lose, because it reads as settled -- the rule is normative and a delivery conforms to it today. It is recorded anyway, so that the reason for the simple version stays visible and the extension is a decision rather than a rediscovery.
 
-The plan is to settle every Discuss item and as many Open items as possible before the first pilot of the modeling workflow. Some Open items will stay open through the pilot, and the pilot itself is expected to inform them. An item left open is a known gap, not an oversight. A delivery cannot fail to conform on a point marked Discuss or Open.
+A delivery cannot fail to conform on a point marked Open. Where a rule is normative today but expected to change, the rule governs and the block says what would reopen it.
 
-Decision numbers refer to section 10 of [VISUAL_ASSET_PIPELINE_REVIEW.md](../reference/pipeline-review.md). Section 13 collects every Discuss and Open block, and is the to-do list for finishing this draft.
+The plan is to settle as many as possible before the first pilot of the modeling workflow. Some will stay open through it, and the pilot itself is expected to inform them. An item left open is a known gap, not an oversight.
+
+Decision numbers refer to section 10 of [VISUAL_ASSET_PIPELINE_REVIEW.md](../reference/pipeline-review.md). Section 13 collects every Open block and is the to-do list for finishing this draft.
 
 ## 3. Terminology
 
@@ -101,13 +103,15 @@ The part name MUST be lowercase snake_case: lowercase letters, digits and unders
 
 A delivery MUST describe exactly one part. A compound object -- a whole vehicle, or several parts carried as separate nodes in one file -- MUST NOT be delivered as a single glTF file.
 
-**Implementation Note.** The reason is to start simple. One part, one model, one `.glb` is a mapping every tool in the pipeline can assume, and it keeps the assembly in one place rather than expressed twice. The alternative considered was one file carrying a whole vehicle with its components as separate nodes, from which the assembly description could be generated; that remains worth exploring and is not foreclosed, but it is not what the first draft commits to.
+**Implementation Note.** The reason is to start simple. One part, one model, one `.glb` is a mapping every tool in the pipeline can assume, and it keeps the assembly in one place rather than expressed twice.
+
+> **Open.** Whether a compound delivery is worth supporting later. One file carrying a whole vehicle, with its components as separate nodes, could drive the assembly description from what the file already states rather than from a macro written alongside it. The rule above is the simple form and governs today; this records that it was chosen for simplicity and not because the alternative was ruled out. Settling it needs a case where the node structure states the assembly better than the macro does, and it bears on the node question in 5.5. Not yet on the review's decision list.
 
 **Implementation Note.** This is not the same question as how many nodes one part may use, which section 5.5 leaves open. Section 5.5 requires a single root node named for the part but permits children, so a compound object could satisfy it by hanging its components under one root. That rule narrows the possibilities without closing them, and this one closes them. Nor is it mechanically checkable: nothing in a glTF file says how many parts it depicts, so `gltf-check` cannot enforce it and acceptance rests on the integrator recognising a delivery that is really an assembly.
 
-> **Discuss.** Whether a delivery carries a manifest recording the source of the geometry, the source of its dimensions and the texture provenance. Proposed: yes, because it is cheap and answers questions the audit could not. Archiving the Blender source file is a separate and heavier commitment, storage, licensing of purchased textures and an implied ability to re-export, and is not proposed. Tracked as review decision 12. 
+> **Open.** Whether a delivery carries a manifest recording the source of the geometry, the source of its dimensions and the texture provenance. Proposed: yes, because it is cheap and answers questions the audit could not. Archiving the Blender source file is a separate and heavier commitment, storage, licensing of purchased textures and an implied ability to re-export, and is not proposed. Tracked as review decision 12. 
 
-> **Discuss.** Whether every part must cite a published dimensional figure, and what to do for parts where none exists. Proposed: yes where one exists, because it is the one check that would have caught a defect the earlier audits missed. Tracked as review decision 13.
+> **Open.** Whether every part must cite a published dimensional figure, and what to do for parts where none exists. Proposed: yes where one exists, because it is the one check that would have caught a defect the earlier audits missed. Tracked as review decision 13.
 
 **Implementation Note.** Both of the questions above may be answered together by the datum specification in 5.6, which needs a manifest to live in and needs a cited expression of the part's nominal geometry to be written against.
 
@@ -125,6 +129,8 @@ The model MUST be glTF 2.0 in the binary container, `.glb`. The `.gltf` form, wi
 What the rule gives up: with `.gltf` the images version independently in git, which matters because textures are the majority of the file size. 
 
 The file MUST validate against the Khronos glTF Validator with zero errors. Validator warnings and infos MUST be reviewed but do not by themselves fail a delivery.
+
+> **Open.** Whether the binary container stays the only permitted form. Two of the reasons above are defects rather than properties: the gz-common extension-comparison bug has an upstream fix, and eager texture decoding is an implementation choice. When the pinned container moves, both may be gone, and the remaining arguments are about delivery hygiene rather than correctness. Against relaxing it, Drake does not read `.glb` at all (1.2), so a `.gltf` allowance would widen the set of consumers a delivery can reach. Not yet on the review's decision list.
 
 > **Open.** Whether textures are embedded in the container, delivered as external files, or either. The container decision above does not settle this: a `.glb` packs only its first buffer into the binary chunk, and an image may still carry a `uri` pointing at an external file. All deliveries to date embed, and the acceptance tooling reads a delivery with no search path. Against that, Drake does not support `.glb` at all (section 1.2), so a model meant to be consumed there cannot be delivered in the container this profile requires, whatever is done about textures. Packaging is therefore the first thing that breaks outside Gazebo and RViz. Tracked as review decision 16.
 
@@ -154,11 +160,11 @@ The model MUST be Y-up, as glTF specifies.
 
 **Implementation Note.** The RViz rotation is younger and narrower than it looks. It was added by `ros2/rviz` #1482, merged to `rolling` on 2025-06-16 and deliberately not backported, so Jazzy and Kilted do not have it. These models render correctly in RViz only on distributions downstream of that merge; on Jazzy every part appears rotated ninety degrees. This is a distribution floor for consumers of the library, not a defect in the file.
 
-> **Discuss.** Whether this specification states that distribution floor as a requirement on the integrator, and where. Proposed: state it here and in the repository README, as the oldest ROS distribution on which the models render correctly in RViz. Not yet on the review's decision list.
+> **Open.** Whether this specification states that distribution floor as a requirement on the integrator, and where. Proposed: state it here and in the repository README, as the oldest ROS distribution on which the models render correctly in RViz. Not yet on the review's decision list.
 
 ### 5.3 Forward axis
 
-> **Discuss.** Whether the delivered file faces +X, which is what authoring in the part frame produces and what every current delivery does, or +Z, which is the convention stated in glTF. Proposed: +X, stated as a deliberate departure from the glTF wording, because the frame is the interface with the part macro and moving would cost a re-export of every file and an extra rotation in two code paths. Tracked as review decision 2.
+> **Open.** Whether the delivered file faces +X, which is what authoring in the part frame produces and what every current delivery does, or +Z, which is the convention stated in glTF. Proposed: +X, stated as a deliberate departure from the glTF wording, because the frame is the interface with the part macro and moving would cost a re-export of every file and an extra rotation in two code paths. Tracked as review decision 2.
 
 [REP 158](https://github.com/openrobotics/reps/blob/main/_posts/rep-0158%3A2006.md) requires "the strict ROS Right-Handed convention: X-forward, Y-left, Z-up", which is external support for +X. Its Z-up is stated about the USD stage and does not bear on the Y-up rule in section 5.2. See the reference for the rest.
 
@@ -168,7 +174,7 @@ Interim rule. Until this is decided, modelers SHOULD continue to author in the p
 
 ### 5.4 Origin
 
-> **Discuss.** Where a part's origin sits within its geometry. Our documents state three rules, centroid, author's choice, and centroid near a sensible mounting point, and the library follows none of them. Measured, it is centered in plan and referenced to the mounting plane vertically on all but two parts. Proposed: adopt the measured convention, stated as "centered in plan, zero on the mounting plane, with the mounting face named in the part's macro comment", because it is what makes a part sit correctly at a slot, it matches fourteen of fifteen files already, and it is checkable by measurement once the face is named. Tracked as review decision 2.
+> **Open.** Where a part's origin sits within its geometry. Our documents state three rules, centroid, author's choice, and centroid near a sensible mounting point, and the library follows none of them. Measured, it is centered in plan and referenced to the mounting plane vertically on all but two parts. Proposed: adopt the measured convention, stated as "centered in plan, zero on the mounting plane, with the mounting face named in the part's macro comment", because it is what makes a part sit correctly at a slot, it matches fourteen of fifteen files already, and it is checkable by measurement once the face is named. Tracked as review decision 2.
 
 **Implementation Note.** The proposal above states where the origin sits as a measured property of the geometry. Section 5.6 records a different approach, still open, which states instead which features the coordinate system is referenced to and lets the position follow.
 
@@ -182,7 +188,9 @@ The delivered file MUST contain exactly one scene, and that scene MUST list only
 
 The delivered file MUST contain exactly one root node, and that node MUST NOT carry a `rotation` or a `matrix` transform. Transforms MUST be applied in Blender before export.
 
-A `translation` on the root node is permitted and is applied by both consumers.
+A `translation` on the root node SHOULD NOT be present. Where one is, it is applied by both consumers but composed differently, so the part does not land in the same place in each.
+
+> **Open.** Whether a root translation is prohibited outright. Both consumers honor it, but they compose it against the up-axis correction in opposite orders -- Gazebo applies the correction outside the root transform, RViz inside it -- so a translation of 0.5 m along the file's Y puts the part 0.5 m up in Gazebo and 0.5 m to the side in RViz. `probe/coords/make_markers.py` writes `marker_roottrans` to demonstrate exactly this. An earlier draft of this section said a root translation "is permitted and is applied by both consumers", which is true of the first half and misleading about the second. The interim rule above is SHOULD NOT rather than MUST NOT because no current delivery carries one and the cost of prohibiting it is unknown; settling it needs the rendered comparison run and recorded. Not yet on the review's decision list.
 
 The root node MUST be named `<part>`, with no Blender numeric suffix such as `.001` and no spaces. This is the only name in the file either consumer reads: Gazebo names each submesh after its node, never after the mesh or the material.
 
@@ -212,17 +220,19 @@ The model SHOULD NOT contain degenerate, zero-area triangles.
 
 ### 6.1 UV sets
 
-The model MUST have exactly one UV set, `TEXCOORD_0`, with coordinates inside the range 0 to 1.
+The model MUST carry `TEXCOORD_0`, with coordinates inside the range 0 to 1. A second UV set, `TEXCOORD_1`, MAY be present and then only to carry a baked ambient occlusion lightmap. No further UV set may be present.
 
 [REP 158](https://github.com/openrobotics/reps/blob/main/_posts/rep-0158%3A2006.md) requires the same range and adds uniqueness: "Unique UVs must be packed into the [0, 1] space". It reserves coordinates outside that range for seamless tiling with repeat wrap modes, which this document does not permit. See the reference for the rest.
 
-A second UV set MAY be used, and then only to carry a baked ambient occlusion lightmap.
-
 **Implementation Note.** Every texture except a lightmap is read from the first UV set. Coordinates are stored as half floats after loading, so precision degrades outside the 0 to 1 range.
+
+**Implementation Note.** The two paragraphs above previously contradicted each other, requiring exactly one UV set and then permitting a second. `gltf-check` implements the rule as now written and fails a third set; it had been failing the permitted lightmap set as well.
+
+> **Open.** Whether the 0-to-1 requirement survives. It is the most contested rule in this profile and the disagreement is not marginal: the Khronos Real-time Asset Creation Guidelines endorse tiling above 1 for repeating patterns (1.2), REP 158 reserves the range outside 0 to 1 for exactly that, and 19 of the 49 assets measured in the corpus do it, the Gazebo team's own files among them. The rule is kept for now because tiling defeats the texel-density measurement the acceptance tooling relies on, and because half-float storage degrades precision outside the range. Neither reason is about correctness, and a part needing a repeating material is the case that would settle it. Tracked as review decision 5.
 
 ### 6.2 Budgets
 
-> **Discuss.** The triangle budget per part. The earlier draft proposed about 25,000; the current library ranges from 164 to 21,776. A single number is not defensible until each part states how much detail its role warrants, so the proposal is to record a visual requirement per part as one of a few named tiers, for example functional for the vehicles and the parts fitted to them, accessory for sensors and brackets, and scenery for items seen at distance, and then to set a triangle and texture budget per tier. Tracked as review decisions 5 and 18.
+> **Open.** The triangle budget per part. The earlier draft proposed about 25,000; the current library ranges from 164 to 21,776. A single number is not defensible until each part states how much detail its role warrants, so the proposal is to record a visual requirement per part as one of a few named tiers, for example functional for the vehicles and the parts fitted to them, accessory for sensors and brackets, and scenery for items seen at distance, and then to set a triangle and texture budget per tier. Tracked as review decisions 5 and 18.
 
 **Implementation Note.** Neither consumer imposes a triangle limit. Texture memory dominates the cost, not geometry.
 
@@ -234,7 +244,7 @@ A second UV set MAY be used, and then only to carry a baked ambient occlusion li
 
 **Implementation Note.** What follows from that. SDF can select one submesh from a file with `<mesh><submesh><name>`, and Gazebo resolves the name by returning the first submesh that matches it and then stopping. Primitives sharing a node are therefore indistinguishable: such a selection takes the first and drops the rest, with no error and no warning. Naming submeshes after their node rather than after themselves is a known upstream defect, `gz-common` pull request 659, open and unfinished since December 2024, so the collision cannot be designed around by naming things more carefully at this end. The neighboring override is in section 7: an SDF `<material>` replaces the material on every primitive with one, so per-primitive materials survive only while nothing declares one.
 
-> **Discuss.** Whether this specification constrains primitives and rules out submesh selection. Proposed, as two rules: a primitive MUST exist only to carry a material distinct from its siblings, so that the primitive count equals the material count and nothing is split for any other reason; and a delivery MUST be usable as one whole mesh, with neither the part macro nor any world depending on `<mesh><submesh>` to select part of one. Both are free today, since nothing in the library splits a primitive gratuitously and nothing uses submesh selection, and together they keep the upstream naming defect permanently outside this project. The alternative, making selection work, needs one primitive per node and a naming rule for each, which is the multiple-node question in section 5.5. Not yet on the review's decision list.
+> **Open.** Whether this specification constrains primitives and rules out submesh selection. Proposed, as two rules: a primitive MUST exist only to carry a material distinct from its siblings, so that the primitive count equals the material count and nothing is split for any other reason; and a delivery MUST be usable as one whole mesh, with neither the part macro nor any world depending on `<mesh><submesh>` to select part of one. Both are free today, since nothing in the library splits a primitive gratuitously and nothing uses submesh selection, and together they keep the upstream naming defect permanently outside this project. The alternative, making selection work, needs one primitive per node and a naming rule for each, which is the multiple-node question in section 5.5. Not yet on the review's decision list.
 
 ## 7. Materials
 
@@ -260,7 +270,7 @@ Material names SHOULD name the component they cover, not a color. Material names
 
 **Implementation Note.** The materials in the file are what renders. The generated part SDF declares no `<material>`, and if one were declared it would replace every embedded material with that one, so per-primitive materials survive only while nothing overrides them. This matches every glTF exemplar found outside the project, none of which declares a material in SDF.
 
-> **Discuss.** Whether the workspace rule that PBR materials must be declared in the SDF applies to GLB parts at all. It was written for COLLADA, where the SDF is the only place a PBR material can live. For GLB it contradicts the rule above, the generated part SDF, and every glTF exemplar found. Proposed: restate the workspace rule as applying to COLLADA visuals only. Not yet on the review's decision list.
+> **Open.** Whether the workspace rule that PBR materials must be declared in the SDF applies to GLB parts at all. It was written for COLLADA, where the SDF is the only place a PBR material can live. For GLB it contradicts the rule above, the generated part SDF, and every glTF exemplar found. Proposed: restate the workspace rule as applying to COLLADA visuals only. Not yet on the review's decision list.
 
 ## 8. Textures
 
@@ -278,7 +288,7 @@ Normal, metallic, roughness and packed ORM textures MUST be PNG, which [REP 158]
 
 **Implementation Note.** Deliveries from anyone working in the normal way will arrive with JPEG normal maps: every normal map in the current library is JPEG, as are most in Fuel and in the Gazebo team's own demo assets. The Blender exporter inherits the format of the source image, so this is a texture-authoring decision, not an export setting. A JPEG normal map cannot be repaired by converting it to PNG, because the damage is already in the pixels; the remedy is to re-export from the source texture.
 
-> **Discuss.** Whether base color and emissive textures may be JPEG, and the size cap per map type. Proposed: PNG by default for every map. JPEG is permitted for `baseColorTexture` and `emissiveTexture` only when all four hold: the material is `OPAQUE`, so no alpha is needed; the encoder is set to libjpeg quality 95 or better with 4:4:4 chroma subsampling, not a default; the JPEG is actually smaller than the PNG, which for flat maps it often is not; and the image is plugged into no other slot. Every JPEG in the current library is quality 75 at 4:2:0 and fails the second condition. For size, roughness and metalness maps SHOULD be smaller than the base color map, because they receive no mipmaps and shimmer at distance. Tracked as review decision 4.
+> **Open.** Whether base color and emissive textures may be JPEG, and the size cap per map type. Proposed: PNG by default for every map. JPEG is permitted for `baseColorTexture` and `emissiveTexture` only when all four hold: the material is `OPAQUE`, so no alpha is needed; the encoder is set to libjpeg quality 95 or better with 4:4:4 chroma subsampling, not a default; the JPEG is actually smaller than the PNG, which for flat maps it often is not; and the image is plugged into no other slot. Every JPEG in the current library is quality 75 at 4:2:0 and fails the second condition. For size, roughness and metalness maps SHOULD be smaller than the base color map, because they receive no mipmaps and shimmer at distance. Tracked as review decision 4.
 
 **Implementation Note.** Base color and emissive are treated as sRGB; every other map is linear. 16-bit images are converted to 8 bits on upload and buy nothing. PNG and JPEG both decode to the same size in video memory, so the choice costs disk and transfer, never GPU memory.
 
@@ -298,7 +308,7 @@ An opaque part MUST NOT be tagged `alphaMode: BLEND`.
 
 **Implementation Note.** A base color texture needs an alpha channel in exactly one case: the opacity varies across the surface of one material, which is the cutout case above. Uniform translucency is a factor, not a channel. The BlueBoat chassis is a cutout region wearing the wrong clothes: 0.56 percent of its map is non-opaque and the whole hull is tagged `BLEND` for it, where `MASK` at cutoff 0.5 loses nothing.
 
-> **Discuss.** How uniform translucency, such as an acrylic tube, is expressed, and whether `BLEND` is used at all given that this project's primary consumer ignores it. Proposed: give each translucent region its own material with the opacity in `baseColorFactor` alpha and the texture RGB only. Whether that material is tagged `BLEND` for the benefit of other viewers, or left `OPAQUE` so the file reads the same everywhere, is the part still to agree. Tracked as review decision 6.
+> **Open.** How uniform translucency, such as an acrylic tube, is expressed, and whether `BLEND` is used at all given that this project's primary consumer ignores it. Proposed: give each translucent region its own material with the opacity in `baseColorFactor` alpha and the texture RGB only. Whether that material is tagged `BLEND` for the benefit of other viewers, or left `OPAQUE` so the file reads the same everywhere, is the part still to agree. Tracked as review decision 6.
 
 **Implementation Note.** Gazebo honors `MASK` and ignores `BLEND` entirely, rendering the material opaque. Uniform opacity reaches it instead through the alpha of `baseColorFactor`, on any alpha mode, and is applied twice, so an alpha of 0.5 renders at about 0.25. `doubleSided` is honored only on a `MASK` material; every other surface is back-face culled, so thin geometry needs thickness.
 
@@ -314,9 +324,11 @@ A delivered file MUST NOT contain:
 
 **Implementation Note.** These are prohibited for different reasons, and the reasons matter if one is ever reconsidered. Draco decodes correctly in both consumers but defeats the project's own inspection tools. Texture transform is parsed and then ignored, so textures render in the wrong place. Animations are imported and force the bounding box to a unit cube, breaking culling. Cameras and lights are ignored harmlessly. An empty `extensionsRequired` is the single check that covers the general case, and it is worth being clear about what that check buys. The glTF specification requires a conforming reader to refuse a file outright when it requires an extension the reader does not implement, so one reading of this rule is that it saves us from a file that would fail to load. Measurement says otherwise: `Distribution_Warehouse`, which declares `KHR_texture_transform` in `extensionsRequired`, loads through gz-common without complaint, building 3,010 submeshes and 19 materials. Gazebo is not a conforming reader on this point. The rule therefore protects against a file that loads and is silently wrong, which is the worse failure and the one nobody notices. The Gazebo team's own demo assets declare `KHR_texture_transform` and `KHR_materials_specular`, so files from that workflow will fail this section and need re-export.
 
+> **Open.** Which of these prohibitions are permanent. Two are not statements about the format: Draco decodes correctly in both consumers and is prohibited only because it defeats this project's own inspection tools, and KTX2 is prohibited because Gazebo cannot read it while Drake recommends it for performance (1.2). Both would be reconsidered if the tooling or the consumer changed, and compressed geometry and supercompressed textures are the two levers with real size savings behind them. Animations, cameras and lights are prohibited on their merits and are not expected to change. Not yet on the review's decision list.
+
 ## 11. Authoring toolchain
 
-> **Discuss.** Whether the Blender and exporter versions are pinned as part of the project's version stack, and at which version. Proposed, from section 7 of the review: Blender 5.1 with `io_scene_gltf2` 5.1.20, an export preset shipped with this specification, and assimp 6.0.4 pinned in drydock alongside the Gazebo libraries, with versions tracked at patch level because the behavior that changed during the audit changed in a patch release. The modeler is outside our infrastructure, so the authoring half is a convention plus an acceptance check, not a technical constraint. Tracked as review decisions 8, 10 and 17.
+> **Open.** Whether the Blender and exporter versions are pinned as part of the project's version stack, and at which version. Proposed, from section 7 of the review: Blender 5.1 with `io_scene_gltf2` 5.1.20, an export preset shipped with this specification, and assimp 6.0.4 pinned in drydock alongside the Gazebo libraries, with versions tracked at patch level because the behavior that changed during the audit changed in a patch release. The modeler is outside our infrastructure, so the authoring half is a convention plus an acceptance check, not a technical constraint. Tracked as review decisions 8, 10 and 17.
 
 Interim rule. Until that is decided, a delivery MUST record the exporter that produced it, which glTF does automatically in `asset.generator`, and the integrator SHOULD check it against previous deliveries.
 
@@ -337,32 +349,39 @@ A delivery conforms when all of the following hold. The first two are the modele
 
 The mechanical checks implied by this specification, and where they are described, are collected in the review document: file-level lint in section 2.2, the loader probe in section 2.1, the validator in section 2.6, the render checks in section 2.3, and the pass or fail table in section 2.5.
 
-> **Discuss.** Whether the probe and the lint become a CI test alongside the existing base color guard, and where they live. Proposed: yes, because a floating assimp and Gazebo version can only be tolerated if the acceptance check is automated. Tracked as review decision 7.
+> **Open.** Whether the probe and the lint become a CI test alongside the existing base color guard, and where they live. Proposed: yes, because a floating assimp and Gazebo version can only be tolerated if the acceptance check is automated. Tracked as review decision 7.
 
-> **Discuss.** Whether to commit a probe dump per part, so that a redelivered binary mesh produces a readable diff. Tracked as review decision 14.
+> **Open.** Whether to commit a probe dump per part, so that a redelivered binary mesh produces a readable diff. Tracked as review decision 14.
 
 ## 13. Open questions (Informative)
 
-Every Discuss and Open block in this document, in order. Settled rules are not listed: they are the normative text. This table is the to-do list for finishing the draft.
+Every Open block in this document, in order. Settled rules are not listed: they are the normative text. This table is the to-do list for finishing the draft.
 
-| Section | Question | Status | Decision |
-|---|---|---|---|
-| 4.1 | Delivery manifest; Blender source archival | Discuss | 12 |
-| 4.1 | Cited dimensional source per part | Discuss | 13 |
-| 4.2 | Textures embedded or external | Open | 16 |
-| 5.2 | Stating the RViz distribution floor | Discuss | none yet |
-| 5.3 | Forward axis +X | Discuss | 2 |
-| 5.4 | Origin placement | Discuss | 2 |
-| 5.5 | Multiple nodes, and what "one mesh" means | Open | 15 |
-| 5.6 | Datum specification for the part coordinate system | Open | none yet |
-| 6.2 | Triangle budget, by visual requirement tier | Discuss | 5, 18 |
-| 6.3 | Primitive count, and ruling out submesh selection | Discuss | none yet |
-| 7 | PBR-in-SDF workspace rule for GLB parts | Discuss | none yet |
-| 8 | Base color format and per-map size caps | Discuss | 4 |
-| 9 | Uniform translucency and use of BLEND | Discuss | 6 |
-| 11 | Toolchain version pin | Discuss | 8, 10, 17 |
-| 12.1 | Probe and lint in CI | Discuss | 7 |
-| 12.1 | Committed probe dump per part | Discuss | 14 |
+Some entries are questions with no answer proposed, some are proposals awaiting agreement, and some are rules this draft states in their simplest form on purpose -- 4.1 on compound deliveries, 4.2 on the binary container and 10 on which prohibitions are permanent are all of the third kind. Section 2.4 explains why they are not distinguished here.
+
+| Section | Question | Decision |
+|---|---|---|
+| 4.1 | Compound delivery supported later | none yet |
+| 4.1 | Delivery manifest; Blender source archival | 12 |
+| 4.1 | Cited dimensional source per part | 13 |
+| 4.2 | Binary container as the only permitted form | none yet |
+| 4.2 | Textures embedded or external | 16 |
+| 5.2 | Stating the RViz distribution floor | none yet |
+| 5.3 | Forward axis +X | 2 |
+| 5.4 | Origin placement | 2 |
+| 5.5 | Root translation prohibited outright | none yet |
+| 5.5 | Multiple nodes, and what "one mesh" means | 15 |
+| 5.6 | Datum specification for the part coordinate system | none yet |
+| 6.1 | Whether the 0-to-1 UV requirement survives | 5 |
+| 6.2 | Triangle budget, by visual requirement tier | 5, 18 |
+| 6.3 | Primitive count, and ruling out submesh selection | none yet |
+| 7 | PBR-in-SDF workspace rule for GLB parts | none yet |
+| 8 | Base color format and per-map size caps | 4 |
+| 9 | Uniform translucency and use of BLEND | 6 |
+| 10 | Which prohibitions are permanent | none yet |
+| 11 | Toolchain version pin | 8, 10, 17 |
+| 12.1 | Probe and lint in CI | 7 |
+| 12.1 | Committed probe dump per part | 14 |
 
 Decision numbers refer to section 10 of [VISUAL_ASSET_PIPELINE_REVIEW.md](../reference/pipeline-review.md). Review decision 9, contributing the loader table upstream, is not a rule of this specification and is not listed. Items marked "none yet" were raised in the glTF reading notes after the review's list was written and should be added to it.
 
