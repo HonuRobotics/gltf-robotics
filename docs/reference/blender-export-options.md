@@ -1,8 +1,48 @@
 # Blender glTF Export Options
 
-Every option the Blender glTF exporter offers, with its default, so the correct settings for this project can be worked out one at a time rather than assumed. The export dialog has 110 properties and names only a handful of them in any guide we have written.
+Every option the Blender glTF exporter offers, with its default. The dialog has 110 properties and no guide we have written names more than a handful, so the settings that matter are collected here first and the full enumeration follows as backing.
 
-The `Ours` column is the point of the page. It is filled in where the profile already settles the question and left open where it does not, so the open rows are a worklist rather than a silence.
+## Directive
+
+Thirteen options out of 110. Everything not named below stays at its Blender default.
+
+Confirm these. They are already Blender's defaults, so the work is checking rather than changing:
+
+| UI label | Identifier | Value | Why |
+|---|---|---|---|
+| Format | `export_format` | GLB | profile 4.2 prohibits `.gltf` |
+| +Y Up | `export_yup` | True | the whole of the coordinate conversion — profile 5.2 |
+| At Collection Center | `at_collection_center` | False | it relocates the origin, which profile 5.4 and 5.6 govern |
+| UVs | `export_texcoords` | True | profile 6 requires `TEXCOORD_0` on every primitive |
+| Normals | `export_normals` | True | profile 6 requires `NORMAL` |
+| Materials | `export_materials` | EXPORT | profile 7 |
+| Cameras | `export_cameras` | False | profile 10 prohibits `cameras` |
+| Punctual Lights | `export_lights` | False | profile 10 prohibits `KHR_lights_punctual` |
+| Draco | `export_draco_mesh_compression_enable` | False | profile 10 prohibits `KHR_draco_mesh_compression` |
+
+Change these. They are the only four that differ from the default:
+
+| UI label | Identifier | Default | Set to | Why |
+|---|---|---|---|---|
+| Limit to ▸ Selected Objects | `use_selection` | False | True | one part per delivery — profile 4.1 |
+| Animation | `export_animations` | True | False | profile 10 prohibits `animations`, and no scene should rely on having no actions |
+| Remember Export Settings | `will_save_settings` | False | True | the `.blend` then carries the settings it was exported with, so the delivery can be reproduced from its source |
+| Copyright | `export_copyright` | `''` | `Copyright Honu Robotics` | |
+
+Four decide where the geometry lands: `export_format`, `export_yup`, `at_collection_center` and `use_selection`. The rest is payload, prohibition or provenance.
+
+Two are not settled, and the dialog default is what we use until they are: `export_apply` (Apply Modifiers) and `export_image_format` (`AUTO`, which is necessary and not sufficient — see the Data ▸ Material panel below).
+
+### Four things that decide the result and are not in this dialog
+
+No export option touches any of these. They are done in the scene, before the dialog opens.
+
+| What | Where | Why |
+|---|---|---|
+| Apply object transforms | `Object ▸ Apply ▸ All Transforms` | profile 5.5 — the root node must carry no rotation and no matrix |
+| Scene unit scale 1.0, object scale applied | Scene properties | profile 5.1 — a file at the wrong scale is silently wrong |
+| `metallicFactor` | the material's Principled BSDF | profile 7 — the defect that recurs most in deliveries |
+| The object's name | the object, not the mesh datablock | profile 5.5 — the only name either consumer reads |
 
 ## Provenance
 
@@ -31,26 +71,13 @@ There is no export option that applies object transforms. `export_apply` is Appl
 
 Profile section 5.5 requires the root node to carry no rotation and no matrix, and that is achieved in the scene, with `Object ▸ Apply ▸ All Transforms`, before the export dialog is ever opened. An object left with a rotation exports as a node with a rotation no matter how the dialog is set. Our own [export guide](../how-to/exporting-from-blender.md) says "Apply transforms before exporting" under a heading that invites this confusion, and the distinction belongs there too.
 
-## The four options that decide coordinates
-
-Out of 110, these are the ones that touch where the geometry lands:
-
-| Option | Identifier | Default | Ours |
-|---|---|---|---|
-| +Y Up | `export_yup` | True | required True — profile 5.2 |
-| Format | `export_format` | GLB | required GLB — profile 4.2 prohibits `.gltf` |
-| Apply Modifiers | `export_apply` | False | open — see below |
-| Limit to ▸ Selected Objects | `use_selection` | False | practice True when the scene holds more than the part | % CLAUDE: I think we want to prescribe that this is true.
-
-Everything else in the dialog is payload, compression or animation.
-
 ## Top of the dialog
 
 | UI label | Identifier | Default | Ours |
 |---|---|---|---|
 | Format | `export_format` | GLB | required GLB — profile 4.2 |
-| Copyright | `export_copyright` | `''` | open — a candidate for the manifest question in profile 4.1.1 | % CLAUDE: Copyright Honu Robotics ad default
-| Remember Export Settings | `will_save_settings` | False | open — True would make a `.blend` carry its own settings, which is one answer to the preset proposal in profile 11 |  % CLAUDE: Set true so that the .blend artifacts (source) will inlcude the settings used to export, which helps in 
+| Copyright | `export_copyright` | `''` | `Copyright Honu Robotics` |
+| Remember Export Settings | `will_save_settings` | False | True — the `.blend` then carries the settings it was exported with |
 | File path | `filepath` | `''` | naming is governed by profile 4.1: `<part>.visual.glb` |
 | Check Existing | `check_existing` | True | default |
 | Filter | `filter_glob` | `'*.glb'` | default |
@@ -60,11 +87,15 @@ Everything else in the dialog is payload, compression or animation.
 
 `export_format`'s enum items are built dynamically, so headless introspection returns an empty list and a warning. The default is binary, which `filter_glob` confirms.
 
+`will_save_settings` stores the export settings inside the `.blend`, so the source file records how it was exported and a re-export reproduces the delivery rather than approximating it. That is a partial answer to the shipped-preset proposal in profile section 11: it does not distribute a preset, but it does make each source file self-describing, which is the part that matters when the modeler is outside our infrastructure. What it does not do is put the settings in the delivered `.glb` — `asset.generator` records the tool and never the settings, which is why profile 11 calls a version pin necessary and not sufficient.
+
+`export_copyright` writes `asset.copyright`, one of the few places a delivered file can carry provenance without an extension.
+
 ## Include
 
 | UI label | Identifier | Default | Ours |
 |---|---|---|---|
-| Limit to ▸ Selected Objects | `use_selection` | False | practice True — profile 4.1 is one part per delivery | % CLAUDE: Set to true for now - may relax later, but 
+| Limit to ▸ Selected Objects | `use_selection` | False | True — profile 4.1 is one part per delivery |
 | Limit to ▸ Visible Objects | `use_visible` | False | default |
 | Limit to ▸ Renderable Objects | `use_renderable` | False | default |
 | Limit to ▸ Active Collection | `use_active_collection` | False | default |
@@ -75,6 +106,8 @@ Everything else in the dialog is payload, compression or animation.
 | Data ▸ Custom Properties | `export_extras` | False | open — the archive-the-source question in profile 4.1.1 |
 | Data ▸ Cameras | `export_cameras` | False | required False — profile 10 prohibits `cameras` |
 | Data ▸ Punctual Lights | `export_lights` | False | required False — profile 10 prohibits `KHR_lights_punctual` |
+
+`use_selection` is prescribed True rather than left at the default. Profile 4.1 is one part per delivery, and an export that takes whatever happens to be in the scene is the mechanism by which leftover objects and empty scenes reach a delivery. Requiring a selection makes the modeler state what the part is. This may relax if a delivery ever legitimately holds more than one object, which profile 5.5's multi-node question would have to settle first.
 
 `at_collection_center` deserves attention. It is off by default and nothing in our guides mentions it, but switching it on relocates the origin of the exported result, which is the one thing the origin rules exist to control.
 
@@ -146,29 +179,25 @@ Nothing in this panel controls `metallicFactor`. That is a material property in 
 
 ## Data ▸ Shape Keys, Skinning, Lighting
 
+A static part has no shape keys, no armature and no lights, so all twelve options in these three panels stay at their defaults and none can affect the result.
+
 | UI label | Identifier | Default | Ours |
 |---|---|---|---|
-| Shape Keys | `export_morph` | True | harmless — no shape keys in a static part |
-| … Normals | `export_morph_normal` | True | harmless |
-| … Tangents | `export_morph_tangent` | False | harmless |
-| … Sparse Accessor | `export_try_sparse_sk` | True | harmless |
-| … omit if empty | `export_try_omit_sparse_sk` | False | harmless |
-| Skinning | `export_skins` | True | harmless — profile 10 prohibits `skins`, but none exist without an armature |
-| … bone influences | `export_influence_nb` | 4 | n/a |
-| … all influences | `export_all_influences` | False | n/a |
-| Deformation bones only | `export_def_bones` | False | n/a |
-| Add Leaf Bones | `export_leaf_bone` | False | n/a |
-| Rest position armature | `export_rest_position_armature` | True | n/a |
+| Shape Keys | `export_morph` | True | default — nothing to export |
+| Skinning | `export_skins` | True | default — profile 10 prohibits `skins`, but none exist without an armature |
 | Lighting Mode | `export_import_convert_lighting_mode` | `'SPEC'` | default — applies to lights, which we do not export |
+
+The nine remaining options are sub-settings of those three and are not enumerated here.
 
 ## Animation
 
-There shoudl be no animations.  Change `export_animations` to False. (Leaving it True is usually harmless becaue there are no anmations, but better to be sure)
+There should be no animations. Change `export_animations` to False. Leaving it True is usually harmless because there are no animations to export, but better to be sure.
+
 | UI label | Identifier | Default | Ours |
 |---|---|---|---|
-| Animation | `export_animations` | True | False — harmless either way for a static part |
+| Animation | `export_animations` | True | False — profile 10 prohibits `animations` |
 
-By removing `export_animations` we can safely ignore the rest.
+With `export_animations` off, the other 25 options in this group have no effect and are not enumerated here.
 
 ## Compression
 
@@ -177,24 +206,29 @@ All of it is prohibited by profile section 10, one way or another, and all of it
 | UI label | Identifier | Default | Ours |
 |---|---|---|---|
 | Draco | `export_draco_mesh_compression_enable` | False | required False — profile 10 prohibits `KHR_draco_mesh_compression` |
+| Meshopt | `export_meshopt_compression_enable` | False | required False — it lands in `extensionsRequired`, which profile 10 fails outright |
+| gltfpack | `export_use_gltfpack` | False | required False — it converts textures to KTX2/BasisU, which is `KHR_texture_basisu`, prohibited |
 
-Remainder is omitted for brevity. 
+The 19 quantization and quality sub-settings of those three are not enumerated here.
+
+Draco is absent from this Blender install regardless: `libextern_draco.so` is not present, and the exporter says so at load. So the prohibition is currently enforced by the build as well as by the rule.
 
 ## What this enumeration suggests, and needs checking
 
-A reading worth testing rather than adopting. Of the 110 options, exactly one has to be confirmed rather than changed (`export_yup`, already True), one is governed by the profile and matches the default (`export_format`), and the rest are either payload for features we do not use or prohibitions that are already off.
+A reading worth testing rather than adopting. Of the 110 options, four are changed from the default and nine are confirmed at it. Two of the four changes are provenance rather than geometry (`will_save_settings`, `export_copyright`) and one is belt and braces (`export_animations`, which produces nothing either way on a scene with no actions). That leaves `use_selection` as the only change that alters what a clean scene exports.
 
-If that holds, then the defects in delivered files do not come from the export dialog. They come from the scene: transforms not applied, `metallicFactor` left to a node graph the exporter cannot read, `Cube.001` names, leftover empty scenes, JPEG source textures, `BLEND` on an opaque hull. None of those is a checkbox in this dialog.
+If that holds, then the defects in delivered files do not come from the export dialog. They come from the scene: transforms not applied, `metallicFactor` left to a node graph the exporter cannot read, `Cube.001` names, leftover empty scenes, JPEG source textures, `BLEND` on an opaque hull. None of those is a checkbox in this dialog, which is why the four items under [Four things that decide the result and are not in this dialog](#four-things-that-decide-the-result-and-are-not-in-this-dialog) carry more weight than the thirteen that are.
 
 That sits awkwardly against the opening line of our [export guide](../how-to/exporting-from-blender.md), which says most defects "are export defaults rather than modelling mistakes". Both can be true if "defaults" is read broadly enough to include Blender's material and naming defaults, and the guide's own examples are mostly of that kind. Worth resolving in wording once the rows below are settled.
 
 ## Open rows, as a worklist
 
 - `export_apply` — do we want modifiers baked, and does the answer differ for a delivery versus a working file?
+- `export_image_format` — the wording that makes clear `AUTO` is necessary and not sufficient.
 - `export_all_vertex_colors` and the rest of the vertex-colour group — what actually triggers the fake `COLOR_0`, and does any rule care?
-- `export_extras` and `export_copyright` — both are candidates for the manifest question in profile 4.1.1.
-- `will_save_settings` — a per-`.blend` alternative to the shipped export preset proposed in profile 11.
-- `use_selection` and `use_active_scene` — the mechanism for "one part, one scene" in profile 4.1 and 5.5.
+- `export_extras` — a candidate for the manifest question in profile 4.1.1.
+- `use_active_scene` — whether it, rather than `use_selection` alone, is how "exactly one scene" in profile 5.5 gets enforced at export time.
 - `export_shared_accessors` — whether it changes what `glb_probe` reports.
 - `export_current_frame` — whether a static part is safe on the default.
-- `export_image_format` — the wording that makes clear `AUTO` is necessary and not sufficient.
+
+Settled by this review and no longer open: `use_selection` (True), `will_save_settings` (True), `export_copyright` (`Copyright Honu Robotics`), `export_animations` (False).
