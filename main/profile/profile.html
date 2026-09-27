@@ -62,7 +62,10 @@
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#terminology">3. Terminology</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#delivery">4. Delivery</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#files">4.1 Files</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#files">4.1 Files</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="#the-manifest">4.1.1 The manifest</a></li>
+</ul>
+</li>
 <li class="toctree-l4"><a class="reference internal" href="#format">4.2 Format</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#asset-header">4.3 Asset header</a></li>
 </ul>
@@ -73,7 +76,12 @@
 <li class="toctree-l4"><a class="reference internal" href="#forward-axis">5.3 Forward axis</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#origin">5.4 Origin</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#scenes-and-nodes">5.5 Scenes and nodes</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#datum-specification">5.6 Datum specification</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#datum-specification">5.6 Datum specification</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="#what-may-serve-as-a-datum">5.6.1 What may serve as a datum</a></li>
+<li class="toctree-l5"><a class="reference internal" href="#a-base-part">5.6.2 A base part</a></li>
+<li class="toctree-l5"><a class="reference internal" href="#a-component-part">5.6.3 A component part</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#geometry">6. Geometry</a><ul>
@@ -91,7 +99,11 @@
 <li class="toctree-l4"><a class="reference internal" href="#checks-informative">12.1 Checks (Informative)</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="#open-questions-informative">13. Open questions (Informative)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#open-questions-informative">13. Open questions (Informative)</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#open-the-to-do-list-for-this-draft">13.1 Open: the to-do list for this draft</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#open-future-not-blocking-this-draft">13.2 Open: Future, not blocking this draft</a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="#references-informative">14. References (Informative)</a></li>
 </ul>
 </li>
@@ -428,13 +440,16 @@
 </section>
 <section id="open-issues">
 <h3>2.4 Open issues<a class="headerlink" href="#open-issues" title="Link to this heading"></a></h3>
-<p>One kind of block marks everything not yet settled:</p>
+<p>Two kinds of block mark what is not settled, and the difference between them is whether this draft is waiting on it:</p>
 <blockquote>
-<div><p><strong>Open.</strong> A question this draft does not answer. Where a proposal exists it is stated as the rule would read; where none does, the block names what has to be settled and, if known, what would settle it. Tracked as review decision N.</p>
+<div><p><strong>Open.</strong> A question this draft does not answer, and should. Where a proposal exists it is stated as the rule would read; where none does, the block names what has to be settled and, if known, what would settle it. Nothing in the document governs the point, so a delivery cannot fail to conform on it. Tracked as review decision N.</p>
 </div></blockquote>
-<p>Three things become an Open issue, and they are not distinguished because acting on them is the same work: a question nobody has proposed an answer to; a proposal on the table that the team has not agreed to; and a rule this draft states in its simplest form, deliberately, where a more capable version is plausible later. The third kind is easy to lose, because it reads as settled – the rule is normative and a delivery conforms to it today. It is recorded anyway, so that the reason for the simple version stays visible and the extension is a decision rather than a rediscovery.</p>
-<p>A delivery cannot fail to conform on a point marked Open. Where a rule is normative today but expected to change, the rule governs and the block says what would reopen it.</p>
-<p>The plan is to settle as many as possible before the first pilot of the modeling workflow. Some will stay open through it, and the pilot itself is expected to inform them. An item left open is a known gap, not an oversight.</p>
+<blockquote>
+<div><p><strong>Open: Future.</strong> A rule stated in its simplest form on purpose, where a more capable version is plausible later. The rule beside it is normative and governs today, so a delivery must satisfy it; what is open is only whether the simple form stays. The block records why the simple form was chosen and what would reopen it.</p>
+</div></blockquote>
+<p>The second kind exists because it is the easiest thing to lose. It reads as settled – the rule is normative, the checker enforces it, a delivery conforms – so the reasoning behind choosing the simple version disappears, and the extension later arrives as a rediscovery rather than a decision. Keeping it visible costs a paragraph.</p>
+<p>The two are not interchangeable. An Open block means nobody should rely on the point yet. An Open: Future block means rely on it, and know that it was a choice.</p>
+<p>Section 13 lists them separately: the Open items are the to-do list for finishing this draft, and the Open: Future items are not.</p>
 <p>Decision numbers refer to section 10 of <a class="reference internal" href="../reference/pipeline-review.html"><span class="std std-doc">VISUAL_ASSET_PIPELINE_REVIEW.md</span></a>. Section 13 collects every Open block and is the to-do list for finishing this draft.</p>
 </section>
 </section>
@@ -465,16 +480,75 @@ The coordinate frame in which a part’s pose, attach point and any sub-frames a
 <p>A delivery MUST describe exactly one part. A compound object – a whole vehicle, or several parts carried as separate nodes in one file – MUST NOT be delivered as a single glTF file.</p>
 <p><strong>Implementation Note.</strong> The reason is to start simple. One part, one model, one <code class="docutils literal notranslate"><span class="pre">.glb</span></code> is a mapping every tool in the pipeline can assume, and it keeps the assembly in one place rather than expressed twice.</p>
 <blockquote>
-<div><p><strong>Open.</strong> Whether a compound delivery is worth supporting later. One file carrying a whole vehicle, with its components as separate nodes, could drive the assembly description from what the file already states rather than from a macro written alongside it. The rule above is the simple form and governs today; this records that it was chosen for simplicity and not because the alternative was ruled out. Settling it needs a case where the node structure states the assembly better than the macro does, and it bears on the node question in 5.5. Not yet on the review’s decision list.</p>
+<div><p><strong>Open: Future.</strong> Whether a compound delivery is worth supporting later. One file carrying a whole vehicle, with its components as separate nodes, could drive the assembly description from what the file already states rather than from a macro written alongside it. The rule above is the simple form and governs today; this records that it was chosen for simplicity and not because the alternative was ruled out. Settling it needs a case where the node structure states the assembly better than the macro does, and it bears on the node question in 5.5. Not yet on the review’s decision list.</p>
 </div></blockquote>
 <p><strong>Implementation Note.</strong> This is not the same question as how many nodes one part may use, which section 5.5 leaves open. Section 5.5 requires a single root node named for the part but permits children, so a compound object could satisfy it by hanging its components under one root. That rule narrows the possibilities without closing them, and this one closes them. Nor is it mechanically checkable: nothing in a glTF file says how many parts it depicts, so <code class="docutils literal notranslate"><span class="pre">gltf-check</span></code> cannot enforce it and acceptance rests on the integrator recognising a delivery that is really an assembly.</p>
+<section id="the-manifest">
+<h4>4.1.1 The manifest<a class="headerlink" href="#the-manifest" title="Link to this heading"></a></h4>
+<p>A delivery SHOULD carry a manifest: a record of where the model came from and what it is referenced to, travelling inside the file rather than beside it.</p>
+<p>The manifest MUST be expressed as <a class="reference external" href="https://github.com/KhronosGroup/glTF/tree/main/extensions/2.0/Khronos/KHR_xmp_json_ld"><code class="docutils literal notranslate"><span class="pre">KHR_xmp_json_ld</span></code></a> metadata attached to the glTF <code class="docutils literal notranslate"><span class="pre">asset</span></code> object. That extension is listed in <code class="docutils literal notranslate"><span class="pre">extensionsUsed</span></code> and MUST NOT appear in <code class="docutils literal notranslate"><span class="pre">extensionsRequired</span></code>. Metadata has no effect on appearance, so a consumer that ignores it is behaving correctly.</p>
+<p>Where a manifest is present it MUST declare the part’s role, and SHOULD carry the rest:</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Property</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>What it records</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">gltfrp:partRole</span></code></p></td>
+<td><p>Choice: <code class="docutils literal notranslate"><span class="pre">base</span></code>, <code class="docutils literal notranslate"><span class="pre">component</span></code></p></td>
+<td><p>REQUIRED. Whether this part establishes a vehicle’s reference frame, or attaches to one. Section 5.6 imposes more on a <code class="docutils literal notranslate"><span class="pre">base</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dc:source</span></code></p></td>
+<td><p>Text or URI</p></td>
+<td><p>Where the geometry came from: the CAD file, the scan, the vendor model</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dc:creator</span></code></p></td>
+<td><p>Agent Name</p></td>
+<td><p>Who authored it</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dc:date</span></code></p></td>
+<td><p>Date</p></td>
+<td><p>When it was delivered</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dc:rights</span></code></p></td>
+<td><p>Text</p></td>
+<td><p>Licensing, and for purchased textures the redistribution terms</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dc:relation</span></code></p></td>
+<td><p>URI</p></td>
+<td><p>The published source the part’s dimensions are cited from</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">xmp:CreatorTool</span></code></p></td>
+<td><p>Text</p></td>
+<td><p>The exporter. MUST equal <code class="docutils literal notranslate"><span class="pre">asset.generator</span></code> in the same file where both are present</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">xmpMM:DerivedFrom</span></code></p></td>
+<td><p>ResourceRef</p></td>
+<td><p>The authoring source, where one is archived</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">gltfrp:nominalDimension</span></code></p></td>
+<td><p>Text</p></td>
+<td><p>The cited figure itself, as a quantity with its dimension named, for example “length overall 1.146 m”</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">gltfrp:dimensionTolerance</span></code></p></td>
+<td><p>Real</p></td>
+<td><p>Metres. The band the measured extent is held to</p></td>
+</tr>
+</tbody>
+</table>
+<p>A part whose dimensions are published SHOULD cite them in <code class="docutils literal notranslate"><span class="pre">dc:relation</span></code> and <code class="docutils literal notranslate"><span class="pre">gltfrp:nominalDimension</span></code>. Where no published figure exists the manifest SHOULD say so explicitly rather than omitting the property.</p>
+<p><strong>Implementation Note.</strong> Citing the dimension is the one check that would have caught a defect the earlier audits missed. Of eleven parts checked, two could be compared against a published figure and nine were recorded as “plausible”, which is not a check; the chassis figure that <em>was</em> quoted precisely does not match the manufacturer’s published length. “No published figure exists” is a worse-sounding answer and a better one than “plausible”, because it is falsifiable.</p>
+<p><strong>Implementation Note.</strong> <code class="docutils literal notranslate"><span class="pre">xmp:CreatorTool</span></code> duplicates <code class="docutils literal notranslate"><span class="pre">asset.generator</span></code> on purpose. A manifest copied from a sibling part and never edited is the likeliest failure, and requiring the two to agree makes that failure mechanical rather than invisible.</p>
+<p><strong>Implementation Note.</strong> The prefix <code class="docutils literal notranslate"><span class="pre">gltfrp</span></code> denotes this profile’s own namespace, <code class="docutils literal notranslate"><span class="pre">https://honurobotics.github.io/gltf-robotics/ns/profile/1.0/</span></code>. It is named for the profile rather than for the organisation publishing it, so that generalising the profile does not require re-homing a namespace that delivered files already carry.</p>
 <blockquote>
-<div><p><strong>Open.</strong> Whether a delivery carries a manifest recording the source of the geometry, the source of its dimensions and the texture provenance. Proposed: yes, because it is cheap and answers questions the audit could not. Archiving the Blender source file is a separate and heavier commitment, storage, licensing of purchased textures and an implied ability to re-export, and is not proposed. Tracked as review decision 12.</p>
+<div><p><strong>Open.</strong> Whether the authoring source is archived. The manifest can cite it in <code class="docutils literal notranslate"><span class="pre">xmpMM:DerivedFrom</span></code> at no cost, but keeping the file is a separate and heavier commitment: storage, the licensing of purchased textures, and an implied ability to re-export a part without the modeller. Not proposed. Tracked as review decision 12.</p>
 </div></blockquote>
 <blockquote>
-<div><p><strong>Open.</strong> Whether every part must cite a published dimensional figure, and what to do for parts where none exists. Proposed: yes where one exists, because it is the one check that would have caught a defect the earlier audits missed. Tracked as review decision 13.</p>
+<div><p><strong>Open.</strong> Whether the manifest should be required rather than recommended for every delivery. It is required for a <code class="docutils literal notranslate"><span class="pre">base</span></code> part by 5.6. The argument for requiring it everywhere is that provenance cannot be reconstructed afterwards, which this project has already proved by failing to; the argument against is that none of the fifteen existing deliveries carries one, so the rule would fail the whole library on its first run. Tracked as review decision 13.</p>
 </div></blockquote>
-<p><strong>Implementation Note.</strong> Both of the questions above may be answered together by the datum specification in 5.6, which needs a manifest to live in and needs a cited expression of the part’s nominal geometry to be written against.</p>
+</section>
 </section>
 <section id="format">
 <h3>4.2 Format<a class="headerlink" href="#format" title="Link to this heading"></a></h3>
@@ -489,7 +563,7 @@ The coordinate frame in which a part’s pose, attach point and any sub-frames a
 <p>What the rule gives up: with <code class="docutils literal notranslate"><span class="pre">.gltf</span></code> the images version independently in git, which matters because textures are the majority of the file size.</p>
 <p>The file MUST validate against the Khronos glTF Validator with zero errors. Validator warnings and infos MUST be reviewed but do not by themselves fail a delivery.</p>
 <blockquote>
-<div><p><strong>Open.</strong> Whether the binary container stays the only permitted form. Two of the reasons above are defects rather than properties: the gz-common extension-comparison bug has an upstream fix, and eager texture decoding is an implementation choice. When the pinned container moves, both may be gone, and the remaining arguments are about delivery hygiene rather than correctness. Against relaxing it, Drake does not read <code class="docutils literal notranslate"><span class="pre">.glb</span></code> at all (1.2), so a <code class="docutils literal notranslate"><span class="pre">.gltf</span></code> allowance would widen the set of consumers a delivery can reach. Not yet on the review’s decision list.</p>
+<div><p><strong>Open: Future.</strong> Whether the binary container stays the only permitted form. Two of the reasons above are defects rather than properties: the gz-common extension-comparison bug has an upstream fix, and eager texture decoding is an implementation choice. When the pinned container moves, both may be gone, and the remaining arguments are about delivery hygiene rather than correctness. Against relaxing it, Drake does not read <code class="docutils literal notranslate"><span class="pre">.glb</span></code> at all (1.2), so a <code class="docutils literal notranslate"><span class="pre">.gltf</span></code> allowance would widen the set of consumers a delivery can reach. Not yet on the review’s decision list. The current decision is a single self-contained file, on the grounds of simplicity. What would reopen it is the pair of advantages a container with external texture references keeps: textures version independently in git, so re-authoring one map does not rewrite the geometry, and a consumer that loads maps lazily pays only for what it draws.</p>
 </div></blockquote>
 <blockquote>
 <div><p><strong>Open.</strong> Whether textures are embedded in the container, delivered as external files, or either. The container decision above does not settle this: a <code class="docutils literal notranslate"><span class="pre">.glb</span></code> packs only its first buffer into the binary chunk, and an image may still carry a <code class="docutils literal notranslate"><span class="pre">uri</span></code> pointing at an external file. All deliveries to date embed, and the acceptance tooling reads a delivery with no search path. Against that, Drake does not support <code class="docutils literal notranslate"><span class="pre">.glb</span></code> at all (section 1.2), so a model meant to be consumed there cannot be delivered in the container this profile requires, whatever is done about textures. Packaging is therefore the first thing that breaks outside Gazebo and RViz. Tracked as review decision 16.</p>
@@ -553,10 +627,97 @@ The coordinate frame in which a part’s pose, attach point and any sub-frames a
 </section>
 <section id="datum-specification">
 <h3>5.6 Datum specification<a class="headerlink" href="#datum-specification" title="Link to this heading"></a></h3>
+<p>A coordinate system is specified by naming the features of the part it is referenced to, not by giving six numbers. The numbers are what the specification evaluates to against a particular piece of geometry, and they are derived by measurement rather than authored. Three layers follow from that, and only the first belongs in a delivery:</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p></p></th>
+<th class="head"><p>What it is</p></th>
+<th class="head"><p>Numbers</p></th>
+<th class="head"><p>Who produces it</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Datum specification</p></td>
+<td><p>which features of the part the coordinate system is referenced to</p></td>
+<td><p>none</p></td>
+<td><p>a person, once, recorded in the manifest</p></td>
+</tr>
+<tr class="row-odd"><td><p>Realized pose</p></td>
+<td><p>what that specification evaluates to against this geometry</p></td>
+<td><p>six</p></td>
+<td><p>derived by measurement, never authored</p></td>
+</tr>
+<tr class="row-even"><td><p>Relative pose</p></td>
+<td><p>the transform between two coordinate systems</p></td>
+<td><p>six</p></td>
+<td><p>computed; this is what an SDF <code class="docutils literal notranslate"><span class="pre">&lt;pose&gt;</span></code> holds</p></td>
+</tr>
+</tbody>
+</table>
+<p>A manifest MUST NOT record a realized pose. Recording a derived quantity alongside the rule that derives it creates two sources of truth that drift.</p>
+<section id="what-may-serve-as-a-datum">
+<h4>5.6.1 What may serve as a datum<a class="headerlink" href="#what-may-serve-as-a-datum" title="Link to this heading"></a></h4>
+<p>A datum feature MUST be a situation feature: a point, a straight line, a plane or a helix. <a class="reference external" href="https://www.iso.org/standard/53628.html">ISO 17450-1</a> §3.3.1.1.3 defines the term and closes the list, describing it as a geometrical attribute of an ideal feature with no dimensional parameters linked to it.</p>
+<p>A silhouette, an outline, a centre of mass and a bounding box are not situation features and MUST NOT be named as datums.</p>
+<p><strong>Implementation Note.</strong> The exclusion is not pedantry. “The centre of the outline projected on the ground” is three derivations deep and moves when a sensor mast is added; a wheel axis intersected with the ground plane is one derivation deep and does not. Derivation depth predicts whether the coordinate system survives a design change.</p>
+</section>
+<section id="a-base-part">
+<h4>5.6.2 A base part<a class="headerlink" href="#a-base-part" title="Link to this heading"></a></h4>
+<p>A delivery whose <code class="docutils literal notranslate"><span class="pre">gltfrp:partRole</span></code> is <code class="docutils literal notranslate"><span class="pre">base</span></code> MUST carry a manifest, and that manifest MUST carry a datum specification.</p>
+<p>The specification MUST consist of an ordered list of datum features, in order of precedence, each naming the feature and stating which degrees of freedom it constrains. Together they MUST constrain all six: three translational and three rotational, each exactly once.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Property</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>What it records</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">gltfrp:datumFeature</span></code></p></td>
+<td><p>ordered list of Text</p></td>
+<td><p>Each feature, named on this part, in order of precedence</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">gltfrp:datumFeatureKind</span></code></p></td>
+<td><p>ordered list of Choice: <code class="docutils literal notranslate"><span class="pre">point</span></code>, <code class="docutils literal notranslate"><span class="pre">line</span></code>, <code class="docutils literal notranslate"><span class="pre">plane</span></code>, <code class="docutils literal notranslate"><span class="pre">helix</span></code></p></td>
+<td><p>The situation-feature kind of each, positionally matching the list above</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">gltfrp:datumConstrains</span></code></p></td>
+<td><p>ordered list of Text</p></td>
+<td><p>The degrees of freedom each constrains, as <code class="docutils literal notranslate"><span class="pre">Tx</span></code>, <code class="docutils literal notranslate"><span class="pre">Ty</span></code>, <code class="docutils literal notranslate"><span class="pre">Tz</span></code>, <code class="docutils literal notranslate"><span class="pre">Rx</span></code>, <code class="docutils literal notranslate"><span class="pre">Ry</span></code>, <code class="docutils literal notranslate"><span class="pre">Rz</span></code>, positionally matching</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">gltfrp:forward</span></code></p></td>
+<td><p>Choice: <code class="docutils literal notranslate"><span class="pre">+X</span></code>, <code class="docutils literal notranslate"><span class="pre">-X</span></code>, <code class="docutils literal notranslate"><span class="pre">+Y</span></code>, <code class="docutils literal notranslate"><span class="pre">-Y</span></code>, <code class="docutils literal notranslate"><span class="pre">+Z</span></code>, <code class="docutils literal notranslate"><span class="pre">-Z</span></code></p></td>
+<td><p>Which axis of the delivered file the part’s forward direction lies along</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">gltfrp:up</span></code></p></td>
+<td><p>Choice: as above</p></td>
+<td><p>Which axis of the delivered file the part’s up direction lies along</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">gltfrp:datumTarget</span></code></p></td>
+<td><p>Text</p></td>
+<td><p>OPTIONAL. The physical realization, where one exists: a datum target point, line or area in the sense of ISO 5459</p></td>
+</tr>
+</tbody>
+</table>
+<p>For a displacement hull the specification SHOULD be naval architecture’s three planes: the baseline, the centreline plane, and a transverse plane through the aft perpendicular, with the reference point at their intersection. <a class="reference external" href="https://www.iso.org/standard/14211.html">ISO 7462</a> gives the terminology.</p>
+<p><strong>Implementation Note.</strong> <code class="docutils literal notranslate"><span class="pre">gltfrp:forward</span></code> and <code class="docutils literal notranslate"><span class="pre">gltfrp:up</span></code> are declared rather than derived because nothing in a glTF file records either. A file states vertex positions and node transforms; it has no forward axis and no up axis, so <code class="docutils literal notranslate"><span class="pre">gltf-check</span></code> reports both as unknowable for a delivery without a manifest. Declaring them is what turns section 5.3’s interim rule from a convention nobody can test into a property a tool can verify.</p>
+<p><strong>Implementation Note.</strong> Why the base specifically. A base part’s datum is the definition of <code class="docutils literal notranslate"><span class="pre">base_link</span></code>, and localization reports in that frame, so it is the one coordinate system in the vehicle whose meaning cannot be recovered by measuring anything later. REP 105 says <code class="docutils literal notranslate"><span class="pre">base_link</span></code> is rigidly attached to the mobile robot base and declines to say where; the standards agree it must be stated and none of them state it for you. <code class="docutils literal notranslate"><span class="pre">base_footprint</span></code> is a derived runtime frame and is not a datum.</p>
+<p><strong>Implementation Note.</strong> The three lists are positionally matched rather than nested because <code class="docutils literal notranslate"><span class="pre">KHR_xmp_json_ld</span></code> forbids the JSON-LD mechanisms that would express a list of records: expanded term definitions, value objects and local contexts are all prohibited. Parallel arrays are the cost of keeping the manifest inside the file. The six-degree-of-freedom completeness rule is what keeps them checkable: <code class="docutils literal notranslate"><span class="pre">gltf-check</span></code> can confirm the lists are the same length, that every kind is legal, and that the constrained degrees of freedom are exactly the six with no repetition, without reading any geometry.</p>
+</section>
+<section id="a-component-part">
+<h4>5.6.3 A component part<a class="headerlink" href="#a-component-part" title="Link to this heading"></a></h4>
+<p>A delivery whose <code class="docutils literal notranslate"><span class="pre">gltfrp:partRole</span></code> is <code class="docutils literal notranslate"><span class="pre">component</span></code> SHOULD carry a datum specification on the same terms.</p>
+<p>Where the part attaches by a single mounting interface, that interface SHOULD be the primary datum. ISO 9787 §5.3 defines the mechanical interface coordinate system with its origin at the centre of the mechanical interface and its <code class="docutils literal notranslate"><span class="pre">+Z</span></code> pointing perpendicularly away from it, which is a ready-made single-feature specification for the common case.</p>
 <blockquote>
-<div><p><strong>Open.</strong> How a part’s coordinate system is specified by <em>reference to its geometry</em> rather than as a set of coordinates. The approach being worked out borrows ASME Y14.5’s datum vocabulary and carries the specification in the delivery manifest of 4.1: named datum features in an order of precedence, the degrees of freedom each constrains, and a separate declaration of which direction is forward and which is up. If it is adopted it replaces the proposed rule in 5.4 rather than sitting beside it, and it bears on 4.1 and 5.3 as well. Nothing here is settled. Not yet on the review’s decision list.</p>
+<div><p><strong>Open.</strong> Whether a component datum becomes a requirement. It is a SHOULD because the mounting interface is usually obvious from the geometry and a wrong origin on a component is recoverable by editing one transform, where a wrong base datum is not. Settling it needs the pilot to say whether component origins actually cause trouble. It bears directly on 5.4, which is the same question asked as a coordinate rather than as a reference. Tracked as review decision 2.</p>
 </div></blockquote>
-<p><strong>Implementation Note.</strong> Placeholder, recorded so the work is tracked. The derivation is in <a class="reference internal" href="../reference/coordinate-systems.html"><span class="std std-doc">Coordinate systems</span></a> under “Specifying a coordinate system: datums and what ‘referenced to’ means”. When this section is written it will have to state: which artifact expresses the nominal geometry a part is authored to, and what to do when there is no CAD; how a datum feature is designated, given that glTF is a delivery format with no annotation mechanism and cannot carry the specification itself; that the named datums together constrain all six degrees of freedom, since a partially constrained datum coordinate system is of no use to a delivery even though ASME permits one; how a direction the shape does not determine is declared rather than derived; and what <code class="docutils literal notranslate"><span class="pre">gltf-check</span></code> can verify.</p>
+<blockquote>
+<div><p><strong>Open.</strong> What a delivery does when the part’s nominal geometry is not published anywhere. A datum specification names features of the part, which presumes an authority on what the part is; for an off-the-shelf component that is the vendor drawing, and for a custom part it may be nothing but the CAD. Not settled. Not yet on the review’s decision list.</p>
+</div></blockquote>
+<blockquote>
+<div><p><strong>Open.</strong> Whether the completeness rule admits under-constrained specifications. ASME Y14.5 permits a datum reference frame that constrains fewer than six degrees of freedom; a delivery cannot use one, because the leftover degrees of freedom would be resolved differently by every consumer. This profile therefore requires all six, which is stricter than the standard it borrows from, and that departure should be stated in 1.1 if it stands. Not yet on the review’s decision list.</p>
+</div></blockquote>
+</section>
 </section>
 </section>
 <section id="geometry">
@@ -649,9 +810,9 @@ The coordinate frame in which a part’s pose, attach point and any sub-frames a
 <li><p>KTX2 or Basis textures</p></li>
 <li><p>the <code class="docutils literal notranslate"><span class="pre">KHR_texture_transform</span></code> extension</p></li>
 </ul>
-<p><strong>Implementation Note.</strong> These are prohibited for different reasons, and the reasons matter if one is ever reconsidered. Draco decodes correctly in both consumers but defeats the project’s own inspection tools. Texture transform is parsed and then ignored, so textures render in the wrong place. Animations are imported and force the bounding box to a unit cube, breaking culling. Cameras and lights are ignored harmlessly. An empty <code class="docutils literal notranslate"><span class="pre">extensionsRequired</span></code> is the single check that covers the general case, and it is worth being clear about what that check buys. The glTF specification requires a conforming reader to refuse a file outright when it requires an extension the reader does not implement, so one reading of this rule is that it saves us from a file that would fail to load. Measurement says otherwise: <code class="docutils literal notranslate"><span class="pre">Distribution_Warehouse</span></code>, which declares <code class="docutils literal notranslate"><span class="pre">KHR_texture_transform</span></code> in <code class="docutils literal notranslate"><span class="pre">extensionsRequired</span></code>, loads through gz-common without complaint, building 3,010 submeshes and 19 materials. Gazebo is not a conforming reader on this point. The rule therefore protects against a file that loads and is silently wrong, which is the worse failure and the one nobody notices. The Gazebo team’s own demo assets declare <code class="docutils literal notranslate"><span class="pre">KHR_texture_transform</span></code> and <code class="docutils literal notranslate"><span class="pre">KHR_materials_specular</span></code>, so files from that workflow will fail this section and need re-export.</p>
+<p><strong>Implementation Note.</strong> These are prohibited for different reasons, and the reasons matter if one is ever reconsidered. Draco decodes correctly in both consumers but defeats the project’s own inspection tools. Texture transform is parsed and then ignored, so textures render in the wrong place. Animations are imported and force the bounding box to a unit cube, breaking culling. Cameras and lights are ignored harmlessly. <code class="docutils literal notranslate"><span class="pre">KHR_xmp_json_ld</span></code>, which carries the manifest of 4.1.1, is not prohibited: it is declared in <code class="docutils literal notranslate"><span class="pre">extensionsUsed</span></code>, has no effect on appearance, and a consumer that ignores it is behaving correctly. An empty <code class="docutils literal notranslate"><span class="pre">extensionsRequired</span></code> is the single check that covers the general case, and it is worth being clear about what that check buys. The glTF specification requires a conforming reader to refuse a file outright when it requires an extension the reader does not implement, so one reading of this rule is that it saves us from a file that would fail to load. Measurement says otherwise: <code class="docutils literal notranslate"><span class="pre">Distribution_Warehouse</span></code>, which declares <code class="docutils literal notranslate"><span class="pre">KHR_texture_transform</span></code> in <code class="docutils literal notranslate"><span class="pre">extensionsRequired</span></code>, loads through gz-common without complaint, building 3,010 submeshes and 19 materials. Gazebo is not a conforming reader on this point. The rule therefore protects against a file that loads and is silently wrong, which is the worse failure and the one nobody notices. The Gazebo team’s own demo assets declare <code class="docutils literal notranslate"><span class="pre">KHR_texture_transform</span></code> and <code class="docutils literal notranslate"><span class="pre">KHR_materials_specular</span></code>, so files from that workflow will fail this section and need re-export.</p>
 <blockquote>
-<div><p><strong>Open.</strong> Which of these prohibitions are permanent. Two are not statements about the format: Draco decodes correctly in both consumers and is prohibited only because it defeats this project’s own inspection tools, and KTX2 is prohibited because Gazebo cannot read it while Drake recommends it for performance (1.2). Both would be reconsidered if the tooling or the consumer changed, and compressed geometry and supercompressed textures are the two levers with real size savings behind them. Animations, cameras and lights are prohibited on their merits and are not expected to change. Not yet on the review’s decision list.</p>
+<div><p><strong>Open: Future.</strong> Which of these prohibitions are permanent. Two are not statements about the format: Draco decodes correctly in both consumers and is prohibited only because it defeats this project’s own inspection tools, and KTX2 is prohibited because Gazebo cannot read it while Drake recommends it for performance (1.2). Both would be reconsidered if the tooling or the consumer changed, and compressed geometry and supercompressed textures are the two levers with real size savings behind them. Animations, cameras and lights are prohibited on their merits and are not expected to change. Not yet on the review’s decision list.</p>
 </div></blockquote>
 </section>
 <section id="authoring-toolchain">
@@ -685,8 +846,10 @@ The coordinate frame in which a part’s pose, attach point and any sub-frames a
 </section>
 <section id="open-questions-informative">
 <h2>13. Open questions (Informative)<a class="headerlink" href="#open-questions-informative" title="Link to this heading"></a></h2>
-<p>Every Open block in this document, in order. Settled rules are not listed: they are the normative text. This table is the to-do list for finishing the draft.</p>
-<p>Some entries are questions with no answer proposed, some are proposals awaiting agreement, and some are rules this draft states in their simplest form on purpose – 4.1 on compound deliveries, 4.2 on the binary container and 10 on which prohibitions are permanent are all of the third kind. Section 2.4 explains why they are not distinguished here.</p>
+<p>Every Open and Open: Future block in this document, in order. Settled rules are not listed: they are the normative text. Section 2.4 defines the two marks.</p>
+<section id="open-the-to-do-list-for-this-draft">
+<h3>13.1 Open: the to-do list for this draft<a class="headerlink" href="#open-the-to-do-list-for-this-draft" title="Link to this heading"></a></h3>
+<p>Nothing in the document governs these points, so a delivery cannot fail to conform on one.</p>
 <table class="docutils align-default">
 <thead>
 <tr class="row-odd"><th class="head"><p>Section</p></th>
@@ -695,21 +858,13 @@ The coordinate frame in which a part’s pose, attach point and any sub-frames a
 </tr>
 </thead>
 <tbody>
-<tr class="row-even"><td><p>4.1</p></td>
-<td><p>Compound delivery supported later</p></td>
-<td><p>none yet</p></td>
-</tr>
-<tr class="row-odd"><td><p>4.1</p></td>
-<td><p>Delivery manifest; Blender source archival</p></td>
+<tr class="row-even"><td><p>4.1.1</p></td>
+<td><p>Authoring source archived</p></td>
 <td><p>12</p></td>
 </tr>
-<tr class="row-even"><td><p>4.1</p></td>
-<td><p>Cited dimensional source per part</p></td>
+<tr class="row-odd"><td><p>4.1.1</p></td>
+<td><p>Manifest required rather than recommended</p></td>
 <td><p>13</p></td>
-</tr>
-<tr class="row-odd"><td><p>4.2</p></td>
-<td><p>Binary container as the only permitted form</p></td>
-<td><p>none yet</p></td>
 </tr>
 <tr class="row-even"><td><p>4.2</p></td>
 <td><p>Textures embedded or external</p></td>
@@ -735,8 +890,16 @@ The coordinate frame in which a part’s pose, attach point and any sub-frames a
 <td><p>Multiple nodes, and what “one mesh” means</p></td>
 <td><p>15</p></td>
 </tr>
-<tr class="row-even"><td><p>5.6</p></td>
-<td><p>Datum specification for the part coordinate system</p></td>
+<tr class="row-even"><td><p>5.6.3</p></td>
+<td><p>Component datum becomes a requirement</p></td>
+<td><p>2</p></td>
+</tr>
+<tr class="row-odd"><td><p>5.6.3</p></td>
+<td><p>When the part’s nominal geometry is unpublished</p></td>
+<td><p>none yet</p></td>
+</tr>
+<tr class="row-even"><td><p>5.6.3</p></td>
+<td><p>Whether under-constrained datums are admitted</p></td>
 <td><p>none yet</p></td>
 </tr>
 <tr class="row-odd"><td><p>6.1</p></td>
@@ -763,25 +926,52 @@ The coordinate frame in which a part’s pose, attach point and any sub-frames a
 <td><p>Uniform translucency and use of BLEND</p></td>
 <td><p>6</p></td>
 </tr>
-<tr class="row-odd"><td><p>10</p></td>
-<td><p>Which prohibitions are permanent</p></td>
-<td><p>none yet</p></td>
-</tr>
-<tr class="row-even"><td><p>11</p></td>
+<tr class="row-odd"><td><p>11</p></td>
 <td><p>Toolchain version pin</p></td>
 <td><p>8, 10, 17</p></td>
 </tr>
-<tr class="row-odd"><td><p>12.1</p></td>
+<tr class="row-even"><td><p>12.1</p></td>
 <td><p>Probe and lint in CI</p></td>
 <td><p>7</p></td>
 </tr>
-<tr class="row-even"><td><p>12.1</p></td>
+<tr class="row-odd"><td><p>12.1</p></td>
 <td><p>Committed probe dump per part</p></td>
 <td><p>14</p></td>
 </tr>
 </tbody>
 </table>
-<p>Decision numbers refer to section 10 of <a class="reference internal" href="../reference/pipeline-review.html"><span class="std std-doc">VISUAL_ASSET_PIPELINE_REVIEW.md</span></a>. Review decision 9, contributing the loader table upstream, is not a rule of this specification and is not listed. Items marked “none yet” were raised in the glTF reading notes after the review’s list was written and should be added to it.</p>
+</section>
+<section id="open-future-not-blocking-this-draft">
+<h3>13.2 Open: Future, not blocking this draft<a class="headerlink" href="#open-future-not-blocking-this-draft" title="Link to this heading"></a></h3>
+<p>The rule beside each of these is normative and a delivery must satisfy it. What is open is only whether the simple form stays.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Section</p></th>
+<th class="head"><p>Rule</p></th>
+<th class="head"><p>Why the simple form</p></th>
+<th class="head"><p>Decision</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>4.1</p></td>
+<td><p>One part per delivered file</p></td>
+<td><p>Simplicity: one part, one model, one file is a mapping every tool can assume</p></td>
+<td><p>none yet</p></td>
+</tr>
+<tr class="row-odd"><td><p>4.2</p></td>
+<td><p>Binary container as the only permitted form</p></td>
+<td><p>Simplicity, and two of the reasons are defects with upstream fixes pending</p></td>
+<td><p>none yet</p></td>
+</tr>
+<tr class="row-even"><td><p>10</p></td>
+<td><p>Which prohibitions are permanent</p></td>
+<td><p>Draco defeats our own inspection tools; KTX2 is unreadable by Gazebo</p></td>
+<td><p>none yet</p></td>
+</tr>
+</tbody>
+</table>
+<p>Decision numbers refer to section 10 of <a class="reference internal" href="../reference/pipeline-review.html"><span class="std std-doc">VISUAL_ASSET_PIPELINE_REVIEW.md</span></a>. Review decision 9, contributing the loader table upstream, is not a rule of this specification and is not listed. Items marked “none yet” were raised after the review’s list was written and should be added to it.</p>
+</section>
 </section>
 <section id="references-informative">
 <h2>14. References (Informative)<a class="headerlink" href="#references-informative" title="Link to this heading"></a></h2>
