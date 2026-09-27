@@ -38,6 +38,10 @@ PASS = "pass"
 SKIP = "skip"
 
 LINEAR_SLOTS = ("normal", "metallicRoughness", "occlusion")
+NS = "https://honurobotics.github.io/gltf-robotics/ns/profile/1.0/"
+FEATURE_KINDS = ("point", "line", "plane", "helix")
+AXES = ("+X", "-X", "+Y", "-Y", "+Z", "-Z")
+DOF = ("Tx", "Ty", "Tz", "Rx", "Ry", "Rz")
 PROHIBITED_EXTENSIONS = {
     "KHR_draco_mesh_compression": "Draco mesh compression",
     "KHR_texture_basisu": "KTX2/Basis textures",
@@ -92,6 +96,25 @@ class Model:
         for mi, mesh in enumerate(self.get("meshes")):
             for pi, prim in enumerate(mesh.get("primitives", [])):
                 yield mi, pi, prim
+
+    def manifest(self):
+        """The XMP packet the asset object points at, or None.
+
+        Profile 4.1.1 puts the manifest in KHR_xmp_json_ld and attaches it to
+        the glTF `asset` object. The extension keeps packets in a top-level
+        array and references them by index, so this follows that indirection.
+        """
+        top = self.gltf.get("extensions", {}).get("KHR_xmp_json_ld")
+        if not top:
+            return None
+        packets = top.get("packets") or []
+        ref = self.gltf.get("asset", {}).get("extensions", {}).get("KHR_xmp_json_ld")
+        if ref is None:
+            return None
+        i = ref.get("packet")
+        if not isinstance(i, int) or not 0 <= i < len(packets):
+            return None
+        return packets[i]
 
     def image_bytes(self, index, limit=1 << 16):
         """The head of an embedded image.
@@ -449,11 +472,26 @@ def rule_11_generator(m):
 
 
 def rule_5_3_forward_axis(m):
-    """Section 5.3 is an interim rule, and the profile has not decided it."""
-    return Finding("5.3", ADVISORY, "forward axis is not decided",
-                   "the profile's interim rule is to author in the part frame, yielding a file "
-                   "facing +X. Nothing in a glTF file records a forward axis, so this cannot be "
-                   "checked by reading it -- see probe/coords for the visual protocol.")
+    """Section 5.3: the interim rule is +X, checkable only once it is declared.
+
+    Nothing in a glTF file records a forward axis, so without a manifest there is
+    nothing to check. With one, 4.1.1's declaration makes the interim rule a
+    property a tool can verify rather than a convention nobody can test.
+    """
+    packet = m.manifest() or {}
+    forward = packet.get("gltfrp:forward")
+    if forward is None:
+        return Finding("5.3", ADVISORY, "forward axis is not declared",
+                       "the profile's interim rule is to author in the part frame, yielding a "
+                       "file facing +X. Nothing in a glTF file records a forward axis, so it "
+                       "cannot be checked until the manifest declares it (4.1.1). See "
+                       "probe/coords for the visual protocol.")
+    if forward != "+X":
+        return Finding("5.3", WARN, f"the manifest declares forward as {forward}",
+                       "section 5.3's interim rule is that a delivery faces +X, which is what "
+                       "authoring in the part frame produces. Re-orienting to face another axis "
+                       "needs agreement first.")
+    return Finding("5.3", PASS, "forward declared +X, matching the interim rule")
 
 
 def rule_5_1_scale(m):
@@ -461,29 +499,144 @@ def rule_5_1_scale(m):
     return Finding("5.1", ADVISORY, "scale is not checkable from the file",
                    "glTF says meters and nothing in the file confirms it. Two assets in the "
                    "corpus are millimetre files corrected downstream. What would catch a wrong "
-                   "scale is a cited dimensional figure per part, which is profile section 4.1's "
-                   "open question.")
+                   "scale is a cited dimensional figure per part, which section 4.1.1 now records in "
+                   "the manifest as gltfrp:nominalDimension with a tolerance.")
 
 
-def rule_5_6_datum_specification(m):
-    """Section 5.6 is a placeholder; there is nothing in the file to check yet."""
-    return Finding("5.6", ADVISORY, "datum specification is not decided",
-                   "the profile is working out how a part's coordinate system is specified by "
-                   "reference to named datum features rather than as coordinates. glTF is a "
-                   "delivery format and carries no annotation, so the specification would live "
-                   "in the delivery manifest and this rule would check the file against it: "
-                   "that the named datums constrain all six degrees of freedom, and that the "
-                   "geometry realizes each one. Neither the manifest nor its schema exists yet.")
+def _listvals(packet, key):
+    """An XMP ordered or unordered array as a plain list.
+
+    KHR_xmp_json_ld requires arrays to be wrapped in `@list` or `@set`, so the
+    value is a dict with one of those keys rather than a bare array.
+    """
+    v = packet.get(key)
+    if v is None:
+        return None
+    if isinstance(v, dict):
+        return v.get("@list") or v.get("@set") or []
+    return v if isinstance(v, list) else [v]
+
+
+def rule_4_1_1_manifest(m):
+    """Section 4.1.1: a delivery SHOULD carry a manifest, and declare its role."""
+    packet = m.manifest()
+    if packet is None:
+        used = set(m.gltf.get("extensionsUsed", []))
+        if "KHR_xmp_json_ld" in used:
+            return [Finding("4.1.1", WARN, "KHR_xmp_json_ld is present but no packet reaches the asset",
+                            "the manifest must be attached to the glTF asset object to describe the "
+                            "whole delivery")]
+        return [Finding("4.1.1", WARN, "no manifest",
+                        "a delivery should carry provenance in KHR_xmp_json_ld attached to the "
+                        "asset object. Section 5.6 requires one for a base part.")]
+
+    out = []
+    role = packet.get("gltfrp:partRole")
+    if role is None:
+        out.append(Finding("4.1.1", FAIL, "the manifest does not declare gltfrp:partRole",
+                           "required where a manifest is present; one of base, component"))
+    elif role not in ("base", "component"):
+        out.append(Finding("4.1.1", FAIL, f"gltfrp:partRole is {role!r}",
+                           "must be base or component"))
+
+    tool = packet.get("xmp:CreatorTool")
+    generator = m.gltf.get("asset", {}).get("generator")
+    if tool and generator and tool != generator:
+        out.append(Finding("4.1.1", FAIL, "xmp:CreatorTool disagrees with asset.generator",
+                           f"manifest says {tool!r}, the file says {generator!r}. This is what a "
+                           "manifest copied from another part and never edited looks like."))
+
+    missing = [k for k in ("dc:source", "dc:creator", "dc:date") if k not in packet]
+    if missing:
+        out.append(Finding("4.1.1", WARN, "the manifest omits recommended provenance",
+                           ", ".join(missing)))
+    return out or [Finding("4.1.1", PASS, f"manifest present, role {role}")]
+
+
+def rule_5_6_datum(m):
+    """Section 5.6: a base part MUST carry a complete datum specification."""
+    packet = m.manifest()
+    role = (packet or {}).get("gltfrp:partRole")
+
+    if packet is None or role is None:
+        return [Finding("5.6", SKIP, "no declared role, so no datum requirement applies")]
+
+    features = _listvals(packet, "gltfrp:datumFeature")
+    kinds = _listvals(packet, "gltfrp:datumFeatureKind")
+    constrains = _listvals(packet, "gltfrp:datumConstrains")
+    forward = packet.get("gltfrp:forward")
+    up = packet.get("gltfrp:up")
+
+    required = role == "base"
+    level = FAIL if required else WARN
+
+    if not features:
+        return [Finding("5.6", level, f"a {role} part carries no datum specification",
+                        "a base part must declare one; a component part should" if required
+                        else "a component part should declare one, usually its mounting interface")]
+
+    out = []
+    if not (len(features) == len(kinds or []) == len(constrains or [])):
+        out.append(Finding("5.6", FAIL, "the datum lists are not the same length",
+                           f"{len(features)} features, {len(kinds or [])} kinds, "
+                           f"{len(constrains or [])} constraint entries. The three lists are "
+                           "positionally matched."))
+        return out
+
+    bad = [k for k in kinds if k not in FEATURE_KINDS]
+    if bad:
+        out.append(Finding("5.6", FAIL, "a datum feature is not a situation feature",
+                           ", ".join(map(repr, bad)) + f". ISO 17450-1 closes the list to "
+                           f"{', '.join(FEATURE_KINDS)}."))
+
+    seen = []
+    for entry in constrains:
+        seen.extend(str(entry).replace(",", " ").split())
+    unknown = sorted({d for d in seen if d not in DOF})
+    if unknown:
+        out.append(Finding("5.6", FAIL, "unrecognised degree of freedom",
+                           ", ".join(map(repr, unknown)) + f". Expected from {', '.join(DOF)}."))
+    dupes = sorted({d for d in seen if seen.count(d) > 1})
+    if dupes:
+        out.append(Finding("5.6", FAIL, "a degree of freedom is constrained more than once",
+                           ", ".join(dupes)))
+    absent = [d for d in DOF if d not in seen]
+    if absent:
+        out.append(Finding("5.6", level, "the datum specification is under-constrained",
+                           f"{', '.join(absent)} unconstrained. The named features must constrain "
+                           "all six degrees of freedom, or the coordinate system is not determined "
+                           "and every consumer resolves the remainder differently."))
+
+    for name, value in (("gltfrp:forward", forward), ("gltfrp:up", up)):
+        if value is None:
+            out.append(Finding("5.6", level, f"{name} is not declared",
+                               "nothing in a glTF file records a forward or up axis, so an "
+                               "undeclared one cannot be checked at all"))
+        elif value not in AXES:
+            out.append(Finding("5.6", FAIL, f"{name} is {value!r}",
+                               f"expected one of {', '.join(AXES)}"))
+    if forward and up and forward in AXES and up in AXES and forward[1] == up[1]:
+        out.append(Finding("5.6", FAIL, "forward and up are the same axis",
+                           f"forward {forward}, up {up}"))
+
+    if "realizedPose" in packet or "gltfrp:realizedPose" in packet:
+        out.append(Finding("5.6", FAIL, "the manifest records a realized pose",
+                           "a realized pose is derived by measurement, never authored; recording "
+                           "it beside the rule that derives it creates two sources of truth"))
+    return out or [Finding("5.6", PASS,
+                           f"{len(features)} datum features constraining all six DOF, "
+                           f"forward {forward}, up {up}")]
 
 
 RULES = [
     rule_4_1_filename,
     rule_4_2_container,
     rule_4_3_asset_header,
+    rule_4_1_1_manifest,
     rule_5_1_scale,
     rule_5_3_forward_axis,
     rule_5_5_scenes_and_nodes,
-    rule_5_6_datum_specification,
+    rule_5_6_datum,
     rule_6_geometry,
     rule_6_1_uv,
     rule_7_materials,

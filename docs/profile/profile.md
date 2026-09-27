@@ -55,15 +55,17 @@ Some text is purely informative, giving background or explaining why a rule exis
 
 ### 2.4 Open issues
 
-One kind of block marks everything not yet settled:
+Two kinds of block mark what is not settled, and the difference between them is whether this draft is waiting on it:
 
-> **Open.** A question this draft does not answer. Where a proposal exists it is stated as the rule would read; where none does, the block names what has to be settled and, if known, what would settle it. Tracked as review decision N.
+> **Open.** A question this draft does not answer, and should. Where a proposal exists it is stated as the rule would read; where none does, the block names what has to be settled and, if known, what would settle it. Nothing in the document governs the point, so a delivery cannot fail to conform on it. Tracked as review decision N.
 
-Three things become an Open issue, and they are not distinguished because acting on them is the same work: a question nobody has proposed an answer to; a proposal on the table that the team has not agreed to; and a rule this draft states in its simplest form, deliberately, where a more capable version is plausible later. The third kind is easy to lose, because it reads as settled -- the rule is normative and a delivery conforms to it today. It is recorded anyway, so that the reason for the simple version stays visible and the extension is a decision rather than a rediscovery.
+> **Open: Future.** A rule stated in its simplest form on purpose, where a more capable version is plausible later. The rule beside it is normative and governs today, so a delivery must satisfy it; what is open is only whether the simple form stays. The block records why the simple form was chosen and what would reopen it.
 
-A delivery cannot fail to conform on a point marked Open. Where a rule is normative today but expected to change, the rule governs and the block says what would reopen it.
+The second kind exists because it is the easiest thing to lose. It reads as settled -- the rule is normative, the checker enforces it, a delivery conforms -- so the reasoning behind choosing the simple version disappears, and the extension later arrives as a rediscovery rather than a decision. Keeping it visible costs a paragraph.
 
-The plan is to settle as many as possible before the first pilot of the modeling workflow. Some will stay open through it, and the pilot itself is expected to inform them. An item left open is a known gap, not an oversight.
+The two are not interchangeable. An Open block means nobody should rely on the point yet. An Open: Future block means rely on it, and know that it was a choice.
+
+Section 13 lists them separately: the Open items are the to-do list for finishing this draft, and the Open: Future items are not.
 
 Decision numbers refer to section 10 of [VISUAL_ASSET_PIPELINE_REVIEW.md](../reference/pipeline-review.md). Section 13 collects every Open block and is the to-do list for finishing this draft.
 
@@ -105,15 +107,42 @@ A delivery MUST describe exactly one part. A compound object -- a whole vehicle,
 
 **Implementation Note.** The reason is to start simple. One part, one model, one `.glb` is a mapping every tool in the pipeline can assume, and it keeps the assembly in one place rather than expressed twice.
 
-> **Open: Future** Whether a compound delivery is worth supporting later. One file carrying a whole vehicle, with its components as separate nodes, could drive the assembly description from what the file already states rather than from a macro written alongside it. The rule above is the simple form and governs today; this records that it was chosen for simplicity and not because the alternative was ruled out. Settling it needs a case where the node structure states the assembly better than the macro does, and it bears on the node question in 5.5. Not yet on the review's decision list.
+> **Open: Future.** Whether a compound delivery is worth supporting later. One file carrying a whole vehicle, with its components as separate nodes, could drive the assembly description from what the file already states rather than from a macro written alongside it. The rule above is the simple form and governs today; this records that it was chosen for simplicity and not because the alternative was ruled out. Settling it needs a case where the node structure states the assembly better than the macro does, and it bears on the node question in 5.5. Not yet on the review's decision list.
 
 **Implementation Note.** This is not the same question as how many nodes one part may use, which section 5.5 leaves open. Section 5.5 requires a single root node named for the part but permits children, so a compound object could satisfy it by hanging its components under one root. That rule narrows the possibilities without closing them, and this one closes them. Nor is it mechanically checkable: nothing in a glTF file says how many parts it depicts, so `gltf-check` cannot enforce it and acceptance rests on the integrator recognising a delivery that is really an assembly.
 
-> **Open.** Whether a delivery carries a manifest recording the source of the geometry, the source of its dimensions and the texture provenance. Proposed: yes, because it is cheap and answers questions the audit could not. Archiving the Blender source file is a separate and heavier commitment, storage, licensing of purchased textures and an implied ability to re-export, and is not proposed. Tracked as review decision 12. 
+#### 4.1.1 The manifest
 
-> **Open.** Whether every part must cite a published dimensional figure, and what to do for parts where none exists. Proposed: yes where one exists, because it is the one check that would have caught a defect the earlier audits missed. Tracked as review decision 13.
+A delivery SHOULD carry a manifest: a record of where the model came from and what it is referenced to, travelling inside the file rather than beside it.
 
-**Implementation Note.** Both of the questions above may be answered together by the datum specification in 5.6, which needs a manifest to live in and needs a cited expression of the part's nominal geometry to be written against.
+The manifest MUST be expressed as [`KHR_xmp_json_ld`](https://github.com/KhronosGroup/glTF/tree/main/extensions/2.0/Khronos/KHR_xmp_json_ld) metadata attached to the glTF `asset` object. That extension is listed in `extensionsUsed` and MUST NOT appear in `extensionsRequired`. Metadata has no effect on appearance, so a consumer that ignores it is behaving correctly.
+
+Where a manifest is present it MUST declare the part's role, and SHOULD carry the rest:
+
+| Property | Type | What it records |
+|---|---|---|
+| `gltfrp:partRole` | Choice: `base`, `component` | REQUIRED. Whether this part establishes a vehicle's reference frame, or attaches to one. Section 5.6 imposes more on a `base` |
+| `dc:source` | Text or URI | Where the geometry came from: the CAD file, the scan, the vendor model |
+| `dc:creator` | Agent Name | Who authored it |
+| `dc:date` | Date | When it was delivered |
+| `dc:rights` | Text | Licensing, and for purchased textures the redistribution terms |
+| `dc:relation` | URI | The published source the part's dimensions are cited from |
+| `xmp:CreatorTool` | Text | The exporter. MUST equal `asset.generator` in the same file where both are present |
+| `xmpMM:DerivedFrom` | ResourceRef | The authoring source, where one is archived |
+| `gltfrp:nominalDimension` | Text | The cited figure itself, as a quantity with its dimension named, for example "length overall 1.146 m" |
+| `gltfrp:dimensionTolerance` | Real | Metres. The band the measured extent is held to |
+
+A part whose dimensions are published SHOULD cite them in `dc:relation` and `gltfrp:nominalDimension`. Where no published figure exists the manifest SHOULD say so explicitly rather than omitting the property.
+
+**Implementation Note.** Citing the dimension is the one check that would have caught a defect the earlier audits missed. Of eleven parts checked, two could be compared against a published figure and nine were recorded as "plausible", which is not a check; the chassis figure that *was* quoted precisely does not match the manufacturer's published length. "No published figure exists" is a worse-sounding answer and a better one than "plausible", because it is falsifiable.
+
+**Implementation Note.** `xmp:CreatorTool` duplicates `asset.generator` on purpose. A manifest copied from a sibling part and never edited is the likeliest failure, and requiring the two to agree makes that failure mechanical rather than invisible.
+
+**Implementation Note.** The prefix `gltfrp` denotes this profile's own namespace, `https://honurobotics.github.io/gltf-robotics/ns/profile/1.0/`. It is named for the profile rather than for the organisation publishing it, so that generalising the profile does not require re-homing a namespace that delivered files already carry.
+
+> **Open.** Whether the authoring source is archived. The manifest can cite it in `xmpMM:DerivedFrom` at no cost, but keeping the file is a separate and heavier commitment: storage, the licensing of purchased textures, and an implied ability to re-export a part without the modeller. Not proposed. Tracked as review decision 12.
+
+> **Open.** Whether the manifest should be required rather than recommended for every delivery. It is required for a `base` part by 5.6. The argument for requiring it everywhere is that provenance cannot be reconstructed afterwards, which this project has already proved by failing to; the argument against is that none of the fifteen existing deliveries carries one, so the rule would fail the whole library on its first run. Tracked as review decision 13.
 
 ### 4.2 Format
 
@@ -130,7 +159,7 @@ What the rule gives up: with `.gltf` the images version independently in git, wh
 
 The file MUST validate against the Khronos glTF Validator with zero errors. Validator warnings and infos MUST be reviewed but do not by themselves fail a delivery.
 
-> **Open.** Whether the binary container stays the only permitted form. Two of the reasons above are defects rather than properties: the gz-common extension-comparison bug has an upstream fix, and eager texture decoding is an implementation choice. When the pinned container moves, both may be gone, and the remaining arguments are about delivery hygiene rather than correctness. Against relaxing it, Drake does not read `.glb` at all (1.2), so a `.gltf` allowance would widen the set of consumers a delivery can reach. Not yet on the review's decision list. % CLAUDE: Current decision - single file. KISS  Open for later consideration - consider using glb with references to textures for git and performance advantages
+> **Open: Future.** Whether the binary container stays the only permitted form. Two of the reasons above are defects rather than properties: the gz-common extension-comparison bug has an upstream fix, and eager texture decoding is an implementation choice. When the pinned container moves, both may be gone, and the remaining arguments are about delivery hygiene rather than correctness. Against relaxing it, Drake does not read `.glb` at all (1.2), so a `.gltf` allowance would widen the set of consumers a delivery can reach. Not yet on the review's decision list. The current decision is a single self-contained file, on the grounds of simplicity. What would reopen it is the pair of advantages a container with external texture references keeps: textures version independently in git, so re-authoring one map does not rewrite the geometry, and a consumer that loads maps lazily pays only for what it draws.
 
 > **Open.** Whether textures are embedded in the container, delivered as external files, or either. The container decision above does not settle this: a `.glb` packs only its first buffer into the binary chunk, and an image may still carry a `uri` pointing at an external file. All deliveries to date embed, and the acceptance tooling reads a delivery with no search path. Against that, Drake does not support `.glb` at all (section 1.2), so a model meant to be consumed there cannot be delivered in the container this profile requires, whatever is done about textures. Packaging is therefore the first thing that breaks outside Gazebo and RViz. Tracked as review decision 16.
 
@@ -200,9 +229,58 @@ The root node MUST be named `<part>`, with no Blender numeric suffix such as `.0
 
 ### 5.6 Datum specification
 
-> **Open.** How a part's coordinate system is specified by *reference to its geometry* rather than as a set of coordinates. The approach being worked out borrows ASME Y14.5's datum vocabulary and carries the specification in the delivery manifest of 4.1: named datum features in an order of precedence, the degrees of freedom each constrains, and a separate declaration of which direction is forward and which is up. If it is adopted it replaces the proposed rule in 5.4 rather than sitting beside it, and it bears on 4.1 and 5.3 as well. Nothing here is settled. Not yet on the review's decision list.
+A coordinate system is specified by naming the features of the part it is referenced to, not by giving six numbers. The numbers are what the specification evaluates to against a particular piece of geometry, and they are derived by measurement rather than authored. Three layers follow from that, and only the first belongs in a delivery:
 
-**Implementation Note.** Placeholder, recorded so the work is tracked. The derivation is in [Coordinate systems](../reference/coordinate-systems.md) under "Specifying a coordinate system: datums and what 'referenced to' means". When this section is written it will have to state: which artifact expresses the nominal geometry a part is authored to, and what to do when there is no CAD; how a datum feature is designated, given that glTF is a delivery format with no annotation mechanism and cannot carry the specification itself; that the named datums together constrain all six degrees of freedom, since a partially constrained datum coordinate system is of no use to a delivery even though ASME permits one; how a direction the shape does not determine is declared rather than derived; and what `gltf-check` can verify.
+| | What it is | Numbers | Who produces it |
+|---|---|---|---|
+| Datum specification | which features of the part the coordinate system is referenced to | none | a person, once, recorded in the manifest |
+| Realized pose | what that specification evaluates to against this geometry | six | derived by measurement, never authored |
+| Relative pose | the transform between two coordinate systems | six | computed; this is what an SDF `<pose>` holds |
+
+A manifest MUST NOT record a realized pose. Recording a derived quantity alongside the rule that derives it creates two sources of truth that drift.
+
+#### 5.6.1 What may serve as a datum
+
+A datum feature MUST be a situation feature: a point, a straight line, a plane or a helix. [ISO 17450-1](https://www.iso.org/standard/53628.html) §3.3.1.1.3 defines the term and closes the list, describing it as a geometrical attribute of an ideal feature with no dimensional parameters linked to it.
+
+A silhouette, an outline, a centre of mass and a bounding box are not situation features and MUST NOT be named as datums.
+
+**Implementation Note.** The exclusion is not pedantry. "The centre of the outline projected on the ground" is three derivations deep and moves when a sensor mast is added; a wheel axis intersected with the ground plane is one derivation deep and does not. Derivation depth predicts whether the coordinate system survives a design change.
+
+#### 5.6.2 A base part
+
+A delivery whose `gltfrp:partRole` is `base` MUST carry a manifest, and that manifest MUST carry a datum specification.
+
+The specification MUST consist of an ordered list of datum features, in order of precedence, each naming the feature and stating which degrees of freedom it constrains. Together they MUST constrain all six: three translational and three rotational, each exactly once.
+
+| Property | Type | What it records |
+|---|---|---|
+| `gltfrp:datumFeature` | ordered list of Text | Each feature, named on this part, in order of precedence |
+| `gltfrp:datumFeatureKind` | ordered list of Choice: `point`, `line`, `plane`, `helix` | The situation-feature kind of each, positionally matching the list above |
+| `gltfrp:datumConstrains` | ordered list of Text | The degrees of freedom each constrains, as `Tx`, `Ty`, `Tz`, `Rx`, `Ry`, `Rz`, positionally matching |
+| `gltfrp:forward` | Choice: `+X`, `-X`, `+Y`, `-Y`, `+Z`, `-Z` | Which axis of the delivered file the part's forward direction lies along |
+| `gltfrp:up` | Choice: as above | Which axis of the delivered file the part's up direction lies along |
+| `gltfrp:datumTarget` | Text | OPTIONAL. The physical realization, where one exists: a datum target point, line or area in the sense of ISO 5459 |
+
+For a displacement hull the specification SHOULD be naval architecture's three planes: the baseline, the centreline plane, and a transverse plane through the aft perpendicular, with the reference point at their intersection. [ISO 7462](https://www.iso.org/standard/14211.html) gives the terminology.
+
+**Implementation Note.** `gltfrp:forward` and `gltfrp:up` are declared rather than derived because nothing in a glTF file records either. A file states vertex positions and node transforms; it has no forward axis and no up axis, so `gltf-check` reports both as unknowable for a delivery without a manifest. Declaring them is what turns section 5.3's interim rule from a convention nobody can test into a property a tool can verify.
+
+**Implementation Note.** Why the base specifically. A base part's datum is the definition of `base_link`, and localization reports in that frame, so it is the one coordinate system in the vehicle whose meaning cannot be recovered by measuring anything later. REP 105 says `base_link` is rigidly attached to the mobile robot base and declines to say where; the standards agree it must be stated and none of them state it for you. `base_footprint` is a derived runtime frame and is not a datum.
+
+**Implementation Note.** The three lists are positionally matched rather than nested because `KHR_xmp_json_ld` forbids the JSON-LD mechanisms that would express a list of records: expanded term definitions, value objects and local contexts are all prohibited. Parallel arrays are the cost of keeping the manifest inside the file. The six-degree-of-freedom completeness rule is what keeps them checkable: `gltf-check` can confirm the lists are the same length, that every kind is legal, and that the constrained degrees of freedom are exactly the six with no repetition, without reading any geometry.
+
+#### 5.6.3 A component part
+
+A delivery whose `gltfrp:partRole` is `component` SHOULD carry a datum specification on the same terms.
+
+Where the part attaches by a single mounting interface, that interface SHOULD be the primary datum. ISO 9787 §5.3 defines the mechanical interface coordinate system with its origin at the centre of the mechanical interface and its `+Z` pointing perpendicularly away from it, which is a ready-made single-feature specification for the common case.
+
+> **Open.** Whether a component datum becomes a requirement. It is a SHOULD because the mounting interface is usually obvious from the geometry and a wrong origin on a component is recoverable by editing one transform, where a wrong base datum is not. Settling it needs the pilot to say whether component origins actually cause trouble. It bears directly on 5.4, which is the same question asked as a coordinate rather than as a reference. Tracked as review decision 2.
+
+> **Open.** What a delivery does when the part's nominal geometry is not published anywhere. A datum specification names features of the part, which presumes an authority on what the part is; for an off-the-shelf component that is the vendor drawing, and for a custom part it may be nothing but the CAD. Not settled. Not yet on the review's decision list.
+
+> **Open.** Whether the completeness rule admits under-constrained specifications. ASME Y14.5 permits a datum reference frame that constrains fewer than six degrees of freedom; a delivery cannot use one, because the leftover degrees of freedom would be resolved differently by every consumer. This profile therefore requires all six, which is stricter than the standard it borrows from, and that departure should be stated in 1.1 if it stands. Not yet on the review's decision list.
 
 ## 6. Geometry
 
@@ -322,9 +400,9 @@ A delivered file MUST NOT contain:
 - KTX2 or Basis textures
 - the `KHR_texture_transform` extension
 
-**Implementation Note.** These are prohibited for different reasons, and the reasons matter if one is ever reconsidered. Draco decodes correctly in both consumers but defeats the project's own inspection tools. Texture transform is parsed and then ignored, so textures render in the wrong place. Animations are imported and force the bounding box to a unit cube, breaking culling. Cameras and lights are ignored harmlessly. An empty `extensionsRequired` is the single check that covers the general case, and it is worth being clear about what that check buys. The glTF specification requires a conforming reader to refuse a file outright when it requires an extension the reader does not implement, so one reading of this rule is that it saves us from a file that would fail to load. Measurement says otherwise: `Distribution_Warehouse`, which declares `KHR_texture_transform` in `extensionsRequired`, loads through gz-common without complaint, building 3,010 submeshes and 19 materials. Gazebo is not a conforming reader on this point. The rule therefore protects against a file that loads and is silently wrong, which is the worse failure and the one nobody notices. The Gazebo team's own demo assets declare `KHR_texture_transform` and `KHR_materials_specular`, so files from that workflow will fail this section and need re-export.
+**Implementation Note.** These are prohibited for different reasons, and the reasons matter if one is ever reconsidered. Draco decodes correctly in both consumers but defeats the project's own inspection tools. Texture transform is parsed and then ignored, so textures render in the wrong place. Animations are imported and force the bounding box to a unit cube, breaking culling. Cameras and lights are ignored harmlessly. `KHR_xmp_json_ld`, which carries the manifest of 4.1.1, is not prohibited: it is declared in `extensionsUsed`, has no effect on appearance, and a consumer that ignores it is behaving correctly. An empty `extensionsRequired` is the single check that covers the general case, and it is worth being clear about what that check buys. The glTF specification requires a conforming reader to refuse a file outright when it requires an extension the reader does not implement, so one reading of this rule is that it saves us from a file that would fail to load. Measurement says otherwise: `Distribution_Warehouse`, which declares `KHR_texture_transform` in `extensionsRequired`, loads through gz-common without complaint, building 3,010 submeshes and 19 materials. Gazebo is not a conforming reader on this point. The rule therefore protects against a file that loads and is silently wrong, which is the worse failure and the one nobody notices. The Gazebo team's own demo assets declare `KHR_texture_transform` and `KHR_materials_specular`, so files from that workflow will fail this section and need re-export.
 
-> **Open.** Which of these prohibitions are permanent. Two are not statements about the format: Draco decodes correctly in both consumers and is prohibited only because it defeats this project's own inspection tools, and KTX2 is prohibited because Gazebo cannot read it while Drake recommends it for performance (1.2). Both would be reconsidered if the tooling or the consumer changed, and compressed geometry and supercompressed textures are the two levers with real size savings behind them. Animations, cameras and lights are prohibited on their merits and are not expected to change. Not yet on the review's decision list.
+> **Open: Future.** Which of these prohibitions are permanent. Two are not statements about the format: Draco decodes correctly in both consumers and is prohibited only because it defeats this project's own inspection tools, and KTX2 is prohibited because Gazebo cannot read it while Drake recommends it for performance (1.2). Both would be reconsidered if the tooling or the consumer changed, and compressed geometry and supercompressed textures are the two levers with real size savings behind them. Animations, cameras and lights are prohibited on their merits and are not expected to change. Not yet on the review's decision list.
 
 ## 11. Authoring toolchain
 
@@ -355,35 +433,46 @@ The mechanical checks implied by this specification, and where they are describe
 
 ## 13. Open questions (Informative)
 
-Every Open block in this document, in order. Settled rules are not listed: they are the normative text. This table is the to-do list for finishing the draft.
+Every Open and Open: Future block in this document, in order. Settled rules are not listed: they are the normative text. Section 2.4 defines the two marks.
 
-Some entries are questions with no answer proposed, some are proposals awaiting agreement, and some are rules this draft states in their simplest form on purpose -- 4.1 on compound deliveries, 4.2 on the binary container and 10 on which prohibitions are permanent are all of the third kind. Section 2.4 explains why they are not distinguished here.
+### 13.1 Open: the to-do list for this draft
+
+Nothing in the document governs these points, so a delivery cannot fail to conform on one.
 
 | Section | Question | Decision |
 |---|---|---|
-| 4.1 | Compound delivery supported later | none yet |
-| 4.1 | Delivery manifest; Blender source archival | 12 |
-| 4.1 | Cited dimensional source per part | 13 |
-| 4.2 | Binary container as the only permitted form | none yet |
+| 4.1.1 | Authoring source archived | 12 |
+| 4.1.1 | Manifest required rather than recommended | 13 |
 | 4.2 | Textures embedded or external | 16 |
 | 5.2 | Stating the RViz distribution floor | none yet |
 | 5.3 | Forward axis +X | 2 |
 | 5.4 | Origin placement | 2 |
 | 5.5 | Root translation prohibited outright | none yet |
 | 5.5 | Multiple nodes, and what "one mesh" means | 15 |
-| 5.6 | Datum specification for the part coordinate system | none yet |
+| 5.6.3 | Component datum becomes a requirement | 2 |
+| 5.6.3 | When the part's nominal geometry is unpublished | none yet |
+| 5.6.3 | Whether under-constrained datums are admitted | none yet |
 | 6.1 | Whether the 0-to-1 UV requirement survives | 5 |
 | 6.2 | Triangle budget, by visual requirement tier | 5, 18 |
 | 6.3 | Primitive count, and ruling out submesh selection | none yet |
 | 7 | PBR-in-SDF workspace rule for GLB parts | none yet |
 | 8 | Base color format and per-map size caps | 4 |
 | 9 | Uniform translucency and use of BLEND | 6 |
-| 10 | Which prohibitions are permanent | none yet |
 | 11 | Toolchain version pin | 8, 10, 17 |
 | 12.1 | Probe and lint in CI | 7 |
 | 12.1 | Committed probe dump per part | 14 |
 
-Decision numbers refer to section 10 of [VISUAL_ASSET_PIPELINE_REVIEW.md](../reference/pipeline-review.md). Review decision 9, contributing the loader table upstream, is not a rule of this specification and is not listed. Items marked "none yet" were raised in the glTF reading notes after the review's list was written and should be added to it.
+### 13.2 Open: Future, not blocking this draft
+
+The rule beside each of these is normative and a delivery must satisfy it. What is open is only whether the simple form stays.
+
+| Section | Rule | Why the simple form | Decision |
+|---|---|---|---|
+| 4.1 | One part per delivered file | Simplicity: one part, one model, one file is a mapping every tool can assume | none yet |
+| 4.2 | Binary container as the only permitted form | Simplicity, and two of the reasons are defects with upstream fixes pending | none yet |
+| 10 | Which prohibitions are permanent | Draco defeats our own inspection tools; KTX2 is unreadable by Gazebo | none yet |
+
+Decision numbers refer to section 10 of [VISUAL_ASSET_PIPELINE_REVIEW.md](../reference/pipeline-review.md). Review decision 9, contributing the loader table upstream, is not a rule of this specification and is not listed. Items marked "none yet" were raised after the review's list was written and should be added to it.
 
 ## 14. References (Informative)
 

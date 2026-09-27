@@ -235,5 +235,99 @@ def test_undecided_rules_never_fail(write_model):
     from gltf_robotics.check.rules import ADVISORY
     findings = check_file(write_model())
     advisory = {f.section for f in findings if f.level == ADVISORY}
-    assert advisory == {"5.1", "5.3", "5.6"}
+    # 5.1 alone: scale cannot be read from a glTF file at all. 5.3 leaves the
+    # advisory tier as soon as the manifest declares a forward axis, and 5.6 is
+    # a real rule now that the datum specification has a home.
+    assert advisory == {"5.1"}
     assert not any(f.failed for f in findings if f.section in advisory)
+
+
+# ------------------------------------------- 4.1.1 manifest, 5.6 datum
+
+def _packet(g):
+    return g["extensions"]["KHR_xmp_json_ld"]["packets"][0]
+
+
+def test_missing_manifest_warns_but_does_not_fail(write_model):
+    def mutate(g):
+        g["asset"].pop("extensions")
+        g.pop("extensions")
+        g.pop("extensionsUsed")
+    path = write_model(mutate)
+    assert failures(path) == set()
+    assert "4.1.1" in warnings(path)
+
+
+def test_manifest_without_a_role_fails(write_model):
+    path = write_model(lambda g: _packet(g).pop("gltfrp:partRole"))
+    assert "4.1.1" in failures(path)
+
+
+def test_creator_tool_must_match_asset_generator(write_model):
+    """The copied-from-a-sibling-part failure, made mechanical."""
+    path = write_model(lambda g: _packet(g).update({"xmp:CreatorTool": "Some Other Exporter"}))
+    assert "4.1.1" in failures(path)
+
+
+def test_base_part_without_a_datum_fails(write_model):
+    def mutate(g):
+        p = _packet(g)
+        p["gltfrp:partRole"] = "base"
+        for k in ("gltfrp:datumFeature", "gltfrp:datumFeatureKind", "gltfrp:datumConstrains"):
+            p.pop(k)
+    path = write_model(mutate)
+    assert "5.6" in failures(path)
+
+
+def test_component_without_a_datum_only_warns(write_model):
+    def mutate(g):
+        p = _packet(g)
+        for k in ("gltfrp:datumFeature", "gltfrp:datumFeatureKind", "gltfrp:datumConstrains"):
+            p.pop(k)
+    path = write_model(mutate)
+    assert failures(path) == set()
+    assert "5.6" in warnings(path)
+
+
+def test_under_constrained_base_datum_fails(write_model):
+    """Five of six degrees of freedom is not a coordinate system."""
+    def mutate(g):
+        p = _packet(g)
+        p["gltfrp:partRole"] = "base"
+        p["gltfrp:datumConstrains"] = {"@list": ["Tz Rx Ry", "Tx Ty", ""]}
+    path = write_model(mutate)
+    assert "5.6" in failures(path)
+    assert any("under-constrained" in f.summary for f in check_file(path))
+
+
+def test_doubly_constrained_datum_fails(write_model):
+    def mutate(g):
+        p = _packet(g)
+        p["gltfrp:datumConstrains"] = {"@list": ["Tz Rx Ry", "Tx Ty Tz", "Rz"]}
+    path = write_model(mutate)
+    assert "5.6" in failures(path)
+
+
+def test_feature_kind_must_be_a_situation_feature(write_model):
+    """ISO 17450-1 closes the list to point, line, plane, helix."""
+    path = write_model(
+        lambda g: _packet(g).update({"gltfrp:datumFeatureKind": {"@list": ["silhouette", "line", "point"]}}))
+    assert "5.6" in failures(path)
+
+
+def test_mismatched_datum_list_lengths_fail(write_model):
+    path = write_model(
+        lambda g: _packet(g).update({"gltfrp:datumFeatureKind": {"@list": ["plane", "line"]}}))
+    assert "5.6" in failures(path)
+
+
+def test_forward_and_up_must_differ(write_model):
+    path = write_model(lambda g: _packet(g).update({"gltfrp:up": "-X"}))
+    assert "5.6" in failures(path)
+
+
+def test_realized_pose_must_not_be_authored(write_model):
+    """5.6: a derived quantity recorded beside its rule is two sources of truth."""
+    path = write_model(
+        lambda g: _packet(g).update({"gltfrp:realizedPose": {"@list": [0, 0, 0, 0, 0, 0]}}))
+    assert "5.6" in failures(path)

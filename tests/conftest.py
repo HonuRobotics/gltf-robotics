@@ -49,6 +49,35 @@ def pack_glb(gltf, buffer):
             + struct.pack("<II", len(bin_), 0x004E4942) + bin_)
 
 
+def manifest(role="component", **over):
+    """A profile 4.1.1 manifest packet that satisfies 4.1.1 and 5.6.
+
+    A component declaring a single mounting plane plus a line and a point, which
+    together constrain all six degrees of freedom -- the shape section 5.6.2
+    requires, small enough to mutate in one line.
+    """
+    packet = {
+        "@context": {
+            "dc": "http://purl.org/dc/elements/1.1/",
+            "xmp": "http://ns.adobe.com/xap/1.0/",
+            "gltfrp": "https://honurobotics.github.io/gltf-robotics/ns/profile/1.0/",
+        },
+        "@id": "",
+        "dc:source": "test fixture, authored in conftest.py",
+        "dc:creator": "gltf-robotics tests",
+        "dc:date": {"@list": ["2026-09-27T00:00:00Z"]},
+        "xmp:CreatorTool": "gltf-robotics test fixtures",
+        "gltfrp:partRole": role,
+        "gltfrp:datumFeature": {"@list": ["mounting face", "bore axis", "keyway origin"]},
+        "gltfrp:datumFeatureKind": {"@list": ["plane", "line", "point"]},
+        "gltfrp:datumConstrains": {"@list": ["Tz Rx Ry", "Tx Ty", "Rz"]},
+        "gltfrp:forward": "+X",
+        "gltfrp:up": "+Y",
+    }
+    packet.update(over)
+    return packet
+
+
 def baseline():
     """(gltf, buffer) for a model that satisfies the profile.
 
@@ -74,7 +103,13 @@ def baseline():
     buffer = pad4(buffer + image)
 
     gltf = {
-        "asset": {"version": "2.0", "generator": "gltf-robotics test fixtures"},
+        "asset": {
+            "version": "2.0",
+            "generator": "gltf-robotics test fixtures",
+            "extensions": {"KHR_xmp_json_ld": {"packet": 0}},
+        },
+        "extensionsUsed": ["KHR_xmp_json_ld"],
+        "extensions": {"KHR_xmp_json_ld": {"packets": [manifest()]}},
         "scene": 0,
         "scenes": [{"nodes": [0]}],
         "nodes": [{"name": "test_part", "mesh": 0}],
