@@ -104,9 +104,17 @@ def test_missing_normals(write_model):
     assert failures(path) == {"6"}
 
 
-def test_second_uv_set(write_model):
+def test_second_uv_set_is_permitted_for_a_lightmap(write_model):
+    """Profile 6.1 permits TEXCOORD_1, and only for a baked occlusion lightmap."""
     path = write_model(
         lambda g: g["meshes"][0]["primitives"][0]["attributes"].update(TEXCOORD_1=2))
+    assert failures(path) == set()
+
+
+def test_third_uv_set_fails(write_model):
+    path = write_model(
+        lambda g: g["meshes"][0]["primitives"][0]["attributes"].update(
+            TEXCOORD_1=2, TEXCOORD_2=2))
     assert failures(path) == {"6.1"}
 
 
@@ -223,7 +231,7 @@ def test_prohibited_content(write_model, key):
 # --------------------------------------------------------------- advisories
 
 def test_undecided_rules_never_fail(write_model):
-    """Profile section 2.4: a delivery cannot fail on a Discuss or Open point."""
+    """Profile section 2.4: a delivery cannot fail on a point marked Open."""
     from gltf_robotics.check.rules import ADVISORY
     findings = check_file(write_model())
     advisory = {f.section for f in findings if f.level == ADVISORY}

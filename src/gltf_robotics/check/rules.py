@@ -2,9 +2,10 @@
 
 Every rule names the profile section it comes from, so a failure points at the
 text that justifies it rather than at an opinion in this file. Sections the
-profile marks Discuss or Open are reported as advisory: the profile says a
-delivery cannot fail to conform on an unsettled point, and this must not
-quietly harden one.
+profile marks Open are reported as advisory: the profile says a delivery cannot
+fail to conform on an unsettled point, and this must not quietly harden one.
+A rule that is normative today but recorded as Open because a more capable
+version is plausible later still fails, because it is normative today.
 
 What is deliberately not here: the four conformance questions in profile
 section 12 fail independently, and only "compliant" is decidable by reading the
@@ -235,10 +236,17 @@ def rule_6_geometry(m):
 
 def rule_6_1_uv(m):
     out = []
-    extra = sorted({a for _, _, p in m.primitives() for a in p.get("attributes", {})
-                    if a.startswith("TEXCOORD_") and a != "TEXCOORD_0"})
+    # Profile 6.1 permits TEXCOORD_1, and only for a baked occlusion lightmap.
+    # Anything beyond that is a failure. Whether a present TEXCOORD_1 really
+    # carries a lightmap cannot be read from the file: it depends on which slot
+    # the material samples with it, which the material rules cover separately.
+    sets = {a for _, _, p in m.primitives() for a in p.get("attributes", {})
+            if a.startswith("TEXCOORD_")}
+    extra = sorted(a for a in sets if a not in ("TEXCOORD_0", "TEXCOORD_1"))
     if extra:
-        out.append(Finding("6.1", FAIL, "more than one UV set", ", ".join(extra)))
+        out.append(Finding("6.1", FAIL, "more than two UV sets",
+                           ", ".join(extra) + ". Only TEXCOORD_0, and TEXCOORD_1 for a "
+                           "baked occlusion lightmap, are permitted"))
 
     worst = None
     for mi, pi, prim in m.primitives():
@@ -265,7 +273,7 @@ def rule_6_1_uv(m):
             f"range {worst[0]:.3f} to {worst[1]:.3f}. The profile requires [0,1]; note that "
             "tiling against a REPEAT sampler is normal practice elsewhere and 19 of 49 assets "
             "in the corpus do it, so this is a deliberate narrowing, not a defect everyone agrees on"))
-    return out or [Finding("6.1", PASS, "one UV set, inside [0, 1]")]
+    return out or [Finding("6.1", PASS, f"{len(sets)} UV set(s), inside [0, 1]")]
 
 
 def rule_7_materials(m):

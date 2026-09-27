@@ -30,7 +30,7 @@ Findings come in three kinds, and the difference matters.
 
 `warn` is a SHOULD, or a MUST the tool cannot fully settle. The second kind is worth understanding rather than skimming: reading a file cannot decide everything. A material that leaves `metallicFactor` unset but carries a metallic-roughness texture is the standing example — the texture's blue channel multiplies against the factor, so a black channel would still give a non-metal, and only the decoded texels say which it is. Do not read that warning as "probably fine". A solid white metallic channel is the usual export, and every map measured in this project's own library had B = 255.
 
-`note` is a rule the profile has not decided, or one nothing in the file can answer. Profile section 2.4 is explicit that a delivery cannot fail to conform on a point marked Discuss or Open, so these never fail a run. Scale and forward axis are both here: glTF says metres and nothing in the file confirms it, and no glTF file records a forward axis at all. The protocol for answering those by eye is in [`probe/`](https://github.com/HonuRobotics/gltf-robotics/tree/main/probe).
+`note` is a rule the profile has not decided, or one nothing in the file can answer. Profile section 2.4 is explicit that a delivery cannot fail to conform on a point marked Open, so these never fail a run. Scale and forward axis are both here: glTF says metres and nothing in the file confirms it, and no glTF file records a forward axis at all. The protocol for answering those by eye is in [`probe/`](https://github.com/HonuRobotics/gltf-robotics/tree/main/probe).
 
 ## What a clean run does not mean
 
