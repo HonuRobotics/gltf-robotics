@@ -14,7 +14,7 @@ This profile builds upon [glTF 2.0](https://registry.khronos.org/glTF/specs/2.0/
 
 - **Narrowing.** Focusing and interpreting the standard's affordances for the specific needs of robotics simulation, to make it actionable in the context of developing 3D visual robotic assets. A file can be glTF-compliant and still be unusable in a robotics simulator.
 - **Adding.** Requiring something the standard does not, to satisfy the constraints of the robotics simulation and visualization consumers of the assets (e.g., Gazebo, RViz). This is required because some consumers implement only part of glTF, so a glTF-compliant asset is not guaranteed to be importable. Added constraints name the downstream consumer that motivates them.
-- **Departing.** Differing from what the standard says, which is done rarely and never silently. The forward axis in section 5.3 is the only current candidate.
+- **Departing.** Differing from what the standard says, which is done rarely and never silently. Section 5.2 is the one departure: the delivered file is expressed +X forward, +Y left, +Z up, following ISO 9787 and REP 103 rather than glTF's Y-up and +Z-forward convention, because every other stage of this pipeline uses the robotics convention and holding to glTF's would put a conversion in the middle of it.
 
 This profile is only about the visual 3D asset model and does not cover Collision geometry, inertia properties, joints, etc. 
 
@@ -88,7 +88,7 @@ Not a glTF term. The unit Gazebo's loader produces from a file: one submesh per 
 delivery::
 The set of files handed over for one part, together with whatever accompanies them under section 4.
 
-part frame::
+part frame:: % CLAUDE: Look into our deep dive on coordinate systems.  Add vocabulary there - we don't use "frame" - we use "coordiante system" and why.  
 The coordinate frame in which a part's pose, attach point and any sub-frames are expressed. Defined by REP 103: x forward, y left, z up.
 
 **Implementation Note.** "part" and "assembly" are this profile's own terms and no standard defines them. The closest published vocabulary is ISO 10303 (STEP), which distinguishes a part from an assembly in the same way for mechanical product data; the usage here is consistent with it but does not depend on it. The word "asset" is deliberately not used in normative text: in 3D work it spans meshes, textures, rigs, scenes and library entries at every scale, and glTF itself uses `asset` for the metadata object inside a file, so it cannot be used precisely.
@@ -107,9 +107,9 @@ A delivery MUST describe exactly one part. A compound object -- a whole vehicle,
 
 **Implementation Note.** The reason is to start simple. One part, one model, one `.glb` is a mapping every tool in the pipeline can assume, and it keeps the assembly in one place rather than expressed twice.
 
-> **Open: Future.** Whether a compound delivery is worth supporting later. One file carrying a whole vehicle, with its components as separate nodes, could drive the assembly description from what the file already states rather than from a macro written alongside it. The rule above is the simple form and governs today; this records that it was chosen for simplicity and not because the alternative was ruled out. Settling it needs a case where the node structure states the assembly better than the macro does, and it bears on the node question in 5.5. Not yet on the review's decision list.
+> **Open: Future.** Whether a compound delivery is worth supporting later. One file carrying a whole vehicle, with its components as separate nodes, could drive the assembly description from what the file already states rather than from a macro written alongside it. The rule above is the simple form and governs today; this records that it was chosen for simplicity and not because the alternative was ruled out. Settling it needs a case where the node structure states the assembly better than the macro does, and reopening it means reopening section 5.5, which now permits exactly one node with no children. Not yet on the review's decision list.
 
-**Implementation Note.** This is not the same question as how many nodes one part may use, which section 5.5 leaves open. Section 5.5 requires a single root node named for the part but permits children, so a compound object could satisfy it by hanging its components under one root. That rule narrows the possibilities without closing them, and this one closes them. Nor is it mechanically checkable: nothing in a glTF file says how many parts it depicts, so `gltf-check` cannot enforce it and acceptance rests on the integrator recognising a delivery that is really an assembly.
+**Implementation Note.** Section 5.5 now settles the mechanical half of this: exactly one node with no children, so a compound object cannot satisfy it by hanging components under one root. What remains here is the part this profile cannot check at all. Nothing in a glTF file says how many parts it depicts, so a single node holding the merged geometry of a whole vehicle satisfies 5.5 and still breaks this rule. Acceptance rests on the integrator recognising a delivery that is really an assembly.
 
 #### 4.1.1 The manifest
 
@@ -140,9 +140,9 @@ A part whose dimensions are published SHOULD cite them in `dc:relation` and `glt
 
 **Implementation Note.** The prefix `gltfrp` denotes this profile's own namespace, `https://honurobotics.github.io/gltf-robotics/ns/profile/1.0/`. It is named for the profile rather than for the organisation publishing it, so that generalising the profile does not require re-homing a namespace that delivered files already carry.
 
-> **Open.** Whether the authoring source is archived. The manifest can cite it in `xmpMM:DerivedFrom` at no cost, but keeping the file is a separate and heavier commitment: storage, the licensing of purchased textures, and an implied ability to re-export a part without the modeller. Not proposed. Tracked as review decision 12.
+> **Open.** Whether the authoring source is archived. The manifest can cite it in `xmpMM:DerivedFrom` at no cost, but keeping the file is a separate and heavier commitment: storage, the licensing of purchased textures, and an implied ability to re-export a part without the modeller. Not proposed. Tracked as review decision 12. % CLAUDE: This is out of scope for this document, but should be added to our workflow document.   Add a note to the workflow so that we remember to declare it as a best practice to archive the source (blender, CAD ,etc).  This source is not in the simulation git repo, but should be archived for completeness.  
 
-> **Open.** Whether the manifest should be required rather than recommended for every delivery. It is required for a `base` part by 5.6. The argument for requiring it everywhere is that provenance cannot be reconstructed afterwards, which this project has already proved by failing to; the argument against is that none of the fifteen existing deliveries carries one, so the rule would fail the whole library on its first run. Tracked as review decision 13.
+> **Open.** Whether the manifest should be required rather than recommended for every delivery. It is required for a `base` part by 5.6. The argument for requiring it everywhere is that provenance cannot be reconstructed afterwards, which this project has already proved by failing to; the argument against is that none of the fifteen existing deliveries carries one, so the rule would fail the whole library on its first run. Tracked as review decision 13. % CLAUDE: Yes, let's require that the manifest exist and declare a required minimum inclusion - and make it truly minimal. 
 
 ### 4.2 Format
 
@@ -161,7 +161,7 @@ The file MUST validate against the Khronos glTF Validator with zero errors. Vali
 
 > **Open: Future.** Whether the binary container stays the only permitted form. Two of the reasons above are defects rather than properties: the gz-common extension-comparison bug has an upstream fix, and eager texture decoding is an implementation choice. When the pinned container moves, both may be gone, and the remaining arguments are about delivery hygiene rather than correctness. Against relaxing it, Drake does not read `.glb` at all (1.2), so a `.gltf` allowance would widen the set of consumers a delivery can reach. Not yet on the review's decision list. The current decision is a single self-contained file, on the grounds of simplicity. What would reopen it is the pair of advantages a container with external texture references keeps: textures version independently in git, so re-authoring one map does not rewrite the geometry, and a consumer that loads maps lazily pays only for what it draws.
 
-> **Open.** Whether textures are embedded in the container, delivered as external files, or either. The container decision above does not settle this: a `.glb` packs only its first buffer into the binary chunk, and an image may still carry a `uri` pointing at an external file. All deliveries to date embed, and the acceptance tooling reads a delivery with no search path. Against that, Drake does not support `.glb` at all (section 1.2), so a model meant to be consumed there cannot be delivered in the container this profile requires, whatever is done about textures. Packaging is therefore the first thing that breaks outside Gazebo and RViz. Tracked as review decision 16.
+> **Open.** Whether textures are embedded in the container, delivered as external files, or either. The container decision above does not settle this: a `.glb` packs only its first buffer into the binary chunk, and an image may still carry a `uri` pointing at an external file. All deliveries to date embed, and the acceptance tooling reads a delivery with no search path. Against that, Drake does not support `.glb` at all (section 1.2), so a model meant to be consumed there cannot be delivered in the container this profile requires, whatever is done about textures. Packaging is therefore the first thing that breaks outside Gazebo and RViz. Tracked as review decision 16.% CLAUDE: Combine this into the open issue above - so one issue for tracking to consider extending past the KISS implemenation of a single standalone binary blob.  
 
 **Implementation Note.** Embedding gives one artifact that cannot arrive incomplete. External files version independently, so a texture can be re-authored without re-exporting geometry. The geometry remains an opaque binary either way.
 
@@ -173,7 +173,11 @@ The file MUST validate against the Khronos glTF Validator with zero errors. Vali
 
 **Implementation Note.** The second rule is the one that earns its place: a stray `minVersion` written by some future exporter is a hard load failure in a consumer that would otherwise have been fine. There is no glTF 2.1 and none is planned. The Khronos registry carries 2.0 only, currently revision 2.0.1, and states that every update to it is a backwards-compatible patch; new capability arrives as extensions rather than as minor versions.
 
-## 5. Coordinate system, units and frame
+## 5. Coordinate systems and units
+
+**Implementation Note.** This section says *coordinate system* throughout and never *frame*. The two are used interchangeably in robotics and in graphics, but they carry different baggage in each, and the vocabulary this project uses — including which coordinate systems exist at each stage and what each is called in ISO 9787, in REP 103 and in glTF — is settled in the [coordinate systems reference](../reference/coordinate-systems.md).
+
+The terms that matter below are **node space**, the coordinate system a glTF node's vertices are expressed in, and **scene space**, what node space becomes once node transforms are composed down from the root. Section 5.5 requires them to coincide.
 
 ### 5.1 Units
 
@@ -181,51 +185,66 @@ All linear distances MUST be in meters, at real-world scale, as glTF requires.
 
 The Blender scene unit scale MUST be 1.0, and object scale MUST be applied before export. A file whose scale is wrong is silently wrong: nothing downstream can detect it.
 
-### 5.2 Up axis
+### 5.2 Axes
 
-The model MUST be Y-up, as glTF specifies.
+The delivered file MUST be expressed with **+X forward, +Y left and +Z up**: the mobile platform coordinate system of [ISO 9787:2013](https://www.iso.org/standard/59444.html) §5.5, which is the same convention as [REP 103](https://www.ros.org/reps/rep-0103.html). Blender is Z-up and right-handed, so a part authored in this convention is exported by turning the glTF exporter's `+Y Up` option **off**.
 
-**Implementation Note.** This is not a stylistic preference. Every consumer converts on the assumption that glTF is Y-up. RViz rotates a glTF mesh as it loads, and the part macro applies the matching rotation for Gazebo. A Z-up file renders correctly in one and wrong in the other.
+This is a deliberate departure from glTF, which states that an asset is Y-up and faces +Z. The departure is stated here rather than hidden, and it is the single most consequential rule in this profile.
 
-**Implementation Note.** The RViz rotation is younger and narrower than it looks. It was added by `ros2/rviz` #1482, merged to `rolling` on 2025-06-16 and deliberately not backported, so Jazzy and Kilted do not have it. These models render correctly in RViz only on distributions downstream of that merge; on Jazzy every part appears rotated ninety degrees. This is a distribution floor for consumers of the library, not a defect in the file.
+**Implementation Note.** Why depart. Every stage of this pipeline except glTF uses the ROS convention: the modeller's Blender scene, the URDF, the SDF, the link coordinate systems Gazebo simulates in, and the standard those all descend from. Keeping the file in that convention means the part coordinate system the modeller builds in is the node coordinate system, is the scene coordinate system, is the link coordinate system a consumer uses — one coordinate system end to end, with no axis change anywhere. Holding to glTF's convention instead would put one conversion in the middle of the pipeline and require every document to explain it.
 
-> **Open.** Whether this specification states that distribution floor as a requirement on the integrator, and where. Proposed: state it here and in the repository README, as the oldest ROS distribution on which the models render correctly in RViz. Not yet on the review's decision list.
+**Implementation Note.** No validator checks either convention, ours or glTF's. glTF states its Y-up and +Z-forward rules without a normative keyword, and no field in a file records which way its author meant up — a rotated part and a correct one differ only in numbers that are equally valid either way. So the geometry cannot be checked against this rule at all. What can be checked is the declaration: the manifest in section 4.1.1 carries `gltfrp:forward` and `gltfrp:up`, and `gltf-check` fails a delivery whose declaration disagrees with this section. A delivery that declares neither draws a warning rather than a failure, because a warning is what this profile uses for a MUST the file alone cannot settle.
+
+**Implementation Note.** What this costs, and it is not free. The two consumers disagree, because RViz converts on the assumption that glTF is Y-up and Gazebo does not convert at all:
+
+| Consumer | What it does | What a Z-up file needs |
+|---|---|---|
+| Gazebo | no up-axis conversion; buffer data goes straight onto the link axes ([source](https://github.com/gazebosim/gz-common/blob/a08c258d4e566b1e1624cb85f12ab78068ab2870/graphics/src/AssimpLoader.cc#L955-L976)) | nothing; an identity visual pose is correct |
+| RViz, Lyrical and later | rotates a glTF mesh +90° about X as it loads ([source](https://github.com/ros2/rviz/blob/baab61a68bc089217dfaa4f270276dc7a30268b1/rviz_rendering/src/rviz_rendering/mesh_loader_helpers/assimp_loader.cpp#L215-L222)) | a compensating `rpy="-1.5708 0 0"` on the URDF visual |
+| RViz, Jazzy and Kilted | no rotation branch — `ros2/rviz` #1482 was merged to `rolling` on 2025-06-16 and deliberately not backported | nothing |
+| Khronos Sample Viewer, browser viewers | assume Y-up | nothing available: **the part appears on its side** |
+
+The last row is the real price. There is no third-party renderer that agrees with this convention, so the reference viewer can no longer answer whether a part is correctly oriented — only whether its materials, textures and alpha are right. [Checking a delivery](../how-to/checking-a-delivery.md) says so where it names the viewer.
+
+The derivation, with both loaders quoted and the probe measurements that confirm them, is [One body, one mesh: who rotates what](../reference/coordinate-systems.md#one-body-one-mesh-who-rotates-what) in the coordinate-systems reference; the [walkthrough](../walkthroughs/blender_mesh_coordinate_ex.md) shows the same file in both consumers.
+
+> **Open.** How the RViz correction is delivered, given that the right answer depends on the ROS distribution. The `bluerobotics_models` part macro already carries a `gltf_up` argument that switches the visual rotation, but its name and its two values now mean the opposite of what they say, and neither value serves Jazzy and Lyrical at once. Proposed: rename the argument for what it selects and drive it from the distribution rather than from the consumer. This is a change in the model repositories, not in this profile. Not yet on the review's decision list.% CLAUDE: Only need to support lyrical and later.   Make the default applying the correctin to negate RVIZ automatic rotations.   This is downsteak  for the profile, but needs to be in the workflow. 
 
 ### 5.3 Forward axis
 
-> **Open.** Whether the delivered file faces +X, which is what authoring in the part frame produces and what every current delivery does, or +Z, which is the convention stated in glTF. Proposed: +X, stated as a deliberate departure from the glTF wording, because the frame is the interface with the part macro and moving would cost a re-export of every file and an extra rotation in two code paths. Tracked as review decision 2.
-
-[REP 158](https://github.com/openrobotics/reps/blob/main/_posts/rep-0158%3A2006.md) requires "the strict ROS Right-Handed convention: X-forward, Y-left, Z-up", which is external support for +X. Its Z-up is stated about the USD stage and does not bear on the Y-up rule in section 5.2. See the reference for the rest.
-
-**Implementation Note.** glTF says "the front side of a glTF asset faces +Z", but states it about the asset as a whole rather than any individual mesh, and states it without a normative keyword. No validator checks it.
-
-Interim rule. Until this is decided, modelers SHOULD continue to author in the part frame, which yields a file facing +X, and MUST NOT re-orient a delivery to face +Z without agreement.
+Answered by section 5.2, which fixes all three axes at once. The heading is kept so that references to "section 5.3" elsewhere still land somewhere, and so a reader who remembers the open question can see how it was settled: +X forward, as a stated departure from glTF's +Z.
 
 ### 5.4 Origin
 
-> **Open.** Where a part's origin sits within its geometry. Our documents state three rules, centroid, author's choice, and centroid near a sensible mounting point, and the library follows none of them. Measured, it is centered in plan and referenced to the mounting plane vertically on all but two parts. Proposed: adopt the measured convention, stated as "centered in plan, zero on the mounting plane, with the mounting face named in the part's macro comment", because it is what makes a part sit correctly at a slot, it matches fourteen of fifteen files already, and it is checkable by measurement once the face is named. Tracked as review decision 2.
+The origin of the part's coordinate system MUST be the origin of the datum coordinate system specified under section 5.6. The axes of the part's coordinate system MUST be the axes that same datum specification fixes, expressed in the convention of section 5.2.
 
-**Implementation Note.** The proposal above states where the origin sits as a measured property of the geometry. Section 5.6 records a different approach, still open, which states instead which features the coordinate system is referenced to and lets the position follow.
+So the origin is not chosen at the keyboard and is not a measured property of the geometry. It is the evaluation of a datum specification that exists before modelling starts.
 
-**Implementation Note.** glTF has no concept of a mesh origin, pivot or reference point. The origin is simply the zero of the coordinate space, and geometry is placed relative to it by vertex positions and node transforms. Nothing in a file can declare where the origin is meant to be, and no validator can check it, which is why the rule must be stated here and in the part macro, and verified by measurement. The measurement reads the `POSITION` accessor bounds and composes the node's local transform; accessor bounds alone are wrong for the three files carrying a node translation.
+**Implementation Note.** A measurement is not a datum. The centroid, the bounding-box midpoint, the surface centroid and the volume centroid are all computable properties of a mesh; they move when the mesh changes, they reference nothing, and a different tool computes a different one. Blender's Set Origin offers four of them and labels the vertex mean "median point", which is neither a median nor the midpoint of anything. None of them can serve as a datum, which is what section 5.6 exists to supply.
+
+**Implementation Note.** What glTF does and does not give you here. The origin is a real, load-bearing point in the file: it is the zero of node space, every vertex position is expressed relative to it, and under section 5.5 it is also the zero of scene space and therefore the link origin a consumer uses. What glTF has no way to express is what that zero is *referenced to*. No field states which features fixed it, so nothing in a file distinguishes an origin placed on a mounting face from one left wherever the authoring tool put it. That is why the datum has to be carried in the manifest and stated in prose, and why no validator can check it.
+
+**Implementation Note.** A measured description of where the origins in the existing library actually sit — centred in plan, referenced to the mounting plane vertically on all but two parts — is recorded in [the parts library audit](../evidence/audit-parts-library.md). It describes what those files happen to contain. It is not this rule, and it is not evidence for any rule.
 
 ### 5.5 Scenes and nodes
 
-The delivered file MUST contain exactly one scene, and that scene MUST list only the root node.
+The delivered file MUST contain exactly one scene, and that scene MUST list only the node.
 
-**Implementation Note.** A file with no scene is a library of entities that a viewer cannot show, and a file with several leaves which one renders to the client. Neither is wanted here. Several current deliveries carry leftover empty scenes and `bluerov2_chassis` carries two, which this rule catches.
+The delivered file MUST contain exactly **one node**. That node MUST NOT have children, and it MUST NOT carry a `translation`, a `rotation`, a `scale` or a `matrix`.
 
-The delivered file MUST contain exactly one root node, and that node MUST NOT carry a `rotation` or a `matrix` transform. Transforms MUST be applied in Blender before export.
+The node MUST be named `<part>`, with no Blender numeric suffix such as `.001` and no spaces. This is the only name in the file either consumer reads: Gazebo names each submesh after its node, never after the mesh or the material.
 
-A `translation` on the root node SHOULD NOT be present. Where one is, it is applied by both consumers but composed differently, so the part does not land in the same place in each.
+**Implementation Note.** The point of the rule is that the file then has exactly one coordinate system. Node space and scene space coincide, so there is no second coordinate system for a consumer to lose and nothing for two consumers to compose differently. Section 5.4's origin is therefore unambiguous: the zero of node space is the zero of scene space is the link origin.
 
-> **Open.** Whether a root translation is prohibited outright. Both consumers honor it, but they compose it against the up-axis correction in opposite orders -- Gazebo applies the correction outside the root transform, RViz inside it -- so a translation of 0.5 m along the file's Y puts the part 0.5 m up in Gazebo and 0.5 m to the side in RViz. `probe/coords/make_markers.py` writes `marker_roottrans` to demonstrate exactly this. An earlier draft of this section said a root translation "is permitted and is applied by both consumers", which is true of the first half and misleading about the second. The interim rule above is SHOULD NOT rather than MUST NOT because no current delivery carries one and the cost of prohibiting it is unknown; settling it needs the rendered comparison run and recorded. Not yet on the review's decision list.
+**Implementation Note.** Without the rule, a node transform is both unrecoverable and unsafe. Gazebo composes node transforms down the tree and bakes them into the vertices, so the structure a hierarchy expressed is gone by the time anything can read it. And the two consumers compose a root transform against the up-axis correction in opposite orders — Gazebo applies its correction outside the root transform ([source](https://github.com/gazebosim/gz-common/blob/a08c258d4e566b1e1624cb85f12ab78068ab2870/graphics/src/AssimpLoader.cc#L955-L976)), RViz post-multiplies inside it ([source](https://github.com/ros2/rviz/blob/baab61a68bc089217dfaa4f270276dc7a30268b1/rviz_rendering/src/rviz_rendering/mesh_loader_helpers/assimp_loader.cpp#L215-L222)) — so a translation of 0.5 m along the file's Y puts the part 0.5 m up in one and 0.5 m to the side in the other. `probe/coords/make_markers.py` writes `marker_roottrans` and `marker_twonode` to demonstrate both, and they are deliberately non-conforming files.
 
-The root node MUST be named `<part>`, with no Blender numeric suffix such as `.001` and no spaces. This is the only name in the file either consumer reads: Gazebo names each submesh after its node, never after the mesh or the material.
+**Implementation Note.** The prohibition is on the **presence** of each key, not on its value. glTF omits any component equal to its default, so an absent key and an identity value describe the same geometry written by two different exporters; a rule about values would admit a stated identity, and `gltf_to_yup.py` refuses a file carrying a `rotation` or `matrix` key whatever it contains. That tool also ignores `scale` entirely, so a scale would survive its conversion unrotated — a second reason to prohibit scale rather than tolerate it.
 
-**Implementation Note.** The prohibition on rotation and matrix nodes is a tooling constraint, not a format one. glTF permits them and both consumers honor them. The project's `gltf_to_yup.py` refuses to convert a file containing them, because it does not conjugate rotations.
+**Implementation Note.** Where placement goes instead. A node transform expresses placement of a part within an assembly, which in a robot is the job of the SDF visual pose and the joint tree. Put an offset there and it lives in the robot description: visible in a diff, changeable without a re-export, and owned by the integrator. Bake it into a node and it is invisible, needs the authoring tool to change, and silently competes with the kinematic tree.
 
-> **Open.** Whether a part may be delivered as more than one node, and what "one mesh" means when a part carries several primitives. Facts already established: a part with more than one material must have more than one primitive, so a one-primitive rule is a ban on multi-material parts; every primitive under one node becomes a Gazebo submesh carrying that node's name, so an SDF `<submesh>` cannot tell them apart; and an SDF `<material>` collapses every primitive to one material. What remains is whether any part needs submesh selection from SDF, and whether the rule should be stated on nodes rather than meshes. The mechanism behind those facts, and the proposal to rule submesh selection out, are in section 6.3. Tracked as review decision 15.
+**Implementation Note.** Achieving it in the authoring tool is not "apply all transforms", which is the instruction a reader will expect. Applying a location or a rotation holds the geometry still in the world and moves the origin relative to the part, which destroys the datum section 5.4 requires; clearing them moves the geometry with the object and preserves it. Scale is the exception and must be applied, because clearing it changes the part's size. [Exporting from Blender](../how-to/exporting-from-blender.md) has the measured detail.
+
+**Implementation Note.** A file with no scene is a library of entities that a viewer cannot show, and a file with several leaves which one renders to the client. Neither is wanted here.
 
 ### 5.6 Datum specification
 
@@ -264,7 +283,7 @@ The specification MUST consist of an ordered list of datum features, in order of
 
 For a displacement hull the specification SHOULD be naval architecture's three planes: the baseline, the centreline plane, and a transverse plane through the aft perpendicular, with the reference point at their intersection. [ISO 7462](https://www.iso.org/standard/14211.html) gives the terminology.
 
-**Implementation Note.** `gltfrp:forward` and `gltfrp:up` are declared rather than derived because nothing in a glTF file records either. A file states vertex positions and node transforms; it has no forward axis and no up axis, so `gltf-check` reports both as unknowable for a delivery without a manifest. Declaring them is what turns section 5.3's interim rule from a convention nobody can test into a property a tool can verify.
+**Implementation Note.** `gltfrp:forward` and `gltfrp:up` are declared rather than derived because nothing in a glTF file records either. A file states vertex positions and node transforms; it has no forward axis and no up axis. Declaring them is what turns section 5.2 from a convention nobody can test into a property a tool can verify, and the declaration MUST agree with section 5.2: `+X` and `+Z`. A delivery that declares anything else fails 5.2, and one that declares neither draws a warning, because the file alone cannot settle the question either way.
 
 **Implementation Note.** Why the base specifically. A base part's datum is the definition of `base_link`, and localization reports in that frame, so it is the one coordinate system in the vehicle whose meaning cannot be recovered by measuring anything later. REP 105 says `base_link` is rigidly attached to the mobile robot base and declines to say where; the standards agree it must be stated and none of them state it for you. `base_footprint` is a derived runtime frame and is not a datum.
 
@@ -276,6 +295,7 @@ A delivery whose `gltfrp:partRole` is `component` SHOULD carry a datum specifica
 
 Where the part attaches by a single mounting interface, that interface SHOULD be the primary datum. ISO 9787 §5.3 defines the mechanical interface coordinate system with its origin at the centre of the mechanical interface and its `+Z` pointing perpendicularly away from it, which is a ready-made single-feature specification for the common case.
 
+% CLAUDE: Defer these three - just keep them open.  Will define later after initial release and prototyping.  
 > **Open.** Whether a component datum becomes a requirement. It is a SHOULD because the mounting interface is usually obvious from the geometry and a wrong origin on a component is recoverable by editing one transform, where a wrong base datum is not. Settling it needs the pilot to say whether component origins actually cause trouble. It bears directly on 5.4, which is the same question asked as a coordinate rather than as a reference. Tracked as review decision 2.
 
 > **Open.** What a delivery does when the part's nominal geometry is not published anywhere. A datum specification names features of the part, which presumes an authority on what the part is; for an off-the-shelf component that is the vendor drawing, and for a custom part it may be nothing but the CAD. Not settled. Not yet on the review's decision list.
@@ -316,13 +336,19 @@ The model MUST carry `TEXCOORD_0`, with coordinates inside the range 0 to 1. A s
 
 ### 6.3 Primitives and submeshes
 
-**Implementation Note.** "Submesh" is a Gazebo word rather than a glTF one, and the mismatch is what makes it hard to picture. It is not a node arrangement and not a second mesh. Gazebo's loader walks the node hierarchy and emits one submesh for every primitive it meets, naming each after the node that instantiated that primitive's mesh, never after the mesh or the material. One node holding one mesh of four primitives therefore arrives as four submeshes all bearing that node's name, and two nodes arrive as the sum of their primitives, each batch carrying its own node's name. The submesh count is the primitive count; the names come from the nodes. The loader probe in section 2.1 of the review prints that list, and is the only way to see it without a renderer.
+**Implementation Note.** "Submesh" is a Gazebo word rather than a glTF one. It is not a node arrangement and not a second mesh. Gazebo's loader walks the node hierarchy and emits one submesh for every primitive it meets, naming each after the node that instantiated that primitive's mesh, never after the mesh or the material. One node holding one mesh of four primitives therefore arrives as four submeshes all bearing that node's name, and two nodes arrive as the sum of their primitives, each batch carrying its own node's name. The submesh count is the primitive count; the names come from the nodes. The loader probe in section 2.1 of the review prints that list, and is the only way to see it without a renderer.
 
 **Implementation Note.** A part has more than one primitive when it has more than one material, and in practice only then, because a primitive holds at most one `material` and glTF offers no other way to put two materials on one mesh. The specification gives one further reason, to limit the number of indices per draw call, which does not arise at these part sizes. So the primitive count of a well-formed part is its material count, and section 7 already requires every primitive to have a material.
 
 **Implementation Note.** What follows from that. SDF can select one submesh from a file with `<mesh><submesh><name>`, and Gazebo resolves the name by returning the first submesh that matches it and then stopping. Primitives sharing a node are therefore indistinguishable: such a selection takes the first and drops the rest, with no error and no warning. Naming submeshes after their node rather than after themselves is a known upstream defect, `gz-common` pull request 659, open and unfinished since December 2024, so the collision cannot be designed around by naming things more carefully at this end. The neighboring override is in section 7: an SDF `<material>` replaces the material on every primitive with one, so per-primitive materials survive only while nothing declares one.
 
-> **Open.** Whether this specification constrains primitives and rules out submesh selection. Proposed, as two rules: a primitive MUST exist only to carry a material distinct from its siblings, so that the primitive count equals the material count and nothing is split for any other reason; and a delivery MUST be usable as one whole mesh, with neither the part macro nor any world depending on `<mesh><submesh>` to select part of one. Both are free today, since nothing in the library splits a primitive gratuitously and nothing uses submesh selection, and together they keep the upstream naming defect permanently outside this project. The alternative, making selection work, needs one primitive per node and a naming rule for each, which is the multiple-node question in section 5.5. Not yet on the review's decision list.
+A primitive MUST exist only to carry a material distinct from its siblings, so that a mesh's primitive count equals its material count and nothing is split for any other reason.
+
+A delivery MUST be usable as one whole mesh. Neither the part macro nor any world may depend on `<mesh><submesh>` to select part of one.
+
+**Implementation Note.** Together these keep the upstream naming defect permanently outside this project: if nothing ever selects a submesh, it does not matter that submeshes cannot be told apart. The alternative — making selection work — needs one primitive per node and a naming rule for each, and section 5.5's one-node rule forecloses it. The two rules are the same decision seen from two sides.
+
+**Implementation Note.** The evidence for closing this rather than leaving it open is in [the corpus findings](https://github.com/HonuRobotics/gltf-robotics/blob/main/assess/findings.md): of the assets measured, only `Open-RMF/Caddy` uses submesh selection at all, 12 of 42 could not support it if they tried because primitives share node names, and a search of this project's own model repositories for `<submesh>` returns nothing.
 
 ## 7. Materials
 
@@ -348,7 +374,8 @@ Material names SHOULD name the component they cover, not a color. Material names
 
 **Implementation Note.** The materials in the file are what renders. The generated part SDF declares no `<material>`, and if one were declared it would replace every embedded material with that one, so per-primitive materials survive only while nothing overrides them. This matches every glTF exemplar found outside the project, none of which declares a material in SDF.
 
-> **Open.** Whether the workspace rule that PBR materials must be declared in the SDF applies to GLB parts at all. It was written for COLLADA, where the SDF is the only place a PBR material can live. For GLB it contradicts the rule above, the generated part SDF, and every glTF exemplar found. Proposed: restate the workspace rule as applying to COLLADA visuals only. Not yet on the review's decision list.
+> **Open.** Whether the workspace rule that PBR materials must be declared in the SDF applies to GLB parts at all. % CLAUDE: what workspace rule are you referring to?
+It was written for COLLADA, where the SDF is the only place a PBR material can live. For GLB it contradicts the rule above, the generated part SDF, and every glTF exemplar found. Proposed: restate the workspace rule as applying to COLLADA visuals only. Not yet on the review's decision list.
 
 ## 8. Textures
 
@@ -406,7 +433,7 @@ A delivered file MUST NOT contain:
 
 ## 11. Authoring toolchain
 
-> **Open.** Whether the Blender and exporter versions are pinned as part of the project's version stack, and at which version. Proposed, from section 7 of the review: Blender 5.1 with `io_scene_gltf2` 5.1.20, an export preset shipped with this specification, and assimp 6.0.4 pinned in drydock alongside the Gazebo libraries, with versions tracked at patch level because the behavior that changed during the audit changed in a patch release. The modeler is outside our infrastructure, so the authoring half is a convention plus an acceptance check, not a technical constraint. Tracked as review decisions 8, 10 and 17.
+> **Open.** Whether the Blender and exporter versions are pinned as part of the project's version stack, and at which version. Proposed, from section 7 of the review: Blender 5.1 with `io_scene_gltf2` 5.1.20, an export preset shipped with this specification, and assimp 6.0.4 pinned in drydock alongside the Gazebo libraries, with versions tracked at patch level because the behavior that changed during the audit changed in a patch release. The modeler is outside our infrastructure, so the authoring half is a convention plus an acceptance check, not a technical constraint. Tracked as review decisions 8, 10 and 17.% CLAUDE: Specify the versions of everything because it all seems to matter.  Specify which Gazebo, Blender (5.2 LTS) and exporter version, RVIZ (ROS) and assimp we are referring to
 
 Interim rule. Until that is decided, a delivery MUST record the exporter that produced it, which glTF does automatically in `asset.generator`, and the integrator SHOULD check it against previous deliveries.
 
@@ -427,9 +454,9 @@ A delivery conforms when all of the following hold. The first two are the modele
 
 The mechanical checks implied by this specification, and where they are described, are collected in the review document: file-level lint in section 2.2, the loader probe in section 2.1, the validator in section 2.6, the render checks in section 2.3, and the pass or fail table in section 2.5.
 
-> **Open.** Whether the probe and the lint become a CI test alongside the existing base color guard, and where they live. Proposed: yes, because a floating assimp and Gazebo version can only be tolerated if the acceptance check is automated. Tracked as review decision 7.
+> **Open.** Whether the probe and the lint become a CI test alongside the existing base color guard, and where they live. Proposed: yes, because a floating assimp and Gazebo version can only be tolerated if the acceptance check is automated. Tracked as review decision 7.% CLAUDE: No, this would be CI bloat.  We'll just check this as the review of incoming parts.  Once they are merged into production branch they are checked.  CI doesn't have to run it all the time. 
 
-> **Open.** Whether to commit a probe dump per part, so that a redelivered binary mesh produces a readable diff. Tracked as review decision 14.
+> **Open.** Whether to commit a probe dump per part, so that a redelivered binary mesh produces a readable diff. Tracked as review decision 14. % CLAUDE: No, overkill 
 
 ## 13. Open questions (Informative)
 
@@ -444,17 +471,12 @@ Nothing in the document governs these points, so a delivery cannot fail to confo
 | 4.1.1 | Authoring source archived | 12 |
 | 4.1.1 | Manifest required rather than recommended | 13 |
 | 4.2 | Textures embedded or external | 16 |
-| 5.2 | Stating the RViz distribution floor | none yet |
-| 5.3 | Forward axis +X | 2 |
-| 5.4 | Origin placement | 2 |
-| 5.5 | Root translation prohibited outright | none yet |
-| 5.5 | Multiple nodes, and what "one mesh" means | 15 |
+| 5.2 | Delivering the RViz correction, which is distribution dependent | none yet |
 | 5.6.3 | Component datum becomes a requirement | 2 |
 | 5.6.3 | When the part's nominal geometry is unpublished | none yet |
 | 5.6.3 | Whether under-constrained datums are admitted | none yet |
 | 6.1 | Whether the 0-to-1 UV requirement survives | 5 |
 | 6.2 | Triangle budget, by visual requirement tier | 5, 18 |
-| 6.3 | Primitive count, and ruling out submesh selection | none yet |
 | 7 | PBR-in-SDF workspace rule for GLB parts | none yet |
 | 8 | Base color format and per-map size caps | 4 |
 | 9 | Uniform translucency and use of BLEND | 6 |
