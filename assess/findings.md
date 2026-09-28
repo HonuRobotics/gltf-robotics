@@ -127,11 +127,15 @@ Seven assets exceed the 2048 texture cap, all at 4096, and all in the Gazebo and
 
 ### Structure: the rules in section 5.5 are broken by export default
 
-Nineteen of forty-nine carry a rotation or matrix on the root node, which is the Blender Y-up conversion node nobody removes, and twenty-two carry a root scale. Only twenty-one -- fewer than half -- have the shape our spec requires: exactly one root node, named, with no rotation.
+Counted over the 42 assets in scope, which is the denominator [ASSESSMENT.md](ASSESSMENT.md) uses for every figure below: the corpus is 49 assets, 5 are excluded as more than three years stale, and the 2 Khronos reference assets are read individually as a control on the tool rather than as evidence about the community.
 
-Two structural findings cut the other way, in favor of rules we have. The primitive count equals the material count in 41 of 49 assets, which is the rule proposed in spec section 6.3, free of charge. And nothing in the corpus uses more than one scene, has an animation, a skin, a camera or vertex colors, or a non-triangle primitive, and only two assets carry tangents. Leaving aside the two probes, which were chosen to violate it, the prohibitions in section 10 cost the corpus nothing at all.
+15 of 42 carry a rotation or matrix on the root node, which is the Blender Y-up conversion node nobody removes, and 22 of 42 carry a root scale. Exactly half, 21 of 42, have the shape our spec requires: one root node, named, unrotated.
 
-Fifteen of forty-nine have primitives sharing a node name, so an SDF `<submesh>` selection on those names would take the first and silently drop the rest. That is the upstream naming defect, live in a third of the corpus.
+Two structural findings cut the other way, in favour of rules we have. The primitive count equals the material count in 35 of 42, which is the rule section 6.3 now states, free of charge. And nothing in the corpus uses more than one scene, has an animation, a skin, a camera or vertex colors, or a non-triangle primitive, and only two assets carry tangents. Leaving aside the two probes, which were chosen to violate it, the prohibitions in section 10 cost the corpus nothing at all.
+
+12 of 42 have primitives sharing a node name, so an SDF `<submesh>` selection on those names would take the first and silently drop the rest. That is the upstream naming defect, live in 29% of the corpus.
+
+Two rules tightened since these were measured, and the corpus diverges from both more than the figures above suggest. Section 5.5 now requires exactly **one** node with no children and no transform of any kind, where it previously allowed children and tolerated a root translation: 11 of the assets carry actual child-node hierarchies, and the deepest runs to 148 nodes at depth 4. Section 5.2 now requires a Z-up file, which every asset here fails by construction, since all of them follow glTF's convention. Neither divergence is a defect in those assets. They were authored to the standard; this profile departs from it, and the departure is stated in 5.2.
 
 ### Scale is not reliably meters, and one asset is visibly wrong
 

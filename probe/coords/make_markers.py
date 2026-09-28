@@ -8,15 +8,17 @@ The marker is four box arms of deliberately different lengths, authored in the R
     +z  0.25 m  blue     up
     -x  0.10 m  grey     a stub, so the sign of x is unambiguous too
 
-A bounding box alone therefore identifies every axis and its sign, and a mirrored or mis-rotated file is visibly wrong. Every variant below carries the same marker; they differ only in how the frame is expressed, so that each file isolates one question.
+A bounding box alone therefore identifies every axis and its sign, and a mirrored or mis-rotated file is visibly wrong. Every variant below carries the same marker; they differ only in how the coordinate system is expressed, so that each file isolates one question.
+
+Only marker_zup conforms to the profile. The rest are deliberately non-conforming and exist to demonstrate what the rules prohibit and why: profile 5.2 requires a Z-up file, and 5.5 requires exactly one node with no transform and no children. Do not copy any of these as an example of a delivery.
 
 Outputs, in the directory given as argv[1] (default: alongside this script):
 
-  marker_yup.gltf / .glb      buffer swizzled (x,y,z)->(x,z,-y), root node identity.  What Blender's default "+Y Up" export produces.
-  marker_zup.gltf / .glb      buffer raw in the body frame, root node identity.        What Blender's export produces with "+Y Up" off.
-  marker_rotnode.gltf / .glb  buffer raw (Z-up) and a root-node rotation of -90 deg about X, so the composed result equals marker_yup.  Is a node rotation honored, and by whom?
-  marker_roottrans.gltf/.glb  marker_yup with a root-node translation (0, 0.5, 0) in file space.        Gazebo rolls it with the geometry; RViz does not (root post-multiply).
-  marker_twonode.glb          marker_yup plus a child node "pointer" with its own mesh, translated and rotated.  Node composition and submesh naming.
+  marker_zup.gltf / .glb      buffer raw in the body coordinate system, one node, no transform.  CONFORMS: what an export with "+Y Up" off produces.
+  marker_yup.gltf / .glb      buffer converted (x,y,z)->(x,z,-y), one node, no transform.  What "+Y Up" on produces; violates 5.2, and Gazebo shows it on its side.
+  marker_rotnode.gltf / .glb  buffer raw (Z-up) and a node rotation of -90 deg about X, so the composed result equals marker_yup.  Violates 5.5. Is a node rotation honored, and by whom?
+  marker_roottrans.gltf/.glb  marker_yup with a node translation (0, 0.5, 0) in file space.  Violates 5.2 and 5.5. Gazebo rolls it with the geometry; RViz does not (root post-multiply), which is why 5.5 prohibits it.
+  marker_twonode.glb          marker_yup plus a child node "pointer" with its own mesh, translated and rotated.  Violates 5.2 and 5.5 twice over. Node composition and submesh naming.
   marker_zup_declZ.dae        Z-up buffer, <up_axis>Z_UP</up_axis>.   } identical buffers, different declarations:
   marker_zup_declY.dae        Z-up buffer, <up_axis>Y_UP</up_axis>.   } if a consumer's output is identical, it ignores the declaration.
   world_marker.sdf            gz sim world placing marker_yup.glb with an identity visual pose.

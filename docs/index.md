@@ -6,8 +6,9 @@ This is our pipeline, published openly with its evidence. It is not a standard, 
 
 ## Where to start
 
-- [The Profile](profile/index.md) — what a delivered model must be, rule by rule.
+- [Profile](profile/index.md) — what a delivered model must be, rule by rule.
 - [How-to guides](how-to/index.md) — authoring and exporting a model that satisfies it.
+- [Walkthroughs](walkthroughs/index.md) — one worked example from Blender to Gazebo, with each tool's real output.
 - [Reference](reference/index.md) — coordinate systems, and what Gazebo and RViz actually read from a `.glb`.
 - [Evidence](evidence/index.md) — what other people's assets contain, measured rather than asserted.
 
@@ -26,6 +27,7 @@ It parses the glTF rather than rendering it, so it needs no Gazebo, no GPU and n
 
 The Profile <profile/index>
 How-to guides <how-to/index>
+Walkthroughs <walkthroughs/index>
 Reference <reference/index>
 Evidence <evidence/index>
 Project <project/index>

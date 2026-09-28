@@ -90,7 +90,11 @@ examples/monkey_baseline.glb  (69688 bytes, .glb)
   ```
 
 
-Note the node and mesh names pass through.  Probably not worth specifying naming at this level.  Add note to our profile that names of nodes and meshes are unconstrained (at this time)
+Note that both names pass through from Blender: the node name comes from the object, the mesh name from the mesh datablock. They are not equally free, though, and the profile treats them differently.
+
+The **node** name is constrained, by profile 5.5: `<part>`, no Blender numeric suffix, no spaces. It has to be, because it is the only name in the file either consumer reads — Gazebo names every submesh after the node that instantiated the mesh, never after the mesh or the material, so the node name is what appears downstream and what an SDF would have to address.
+
+The **mesh datablock** name is unconstrained, and nothing reads it. Renaming it changes nothing anyone sees. Worth setting anyway so a reader of the `.blend` is not misled, but it is housekeeping rather than a rule.
 
 ![side by side](./images/monkey_bline_blendgz.png)
 
@@ -282,3 +286,5 @@ The workflow decision is to not export with `+Y Up`. The part is modelled in Ble
 The undo is exact only because the root node is identity. RViz post-multiplies its rotation onto the root node's own transform, so it acts inside whatever the root carries; the URDF origin acts outside. With an identity root the two rolls cancel and RViz shows the file's vertices exactly as Gazebo does. With a root transform they do not: `monkey_xform.glb` carries a 5 m translation and a 90 degree yaw on its root, and with the undo in place its centre lands 5 m along +Y in RViz where Gazebo puts it 5 m along +Z, because the undo has rotated the root transform along with the mesh. That is a second reason, after the TF one above, for the identity root rule in profile section 5.5.
 
 The cost of the decision is that the file is not oriented the way the glTF specification says an asset should be, so any other glTF viewer shows the part lying on its side, and a URDF that forgets the roll shows it that way in RViz. The benefit is that Blender, the file and Gazebo agree with no conversion anywhere, and the one correction lives in one place.
+
+The full derivation, with both loaders quoted at the versions in the container and the probe measurements that confirm them, is [One body, one mesh: who rotates what](../reference/coordinate-systems.md#one-body-one-mesh-who-rotates-what) in the coordinate-systems reference.

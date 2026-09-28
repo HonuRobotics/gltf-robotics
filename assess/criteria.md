@@ -57,9 +57,10 @@ What the file is, as a tree. This is the group that decides whether anything dow
 |---|---|---|---|
 | C1 | Scene count and which is default | Spec 5.5 requires exactly one. Leftover empty scenes are a common export artifact. | tool |
 | C2 | Root node count | Spec 5.5 requires exactly one. | tool |
-| C3 | Root node carries `rotation` or `matrix` | Spec 5.5 forbids it, for a tooling reason rather than a format one: `gltf_to_yup.py` will not convert such a file. | tool |
-| C4 | Root node carries a `scale` | Scale in the transform rather than in the mesh data. Fuel's Caddy bakes 0.0255 into every node. Silently wrong in anything that reads accessor bounds. | tool |
-| C5 | Node count, depth, and duplicate names | Depth and duplication are what make `<submesh>` selection ambiguous. | tool |
+| C2a | Total node count, and whether any node has children | Spec 5.5 requires exactly one node and no children. C2 alone passes a file that hangs a hierarchy under one root, which the rule no longer permits. | tool |
+| C3 | Root node carries `rotation` or `matrix` | Spec 5.5 forbids the key, whatever its value, so this is measured on presence and an identity rotation counts. Two reasons: the two consumers compose a root transform in opposite orders, and `gltf_to_yup.py` refuses such a file. | tool |
+| C4 | Root node carries a `translation` or a `scale` | Spec 5.5 forbids these too, so all four transform keys are now one rule. Scale in the transform rather than the mesh data is silently wrong in anything reading accessor bounds — Fuel's Caddy bakes 0.0255 into every node — and `gltf_to_yup.py` ignores scale entirely, so it survives conversion unrotated. | tool |
+| C5 | Node count, depth, and duplicate names | Depth and duplication are what made `<submesh>` selection ambiguous, which spec 6.3 now rules out; the measurement stays, as the evidence for that rule and as the way C2a is reported. | tool |
 | C6 | Primitives sharing a node name | Gazebo names a submesh after its node, so these are indistinguishable to SDF: the selection takes the first and silently drops the rest. Spec 6.3. | tool |
 | C7 | Node names that an exporter invented (`Cylinder002`) | Whether anything in the file is addressable at all. Fuel's Ionic Mascot has 148 such nodes. | tool |
 | C8 | Mesh instancing: one mesh used by several nodes | Changes what the loader builds, and what a triangle count means. | tool |

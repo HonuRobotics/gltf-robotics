@@ -52,36 +52,77 @@ def test_generator_must_be_recorded(write_model):
     assert failures(path) == {"11"}
 
 
-# --------------------------------------------------- section 5: frame, nodes
+# ------------------------------------- section 5: coordinate systems, nodes
+
+def test_declared_axes_must_match_the_profile(write_model):
+    """5.2 is a decided MUST, so a manifest declaring glTF's convention fails."""
+    from conftest import manifest
+    path = write_model(lambda g: g["extensions"]["KHR_xmp_json_ld"].update(
+        packets=[manifest(**{"gltfrp:up": "+Y"})]))
+    assert "5.2" in failures(path)
+    detail = " ".join(f.detail for f in check_file(path) if f.level == FAIL)
+    assert "+Z" in detail
+
+
+def test_undeclared_axes_are_reported_once_by_4_1_1_not_twice(write_model):
+    """One omission, one defect. 4.1.1 owns presence; 5.2 owns the values."""
+    from conftest import manifest
+    packet = manifest()
+    packet.pop("gltfrp:forward")
+    packet.pop("gltfrp:up")
+    path = write_model(lambda g: g["extensions"]["KHR_xmp_json_ld"].update(packets=[packet]))
+    assert "4.1.1" in failures(path)
+    assert "5.2" not in failures(path)
+    assert "5.2" not in warnings(path)
+
 
 def test_two_scenes(write_model):
     path = write_model(lambda g: g["scenes"].append({"nodes": [0]}))
     assert failures(path) == {"5.5"}
 
 
-def test_root_node_rotation(write_model):
-    """The Blender Y-up conversion node: the two consumers compose it differently."""
-    path = write_model(lambda g: g["nodes"][0].update(
-        rotation=[-0.7071068, 0.0, 0.0, 0.7071068]))
+@pytest.mark.parametrize("key, value", [
+    ("translation", [0.0, 0.5, 0.0]),
+    ("rotation", [-0.7071068, 0.0, 0.0, 0.7071068]),
+    ("scale", [2.0, 2.0, 2.0]),
+    ("matrix", [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]),
+])
+def test_any_node_transform_fails(write_model, key, value):
+    """All four keys, so node space and scene space cannot come apart."""
+    path = write_model(lambda g: g["nodes"][0].update({key: value}))
     assert failures(path) == {"5.5"}
-    assert any("rotation" in s for s in summaries(path))
+    assert any(key in f.detail for f in check_file(path) if f.level == FAIL)
 
 
-def test_root_node_matrix(write_model):
-    path = write_model(lambda g: g["nodes"][0].update(
-        matrix=[1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]))
+@pytest.mark.parametrize("key, identity", [
+    ("translation", [0.0, 0.0, 0.0]),
+    ("rotation", [0.0, 0.0, 0.0, 1.0]),
+    ("scale", [1.0, 1.0, 1.0]),
+    ("matrix", [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]),
+])
+def test_a_stated_identity_transform_still_fails(write_model, key, identity):
+    """The rule is on presence, not value.
+
+    glTF omits a component equal to its default, so an absent key and an
+    identity value are the same geometry from two different exporters. A value
+    test would pass a file that `gltf_to_yup.py` refuses, and it would leave the
+    checker disagreeing with the profile, which prohibits the key.
+    """
+    path = write_model(lambda g: g["nodes"][0].update({key: identity}))
     assert failures(path) == {"5.5"}
+
+
+def test_several_transform_keys_are_reported_together(write_model):
+    path = write_model(lambda g: g["nodes"][0].update(
+        translation=[0.0, 0.5, 0.0], scale=[2.0, 2.0, 2.0]))
+    assert failures(path) == {"5.5"}
+    detail = " ".join(f.detail for f in check_file(path) if f.level == FAIL)
+    assert "translation" in detail and "scale" in detail
 
 
 def test_root_node_blender_numeric_suffix(write_model):
     path = write_model(lambda g: g["nodes"][0].update(name="test_part.001"))
     assert failures(path) == {"5.5"}
-
-
-def test_identity_rotation_is_not_a_failure(write_model):
-    """A rotation that rotates nothing is noise, not the hazard the rule is about."""
-    path = write_model(lambda g: g["nodes"][0].update(rotation=[0.0, 0.0, 0.0, 1.0]))
-    assert failures(path) == set()
 
 
 def test_two_root_nodes(write_model):
@@ -90,6 +131,24 @@ def test_two_root_nodes(write_model):
         g["scenes"][0]["nodes"] = [0, 1]
     path = write_model(mutate)
     assert failures(path) == {"5.5"}
+
+
+def test_a_child_node_fails(write_model):
+    """One node, no hierarchy: Gazebo bakes child transforms in, so structure is lost."""
+    def mutate(g):
+        g["nodes"][0]["children"] = [1]
+        g["nodes"].append({"name": "tip", "mesh": 0})
+    path = write_model(mutate)
+    assert failures(path) == {"5.5"}
+    detail = " ".join(f.detail for f in check_file(path) if f.level == FAIL)
+    assert "child" in detail
+
+
+def test_a_second_node_fails_even_unparented(write_model):
+    """Two nodes is two nodes, whether or not the scene lists both."""
+    path = write_model(lambda g: g["nodes"].append({"name": "spare", "mesh": 0}))
+    assert failures(path) == {"5.5"}
+    assert any("2 nodes, expected exactly 1" in s for s in summaries(path))
 
 
 # ----------------------------------------------------- section 6: geometry
@@ -121,6 +180,30 @@ def test_third_uv_set_fails(write_model):
 def test_uv_outside_unit_range(write_model):
     path = write_model(lambda g: g["accessors"][2].update(min=[0.0, 0.0], max=[2.0, 1.0]))
     assert failures(path) == {"6.1"}
+
+
+def _extra_primitive(g, material=0):
+    """A second primitive on the same mesh, reusing the baseline's buffer views."""
+    first = g["meshes"][0]["primitives"][0]
+    g["meshes"][0]["primitives"].append(dict(first, material=material))
+
+
+def test_two_primitives_sharing_a_material_fail(write_model):
+    """A primitive exists to carry a distinct material; sharing one splits for no reason."""
+    path = write_model(_extra_primitive)
+    assert failures(path) == {"6.3"}
+    detail = " ".join(f.detail for f in check_file(path) if f.level == FAIL)
+    assert "Housing" in detail
+
+
+def test_two_primitives_with_distinct_materials_pass(write_model):
+    """The legitimate reason to have two: glTF gives a primitive at most one material."""
+    def mutate(g):
+        g["materials"].append(dict(g["materials"][0], name="Trim"))
+        _extra_primitive(g, material=1)
+
+    path = write_model(mutate)
+    assert failures(path) == set()
 
 
 # ---------------------------------------------------- section 7: materials
@@ -235,9 +318,10 @@ def test_undecided_rules_never_fail(write_model):
     from gltf_robotics.check.rules import ADVISORY
     findings = check_file(write_model())
     advisory = {f.section for f in findings if f.level == ADVISORY}
-    # 5.1 alone: scale cannot be read from a glTF file at all. 5.3 leaves the
-    # advisory tier as soon as the manifest declares a forward axis, and 5.6 is
-    # a real rule now that the datum specification has a home.
+    # 5.1 alone: scale cannot be read from a glTF file at all. 5.2's axes are
+    # decided now, so an undeclared axis is a WARN -- a MUST the file cannot
+    # settle -- rather than an Open point, and 5.6 is a real rule now that the
+    # datum specification has a home.
     assert advisory == {"5.1"}
     assert not any(f.failed for f in findings if f.section in advisory)
 
@@ -248,14 +332,32 @@ def _packet(g):
     return g["extensions"]["KHR_xmp_json_ld"]["packets"][0]
 
 
-def test_missing_manifest_warns_but_does_not_fail(write_model):
+def test_a_missing_manifest_fails(write_model):
+    """Required since review decision 13: provenance cannot be reconstructed later.
+
+    It was a SHOULD while the argument against was that no existing delivery
+    carried one. That argument is withdrawn -- the existing files are not trusted
+    and no rule is calibrated to them.
+    """
     def mutate(g):
         g["asset"].pop("extensions")
         g.pop("extensions")
         g.pop("extensionsUsed")
     path = write_model(mutate)
-    assert failures(path) == set()
-    assert "4.1.1" in warnings(path)
+    assert "4.1.1" in failures(path)
+    # 5.2 has nothing to compare against and must not double-report the omission.
+    assert "5.2" not in failures(path)
+
+
+@pytest.mark.parametrize("key", ["gltfrp:partRole", "gltfrp:forward", "gltfrp:up"])
+def test_each_required_manifest_property_fails_when_absent(write_model, key):
+    """The three that record what no measurement can recover."""
+    from conftest import manifest
+    packet = manifest()
+    packet.pop(key)
+    path = write_model(lambda g: g["extensions"]["KHR_xmp_json_ld"].update(packets=[packet]))
+    assert "4.1.1" in failures(path)
+    assert any(key in f.summary for f in check_file(path) if f.level == FAIL)
 
 
 def test_manifest_without_a_role_fails(write_model):
@@ -331,3 +433,59 @@ def test_realized_pose_must_not_be_authored(write_model):
     path = write_model(
         lambda g: _packet(g).update({"gltfrp:realizedPose": {"@list": [0, 0, 0, 0, 0, 0]}}))
     assert "5.6" in failures(path)
+
+
+# ------------------------------------------------------------ the CLI output
+
+from gltf_robotics.check import cli  # noqa: E402
+
+
+def test_verdict_agrees_with_exit_code(write_model, capsys):
+    """The text verdict, the JSON flag and the exit code must give one answer.
+
+    Profile 12.3 defines compliant as every MUST satisfied, so a file carrying
+    only SHOULD violations is compliant unless --strict says to count them.
+    """
+    clean = write_model()
+    assert cli.verdict(check_file(clean)).endswith("-> compliant")
+
+    warn_only = write_model(name="test_part.glb")
+    text = cli.verdict(check_file(warn_only))
+    assert "-> compliant; 1 WARN to review" in text and "§4.1" in text
+    assert "not compliant under --strict" in cli.verdict(check_file(warn_only), strict=True)
+    assert cli.main([str(warn_only)]) == 0
+    assert cli.main(["--strict", str(warn_only)]) == 1
+
+    failing = write_model(lambda g: g["asset"].pop("generator"))
+    assert "-> not compliant: a MUST is violated in §11" in cli.verdict(check_file(failing))
+    assert cli.main([str(failing)]) == 1
+    capsys.readouterr()
+
+
+def test_tally_uses_the_same_words_as_the_marks(write_model):
+    text = cli.verdict(check_file(write_model(name="test_part.glb")))
+    tally = text.splitlines()[0]
+    assert "checks:" in tally
+    for word in ("passed", "to review", "undecided", "not applicable", "ok", "note"):
+        assert word not in tally
+    assert "PASS" in tally and "WARN" in tally
+
+
+def test_every_section_has_a_title(write_model):
+    """A rule added without a TITLES entry would print a bare section number."""
+    out = cli.render(write_model(), check_file(write_model()), verbose=False, quiet=False)
+    headers = [line for line in out.splitlines() if line.startswith("  §")]
+    assert headers
+    for line in headers:
+        assert len(line.split(maxsplit=1)) == 2, f"untitled section: {line!r}"
+    assert {f.section for f in check_file(write_model())} <= set(cli.TITLES)
+
+
+def test_legend_prints_once_per_run(write_model, capsys):
+    a, b = write_model(), write_model(name="other_part.visual.glb")
+    cli.main([str(a), str(b)])
+    out = capsys.readouterr().out
+    assert out.count("marks:") == 1
+    assert out.count("-> compliant") == 2
+    for mark, _ in cli.LEGEND:
+        assert f"  {mark}  " in out

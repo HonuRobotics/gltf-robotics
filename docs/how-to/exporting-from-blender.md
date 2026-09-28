@@ -2,25 +2,36 @@
 
 Every delivery this project has received came out of `Khronos glTF Blender I/O`, and most of the defects found in them are export defaults rather than modelling mistakes. This page collects the ones that bite, each with what the export does and what to do instead.
 
-None of it is a substitute for checking the result: run [`gltf-check`](checking-a-delivery.md) on the exported file, and open it in the Khronos Sample Viewer before delivering it.
+None of it is a substitute for checking the result: run [`gltf-check`](checking-a-delivery.md) on the exported file, and open it in the Khronos Sample Viewer before delivering it. Expect the viewer to show the part lying on its side — it assumes glTF's Y-up convention and this profile departs from it, so the viewer can tell you about materials, textures and transparency but nothing about orientation.
 
-## Author in the ROS frame, and let the exporter convert
+## Author in the ROS frame, and do not let the exporter convert
 
-Blender is Z-up and right-handed, the same convention as REP 103, so a part is modelled x forward, y left, z up — exactly the part frame the macro uses. The exporter then applies its fixed Y-up conversion, mapping (x, y, z) to (x, z, −y).
+Blender is Z-up and right-handed, the same convention as ISO 9787 and REP 103, so a part is modelled x forward, y left, z up — exactly the part coordinate system the macro uses. Turn the exporter's `+Y Up` option **off**. The file then carries those axes unchanged, which is what profile section 5.2 requires.
 
-The consequence is that every delivered file has up on +Y and forward on +X. The +Y is glTF's requirement. The +X is a consequence of authoring in the robot's convention rather than a decision anyone recorded, and it differs from glTF's own statement that an asset faces +Z. Profile section 5.3 is the interim rule: keep authoring in the part frame, and do not re-orient a delivery to face +Z without agreement.
+The consequence is that every delivered file has forward on +X and up on +Z, and Gazebo shows it correctly with an identity visual pose. RViz rotates every glTF mesh +90° about X as it loads, so the URDF visual that shows the part carries `rpy="-1.5708 0 0"` to undo it. That line is the integrator's, not yours: do not rotate the part in Blender to compensate for either consumer, and expect the Khronos Sample Viewer and other glTF viewers to show the part on its side, because they assume Y-up. The [coordinate-systems reference](../reference/coordinate-systems.md#one-body-one-mesh-who-rotates-what) explains who rotates what.
 
-Do not rotate the part to "fix" its orientation for Gazebo. That correction happens downstream.
+## Clear location and rotation, apply scale, before exporting
 
-## Apply transforms before exporting
+Profile section 5.5 requires exactly one node carrying no translation, rotation, scale or matrix. Any object transform left unapplied in Blender is written as that node's TRS, and a node transform is a genuine hazard rather than cosmetic: Gazebo composes it outside its (absent) correction and RViz composes it inside its rotation, so the same file lands in two different places in the two consumers.
 
-Profile section 5.5 requires exactly one root node carrying no rotation and no matrix. The exporter writes a Y-up conversion node when transforms are left unapplied, and that node is a genuine hazard rather than cosmetic: Gazebo pre-multiplies it and RViz post-multiplies it, so the same file lands differently in the two consumers.
-
-Set the scene unit scale to 1.0 and apply object scale as well. A file at the wrong scale is silently wrong — nothing downstream can detect it, and two assets in the wider corpus are millimetre files corrected by a URDF `scale` further down.
+Getting there is not "apply all transforms", which is the instruction you will expect. Applying a location or a rotation holds the geometry still in the world and moves the origin relative to the part, which destroys the datum section 5.4 requires; clearing them moves the geometry with the object and preserves it. Scale is the exception and must be applied, because clearing it changes the part's size. Set the scene unit scale to 1.0 as well. A file at the wrong scale is silently wrong — nothing downstream can detect it, and two assets in the wider corpus are millimetre files corrected by a URDF `scale` further down.
 
 ## Where the origin goes is not yours to choose
 
-**Placeholder — the rule is not settled.** Today the profile's proposed rule is in [section 5.4](../profile/profile.md), and a different approach is open in section 5.6: the part's coordinate system is specified before modelling begins, by naming the features it is referenced to, and your job is to place the object origin where that specification puts it. Either way the origin is handed to you with the commission rather than decided at the keyboard. When 5.6 settles, the steps for realising it in Blender — including how to carry a direction the shape does not determine, which is an empty rather than geometry — belong here.
+The part's coordinate system is specified before modelling starts, by naming the features it is referenced to — its datum. Profile sections 5.4 and 5.6 have the rule. Your job is to put the object origin where that specification puts it, so the origin arrives with the commission rather than being decided at the keyboard.
+
+Four steps, in this order:
+
+1. **Read the datum specification.** It names features of the part and says which degrees of freedom each one removes: a mounting face, a bore axis, a locating pin. Between them they fix all six, and that is what determines both the origin and the axis directions. If you were not given one, stop and ask — there is no default, and nothing downstream can recover the intent.
+2. **Set the object origin to the datum origin.** Whatever it takes in Blender: snap the 3D cursor to a vertex, an edge midpoint or a face centre and use `Origin to 3D Cursor`, or place an empty and snap to that.
+3. **Bring the object to the world origin**, with its datum axes aligned to the world axes: clear location and rotation, apply scale, as above. The datum now coincides with Blender's world origin, which is what makes node space, scene space and the part's coordinate system the same thing.
+4. **Export** with `+Y Up` off.
+
+**Do not use Set Origin's centre options to decide the origin.** Blender offers four — the vertex mean, the bounding-box midpoint, the surface centroid and the volume centroid — and none of them is a datum. They are measurements of the mesh: they move when the mesh changes, they reference no feature, and a different one is a different answer. Two of them are also traps. The `Center` option defaults to `Median`, which is the arithmetic **mean** of the vertex coordinates and not a median at all; and which of the two it uses is silently taken from the viewport's Transform Pivot Point unless you override it in the operator panel. So the same menu click gives different results in different sessions.
+
+A quick way to tell whether the origin ended up anywhere meaningful: run [`gltf-summary`](checking-a-delivery.md) on the export and read its `origin at` line. An origin on a mounting face reads `0.00` or `1.00` on the axis normal to that face. An origin reading `0.50` on all three axes is sitting at the midpoint of the bounding box, which is almost always a sign it was inherited rather than specified.
+
+**Carrying a direction the shape does not determine.** Some parts have a forward that no feature implies — a symmetric housing that must nonetheless face a particular way. Add the feature: a plane whose normal is the forward direction, or an empty, and name it in the datum specification so it is part of the part's definition rather than something you remembered. The specification has to state which side of the plane is forward, because a plane alone gives an axis and not a sense.
 
 ## Name the object, not the mesh
 
@@ -54,6 +65,16 @@ Plan transparency per material. For cutouts — vents, perforations, mesh guards
 
 Do not tag an opaque part `BLEND`. Gazebo ignores `BLEND` and renders the material opaque, so the result looks fine there and is wrong everywhere else. One delivered chassis reached us exactly this way: 0.56% of its base colour map is a cutout region, and the whole hull had been tagged `BLEND` to handle it.
 
+## Keep the authoring source, outside the simulation repository
+
+A delivered `.glb` is an export, and an export is lossy in one direction that matters: you cannot get the modifier stack, the material node graph, the UV seams or the named datum features back out of it. So keep the `.blend`, and the CAD it came from if there was any.
+
+It does not belong in the simulation repository — it is large, it is binary, it changes wholesale on every save, and nothing in the build reads it. Keep it wherever the project keeps things that must survive without being versioned alongside code, and cite it in the manifest's `xmpMM:DerivedFrom` so a delivered file says where its source went.
+
+This is a practice rather than a rule. Profile section 4.1.1 does not require the archive, because whether a file was kept is not a property of the file that arrived. What it does say is that if you keep one, the manifest should point at it, which costs nothing.
+
 ## Versions
 
-Every current delivery reports `Khronos glTF Blender I/O v5.1.20`, which corresponds to Blender 5.1. Whether those versions get pinned is still open — profile section 11 has the proposal. The generator string records the tool but not the settings, so two files from the same exporter can still differ in image format, tangents and compression. That is why the checks constrain the outcome rather than the settings.
+The toolchain is pinned at patch level in [profile section 11](../profile/profile.md): Blender 5.2.2 LTS with `io_scene_gltf2` 5.2.40, which writes `asset.generator` as `Khronos glTF Blender I/O v5.2.40`. Earlier deliveries report `v5.1.20`, which is Blender 5.1; they predate the pin and are not held to it.
+
+The generator string records the tool and never the settings, so two files from the same exporter can still differ in image format, tangents and compression. That is why the checks constrain the outcome rather than the settings, and why `will_save_settings` is worth turning on — it puts the settings in the `.blend` where a re-export can reproduce them.

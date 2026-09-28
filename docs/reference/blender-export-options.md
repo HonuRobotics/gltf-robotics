@@ -11,7 +11,6 @@ Confirm these. They are already Blender's defaults, so the work is checking rath
 | UI label | Identifier | Value | Why |
 |---|---|---|---|
 | Format | `export_format` | GLB | profile 4.2 prohibits `.gltf` |
-| +Y Up | `export_yup` | True | the whole of the coordinate conversion — profile 5.2 |
 | At Collection Center | `at_collection_center` | False | it relocates the origin, which profile 5.4 and 5.6 govern |
 | UVs | `export_texcoords` | True | profile 6 requires `TEXCOORD_0` on every primitive |
 | Normals | `export_normals` | True | profile 6 requires `NORMAL` |
@@ -20,10 +19,11 @@ Confirm these. They are already Blender's defaults, so the work is checking rath
 | Punctual Lights | `export_lights` | False | profile 10 prohibits `KHR_lights_punctual` |
 | Draco | `export_draco_mesh_compression_enable` | False | profile 10 prohibits `KHR_draco_mesh_compression` |
 
-Change these. They are the only four that differ from the default:
+Change these. They are the only five that differ from the default:
 
 | UI label | Identifier | Default | Set to | Why |
 |---|---|---|---|---|
+| +Y Up | `export_yup` | True | False | profile 5.2 requires the file Z-up, in the body coordinate system; it is the one axis conversion the workflow does not want |
 | Limit to ▸ Selected Objects | `use_selection` | False | True | one part per delivery — profile 4.1 |
 | Animation | `export_animations` | True | False | profile 10 prohibits `animations`, and no scene should rely on having no actions |
 | Remember Export Settings | `will_save_settings` | False | True | the `.blend` then carries the settings it was exported with, so the delivery can be reproduced from its source |
@@ -39,7 +39,7 @@ No export option touches any of these. They are done in the scene, before the di
 
 | What | Where | Why |
 |---|---|---|
-| Apply object transforms | `Object ▸ Apply ▸ All Transforms` | profile 5.5 — the root node must carry no rotation and no matrix |
+| Clear location and rotation, apply scale | `Object ▸ Clear` and `Object ▸ Apply ▸ Scale` | profile 5.5 — the node must carry no transform at all. Apply is wrong for location and rotation: it moves the origin off the datum |
 | Scene unit scale 1.0, object scale applied | Scene properties | profile 5.1 — a file at the wrong scale is silently wrong |
 | `metallicFactor` | the material's Principled BSDF | profile 7 — the defect that recurs most in deliveries |
 | The object's name | the object, not the mesh datablock | profile 5.5 — the only name either consumer reads |
@@ -69,7 +69,9 @@ Every current delivery reports `Khronos glTF Blender I/O v5.1.20`, which is Blen
 
 There is no export option that applies object transforms. `export_apply` is Apply **Modifiers** — it evaluates the modifier stack, and it has nothing to do with an object's location, rotation or scale.
 
-Profile section 5.5 requires the root node to carry no rotation and no matrix, and that is achieved in the scene, with `Object ▸ Apply ▸ All Transforms`, before the export dialog is ever opened. An object left with a rotation exports as a node with a rotation no matter how the dialog is set. Our own [export guide](../how-to/exporting-from-blender.md) says "Apply transforms before exporting" under a heading that invites this confusion, and the distinction belongs there too.
+Profile section 5.5 requires the node to carry no `translation`, `rotation`, `scale` or `matrix`, and that is achieved in the scene before the export dialog is ever opened. An object left with a transform exports as a node carrying it, no matter how the dialog is set.
+
+The operation is not `Object ▸ Apply ▸ All Transforms`, which is the one a reader expects. Applying a location or a rotation holds the geometry still in the world and moves the origin relative to the part, destroying the datum that profile 5.4 requires; clearing them moves the geometry with the object and preserves it. Scale is the exception and must be applied, because clearing it changes the part's size. Measured on 5.2.2 with an origin set 1 m off the geometry: applying moved it 5.42 m relative to the part, clearing moved it not at all.
 
 ## Top of the dialog
 
@@ -107,7 +109,7 @@ Profile section 5.5 requires the root node to carry no rotation and no matrix, a
 | Data ▸ Cameras | `export_cameras` | False | required False — profile 10 prohibits `cameras` |
 | Data ▸ Punctual Lights | `export_lights` | False | required False — profile 10 prohibits `KHR_lights_punctual` |
 
-`use_selection` is prescribed True rather than left at the default. Profile 4.1 is one part per delivery, and an export that takes whatever happens to be in the scene is the mechanism by which leftover objects and empty scenes reach a delivery. Requiring a selection makes the modeler state what the part is. This may relax if a delivery ever legitimately holds more than one object, which profile 5.5's multi-node question would have to settle first.
+`use_selection` is prescribed True rather than left at the default. Profile 4.1 is one part per delivery, and an export that takes whatever happens to be in the scene is the mechanism by which leftover objects and empty scenes reach a delivery. Requiring a selection makes the modeler state what the part is. Profile 5.5 now requires exactly one node with no children, so a delivery cannot legitimately hold more than one object and this will not relax.
 
 `at_collection_center` deserves attention. It is off by default and nothing in our guides mentions it, but switching it on relocates the origin of the exported result, which is the one thing the origin rules exist to control.
 
@@ -115,17 +117,17 @@ Profile section 5.5 requires the root node to carry no rotation and no matrix, a
 
 | UI label | Identifier | Default | Ours |
 |---|---|---|---|
-| +Y Up | `export_yup` | True | required True — profile 5.2 |
+| +Y Up | `export_yup` | True | required False — profile 5.2 |
 
-One option, and it is the whole of the coordinate conversion. On, it swizzles `(x, y, z) → (x, z, −y)` for vertices and for node TRS. Off, Blender's Z-up axes pass through unchanged and the file is wrong for every consumer that assumes glTF is Y-up.
+One option, and it is the whole of the coordinate conversion. Off, Blender's Z-up axes pass through unchanged, which is the body coordinate system profile 5.2 requires: the file is right in Gazebo with an identity visual pose, and the URDF visual carries `rpy="-1.5708 0 0"` to undo the rotation RViz applies on load. On, it converts `(x, y, z)` to `(x, z, −y)` for vertices, normals and node TRS, producing the Y-up file the glTF specification describes, which Gazebo then shows lying on its side. The [coordinate-systems reference](coordinate-systems.md#one-body-one-mesh-who-rotates-what) has the derivation.
 
-Note what no check can do about it: `gltf-check` has no rule implementing profile 5.2's Y-up MUST, because nothing in a file says which way its author meant up. This setting is verifiable only by rendering.
+Note what no check can do about it: `gltf-check` has no rule implementing profile 5.2's Z-up MUST, because nothing in a file says which way its author meant up. This setting is verifiable only by rendering, or by the summary tool's extents against a known dimension.
 
 ## Data ▸ Scene Graph
 
 | UI label | Identifier | Default | Ours |
 |---|---|---|---|
-| Flatten Object Hierarchy | `export_hierarchy_flatten_objs` | False | open — profile 5.5's multi-node question, review decision 15 |
+| Flatten Object Hierarchy | `export_hierarchy_flatten_objs` | False | moot — profile 5.5 permits exactly one node with no children, so there is no hierarchy to flatten |
 | Flatten Bone Hierarchy | `export_hierarchy_flatten_bones` | False | default — no armatures |
 | Full Collection Hierarchy | `export_hierarchy_full_collections` | False | required False — it adds intermediate nodes |
 | Remove Armature Object | `export_armature_object_remove` | False | default — no armatures |

@@ -129,6 +129,11 @@ class Model:
         return self.resolver.view_bytes(image["bufferView"], limit=limit)
 
 
+def plural(n, singular, plural_form=None):
+    """'1 primitive has' / '3 primitives have' without a stray 's'."""
+    return f"{n} {singular}" if n == 1 else f"{n} {plural_form or singular + 's'}"
+
+
 def png_has_alpha(head):
     """True when a PNG's IHDR declares a colour type carrying alpha.
 
@@ -177,14 +182,34 @@ def rule_4_3_asset_header(m):
 
 
 def rule_5_5_scenes_and_nodes(m):
+    """One scene, one node, no transform: exactly one coordinate system in the file.
+
+    A node transform makes node space and scene space differ, and the two
+    consumers compose the difference in opposite orders -- Gazebo applies the
+    up-axis correction outside the root transform, RViz post-multiplies it
+    inside -- so the same file lands in two different places. One node with no
+    transform removes the possibility rather than documenting it.
+
+    The transform test is on presence, not value. glTF omits any component equal
+    to its default, so an absent key and an identity value are the same geometry
+    written by two different exporters, and a rule about values would let a
+    stated identity through while `gltf_to_yup.py` still refuses the file.
+    """
     out = []
     scenes = m.get("scenes")
+    nodes = m.get("nodes")
     if len(scenes) != 1:
         out.append(Finding("5.5", FAIL, f"{len(scenes)} scenes, expected exactly 1"))
 
+    if len(nodes) != 1:
+        names = ", ".join(repr(n.get("name")) for n in nodes[:8])
+        out.append(Finding("5.5", FAIL, f"{len(nodes)} nodes, expected exactly 1",
+                           f"{names}. A part is one node: placement belongs to the SDF "
+                           f"visual pose and the joint tree, not to the asset"))
+
     roots = m.root_nodes()
     if len(roots) != 1:
-        names = ", ".join(repr(m.get("nodes")[i].get("name")) for i in roots[:8])
+        names = ", ".join(repr(nodes[i].get("name")) for i in roots[:8])
         out.append(Finding("5.5", FAIL, f"{len(roots)} root nodes, expected exactly 1", names))
 
     if scenes and len(scenes) == 1:
@@ -195,17 +220,17 @@ def rule_5_5_scenes_and_nodes(m):
 
     # One finding per class rather than per node: a scene with thousands of
     # roots would otherwise bury every other rule's verdict under its own.
-    matrices, rotations, unnamed, suffixed, spaced, misnamed = [], [], [], [], [], []
-    for i in roots:
-        node = m.get("nodes")[i]
+    parents, transformed, unnamed, suffixed, spaced, misnamed = [], [], [], [], [], []
+    for i, node in enumerate(nodes):
         name = node.get("name")
         label = repr(name) if name else f"node {i}"
-        if "matrix" in node:
-            matrices.append(label)
-        elif "rotation" in node:
-            rot = node["rotation"]
-            if abs(rot[0]) > 1e-6 or abs(rot[1]) > 1e-6 or abs(rot[2]) > 1e-6:
-                rotations.append(f"{label} {rot}")
+        if node.get("children"):
+            parents.append(f"{label} -> {node['children']}")
+        keys = [k for k in ("translation", "rotation", "scale", "matrix") if k in node]
+        if keys:
+            transformed.append(f"{label} carries {', '.join(keys)}")
+        if i not in roots:
+            continue        # the name rules are about the part's own node
         if name is None:
             unnamed.append(label)
         elif re.search(r"\.\d{3}$", name):
@@ -215,19 +240,25 @@ def rule_5_5_scenes_and_nodes(m):
         elif name != m.part_name:
             misnamed.append(label)
 
-    def summarise(items, level, singular, plural, detail=""):
+    def summarise(items, level, singular, plural, detail="", subject_noun="root nodes",
+                  singular_noun="the root node"):
         if not items:
             return
         shown = ", ".join(items[:6]) + (f", and {len(items) - 6} more" if len(items) > 6 else "")
-        subject = f"{len(items)} root nodes {plural}" if len(items) > 1 else f"the root node {singular}"
+        subject = (f"{len(items)} {subject_noun} {plural}" if len(items) > 1
+                   else f"{singular_noun} {singular}")
         out.append(Finding("5.5", level, subject,
                            f"{shown}{'. ' + detail if detail else ''}"))
 
-    summarise(matrices, FAIL, "carries a matrix transform", "carry a matrix transform",
-              "apply transforms in Blender before export")
-    summarise(rotations, FAIL, "carries a rotation", "carry a rotation",
-              "this is the Blender Y-up conversion node, and the two consumers compose it "
-              "differently -- Gazebo pre-multiplies it, RViz post-multiplies it")
+    summarise(parents, FAIL, "has child nodes", "have child nodes",
+              "a delivery is one node with no hierarchy; Gazebo composes child transforms "
+              "and bakes them into the vertices, so the structure is unrecoverable anyway",
+              subject_noun="nodes", singular_noun="a node")
+    summarise(transformed, FAIL, "carries a transform", "carry a transform",
+              "translation, rotation, scale and matrix must all be absent, so that node "
+              "space and scene space coincide. Clear location and rotation in Blender, and "
+              "apply scale",
+              subject_noun="nodes", singular_noun="the node")
     summarise(unnamed, FAIL, "is unnamed", "are unnamed",
               "Gazebo names each submesh after its node")
     summarise(suffixed, FAIL, "has a Blender numeric suffix", "have a Blender numeric suffix")
@@ -235,7 +266,8 @@ def rule_5_5_scenes_and_nodes(m):
     summarise(misnamed, WARN, "is not named after the part", "are not named after the part",
               f"the filename implies {m.part_name!r}")
 
-    return out or [Finding("5.5", PASS, "one scene, one named root node, no root transform")]
+    return out or [Finding("5.5", PASS,
+                           "one scene, one named node, no children, no transform")]
 
 
 def rule_6_geometry(m):
@@ -249,10 +281,10 @@ def rule_6_geometry(m):
         if absent:
             missing.append(f"mesh {mi} primitive {pi}: no {', '.join(absent)}")
     if non_triangles:
-        out.append(Finding("6", FAIL, f"{len(non_triangles)} primitives are not triangles",
+        out.append(Finding("6", FAIL, f"{plural(len(non_triangles), 'primitive is', 'primitives are')} not triangles",
                            "; ".join(non_triangles[:5])))
     if missing:
-        out.append(Finding("6", FAIL, f"{len(missing)} primitives lack a required attribute",
+        out.append(Finding("6", FAIL, f"{plural(len(missing), 'primitive lacks', 'primitives lack')} a required attribute",
                            "; ".join(missing[:5])))
     return out or [Finding("6", PASS, "every primitive is triangles with POSITION, NORMAL, TEXCOORD_0")]
 
@@ -296,7 +328,48 @@ def rule_6_1_uv(m):
             f"range {worst[0]:.3f} to {worst[1]:.3f}. The profile requires [0,1]; note that "
             "tiling against a REPEAT sampler is normal practice elsewhere and 19 of 49 assets "
             "in the corpus do it, so this is a deliberate narrowing, not a defect everyone agrees on"))
-    return out or [Finding("6.1", PASS, f"{len(sets)} UV set(s), inside [0, 1]")]
+    return out or [Finding("6.1", PASS, f"{plural(len(sets), 'UV set')}, inside [0, 1]")]
+
+
+def rule_6_3_primitives(m):
+    """A primitive exists only to carry a material distinct from its siblings.
+
+    glTF gives a primitive at most one `material`, so a part with several
+    materials must have several primitives and there is no other reason to split
+    one at these part sizes. Two primitives sharing a material therefore split
+    the geometry for no reason a consumer can use, and they are not addressable
+    separately: Gazebo names every submesh after the node that instantiated the
+    mesh, so primitives under one node arrive with the same name and an SDF
+    `<submesh>` selection takes the first and silently drops the rest.
+
+    Section 5.5's one-node rule forecloses the alternative of one primitive per
+    node, so this rule and that one are the same decision seen from two sides.
+    """
+    out = []
+    for mi, mesh in enumerate(m.get("meshes")):
+        prims = mesh.get("primitives", [])
+        seen = {}
+        for pi, prim in enumerate(prims):
+            material = prim.get("material")
+            if material is None:
+                continue        # section 7 fails a primitive with no material
+            seen.setdefault(material, []).append(pi)
+        shared = {mat: idx for mat, idx in seen.items() if len(idx) > 1}
+        if shared:
+            names = m.get("materials")
+            detail = "; ".join(
+                f"mesh {mi} primitives {idx} all use material "
+                f"{names[mat].get('name', mat) if mat < len(names) else mat!r}"
+                for mat, idx in sorted(shared.items()))
+            out.append(Finding("6.3", FAIL,
+                               f"{plural(sum(len(i) for i in shared.values()), 'primitive')} "
+                               f"share a material with a sibling",
+                               f"{detail}. A primitive should exist only to carry a distinct "
+                               f"material, and primitives under one node are indistinguishable "
+                               f"to an SDF <submesh> selection"))
+    total = sum(len(mesh.get("primitives", [])) for mesh in m.get("meshes"))
+    return out or [Finding("6.3", PASS,
+                           f"{plural(total, 'primitive')}, each carrying a distinct material")]
 
 
 def rule_7_materials(m):
@@ -306,8 +379,9 @@ def rule_7_materials(m):
     no_material = [f"mesh {mi} primitive {pi}" for mi, pi, p in m.primitives()
                    if "material" not in p]
     if no_material:
-        out.append(Finding("7", FAIL, f"{len(no_material)} primitives have no material",
-                           "; ".join(no_material[:5]) + " -- these render as white metal"))
+        out.append(Finding("7", FAIL, f"{plural(len(no_material), 'primitive has', 'primitives have')} no material",
+                           "; ".join(no_material[:5]) + " -- glTF's metallicFactor defaults to 1.0, "
+                           "so a primitive with no material renders as white metal"))
 
     metal_trap, metal_unverified, missing_base, scaled = [], [], [], []
     for i, mat in enumerate(materials):
@@ -340,13 +414,13 @@ def rule_7_materials(m):
 
     if metal_trap:
         out.append(Finding(
-            "7", FAIL, f"{len(metal_trap)} materials are metallic with nothing to override it",
+            "7", FAIL, f"{plural(len(metal_trap), 'material is', 'materials are')} metallic with nothing to override it",
             "; ".join(metal_trap[:6]) + ". glTF's metallicFactor defaults to 1.0, so a material "
             "that says nothing says metal. Plastics and painted surfaces must be non-metallic."))
     if metal_unverified:
         out.append(Finding(
             "7", WARN,
-            f"{len(metal_unverified)} materials leave metallicFactor unset but carry an ORM map",
+            f"{plural(len(metal_unverified), 'material leaves', 'materials leave')} metallicFactor unset but carry an ORM map",
             "; ".join(metal_unverified[:6]) + ". The texture's blue channel multiplies against "
             "the factor, so a black metallic channel would still yield a non-metal. Settling it "
             "needs the decoded texel values, which this tool does not read. Do not assume it is "
@@ -354,7 +428,7 @@ def rule_7_materials(m):
             "this project's own library had B = 255, which makes the part fully metal. State the "
             "factor explicitly if the part is not metal."))
     if missing_base:
-        out.append(Finding("7", FAIL, f"{len(missing_base)} textured materials have no baseColorTexture",
+        out.append(Finding("7", FAIL, f"{plural(len(missing_base), 'textured material has', 'textured materials have')} no baseColorTexture",
                            "; ".join(missing_base[:5]) + " -- this is the shape that terminates RViz"))
     if scaled:
         out.append(Finding("7", FAIL, "normalTexture.scale / occlusionTexture.strength must be 1.0",
@@ -397,14 +471,14 @@ def rule_8_textures(m):
     if bad_format:
         out.append(Finding("8", FAIL, "images must be PNG or JPEG", "; ".join(bad_format[:5])))
     if oversize:
-        out.append(Finding("8", FAIL, f"{len(oversize)} textures exceed 2048 px",
+        out.append(Finding("8", FAIL, f"{plural(len(oversize), 'texture exceeds', 'textures exceed')} 2048 px",
                            "; ".join(oversize[:5])))
     if undimensioned:
-        out.append(Finding("8", WARN, f"{len(undimensioned)} images have unreadable dimensions",
+        out.append(Finding("8", WARN, f"{plural(len(undimensioned), 'image has', 'images have')} unreadable dimensions",
                            "; ".join(undimensioned[:5]) + " -- the size rule could not be checked"))
     if linear_jpeg:
         out.append(Finding(
-            "8", FAIL, f"{len(linear_jpeg)} linear maps are JPEG",
+            "8", FAIL, f"{plural(len(linear_jpeg), 'linear map is', 'linear maps are')} JPEG",
             "; ".join(linear_jpeg[:5]) + ". Chroma subsampling blends channels that are "
             "unrelated in a normal or ORM map. The remedy is a re-export from the source "
             "texture -- converting a JPEG to PNG preserves the damage."))
@@ -471,27 +545,37 @@ def rule_11_generator(m):
     return Finding("11", PASS, f"generator: {generator}")
 
 
-def rule_5_3_forward_axis(m):
-    """Section 5.3: the interim rule is +X, checkable only once it is declared.
+REQUIRED_AXES = (("gltfrp:forward", "+X"), ("gltfrp:up", "+Z"))
 
-    Nothing in a glTF file records a forward axis, so without a manifest there is
-    nothing to check. With one, 4.1.1's declaration makes the interim rule a
-    property a tool can verify rather than a convention nobody can test.
+
+def rule_5_2_axes(m):
+    """Section 5.2: +X forward, +Y left, +Z up -- ISO 9787 and REP 103.
+
+    Nothing in a glTF file records which way its author meant up or forward, so
+    the geometry cannot settle this. What can be checked is the manifest's
+    declaration under 4.1.1, and a declaration that disagrees with 5.2 is a
+    straightforward failure: the rule is decided, not interim.
+
+    An absent declaration is a WARN rather than a FAIL because it is the second
+    kind of warning the legend describes -- a MUST the file alone cannot settle.
+    Only a rendered view or the authoring source can.
     """
     packet = m.manifest() or {}
-    forward = packet.get("gltfrp:forward")
-    if forward is None:
-        return Finding("5.3", ADVISORY, "forward axis is not declared",
-                       "the profile's interim rule is to author in the part frame, yielding a "
-                       "file facing +X. Nothing in a glTF file records a forward axis, so it "
-                       "cannot be checked until the manifest declares it (4.1.1). See "
-                       "probe/coords for the visual protocol.")
-    if forward != "+X":
-        return Finding("5.3", WARN, f"the manifest declares forward as {forward}",
-                       "section 5.3's interim rule is that a delivery faces +X, which is what "
-                       "authoring in the part frame produces. Re-orienting to face another axis "
-                       "needs agreement first.")
-    return Finding("5.3", PASS, "forward declared +X, matching the interim rule")
+    declared = {key: packet.get(key) for key, _ in REQUIRED_AXES}
+    if all(v is None for v in declared.values()):
+        # Section 4.1.1 requires the declaration and reports its absence. Saying
+        # so twice would make one omission look like two defects.
+        return Finding("5.2", SKIP, "the axes are not declared, so there is nothing to compare",
+                       "section 4.1.1 reports the missing declaration; nothing in the geometry "
+                       "records an axis, so this rule can only check what a manifest states")
+    wrong = [f"{key} is {declared[key]!r}, expected {want!r}"
+             for key, want in REQUIRED_AXES if declared[key] != want]
+    if wrong:
+        return Finding("5.2", FAIL, "the manifest declares axes that section 5.2 prohibits",
+                       "; ".join(wrong) + ". The profile follows ISO 9787 and REP 103 rather "
+                       "than glTF, so a delivery is +X forward and +Z up. Export from Blender "
+                       "with the '+Y Up' option off.")
+    return Finding("5.2", PASS, "declared +X forward, +Z up")
 
 
 def rule_5_1_scale(m):
@@ -518,23 +602,38 @@ def _listvals(packet, key):
 
 
 def rule_4_1_1_manifest(m):
-    """Section 4.1.1: a delivery SHOULD carry a manifest, and declare its role."""
+    """Section 4.1.1: a delivery MUST carry a manifest declaring three properties.
+
+    The three are `gltfrp:partRole`, `gltfrp:forward` and `gltfrp:up`, and each
+    records something no measurement can recover: whether 5.6's datum rule
+    applies, and the two axes that are this profile's departure from glTF. This
+    rule owns whether they are *present*; section 5.2 owns whether the axis
+    values are the ones it requires.
+    """
     packet = m.manifest()
     if packet is None:
         used = set(m.gltf.get("extensionsUsed", []))
         if "KHR_xmp_json_ld" in used:
-            return [Finding("4.1.1", WARN, "KHR_xmp_json_ld is present but no packet reaches the asset",
+            return [Finding("4.1.1", FAIL, "KHR_xmp_json_ld is present but no packet reaches the asset",
                             "the manifest must be attached to the glTF asset object to describe the "
                             "whole delivery")]
-        return [Finding("4.1.1", WARN, "no manifest",
-                        "a delivery should carry provenance in KHR_xmp_json_ld attached to the "
-                        "asset object. Section 5.6 requires one for a base part.")]
+        return [Finding("4.1.1", FAIL, "no manifest",
+                        "a delivery must carry one in KHR_xmp_json_ld attached to the asset object, "
+                        "declaring at least gltfrp:partRole, gltfrp:forward and gltfrp:up. "
+                        "Provenance cannot be reconstructed afterwards.")]
 
     out = []
+    for key, what in (("gltfrp:forward", "which axis the part faces"),
+                      ("gltfrp:up", "which axis is up")):
+        if packet.get(key) is None:
+            out.append(Finding("4.1.1", FAIL, f"the manifest does not declare {key}",
+                               f"one of the three required properties: {what}. Nothing in a glTF "
+                               f"file records it, so an undeclared axis cannot be checked at all"))
+
     role = packet.get("gltfrp:partRole")
     if role is None:
         out.append(Finding("4.1.1", FAIL, "the manifest does not declare gltfrp:partRole",
-                           "required where a manifest is present; one of base, component"))
+                           "one of the three required properties; base or component"))
     elif role not in ("base", "component"):
         out.append(Finding("4.1.1", FAIL, f"gltfrp:partRole is {role!r}",
                            "must be base or component"))
@@ -634,11 +733,12 @@ RULES = [
     rule_4_3_asset_header,
     rule_4_1_1_manifest,
     rule_5_1_scale,
-    rule_5_3_forward_axis,
+    rule_5_2_axes,
     rule_5_5_scenes_and_nodes,
     rule_5_6_datum,
     rule_6_geometry,
     rule_6_1_uv,
+    rule_6_3_primitives,
     rule_7_materials,
     rule_8_textures,
     rule_9_transparency,

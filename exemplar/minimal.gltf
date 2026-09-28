@@ -1,7 +1,40 @@
 {
   "asset": {
     "version": "2.0",
-    "generator": "Honu Robotics docs/_tools/make_minimal_gltf.py"
+    "generator": "Honu Robotics exemplar/make_minimal_gltf.py",
+    "extensions": {
+      "KHR_xmp_json_ld": {
+        "packet": 0
+      }
+    }
+  },
+  "extensionsUsed": [
+    "KHR_xmp_json_ld"
+  ],
+  "extensions": {
+    "KHR_xmp_json_ld": {
+      "packets": [
+        {
+          "@context": {
+            "dc": "http://purl.org/dc/elements/1.1/",
+            "xmp": "http://ns.adobe.com/xap/1.0/",
+            "gltfrp": "https://honurobotics.github.io/gltf-robotics/ns/profile/1.0/"
+          },
+          "@id": "",
+          "dc:source": "generated from scratch by exemplar/make_minimal_gltf.py",
+          "dc:creator": "Honu Robotics",
+          "dc:date": {
+            "@list": [
+              "2026-09-27T00:00:00Z"
+            ]
+          },
+          "xmp:CreatorTool": "Honu Robotics exemplar/make_minimal_gltf.py",
+          "gltfrp:partRole": "component",
+          "gltfrp:forward": "+X",
+          "gltfrp:up": "+Z"
+        }
+      ]
+    }
   },
   "scene": 0,
   "scenes": [
@@ -14,7 +47,7 @@
   ],
   "nodes": [
     {
-      "name": "quad",
+      "name": "minimal",
       "mesh": 0
     }
   ],

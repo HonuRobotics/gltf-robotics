@@ -217,7 +217,8 @@ def transform_lines(transform, indent="        "):
     against profile 5.5 should not have to infer a component's value from its
     absence from the report.
 
-    Stated and defaulted are still distinguished, because 5.5 constrains
+    Stated and defaulted are still distinguished, because 5.5 prohibits all four
+    keys and constrains
     presence rather than value: it prohibits a `rotation` key on the root node
     even when that rotation is identity, and glTF omits any component equal to
     its default, so an absent key and an identity value are the same geometry
@@ -410,8 +411,8 @@ def render(s):
                 f"union over {n}, after the node transform above"))
             out.append("")
             out.append("  the two blocks differ only because a node carries a "
-                       "transform; profile 5.5")
-            out.append("  requires an identity root node so that they cannot")
+                       "transform; profile 5.5 requires")
+            out.append("  exactly one node with no transform, so that they cannot")
         else:
             out.extend(geometry_block(
                 "NODE space, which is also SCENE space here -- no node carries a"

@@ -72,7 +72,7 @@ def manifest(role="component", **over):
         "gltfrp:datumFeatureKind": {"@list": ["plane", "line", "point"]},
         "gltfrp:datumConstrains": {"@list": ["Tz Rx Ry", "Tx Ty", "Rz"]},
         "gltfrp:forward": "+X",
-        "gltfrp:up": "+Y",
+        "gltfrp:up": "+Z",
     }
     packet.update(over)
     return packet

@@ -2,7 +2,7 @@
 
 An incremental build up of the understanding and explanation of how these coordinate systems are used, from 3D authoring through to robotic simulation.
 
-This is the only version. An earlier draft was abandoned for building detail on assumptions that were never checked, and it lives in git history at `ab5f6a6`. Do not treat its framing as current, but four things in it are verified from source and worth carrying over rather than re-deriving: the loader mechanism with the `gz-common` and `rviz_rendering` source quoted (its §4), the probe results on hand-authored assets (§5), the three-consumer tutorial (§12), and the audit of what the project's own documents say (§14). The probe generator and its output are still live at `probe/coords/`.
+This is the only version. An earlier draft was abandoned for building detail on assumptions that were never checked, and it lives in git history at `ab5f6a6` in the `maritime-workspace` repository. Do not treat its framing as current. The two things in it that were verified from source, the loader mechanism and the probe results, are now carried in [One body, one mesh: who rotates what](#one-body-one-mesh-who-rotates-what) below, re-read against the versions in the container. Two things remain only in the draft: its three-consumer tutorial (§12), which the [walkthrough](../walkthroughs/blender_mesh_coordinate_ex.md) has since replaced, and its audit of what the project's own documents said (§14). The probe generator and its output are live at `probe/coords/`.
 
 ##  Objective
 
@@ -24,6 +24,7 @@ The abandoned first draft went wrong by building detail on assumptions that were
 - **[Practice]** — really done that way, but no standard says so. Do not present it as a rule.
 - **[Open]** — we do not know yet, or it needs a measurement nobody has made.
 - **[Corrected]** — was asserted in the first draft or earlier in this one and is wrong. Kept visible on purpose.
+- **[Measured]** — observed by running the named tool at the named version, with the output kept in the repository. Neither a standard nor a source says it, and it can change when the version does.
 
 
 
@@ -413,12 +414,14 @@ The same three directions in the same cyclic order, shifted by one position. Not
 | **vehicle coordinate system** | ISO 9787 §5.5 mobile platform coordinate system | **adopt the axes as-is** (`+X` forward, `+Z` up, = REP 103); rename, because "mobile platform" reads oddly for a boat and an ROV |
 | **part coordinate system** | none — ISO numbers axes, not links | **ours.** ISO has no term for a non-root rigid body that is not a tool or an interface. This is the gap we must fill ourselves |
 | **mount coordinate system** | ISO 9787 §5.3 mechanical interface coordinate system | **narrow**: keep the origin rule (center of the interface) and drop the `+Z` mating-normal axis rule in favor of the part coordinate system's axes, so that one convention governs every coordinate system in a model |
-| **asset coordinate system** | glTF / ISO/IEC 12113 §3.5, the scene's implicit space | **ours, grounded in the format.** No robotics standard has this concept; it exists only inside a file |
-| **node coordinate system** | glTF / ISO/IEC 12113 §3.5 node | **adopt as-is**, the format's own term |
+| **asset coordinate system** | glTF / ISO/IEC 12113 §3.5, the scene's implicit space | **ours, grounded in the format.** No robotics standard has this concept; it exists only inside a file. Also called *scene space* |
+| **node coordinate system** | glTF / ISO/IEC 12113 §3.5 node | **adopt as-is**, the format's own term. Also called *node space*. In a delivery it coincides with the asset coordinate system — see below |
 | **sensor coordinate system** | ISO 9787 §5.8 camera coordinate system; REP 103 `_optical` | **adopt REP 103's**, since ISO gives no axis rule and REP 103 does (`z` forward, `x` right, `y` down) |
 | *tool coordinate system* | ISO 9787 §5.4 | **reserved, unused.** No manipulators in scope yet; adopt as-is if one arrives |
 
 **[Open]** The mount-coordinate-system narrowing is a real decision and not yet taken. Keeping ISO's `+Z`-along-the-mating-normal rule would make every mounting face self-describing but put a second axis convention inside one model; dropping it keeps one convention but means a mount coordinate system carries no information about which way the surface faces.
+
+**[Firm]** glTF's node and scene model is adopted as vocabulary and **narrowed** as a rule. The format lets a scene list many root nodes, each carrying a transform and children, so asset and node coordinate systems are genuinely distinct and a file can hold many of the latter. Profile §5.5 permits exactly one node with no children and no transform, which collapses the two: in a delivery the node coordinate system *is* the asset coordinate system, and both are the part coordinate system. That is the point of the rule rather than a side effect — Gazebo composes node transforms and bakes them into the vertices, so any distinction between the two is destroyed at load anyway, and RViz composes a root transform in the opposite order from Gazebo, so a file that relies on the distinction lands in two different places. The two names stay in this table because they name different things in the format; a conforming file just never tells them apart.
 
 ### The full reconciliation
 
@@ -440,20 +443,145 @@ Each row is one frame; each column is what that frame is called, or what stands 
 
 **[Firm]** Summarizing what this project actually has to write down, which is much less than the first draft assumed:
 
-- **Adopt as-is, no project text needed:** handedness, length and angle units, roll/pitch/yaw naming, the world coordinate system, the vehicle coordinate system's axes, the sensor optical coordinate system, glTF's node and scene model. All are settled by ISO 9787, REP 103 or ISO/IEC 12113 and need only a citation.
-- **Narrow:** the mount coordinate system, by dropping ISO's mating-normal axis rule (undecided, above).
-- **Invent, because no standard reaches:** the part coordinate system as a named concept; where an origin sits within a part's geometry; which asset-coordinate-system axis a delivery's forward direction occupies; and the rule joining the asset coordinate system to the part coordinate system — that is, the value of the visual pose.
+- **Adopt as-is, no project text needed:** handedness, length and angle units, roll/pitch/yaw naming, the world coordinate system, the vehicle coordinate system's axes, the sensor optical coordinate system, and glTF's node and scene *vocabulary*. All are settled by ISO 9787, REP 103 or ISO/IEC 12113 and need only a citation.
+- **Narrow:** the mount coordinate system, by dropping ISO's mating-normal axis rule (undecided, above). And glTF's node and scene *model*, to exactly one node with no transform, so that node space and scene space coincide in a delivery (profile 5.5, decided).
+- **Invent, because no standard reaches:** the part coordinate system as a named concept; how an origin is fixed within a part's geometry, which profile 5.4 answers by referring it to a datum specification rather than to any measured centre; and the rule joining the asset coordinate system to the part coordinate system — that is, the value of the visual pose. Which axis the forward direction occupies is no longer ours to invent: profile 5.2 takes ISO 9787 §5.5 and REP 103 wholesale, as a stated departure from glTF.
 - **[Open]** That last list is short and it is exactly the list the first draft failed to isolate. The next increments should address it in that order.
+
+## One body, one mesh: who rotates what
+
+This is the first two items of the increment list below, taken together because the second cannot be stated without the first. One rigid body, one mesh, no joints; the question is how a vertex in the file reaches the link, and which of Blender, the file, Gazebo and RViz rotates it on the way. Everything here is read from source or measured with the probe, and the walkthrough [Minimum viable workflow](../walkthroughs/blender_mesh_coordinate_ex.md) is the worked example, verified on screen on 2026-09-27.
+
+### The chain, and where a rotation can be inserted
+
+**[Firm]** For one body the chain has three coordinate systems from this document's table: the node coordinate system, in which the file's vertices are written; the asset coordinate system, which is the scene the node hangs in; and the part coordinate system, which is the link. A vertex reaches the link through two transforms: the node's own, `Root`, from node to asset coordinate system, and the visual pose `Pose`, from asset to part coordinate system. In an SDF the second is `<visual><pose>`; in a URDF it is `<visual><origin>`.
+
+```
+p_part = Pose · Root · p_node
+```
+
+**[Firm]** A rotation that takes the file's axes onto the link's can therefore be inserted in three places: in the file, either as vertex values or as a `Root` that the consumer composes in, which are the same thing once composed; in `Pose`, which the integrator writes; or inside the consumer, between reading the file and applying `Pose`, which nobody outside the consumer controls. The third place is where the two consumers differ, and the whole of the hazard is that they differ there.
+
+**[Firm]** Gazebo inserts nothing. RViz inserts a +90 degree rotation about X, and it inserts it by post-multiplying the root node's own transform, so it sits between `Root` and the vertices:
+
+```
+Gazebo:  p_part = Pose · Root · p_node
+RViz:    p_part = Pose · Root · Rx(90) · p_node
+```
+
+The two agree only when `Root` commutes with `Rx(90)`: when it is the identity, a pure scale, or a rotation about X alone. Any other root transform, a translation included, puts the same file in two different places. That is a statement about tree shape, not about axes, and it is the reason profile [section 5.5](../profile/profile.md) requires an identity root node.
+
+### Gazebo, from source
+
+**[Firm]** `gz-common` routes by extension and hands `gltf`, `glb` and `fbx` to its `AssimpLoader`, keeping its own hand-written loaders for `stl`, `dae` and `obj`. That loader adds no rotation anywhere. Its only handling of the root node is [`UpdatedRootNodeTransform`](https://github.com/gazebosim/gz-common/blob/a08c258d4e566b1e1624cb85f12ab78068ab2870/graphics/src/AssimpLoader.cc#L955-L976), gz-common 7.3.0, the version in the drydock container:
+
+```cpp
+// Some assets apear to be rotated by 90 degrees as documented here
+// https://github.com/assimp/assimp/issues/849.
+auto transform = _scene->mRootNode->mTransformation;
+if (_useIdentityRotation)
+{
+  // drop rotation, but keep scaling and position
+  aiVector3D rootScaling, rootAxis, rootPos;
+  float angle;
+  transform.Decompose(rootScaling, rootAxis, angle, rootPos);
+  transform = aiMatrix4x4(rootScaling, aiQuaternion(), rootPos);
+}
+// for glTF / glb meshes, it was found that the transform is needed to
+// produce a result that is consistent with other engines / glTF viewers.
+else
+{
+  transform = _scene->mRootNode->mTransformation;
+}
+```
+
+For glTF the file's root transform is kept whole; for every other format its rotation is stripped and its translation and scale kept. The loader then composes each node's transform onto its parent's ([line 302](https://github.com/gazebosim/gz-common/blob/a08c258d4e566b1e1624cb85f12ab78068ab2870/graphics/src/AssimpLoader.cc#L302)) and multiplies the product into every vertex ([line 766](https://github.com/gazebosim/gz-common/blob/a08c258d4e566b1e1624cb85f12ab78068ab2870/graphics/src/AssimpLoader.cc#L766)), so what Gazebo holds is the file's buffer values composed through the file's own nodes and nothing else. Each submesh is named after the node that carries it ([line 251](https://github.com/gazebosim/gz-common/blob/a08c258d4e566b1e1624cb85f12ab78068ab2870/graphics/src/AssimpLoader.cc#L251)), never after the mesh or the material.
+
+**[Firm]** The branch that decides is [`useIdentityRotation = (extension != "glb" && extension != "glTF")`](https://github.com/gazebosim/gz-common/blob/a08c258d4e566b1e1624cb85f12ab78068ab2870/graphics/src/AssimpLoader.cc#L850-L851), evaluated after the extension has been lowercased. `"glTF"` can never match, so on 7.3.0 a single-root `.gltf` loses its root rotation while a `.glb` keeps it. The literal reads `"gltf"` at the [branch tip](https://github.com/gazebosim/gz-common/blob/11943c7237992a2ff02c90a2e696bfd13009a55b/graphics/src/AssimpLoader.cc#L1139), released in 7.3.1. The probe below shows the bug directly.
+
+### RViz, from source
+
+**[Firm]** `rviz_rendering` has its own wrapper around the same library, and the rotation lives there: [`assimp_loader.cpp` lines 215 to 222](https://github.com/ros2/rviz/blob/baab61a68bc089217dfaa4f270276dc7a30268b1/rviz_rendering/src/rviz_rendering/mesh_loader_helpers/assimp_loader.cpp#L215-L222) on the `lyrical` branch, rviz_rendering 15.2.5, the version in the container:
+
+```cpp
+const std::string ext = std::filesystem::path(name).extension().string();
+if (ext == ".gltf" || ext == ".glb" || ext == ".vrm") {
+  // Transform mesh from glTF Y-Up space to ROS Z-Up space
+  // by applying a 90 degree rotation about the X-axis,
+  // effectively going from (x, y, z) to (x, -z, y)
+  aiMatrix4x4 transform;
+  aiMatrix4x4::RotationX(static_cast<float>(AI_MATH_HALF_PI), transform);
+  scene->mRootNode->mTransformation = scene->mRootNode->mTransformation * transform;
+}
+```
+
+It is keyed on the extension and on nothing else; no parameter, display property or file declaration turns it off. The rotation is post-multiplied onto the root node's own transform, and [`computeTransformOverSceneGraph`](https://github.com/ros2/rviz/blob/baab61a68bc089217dfaa4f270276dc7a30268b1/rviz_rendering/src/rviz_rendering/mesh_loader_helpers/assimp_loader.cpp#L518-L523) then composes parent times child down the tree and applies the product to each vertex ([line 587](https://github.com/ros2/rviz/blob/baab61a68bc089217dfaa4f270276dc7a30268b1/rviz_rendering/src/rviz_rendering/mesh_loader_helpers/assimp_loader.cpp#L587)), which is the `Root · Rx(90) · p_node` above. The same file also sets [`AI_CONFIG_IMPORT_COLLADA_IGNORE_UP_DIRECTION`](https://github.com/ros2/rviz/blob/baab61a68bc089217dfaa4f270276dc7a30268b1/rviz_rendering/src/rviz_rendering/mesh_loader_helpers/assimp_loader.cpp#L200), so RViz agrees with Gazebo about COLLADA and disagrees with it about glTF.
+
+**[Firm]** The branch arrived in [ros2/rviz #1482](https://github.com/ros2/rviz/pull/1482), merged to `rolling` on 2025-06-16 and deliberately not backported. Jazzy (rviz_rendering 14.1.24) and Kilted (15.0.15) do not rotate. Lyrical is therefore the floor for a glTF part to appear upright in RViz without a correction, and on older distributions the same file needs the opposite treatment.
+
+**[Corrected]** It is tempting to say "assimp rotates glTF", and the filename `assimp_loader.cpp` invites it. Neither consumer's rotation behavior is in assimp. Both link the same `libassimp.so.6`, which returns a glTF exactly as authored; each wraps it in a class it calls an assimp loader, and the difference between them is entirely what each wrapper does with the root node after the import returns.
+
+### Blender's exporter, from source
+
+**[Firm]** The `+Y Up` option is the whole of the coordinate conversion. On, node translations, rotations and scales pass through the `swizzle_yup_*` functions and vertex positions, normals and tangents through `zup2yup`; off, Blender's Z-up axes are written unchanged. Cited at [glTF-Blender-IO `main`](https://github.com/KhronosGroup/glTF-Blender-IO/tree/093ad93ce4750dd496266806309ba75d5f755752) at addon version 5.3.32, because the repository carries no tag for the 5.2.40 that produced the walkthrough's files; the functions have not changed between the two.
+
+```python
+# addons/io_scene_gltf2/blender/com/gltf2_blender_math.py, lines 92 to 104
+def swizzle_yup_location(loc: Vector) -> Vector:
+    return Vector((loc[0], loc[2], -loc[1]))
+
+def swizzle_yup_rotation(rot: Quaternion) -> Quaternion:
+    return Quaternion((rot[0], rot[1], rot[3], -rot[2]))
+
+def swizzle_yup_scale(scale: Vector) -> Vector:
+    return Vector((scale[0], scale[2], scale[1]))
+
+# addons/io_scene_gltf2/blender/exp/primitive_extract.py, lines 112 to 115
+def zup2yup(cls, array):
+    # x,y,z -> x,z,-y
+    array[:, [1, 2]] = array[:, [2, 1]]  # x,z,y
+    array[:, 2] *= -1  # x,z,-y
+```
+
+The option is declared at [`__init__.py` line 687](https://github.com/KhronosGroup/glTF-Blender-IO/blob/093ad93ce4750dd496266806309ba75d5f755752/addons/io_scene_gltf2/__init__.py#L687-L691), default `True`, and the vertex, normal and tangent swizzles are gated on it at [`primitive_extract.py` lines 1219, 1558 and 1602](https://github.com/KhronosGroup/glTF-Blender-IO/blob/093ad93ce4750dd496266806309ba75d5f755752/addons/io_scene_gltf2/blender/exp/primitive_extract.py#L1219-L1220). A part modelled in Blender to REP 103 and exported with the option on comes out with forward +X and up +Y; exported with it off, it comes out as modelled.
+
+### The probe, measured
+
+**[Measured]** `probe/coords/make_markers.py` writes the same marker in several encodings, with no exporter involved, so there is no doubt what each file contains: four box arms of different lengths and colours in the REP 103 body coordinate system, +X 1.00 m, +Y 0.50 m, +Z 0.25 m and a 0.10 m stub on −X, so a bounding box alone identifies every axis and its sign. `probe/glb_probe` loads each through `gz-common` 7.3.0 with assimp 6.0.4, exactly as `gz sim` does, and `probe/coords/probe_results.txt` is its output. The bounding boxes, `(X, Y, Z)` min to max:
+
+| File | What is in it | Loader bounding box | Reading |
+|---|---|---|---|
+| `marker_zup.glb`, `.gltf` | buffer in the body coordinate system, identity root | (−0.10, −0.025, −0.025) → (1.00, 0.50, 0.25) | raw; the body coordinate system unchanged. What `+Y Up` off produces |
+| `marker_yup.glb`, `.gltf` | buffer swizzled (x, z, −y), identity root | (−0.10, −0.025, −0.50) → (1.00, 0.25, 0.025) | raw; up on +Y, left arm on −Z. What `+Y Up` on produces |
+| `marker_rotnode.glb` | Z-up buffer, root `rotation` −90° about X | equals `marker_yup` | root rotation honoured |
+| `marker_rotnode.gltf` | identical file, `.gltf` container | equals `marker_zup` | root rotation dropped: the 7.3.0 case bug |
+| `marker_roottrans.glb`, `.gltf` | as `marker_yup`, root `translation` (0, 0.5, 0) | (−0.10, 0.475, −0.50) → (1.00, 0.75, 0.025) | translation composed in, along the file's Y |
+| `marker_twonode.glb`, submesh `pointer` | child node with its own mesh, translated and rotated | (−0.025, 0.475, −0.30) → (0.025, 0.525, 0.00) | child transform composed and baked; submesh named after the node |
+| `marker_zup_declZ.dae`, `marker_zup_declY.dae` | identical buffers, `<up_axis>` Z_UP and Y_UP | identical to `marker_zup` | the declaration is ignored |
+
+Every row is what the source predicts. The `.dae` pair is why the project's earlier COLLADA workflow needed no correction anywhere, and the `marker_rotnode` pair is the case bug made visible.
+
+### The decision, and what it costs
+
+**[Practice]** This project delivers the file in the body coordinate system: Blender's `+Y Up` off, no transform on the root node, vertices already on the link axes. Profile [section 5.2](../profile/profile.md) is the normative statement and [section 5.5](../profile/profile.md) the root-node rule. In the chain above, that puts the rotation nowhere in the file and nowhere in Gazebo's `Pose`, which stays identity. RViz's rotation is inside the consumer and cannot be removed, so it is undone in `Pose`, on every URDF visual that shows a glTF part:
+
+```xml
+<visual><origin xyz="0 0 0" rpy="-1.5708 0 0"/>
+```
+
+**[Firm]** That gives `Rx(−90) · Root · Rx(+90) · p_node` in RViz. With an identity root the two rolls cancel and RViz shows the vertices exactly as Gazebo does. With a root transform they do not, because the undo acts outside the root and RViz's roll acts inside it: `examples/monkey_xform.glb` carries a 5 m translation and a 90 degree yaw on its root, and with the undo in place its centre lands at (0, 5, 0) in RViz where Gazebo puts it at (0, 0, 5). The identity-root rule is what makes the undo exact.
+
+**[Practice]** The cost is that the file is not oriented the way the glTF specification says an asset should be. The Khronos Sample Viewer and every browser viewer assume Y-up, so they show the part on its side, and a URDF that omits the roll shows it that way in RViz. The reference viewer can therefore no longer answer whether a part is correctly oriented, only whether its materials are right. Against that, Blender, the file, Gazebo and the link agree with no conversion anywhere, and the one correction lives in one place, in the robot description, where it is visible in a diff.
+
+**[Open]** How the RViz correction is delivered in the model repositories, given that it depends on the ROS distribution: profile section 5.2 carries the open block. Nothing in this document depends on the answer.
 
 ## Next increment
 
-The vocabulary and the standards groundwork are now settled, and the list of things this project must decide for itself is short — see "Adopt, narrow, or invent" above. Deliberately not covered yet, in the order it should be taken up:
+The vocabulary and the standards groundwork are settled, and the one-body case above is now airtight: which of Blender, the file, Gazebo and RViz rotates what, read from source and measured. The list of things this project must still decide for itself is short — see "Adopt, narrow, or invent" above. Deliberately not covered yet, in the order it should be taken up:
 
-1. One rigid body, one mesh, no joints: world, vehicle and asset coordinate systems, mesh vertices, written in the names agreed above. Get this airtight before adding anything.
-2. The transform from the asset coordinate system to the part coordinate system — the value of the visual pose — and which of glTF, Gazebo and RViz applies what. The first draft's findings on this are sound and can be carried over from `ab5f6a6`; its framing cannot.
-3. Where the origin sits within a part, and which asset-coordinate-system axis carries forward. These are the two genuine inventions.
-4. A second body and a joint between them, which is where the mount-coordinate-system narrowing has to be settled.
-5. Only then: the project's delivery rule.
+1. Where the origin sits within a part, and which asset-coordinate-system axis carries forward. These are the two genuine inventions. Forward is answered by profile section 5.2 as a practice; the origin is not.
+2. A second body and a joint between them, which is where the mount-coordinate-system narrowing has to be settled.
+3. Only then: the project's delivery rule.
 
 ## References
 
@@ -469,3 +597,7 @@ The vocabulary and the standards groundwork are now settled, and the list of thi
 - SDFormat specification, `<frame>` and `<joint>`: http://sdformat.org/spec
 - glTF 2.0 specification, §3.4 Coordinate System and Units, §3.5 Scenes and Nodes: https://registry.khronos.org/glTF/specs/2.0/glTF-2.0.html
 - Blender manual, Object Origin and *Set Origin*: https://docs.blender.org/manual/en/latest/scene_layout/object/origin.html
+- `gz-common` 7.3.0, `graphics/src/AssimpLoader.cc` at tag `gz-common7_7.3.0` — Gazebo's mesh loader; root-node handling at lines 850 to 851 and 955 to 976: https://github.com/gazebosim/gz-common/blob/a08c258d4e566b1e1624cb85f12ab78068ab2870/graphics/src/AssimpLoader.cc
+- `rviz_rendering` 15.2.5, `mesh_loader_helpers/assimp_loader.cpp` on branch `lyrical` — RViz's mesh loader; the glTF rotation at lines 215 to 222: https://github.com/ros2/rviz/blob/baab61a68bc089217dfaa4f270276dc7a30268b1/rviz_rendering/src/rviz_rendering/mesh_loader_helpers/assimp_loader.cpp — introduced by https://github.com/ros2/rviz/pull/1482
+- glTF-Blender-IO, `addons/io_scene_gltf2/` at `main` (addon 5.3.32; no tag exists for 5.2.40) — the `+Y Up` swizzle in `blender/com/gltf2_blender_math.py` and `blender/exp/primitive_extract.py`: https://github.com/KhronosGroup/glTF-Blender-IO/tree/093ad93ce4750dd496266806309ba75d5f755752
+- `probe/coords/make_markers.py` and `probe/coords/probe_results.txt` in this repository — the marker assets and the `glb_probe` output the measured table is taken from

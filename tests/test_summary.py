@@ -192,7 +192,7 @@ def test_both_origin_readings_appear_only_when_they_can_differ(write_model):
     assert moved.count("  geometry in ") == 2
     assert "geometry in NODE space --" in moved
     assert "geometry in SCENE space --" in moved
-    assert "requires an identity root node" in moved
+    assert "exactly one node with no transform" in moved
 
     # The node's transform is printed with its values, because it is what accounts
     # for the difference between the two blocks.

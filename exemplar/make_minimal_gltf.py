@@ -46,7 +46,7 @@ import numpy as np
 from PIL import Image
 
 HERE = pathlib.Path(__file__).resolve().parent
-OUT = HERE.parent / "reference"
+OUT = HERE            # the exemplar lives beside its generator
 
 # Four corners, counter-clockwise seen from +Z, so the winding faces the
 # viewer. glTF puts the UV origin at the top left with v running down, so
@@ -97,14 +97,35 @@ def build():
         )
         buffer += pad4(payload)
 
+    # Profile 4.1.1 requires a manifest declaring three properties, and 5.2 fixes
+    # what two of them must say. The exemplar has to satisfy its own profile.
+    manifest = {
+        "@context": {
+            "dc": "http://purl.org/dc/elements/1.1/",
+            "xmp": "http://ns.adobe.com/xap/1.0/",
+            "gltfrp": "https://honurobotics.github.io/gltf-robotics/ns/profile/1.0/",
+        },
+        "@id": "",
+        "dc:source": "generated from scratch by exemplar/make_minimal_gltf.py",
+        "dc:creator": "Honu Robotics",
+        "dc:date": {"@list": ["2026-09-27T00:00:00Z"]},
+        "xmp:CreatorTool": "Honu Robotics exemplar/make_minimal_gltf.py",
+        "gltfrp:partRole": "component",
+        "gltfrp:forward": "+X",
+        "gltfrp:up": "+Z",
+    }
+
     gltf = {
         "asset": {
             "version": "2.0",
-            "generator": "Honu Robotics docs/_tools/make_minimal_gltf.py",
+            "generator": "Honu Robotics exemplar/make_minimal_gltf.py",
+            "extensions": {"KHR_xmp_json_ld": {"packet": 0}},
         },
+        "extensionsUsed": ["KHR_xmp_json_ld"],
+        "extensions": {"KHR_xmp_json_ld": {"packets": [manifest]}},
         "scene": 0,
         "scenes": [{"name": "minimal", "nodes": [0]}],
-        "nodes": [{"name": "quad", "mesh": 0}],
+        "nodes": [{"name": "minimal", "mesh": 0}],
         "meshes": [
             {
                 "name": "quad",
