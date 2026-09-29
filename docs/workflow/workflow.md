@@ -50,7 +50,7 @@ Per part:
 - Part name, lowercase snake_case, and role, base or component (4.1, 4.1.4)
 - Reference images, with what each view shows and what matters in it
 - Cited dimensions, each as a named quantity with its source, and the tolerance held, or an explicit statement that no published figure exists (`gltfrp:nominalDimension`, `gltfrp:dimensionTolerance`)
-- The datum point: the single geometric feature the origin is referenced to (profile 5.6, `gltfrp:datumPoint`). Orientation is not specified per part -- profile 5.2 fixes it for every delivery
+- The datum point: the single geometric feature the origin is referenced to (profile 5.6, `gltfrp:datumPoint`). Orientation is not specified per part; profile 5.2 fixes it for every delivery
 - Datum targets where a physical realization exists (`gltfrp:datumTarget`)
 - The feature that defines forward, and its sense, where the shape does not determine it (5.2)
 - Visual requirement: what must read at the viewing distance, what may be simplified
