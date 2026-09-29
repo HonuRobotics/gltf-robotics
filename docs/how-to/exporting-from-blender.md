@@ -75,6 +75,6 @@ This is a practice rather than a rule. Profile section 4.1.4 does not require th
 
 ## Versions
 
-The toolchain is pinned at patch level in [profile section 11](../profile/profile.md): Blender 5.2.2 LTS with `io_scene_gltf2` 5.2.40, which writes `asset.generator` as `Khronos glTF Blender I/O v5.2.40`. Earlier deliveries report `v5.1.20`, which is Blender 5.1; they predate the pin and are not held to it.
+The toolchain is pinned at patch level in [profile section 11](../profile.md): Blender 5.2.2 LTS with `io_scene_gltf2` 5.2.40, which writes `asset.generator` as `Khronos glTF Blender I/O v5.2.40`. Earlier deliveries report `v5.1.20`, which is Blender 5.1; they predate the pin and are not held to it.
 
 The generator string records the tool and never the settings, so two files from the same exporter can still differ in image format, tangents and compression. That is why the checks constrain the outcome rather than the settings, and why `will_save_settings` is worth turning on — it puts the settings in the `.blend` where a re-export can reproduce them.

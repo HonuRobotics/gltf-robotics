@@ -85,7 +85,7 @@ The mechanism is visible in the generator strings. The untextured robot files co
 
 Nineteen of the forty-nine put UV coordinates outside [0,1], including one of the two Khronos reference assets. The Gazebo team's own files run u to about 2.0 across seven models, `thor_table` runs v from -499 to 501, and `fuel/atmos` covers -7.4 to 8.4 in both axes. This is deliberate tiling against a REPEAT sampler, not an authoring accident: it is how a surface gets a repeating material without a large map.
 
-`model-spec.md` section 6.1 requires [0,1] and REP-158 requires it too, reserving anything outside for "seamless tiling with repeat wrap modes" -- which is exactly what these files are doing. So the rule is not wrong, but it is narrower than it reads, and it forbids a technique in normal use by the team that maintains our primary consumer. Worth stating in the spec as a deliberate cost, with the reason (half-float UV storage after load, and the texel-density measurement it makes possible) rather than as a rule everyone would agree with.
+Profile section 6.1 requires [0,1] and REP-158 requires it too, reserving anything outside for "seamless tiling with repeat wrap modes" -- which is exactly what these files are doing. So the rule is not wrong, but it is narrower than it reads, and it forbids a technique in normal use by the team that maintains our primary consumer. Worth stating in the spec as a deliberate cost, with the reason (half-float UV storage after load, and the texel-density measurement it makes possible) rather than as a rule everyone would agree with.
 
 ### Nobody uses alpha, and four fifths of materials ask for two-sided rendering
 
@@ -121,7 +121,7 @@ Two things the probe does not settle. Whether the textures actually land in the 
 
 Counted by image rather than by use, normal maps are 38 JPEG to 4 PNG, and metallic-roughness maps 39 JPEG to 6 PNG. Base color is 45 JPEG to 13 PNG, which is the one slot where JPEG is defensible. The 10 to 13 KTX2 images in each slot are all from the Khronos probe and are nobody's practice.
 
-This is the sharpest spec-versus-practice disagreement in the assessment, and it is not close. `model-spec.md` section 8 and REP-158 both require PNG for linear data; the corpus, including every asset the Gazebo team ships, uses JPEG. Nothing here changes the physics -- chroma subsampling really does blend channels that have nothing to do with each other -- but it does settle how the rule should be written. It is a rule about what we accept, not a description of what arrives, and the spec already says so. What it should add is that the remedy is a re-export from the source texture, because converting a JPEG normal map to PNG preserves the damage.
+This is the sharpest spec-versus-practice disagreement in the assessment, and it is not close. Profile section 8 and REP-158 both require PNG for linear data; the corpus, including every asset the Gazebo team ships, uses JPEG. Nothing here changes the physics -- chroma subsampling really does blend channels that have nothing to do with each other -- but it does settle how the rule should be written. It is a rule about what we accept, not a description of what arrives, and the spec already says so. What it should add is that the remedy is a re-export from the source texture, because converting a JPEG normal map to PNG preserves the damage.
 
 Seven assets exceed the 2048 texture cap, all at 4096, and all in the Gazebo and warehouse cohort. There is no size discipline anywhere in the corpus: one warehouse is 85 MB in a single visual.
 
@@ -149,7 +149,7 @@ The whole corpus is 309 MB of asset and was assessed by fetching 75 MB of it, in
 
 ---
 
-## What this should change in `model-spec.md`
+## What this should change in the profile
 
 In rough order of how much the evidence moves:
 

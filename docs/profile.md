@@ -1,6 +1,6 @@
-# The glTF Robotics Profile
+# Honu glTF Asset Profile 
 
-This "profile" is based on the glTF 2.0 specification and interprets and constrains the specification for use in 3D asset authoring for robotic simulation.  This document, in combination with the companion [workflow](../workflow/workflow.md), constitute actionable guidance for authoring and integrating robot 3D visual models. 
+This "profile" is based on the glTF 2.0 specification and interprets and constrains the specification for use in 3D asset authoring for robotic simulation.  This document, in combination with the companion [workflow](workflow.md), constitute actionable guidance for authoring and integrating robot 3D visual models. 
 
 ## 1. Introduction
 
@@ -10,7 +10,7 @@ This profile constrains the visual models authored for robotics simulation, curr
 
 This profile builds upon [glTF 2.0](https://registry.khronos.org/glTF/specs/2.0/glTF-2.0.html) to make it actionable for 3D visual model integration in Gazebo for robotics. Every rule here does one of three things:
 
-- **Narrowing.** Focusing and interpreting the standard's affordances for the specific needs of robotics simulation, to make it actionable in the context of developing 3D visual robotic assets. A file can be glTF-compliant and still be unusable in a robotics simulator.
+- **Narrowing.** As a profile, this specification focuses and narrows the standard's affordances for the specific needs of robotics simulation, to make it actionable in the context of developing 3D visual robotic assets. A file can be glTF-compliant and still be unusable in a robotics simulator.
 - **Adding.** Requiring something the standard does not, to satisfy the constraints of the robotics simulation and visualization consumers of the assets (e.g., Gazebo, RViz). This is required because some consumers implement only part of glTF, so a glTF-compliant asset is not guaranteed to be importable. Added constraints name the downstream consumer that motivates them.
 - **Departing.** Differing from what the standard says, which is done rarely and never silently. Section 5.2 is the one departure: the delivered file is expressed +X forward, +Y left, +Z up, following ISO 9787 and REP 103 rather than glTF's Y-up and +Z-forward convention, because every other stage of this pipeline uses the robotics convention and holding to glTF's would put a conversion in the middle of it.
 
@@ -55,7 +55,7 @@ asset::
 Avoided in normative text. In 3D work the word spans meshes, textures, rigs, scenes and library entries at every scale, and glTF itself uses `asset` for the metadata object inside a file, so it cannot be used precisely. Where this profile means the delivered file it says *visual model*; where it means the glTF object it writes `asset` in code font.
 
 coordinate system::
-Used throughout in preference to *frame* and to *space*. All three are in use elsewhere (REP 103 says frame, ISO 9787 says coordinate system, graphics says space) and they are treated here as naming the same thing. Where an external document is quoted its own word is kept. What each coordinate system here is called in ISO 9787, in REP 103 and in glTF is tabulated in the [coordinate systems reference](../reference/coordinate-systems.md#our-coordinate-system-names).
+Used throughout in preference to *frame* and to *space*. All three are in use elsewhere (REP 103 says frame, ISO 9787 says coordinate system, graphics says space) and they are treated here as naming the same thing. Where an external document is quoted its own word is kept. What each coordinate system here is called in ISO 9787, in REP 103 and in glTF is tabulated in the [coordinate systems reference](reference/coordinate-systems.md#our-coordinate-system-names).
 
 datum::
 A situation feature of the part that the coordinate system is referenced to. Section 5.6 states which features may serve and requires that those named together fix all six degrees of freedom. A datum is named before modelling starts; it is not measured from the geometry afterwards.
@@ -211,7 +211,7 @@ Blender is Z-up and right-handed, so a part authored in this convention is expor
 
 The last row is the consequence of deviation from the glTF convention.
 
-The derivation, with both loaders quoted and the probe measurements that confirm them, is [One body, one mesh: who rotates what](../reference/coordinate-systems.md#one-body-one-mesh-who-rotates-what) in the coordinate-systems reference; the [walkthrough](../walkthroughs/blender_mesh_coordinate_ex.md) shows the same file in both consumers.
+The derivation, with both loaders quoted and the probe measurements that confirm them, is [One body, one mesh: who rotates what](reference/coordinate-systems.md#one-body-one-mesh-who-rotates-what) in the coordinate-systems reference; the [walkthrough](walkthroughs/blender_mesh_coordinate_ex.md) shows the same file in both consumers.
 
 ### 5.3 Forward axis
 
@@ -494,7 +494,7 @@ The rule beside each of these is normative and a delivery must satisfy it. What 
 | 4.2 | Binary container as the only permitted form | Simplicity, and two of the reasons are defects with upstream fixes pending | none yet |
 | 10 | Which prohibitions are permanent | Draco defeats our own inspection tools; KTX2 is unreadable by Gazebo | none yet |
 
-Decision numbers refer to section 10 of [VISUAL_ASSET_PIPELINE_REVIEW.md](../reference/pipeline-review.md). Review decision 9, contributing the loader table upstream, is not a rule of this specification and is not listed. Items marked "none yet" were raised after the review's list was written and should be added to it.
+Decision numbers refer to section 10 of [VISUAL_ASSET_PIPELINE_REVIEW.md](reference/pipeline-review.md). Review decision 9, contributing the loader table upstream, is not a rule of this specification and is not listed. Items marked "none yet" were raised after the review's list was written and should be added to it.
 
 ## 14. References (Informative)
 

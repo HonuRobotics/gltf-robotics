@@ -1,46 +1,42 @@
-# glTF for robot simulation
+# Honu Robotics' glTF asset framework
 
-Honu Robotics' glTF asset pipeline for Gazebo and RViz: the rules we author to, the workflow that produces a delivery, the tools that check it, and the measurements the rules rest on.
+Honu Robotics' glTF asset framework for Gazebo and RViz. This is a beta release: two documents are ready for review, and the rest of the repository is planned work still in development. This project includes the following:
 
-Documentation: <https://honurobotics.github.io/gltf-robotics/>
+## Ready for beta review
 
-## What this is, and what it is not
+Only these two documents are evaluated in the beta. Both are being tried on real models while their open issues are resolved, and each open issue is marked where it occurs in the text.
 
-This is our pipeline, published openly with its evidence. It is not a standard, and it is not a bid to displace [REP 158](https://github.com/openrobotics/reps/blob/main/_posts/rep-0158%3A2006.md), which it cites wherever that document reaches.
+1. **Honu glTF Asset Profile**, [docs/profile.md](docs/profile.md). This document provides normative guidance that narrows, extends and clarifies the [glTF 2.0](https://registry.khronos.org/glTF/specs/2.0/glTF-2.0.html) standard and makes it actionable for authoring 3D assets for robotics applications. The profile also aligns the robotics standards and conventions (ISO and ROS REP) and terminology in the context of glTF assets. The document describes normative rules for 3D visual robotic assets that MUST and SHOULD be adhered to by all.
+2. **Honu glTF Asset Workflow**, [docs/workflow.md](docs/workflow.md). This document describes the step-by-step process of asset commissioning, authoring and integration and specifies who does what.
 
-The distinction matters because there is very little practice to defer to. A survey of the whole Gazebo Fuel library found three robot platforms delivered as glTF out of 427, and a survey of public repositories found a cohort small enough to name. Where the field has no settled answer we have had to work one out, and saying so plainly is more useful than implying a consensus that does not exist. Every rule here is marked with its status — decided, under discussion, or open — so a reader can tell our conclusions from our questions.
+## In development, not ready for review
 
-What we do have is measurement. Forty-seven assets from Khronos, the Gazebo team, Fuel and other robotics projects, read criterion by criterion; loader behavior taken from the gz-common and RViz sources rather than from documentation; and a pipeline that actually runs. That is the part worth publishing, and it is the part designed to stay true: the assessment is re-run, not rewritten, so an upstream asset that changes is noticed rather than quietly making a claim here false.
+The items below are part of the plan and are listed so that reviewers know what is coming. They are incomplete, some were written against earlier drafts of the profile, and none of them is evaluated in the beta. Where one of them disagrees with the profile or the workflow, the profile and the workflow govern.
 
-If you author glTF for Gazebo or RViz, the profile and the how-to guides should save you the fortnight we spent finding out what those two renderers really read. If you disagree with a rule, the evidence it rests on is in the same repository and you can check it.
+Supporting documentation:
 
-## Layout
+3. How-to guides, [docs/how-to/](docs/how-to/). Task instructions for the modeler and the integrator. Two so far: exporting from Blender and checking a delivery.
+4. Walkthroughs, [docs/walkthroughs/](docs/walkthroughs/). Worked examples run end to end with each tool's real output. One so far: a single mesh taken from Blender to Gazebo and RViz.
+5. Reference, [docs/reference/](docs/reference/). Background for the profile's rules: coordinate systems, Blender's glTF export options, PBR materials and notes on glTF itself.
+6. Evidence, [docs/evidence/](docs/evidence/). Measurements of glTF assets published by other projects, and audits of our own deliveries against the same criteria.
+7. Project history, [docs/project/](docs/project/). Superseded drafts, kept for the record.
 
-| | |
-|---|---|
-| `docs/profile/` | the glTF Robotics Profile — what a delivered model must be, rule by rule |
-| `docs/how-to/` | the authoring workflow: export settings, delivery, review |
-| `docs/reference/` | coordinate systems, loader behavior, glTF background |
-| `docs/evidence/` | what the corpus says, and the generated assessment behind it |
-| `assess/` | the corpus: criteria, the asset registry, the hand-written findings |
-| `probe/` | tools that answer what reading a file cannot — `glb_probe` loads one through Gazebo's own loader |
-| `exemplar/` | a worked model that satisfies the profile, and fixtures that deliberately do not |
-| `figures/` | the ISO 9787 coordinate-frame illustrations, generated from Python scene scripts |
+Tools:
 
-## Install
+8. Command-line tools, [src/gltf_robotics/](src/gltf_robotics/) with tests in [tests/](tests/). A Python package with three commands: `gltf-check` tests a file against the profile's rules, `gltf-summary` describes what a file contains without judging it, and `gltf-assess` measures a list of assets published elsewhere.
+9. Assessment corpus, [assess/](assess/). The input and output of `gltf-assess`: the criteria, the list of assets, the written findings and the generated report.
+10. Probes, [probe/](probe/). Tools for questions that reading a file cannot answer. `glb_probe` loads a file through Gazebo's own loader and reports what was built, and a marker generator writes test assets for coordinate-system questions.
+11. Figures, [figures/](figures/). A Python drawing kit and the scene scripts that generate the coordinate-system illustrations used in the documentation.
 
-```bash
-pip install -e .
-```
+Models:
 
-Two commands:
+12. Examples, [examples/](examples/). The files behind the walkthrough: the Blender source, exported `.glb` files, and the SDF, URDF and RViz configuration that load them.
+13. Exemplar, [exemplar/](exemplar/). Planned as a reference model that satisfies the profile, with counterexamples that deliberately do not. At present it holds only a minimal glTF file used to explain the file structure.
+14. Demo, [demo/](demo/). A Blender script that builds an axis-marker scene in the robotics coordinate convention (x forward, y left, z up), for seeing how each consumer treats the axes.
 
-```bash
-gltf-check path/to/model.glb     # does this file satisfy the profile?
-gltf-assess                      # re-measure the corpus, rewrite the assessment
-```
+Other:
 
-`gltf-check` is the one worth pointing at your own files. It needs nothing but Python — it parses the glTF rather than rendering it.
+15. Reference documents, [refs/](refs/). A local placeholder for licensed standards the documents cite, such as ISO 9787. Its contents are not committed or published.
 
 ## License
 

@@ -469,7 +469,7 @@ Gazebo:  p_part = Pose · Root · p_node
 RViz:    p_part = Pose · Root · Rx(90) · p_node
 ```
 
-The two agree only when `Root` commutes with `Rx(90)`: when it is the identity, a pure scale, or a rotation about X alone. Any other root transform, a translation included, puts the same file in two different places. That is a statement about tree shape, not about axes, and it is the reason profile [section 5.5](../profile/profile.md) requires an identity root node.
+The two agree only when `Root` commutes with `Rx(90)`: when it is the identity, a pure scale, or a rotation about X alone. Any other root transform, a translation included, puts the same file in two different places. That is a statement about tree shape, not about axes, and it is the reason profile [section 5.5](../profile.md) requires an identity root node.
 
 ### Gazebo, from source
 
@@ -563,7 +563,7 @@ Every row is what the source predicts. The `.dae` pair is why the project's earl
 
 ### The decision, and what it costs
 
-**[Practice]** This project delivers the file in the body coordinate system: Blender's `+Y Up` off, no transform on the root node, vertices already on the link axes. Profile [section 5.2](../profile/profile.md) is the normative statement and [section 5.5](../profile/profile.md) the root-node rule. In the chain above, that puts the rotation nowhere in the file and nowhere in Gazebo's `Pose`, which stays identity. RViz's rotation is inside the consumer and cannot be removed, so it is undone in `Pose`, on every URDF visual that shows a glTF part:
+**[Practice]** This project delivers the file in the body coordinate system: Blender's `+Y Up` off, no transform on the root node, vertices already on the link axes. Profile [section 5.2](../profile.md) is the normative statement and [section 5.5](../profile.md) the root-node rule. In the chain above, that puts the rotation nowhere in the file and nowhere in Gazebo's `Pose`, which stays identity. RViz's rotation is inside the consumer and cannot be removed, so it is undone in `Pose`, on every URDF visual that shows a glTF part:
 
 ```xml
 <visual><origin xyz="0 0 0" rpy="-1.5708 0 0"/>

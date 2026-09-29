@@ -2,7 +2,7 @@
 
 Tooling to look at glTF assets somebody else wrote, and a list of the ones worth looking at.
 
-This is the bottom-up half of the visual model work. [`model-spec.md`](../docs/profile/profile.md) is the top-down half: it states what a delivered model must be, rule by rule, with the reasoning in the pipeline review beside it. Several of its rules are still open, and the arguments for and against them keep turning on what other people actually do. This directory answers that empirically, over a list of examples that grows, with an assessment that is re-run rather than rewritten.
+This is the bottom-up half of the visual model work. [The profile](../docs/profile.md) is the top-down half: it states what a delivered model must be, rule by rule, with the reasoning in the pipeline review beside it. Several of its rules are still open, and the arguments for and against them keep turning on what other people actually do. This directory answers that empirically, over a list of examples that grows, with an assessment that is re-run rather than rewritten.
 
 | file | |
 |---|---|
@@ -52,7 +52,7 @@ Four of the criteria in group D are not measurable at all: which axis is up, whi
 
 ## What it cannot tell you
 
-The tool reads the file. It does not load it, and the distinction matters more here than it usually would: `model-spec.md` section 12 is explicit that valid, intended, compliant and usable are four different questions that fail independently. In particular, what gz-common's loader builds from a file is not always what the file says -- submesh names come from nodes rather than meshes, extensions are parsed and then ignored, and the installed version differs from the branch. That is what `glb_probe` is for, inside drydock, and `criteria.md` marks the criteria that need it. Anything visual needs a window and a person.
+The tool reads the file. It does not load it, and the distinction matters more here than it usually would: profile section 12 is explicit that valid, intended, compliant and usable are four different questions that fail independently. In particular, what gz-common's loader builds from a file is not always what the file says -- submesh names come from nodes rather than meshes, extensions are parsed and then ignored, and the installed version differs from the branch. That is what `glb_probe` is for, inside drydock, and `criteria.md` marks the criteria that need it. Anything visual needs a window and a person.
 
 ## Automating it
 

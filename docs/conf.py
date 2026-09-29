@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-project = 'glTF for Robot Simulation'
+project = "Honu glTF Asset Framework"
 copyright = 'Honu Robotics'  # noqa: A001 Sphinx requires this name
 author = 'Honu Robotics'
 

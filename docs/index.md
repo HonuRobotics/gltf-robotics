@@ -1,32 +1,30 @@
-# glTF for robot simulation
+# Honu Robotics' glTF asset framework
 
-Honu Robotics' glTF asset pipeline for Gazebo and RViz: the rules we author to, the workflow that produces a delivery, the tools that check it, and the measurements the rules rest on.
+Honu Robotics' glTF asset framework for Gazebo and RViz. This is a beta release: two documents are ready for review, and the rest of the site is planned work still in development.
 
-This is our pipeline, published openly with its evidence. It is not a standard, and not a bid to displace [REP 158](https://github.com/openrobotics/reps/blob/main/_posts/rep-0158%3A2006.md), which it cites wherever that document reaches. There is very little practice to defer to — three of 427 robot platforms in Gazebo Fuel are delivered as glTF — so where the field has no settled answer we have worked one out and said so. Every rule carries its status: decided, under discussion, or open.
+## Ready for beta review
 
-## Where to start
+- [Honu glTF Asset Profile](profile.md). Normative rules for 3D visual robotic assets, narrowing, extending and clarifying glTF 2.0 for robotics.
+- [Honu glTF Asset Workflow](workflow.md). The step-by-step process of asset commissioning, authoring and integration, and who does what.
 
-- [Profile](profile/index.md) — what a delivered model must be, rule by rule.
-- [How-to guides](how-to/index.md) — authoring and exporting a model that satisfies it.
-- [Walkthroughs](walkthroughs/index.md) — one worked example from Blender to Gazebo, with each tool's real output.
-- [Reference](reference/index.md) — coordinate systems, and what Gazebo and RViz actually read from a `.glb`.
-- [Evidence](evidence/index.md) — what other people's assets contain, measured rather than asserted.
+## In development, not ready for review
 
-## Checking a file
+These sections are part of the plan and are not evaluated in the beta. Where one of them disagrees with the profile or the workflow, the profile and the workflow govern.
 
-```bash
-pip install git+https://github.com/HonuRobotics/gltf-robotics
-gltf-check path/to/model.glb
-```
+- [How-to guides](how-to/index.md). Exporting from Blender and checking a delivery.  
+- [Walkthroughs](walkthroughs/index.md). One worked example from Blender to Gazebo and RViz, with each tool's real output.
+- [Reference](reference/index.md). Coordinate systems, Blender's glTF export options, PBR materials and notes on glTF itself.
+- [Evidence](evidence/index.md). Measurements of glTF assets published by other projects, and audits of our own deliveries.
+- [Project history](project/index.md). Superseded drafts, kept for the record.
 
-It parses the glTF rather than rendering it, so it needs no Gazebo, no GPU and no ROS.
+The tools, models and figures are described in the repository [README](https://github.com/HonuRobotics/gltf-robotics#readme).
 
 ```{toctree}
 :hidden:
 :maxdepth: 3
 
-The Profile <profile/index>
-The Workflow <workflow/workflow>
+Profile <profile>
+Workflow <workflow>
 How-to guides <how-to/index>
 Walkthroughs <walkthroughs/index>
 Reference <reference/index>

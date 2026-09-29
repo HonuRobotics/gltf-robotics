@@ -142,7 +142,7 @@ def wrap(text, width):
 def main(argv=None):
     parser = argparse.ArgumentParser(
         prog="gltf-check",
-        description="Check a glTF file against the glTF Robotics Profile.",
+        description="Check a glTF file against the Honu glTF Asset Profile.",
         epilog=legend(),
         formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("files", nargs="+", type=pathlib.Path)

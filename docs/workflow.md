@@ -1,6 +1,6 @@
-# The glTF Robotics Workflow
+# Honu glTF Asset Workflow
 
-The [profile](../profile/profile.md) states what a delivered visual model must be. This document states the process that produces one: two parties, three steps, in order. Where the two would overlap, this document cites the profile and does not restate it. Requirements live there; who does what, and when, lives here.
+The [profile](profile.md) states what a delivered visual model must be. This document states the process that produces one: two parties, three steps, in order. Where the two would overlap, this document cites the profile and does not restate it. Requirements live there; who does what, and when, lives here.
 
 The process begins with a commission, a vehicle or a batch of parts to be modeled, and ends when the integrator accepts the delivered files. Placing an accepted part in the simulation model, the macro and the RViz correction, is the consuming project's work and is out of scope here.
 
@@ -77,7 +77,7 @@ Every part block has a name, a role, a datum specification that closes all six d
 
 ### Build to the profile
 
-Profile sections 5 to 10 are the rules the model is built to. The [Blender export guide](../how-to/exporting-from-blender.md) is the tool-specific practice for meeting them, and the [walkthrough](../walkthroughs/blender_mesh_coordinate_ex.md) shows one file going through end to end. The origin is placed by evaluating the datum specification against the geometry, never chosen from a menu (5.4).
+Profile sections 5 to 10 are the rules the model is built to. The [Blender export guide](how-to/exporting-from-blender.md) is the tool-specific practice for meeting them, and the [walkthrough](walkthroughs/blender_mesh_coordinate_ex.md) shows one file going through end to end. The origin is placed by evaluating the datum specification against the geometry, never chosen from a menu (5.4).
 
 ### Export
 

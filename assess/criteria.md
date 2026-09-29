@@ -1,6 +1,6 @@
 # What we assess in a glTF example
 
-This is the draft of the assessment itself: the list of things worth knowing about a glTF asset that somebody else wrote. It is the input to `gltf_assess.py`, which implements the mechanical part of it, and the counterpart to [model-spec.md](../docs/profile/profile.md), which states top-down what a delivered model must be. This list is bottom-up. It asks what assets in the wild actually are, so that every rule in the spec can be checked against practice rather than against argument alone.
+This is the draft of the assessment itself: the list of things worth knowing about a glTF asset that somebody else wrote. It is the input to `gltf_assess.py`, which implements the mechanical part of it, and the counterpart to [the profile](../docs/profile.md), which states top-down what a delivered model must be. This list is bottom-up. It asks what assets in the wild actually are, so that every rule in the spec can be checked against practice rather than against argument alone.
 
 The two differ in what a row means. A rule in the spec is a requirement, and a delivery either meets it or does not. A criterion here is a question, and an example either answers it or does not. Where an example diverges from the spec, that is a disagreement to resolve, not a defect in somebody else's file: several of the spec's open decisions exist precisely because the corpus disagrees with the draft rule.
 
@@ -20,7 +20,7 @@ The last column says where an answer comes from, which is also a statement about
 | render | Needs a window: Gazebo, RViz or the Khronos sample viewer. Cannot be automated from here. |
 | judgement | A person looking at the file and deciding. |
 
-The `Why` column names the section of `model-spec.md` the criterion bears on, where there is one. Criteria with no spec section are the ones where the corpus may tell us something the spec does not yet have an opinion about.
+The `Why` column names the section of the profile the criterion bears on, where there is one. Criteria with no spec section are the ones where the corpus may tell us something the spec does not yet have an opinion about.
 
 ---
 
@@ -203,13 +203,13 @@ The end of the assessment, and the part that cannot be read out of the file. Spe
 ## What this list deliberately does not assess
 
 - Artistic quality. Whether a model looks right is a judgement, and one we would make in a viewer rather than in a table.
-- Collision geometry. Out of scope for `model-spec.md` today, and the corpus keeps it in SDF rather than in the asset.
+- Collision geometry. Out of scope for the profile today, and the corpus keeps it in SDF rather than in the asset.
 - Physics, sensors and plugins. They live in SDF, not in the glTF, and belong to a different assessment.
 - Whether an asset is good for its own purpose. A warehouse prop is not trying to be a robot part, and criticizing it for that would teach us nothing.
 
 ## Open questions on the list itself
 
-1. Should an example carry a verdict, or only measurements? The report currently flags divergence from `model-spec.md` and stops short of saying who is right. That is deliberate for now, but a column recording our conclusion about each disagreement would be the thing that feeds back into the spec.
+1. Should an example carry a verdict, or only measurements? The report currently flags divergence from the profile and stops short of saying who is right. That is deliberate for now, but a column recording our conclusion about each disagreement would be the thing that feeds back into the spec.
 2. How is a library summarized? Seventeen jetty models are one workflow and one set of decisions, not seventeen independent data points. The corpus tables currently weight every asset equally, which overstates whoever shipped the most files.
 3. Group B wants the SDF or URDF beside the asset, not just the asset. That is a different fetch and a different parser, and it is where several of the most useful criteria live (B5, B6, I2).
 4. Which of the `planned` rows are worth the code? E5, E8, G4 and G6 all need vertex or pixel data and would push the byte budget up considerably.

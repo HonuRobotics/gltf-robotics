@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Assess glTF assets from a list, without downloading them whole.
 
-The point of this tool is bottom-up evidence for `model-spec.md`: that document
+The point of this tool is bottom-up evidence for the profile: that document
 is a top-down statement of what a delivered model must be, and this is the other
 half, a look at what glTF assets in the wild actually are. It reads a hand-edited
 list of examples (`examples.yaml`), measures each one against the criteria in
@@ -102,7 +102,7 @@ UV_SAMPLE = 48
 WHOLE_FILE_MAX = 2 << 20
 
 # Image formats that reach the GPU in this project's consumers. Anything else
-# loads as nothing at all -- see model-spec.md section 8.
+# loads as nothing at all -- see profile section 8.
 LOADABLE_MIME = {"image/png", "image/jpeg"}
 
 BLENDER_SUFFIX = re.compile(r"\.\d{3}$")
@@ -876,7 +876,7 @@ def measure(entry, uri, budget_bytes):
 
 # Each check names the criterion it answers in criteria.md. These are not a pass
 # or fail grade on someone else's asset -- they record where an example diverges
-# from what model-spec.md requires of ours, which is the whole reason for
+# from what the profile requires of ours, which is the whole reason for
 # looking at it.
 def plural(n, word, suffix="s"):
     return f"{n} {word}" if n == 1 else f"{n} {word}{suffix}"
@@ -1741,7 +1741,7 @@ def report(results, registry, generated, sources=(), max_age=None):
                 f"{r['age_years']:.1f} yr | {r.get('date_source') or '--'} |")
         add("")
 
-    add("## Against model-spec.md, per asset")
+    add("## Against the profile, per asset")
     add("")
     add("What each example does that our own specification forbids, or that would break in "
         "Gazebo or RViz. These are observations about other people's assets, not defects: "
@@ -1761,7 +1761,7 @@ def report(results, registry, generated, sources=(), max_age=None):
         add(f"[source]({r['uri']}) &middot; " + measured_line(r))
         add("")
         if not obs:
-            add("Nothing diverges from `model-spec.md` that this tool can see.")
+            add("Nothing diverges from the profile that this tool can see.")
             add("")
             continue
         add("| | Criterion | Observation |")

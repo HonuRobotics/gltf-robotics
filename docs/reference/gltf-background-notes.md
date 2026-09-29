@@ -21,7 +21,7 @@ This section is a running history of the references I've reviewed as part of the
 **The JPEG of 3D**
 
 Q: glTF as an ISO/IEC 12113:2022 specification.  Is there any functional difference betwee the glTF 2.0 spec and the ISO version?  
-A: No.   The difference is that the ISO froze in 2022.  The Khronos version is live, updates and includes the extension registry.   So cite the Khronos registry version, and cite a specific revision with it, because it moves. `model-spec.md` already says "registry revision 2.0.1"
+A: No.   The difference is that the ISO froze in 2022.  The Khronos version is live, updates and includes the extension registry.   So cite the Khronos registry version, and cite a specific revision with it, because it moves. the profile already says "registry revision 2.0.1"
 
 
 Q: I still don't understand what an "accessor" is.  "An object describing the number and the format of data elements stored in a binary buffer."   Could you give a couple concrete examples?
@@ -204,7 +204,7 @@ Both RGBA maps are defects, in opposite directions. `blueboat_chassis` is case 1
 
 One consequence for the format rule. The alpha requirement does not make PNG the default for base color across the board; it makes PNG mandatory for the small number of materials that are genuinely `MASK`. Fourteen of fifteen parts here are `OPAQUE` and have no alpha requirement at all - their base color format is decided on the size and quality grounds above, not on this one.
 
-> **Flag - Gazebo.** `model-spec.md` section 9 records that Gazebo honors `MASK` and ignores `BLEND` entirely, rendering the material opaque, and that uniform opacity reaches it through `baseColorFactor` alpha on any alpha mode but is applied twice, so 0.5 renders at about 0.25. If that still holds, case 2 above is not reachable in Gazebo as the spec describes it, and the open question is decision 6, not this one.
+> **Flag - Gazebo.** profile section 9 records that Gazebo honors `MASK` and ignores `BLEND` entirely, rendering the material opaque, and that uniform opacity reaches it through `baseColorFactor` alpha on any alpha mode but is applied twice, so 0.5 renders at about 0.25. If that still holds, case 2 above is not reachable in Gazebo as the spec describes it, and the open question is decision 6, not this one.
 
 Q: "JPEG fine at high quality" is vague. Can we be more explicit?
 
