@@ -26,23 +26,25 @@ The integrator writes the commission before any modeling starts. It is the writt
 
 ### What the commission contains
 
-To write: expand each item to one sentence. Each item names the profile rule and the manifest property it feeds, so the manifest in step 2 is copied from the commission.
+The commission is a YAML file, started from the [commission template](commission-template.yaml). Its keys are plain names, shown in code font below. The ones that feed the manifest are copied into the delivered file by `gltf-manifest` in step 2, so nothing is typed twice.
+
+To write: expand each item to one sentence.
 
 For the whole commission:
 
-- Sources: datasheets, drawings, vendor pages, and any CAD, scans or vendor models handed over ([the manifest](profile.md#the-manifest), `dc:relation`, `dc:source`)
-- Licensing and texture redistribution terms (`dc:rights`). For Honu Robotics' own work the usual entry is "Copyright 2026 Honu Robotics. Licensed under the Apache License, Version 2.0." A purchased texture adds its own redistribution terms
-- The base part, exactly one per vehicle, and the vehicle's datum decision ([what the manifest carries](profile.md#what-the-manifest-carries), `gltfrp:partRole`)
+- Sources: datasheets, drawings, vendor pages, and any CAD, scans or vendor models handed over (`source`, `dimensionSource`)
+- Licensing and texture redistribution terms (`rights`). For Honu Robotics' own work the usual entry is "Copyright 2026 Honu Robotics. Licensed under the Apache License, Version 2.0." A purchased texture adds its own redistribution terms
+- The base part, exactly one per vehicle, and the vehicle's datum decision (`partRole`, and the profile's [datum specification](profile.md#datum-specification))
 - The authoring toolchain the modeler will use, checked against the versions pinned in the profile's [authoring toolchain](profile.md#authoring-toolchain) section
-- Whether the `.blend` and CAD will be archived, and if so where (`xmpMM:DerivedFrom`)
+- Whether the `.blend` and CAD will be archived, and if so where (`authoringSource`)
 
 For each part:
 
 - Part name, following the profile's [file naming](profile.md#file-naming) rule
 - Reference images, with what each view shows and what matters in it
-- Cited dimensions, each as a named quantity with its source, and the tolerance held, or an explicit statement that no published figure exists (`gltfrp:nominalDimension`, `gltfrp:dimensionTolerance`)
-- The datum point: the single geometric feature the origin of the part coordinate system is referenced to ([datum specification](profile.md#datum-specification), `gltfrp:datumPoint`). Orientation is not specified per part; the profile's [axes](profile.md#axes) rule fixes it for every delivery, following ISO 9787 and REP 103 and not glTF's own convention
-- Datum targets where a physical realization exists (`gltfrp:datumTarget`)
+- Cited dimensions, each as a named quantity with its source, and the tolerance held, or an explicit statement that no published figure exists (`nominalDimension`, `dimensionTolerance`)
+- The datum point: the single geometric feature the origin of the part coordinate system is referenced to (`datumPoint`, and the profile's [datum specification](profile.md#datum-specification)). Orientation is not specified per part; the profile's [axes](profile.md#axes) rule fixes it for every delivery, following ISO 9787 and REP 103 and not glTF's own convention
+- Datum targets where a physical realization exists (`datumTarget`)
 - The feature that defines forward, and its sense, where the shape does not determine it ([forward axis](profile.md#forward-axis))
 - Visual requirement: how much detail the part needs. State the distance it is normally viewed from, which features must be recognizable at that distance, and which may be simplified or left out
 - Materials: for each visible region, what it is made of, whether that is metal or non-metal, and a photo or a named finish to match ([materials](profile.md#materials), [textures](profile.md#textures)). Metal or non-metal is stated because glTF treats a material as metal unless told otherwise
@@ -68,7 +70,7 @@ Every part block has a name, a datum point, a cited dimension or an explicit "no
 
 ### Build to the profile
 
-The profile's sections from [Coordinate systems and units](profile.md#coordinate-systems-and-units) to [Prohibited content](profile.md#prohibited-content) are the rules the model is built to. The [Blender export guide](walkthroughs/exporting-from-blender.md) is the tool-specific practice for meeting them, and the [walkthrough](walkthroughs/blender_mesh_coordinate_ex.md) shows one file going through end to end. The origin is placed by evaluating the datum specification against the geometry, never chosen from a menu ([Origin](profile.md#origin)).
+The profile's sections from [Coordinate systems and units](profile.md#coordinate-systems-and-units) to [Prohibited content](profile.md#prohibited-content) are the rules the model is built to. The [Blender export guide](walkthroughs/exporting-from-blender.md) is the tool-specific practice for meeting them, and the [walkthrough](walkthroughs/blender_mesh_coordinate_ex.md) shows one file going through end to end. The origin is placed by evaluating the datum specification against the geometry, never chosen from a menu ([Origin](profile.md#origin---datum-coordinate-system-location)).
 
 ### Export
 
@@ -76,7 +78,17 @@ To write: one paragraph. The toolchain pin ([Authoring toolchain](profile.md#aut
 
 ### Fill the manifest from the commission
 
-Every `gltfrp:` and `dc:` value in [the manifest](profile.md#the-manifest) is copied from the commission block for that part. This is the mechanism that lets step 3 compare the delivery with what was asked for, and it is why the commission names the property beside each field.
+After export, one command writes [the manifest](profile.md#the-manifest) into the file:
+
+```bash
+gltf-manifest commission.yaml <part>.visual.glb
+```
+
+It finds the part's block in the commission by the file's name and copies the values in. It fills in the forward and up axes as `+X` and `+Z`, and the delivery date as today. Only the file's metadata changes; the geometry and textures are copied through untouched.
+
+The modeler never types a property name or a namespace prefix. The manifest inside the file uses prefixed names such as `gltfrp:partRole`, and `gltf-manifest --keys` lists which commission key writes which. Because the manifest is generated from the commission, step 3 can compare the delivery with what was asked for.
+
+The command refuses a key it does not know, so a misspelled key is caught here. If the commission changes after delivery, the integrator reruns the command; no re-export is needed.
 
 ### Gate
 

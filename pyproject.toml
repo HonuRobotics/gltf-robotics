@@ -29,6 +29,7 @@ Source = "https://github.com/HonuRobotics/gltf-robotics"
 gltf-check = "gltf_robotics.check.cli:main"
 gltf-assess = "gltf_robotics.assess.cli:main"
 gltf-summary = "gltf_robotics.summary:main"
+gltf-manifest = "gltf_robotics.manifest:main"
 
 [project.optional-dependencies]
 dev = ["pytest>=7"]

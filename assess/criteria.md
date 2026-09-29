@@ -71,11 +71,11 @@ What the file is, as a tree. This is the group that decides whether anything dow
 | id | What we measure | Why we want to know | From |
 |---|---|---|---|
 | D1 | Overall extent in meters | Whether the file is at real-world scale. The profile's [Units](../docs/profile.md#units) section. A model in millimeters corrected by a URDF `scale` is a real pattern, not a mistake: husarion does it deliberately. | tool |
-| D2 | Where the origin sits inside the bounding box, per axis, as a fraction | The profile's [Origin](../docs/profile.md#origin) section is open on where a part's origin should sit. Reported as a reading -- "centered in X, centered in Y, on the -Z face" -- because that is the form a convention is written in. | tool |
+| D2 | Where the origin sits inside the bounding box, per axis, as a fraction | The profile's [Origin](../docs/profile.md#origin---datum-coordinate-system-location) section is open on where a part's origin should sit. Reported as a reading -- "centered in X, centered in Y, on the -Z face" -- because that is the form a convention is written in. | tool |
 | D3 | Which file axis is up | glTF says Y-up and every consumer assumes it. A Z-up file renders correctly in one consumer and wrong in the other, and no measurement can tell them apart: both are a box of triangles. The profile's [Axes](../docs/profile.md#axes) section. | rig |
 | D4 | Which file axis the part faces | The profile's [Forward axis](../docs/profile.md#forward-axis) section is the one candidate departure from glTF. Whether anybody in the corpus faces +Z would settle it, and only a person who recognizes the front of a forklift can say. | rig |
 | D5 | Scale baked into node transforms rather than vertices | See C4; recorded separately because it is a units question as well as a structural one. | tool |
-| D6 | What the origin sits on, in the part's own terms | The other half of D2, and the half that matters: "on the -Z face" is only useful once somebody says that face is the wheel contact plane. The profile's [Origin](../docs/profile.md#origin) section's proposed convention is stated in these terms. | rig |
+| D6 | What the origin sits on, in the part's own terms | The other half of D2, and the half that matters: "on the -Z face" is only useful once somebody says that face is the wheel contact plane. The profile's [Origin](../docs/profile.md#origin---datum-coordinate-system-location) section's proposed convention is stated in these terms. | rig |
 | D7 | Whether our `gltf_up:=z` rotation makes the part stand up | The rule in `parts.xacro` is a bet about what arrives. The rig applies it beside the untouched file, so the bet is visible rather than assumed. | rig |
 
 ### Determining the origin and orientation by eye
@@ -103,7 +103,7 @@ Two copies rather than one, because the interesting answer is usually comparativ
 
 1. Run the rig command and read the three lines it prints: extent, the measured origin reading, and the marker legend.
 2. Open the Gazebo world. Look down each marker arm in turn. Decide which file axis points up, and which the front of the part faces. If the part has no front -- a drum, a pallet, a bin -- say so and leave forward empty rather than inventing one.
-3. Name what the origin sits on in the part's own terms: the wheel contact plane, the base of the mast, the mounting flange, the centroid. This is the answer the profile's [Origin](../docs/profile.md#origin) section is asking for, and it is the one nothing else in the assessment can produce.
+3. Name what the origin sits on in the part's own terms: the wheel contact plane, the base of the mast, the mounting flange, the centroid. This is the answer the profile's [Origin](../docs/profile.md#origin---datum-coordinate-system-location) section is asking for, and it is the one nothing else in the assessment can produce.
 4. Open the same rig in RViz. The two consumers do not agree: the Y-up rotation that RViz applies to a glTF mesh merged to `rolling` on 2025-06-16 and was not backported, so a part that stands up in Gazebo may be ninety degrees off in RViz depending on the distribution. Note the distribution you looked at.
 5. Record the answers in `visual-notes.yaml`, in the file's own axes rather than in ROS axes, because the file is what is being described. Date it and sign it. An entry with a date and no answers is a useful record too: it says somebody looked and could not tell.
 

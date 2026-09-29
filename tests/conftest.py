@@ -50,11 +50,10 @@ def pack_glb(gltf, buffer):
 
 
 def manifest(role="component", **over):
-    """A the profile's manifest section manifest packet that satisfies 4.1.4 and 5.6.
+    """A manifest packet that satisfies the profile's manifest and datum rules.
 
-    A component declaring a single mounting plane plus a line and a point, which
-    together constrain all six degrees of freedom -- the shape the profile's What the manifest carries section
-    requires, small enough to mutate in one line.
+    A component declaring its role, its axes and one datum point, small enough
+    to mutate in one line.
     """
     packet = {
         "@context": {

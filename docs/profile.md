@@ -64,8 +64,6 @@ A delivery SHOULD be named `<part>.visual.glb`, where `<part>` is the part name.
 
 The part name MUST be lowercase snake_case: lowercase letters, digits and underscores, beginning with a letter. It MUST NOT contain spaces.
 
-**Implementation Note.** This profile states the naming rule itself rather than citing a consuming project's convention, because the dependency runs the other way: a project may narrow or extend this profile, and this profile must stand without it. Where a project's contract is stricter, the stricter rule governs there and this one remains the floor.
-
 #### File format
 
 The visual model MUST be glTF 2.0 in the binary container, `.glb`, and that file MUST be self-contained: no external `.bin`, no external images, nothing to resolve at load time.
@@ -97,15 +95,15 @@ Each rule is stated normatively where it belongs and repeated here only as a lis
 | One coordinate system | ; Blender (global, local); glTF (scene space, node space) and the origin coordinate system and the datum coordinate system all  coincide | 3, 5.4 |
 | One mesh | one and only one mesh on that node | [Primitives](#primitives) |
 
-**Implementation Note.** The rules above are one decision seen from six directions: a delivered file is a single part in a single coordinate system, with nothing in its structure that a consumer could compose differently or lose. Everything that would express placement or hierarchy belongs in the robot description, not in the geometry.
+**Implementation Note.** The rules above ensure that a delivered file is a single part in a single coordinate system, with nothing in its structure that a consumer could compose differently or lose. Everything that would express placement or hierarchy belongs in the robot description, not in the glTF geometry.
 
 #### The manifest
 
 A delivery MUST carry a manifest.
 
-The manifest MUST be expressed as [`KHR_xmp_json_ld`](https://github.com/KhronosGroup/glTF/tree/main/extensions/2.0/Khronos/KHR_xmp_json_ld) metadata attached to the glTF `asset` object. That extension is listed in `extensionsUsed` and MUST NOT appear in `extensionsRequired`. Metadata has no effect on appearance, so a consumer that ignores it is behaving correctly.
+The manifest MUST be expressed as [`KHR_xmp_json_ld`](https://github.com/KhronosGroup/glTF/tree/main/extensions/2.0/Khronos/KHR_xmp_json_ld) metadata attached to the glTF `asset` object.  This is a ratified Khronos extension to read and write metadata. That extension is listed in `extensionsUsed` and MUST NOT appear in `extensionsRequired`. Metadata has no effect on appearance, so a consumer that ignores it is behaving correctly.
 
-Three properties are the required minimum, and a delivery that carries only these three conforms:
+Three properties are the required minimum:
 
 | Property | Type | What it records |
 |---|---|---|
@@ -148,7 +146,7 @@ Two details in the URL are deliberate. It carries `/1.0/` so that a later, incom
 
 ## Coordinate systems and units
 
-The vocabulary this section uses (coordinate system, datum, origin, node space, scene space) is defined once in the [glossary](reference/glossary.md) and not restated here.
+The vocabulary this section uses (coordinate system, datum, origin, node space, scene space) is defined once in the [glossary](reference/glossary.md).
 
 ### Units
 
@@ -178,19 +176,17 @@ Blender is Z-up and right-handed, so a part authored in this convention is expor
 | RViz, Jazzy and Kilted | no rotation branch: `ros2/rviz` #1482 was merged to `rolling` on 2025-06-16 and deliberately not backported | nothing |
 | Khronos Sample Viewer, browser viewers | assume Y-up | nothing available: **the part appears on its side** |
 
-The last row is the consequence of deviation from the glTF convention.
-
-The derivation, with both loaders quoted and the probe measurements that confirm them, is [One body, one mesh: who rotates what](reference/coordinate-systems.md#one-body-one-mesh-who-rotates-what) in the coordinate-systems reference; the [walkthrough](walkthroughs/blender_mesh_coordinate_ex.md) shows the same file in both consumers.
+The last row is the consequence of our deviation from the glTF convention.
 
 ### Forward axis
 
 Fixed by the [Axes](#axes) section, together with the other two axes: +X forward.
 
-### Origin
+### Origin - datum coordinate system location
 
 The origin MUST be what the [datum specification](#datum-specification) evaluates to against the delivered geometry.
 
-That is the whole rule. This profile narrows glTF's several coordinate systems and robotics' several names for them down to one, so in a conforming delivery the origin, the datum coordinate system, the part coordinate system, node space and scene space are the same thing, and the [glossary](reference/glossary.md#datum-coordinate-system) lists them as equivalents. There is nothing here to relate to anything else.
+That is the whole rule. This profile narrows glTF's several coordinate systems and robotics' several names for them down to one, so in a conforming delivery the origin, the datum coordinate system, the part coordinate system, node space and scene space are the same thing, and the [glossary](reference/glossary.md#datum-coordinate-system) lists them as equivalents. 
 
 
 
@@ -200,17 +196,16 @@ That is the whole rule. This profile narrows glTF's several coordinate systems a
 
 The delivered file MUST contain exactly one scene, and that scene MUST list only the node.
 
-The delivered file MUST contain exactly **one node**. That node MUST NOT have children, and it MUST NOT carry a `translation`, a `rotation`, a `scale` or a `matrix`.
+The delivered file MUST contain exactly **one node**. That node MUST NOT have children, and it MUST NOT carry a `translation`, a `rotation`, a `scale` or a `matrix` key.
 
 The node MUST be named `<part>` (with no numeric suffix such as `.001` and no spaces, etc.). It is RECOMMENDED that the mesh be named `<part>_mesh`.
 
+**Implementation Note.** The prohibition is on the **presence** of each transform key, not on the value of the transform. glTF omits any component equal to its default, so an absent key and an identity value describe the same geometry.
+
 **Implementation Note.** The node name within the glTF is an interface. Gazebo names what it builds from a mesh after the node, not after the mesh, so the node name is the identifier SDF selects part of a mesh by (see [Primitives](#primitives)), and it propagates into names derived downstream. The mesh name is read by neither consumer, so a `_mesh` suffix is free and tells a reader which is which.
 
-**Implementation Note.** The point of the rule forbidding node transforms is that the file then has exactly one coordinate system. Scene space and node space coincide, so there is no second coordinate system for a consumer to lose and nothing for two consumers to compose differently. The [origin](#origin) is therefore unambiguous: the zero of node space is the zero of scene space is the link origin.
+**Implementation Note.** The point of the rule forbidding node transforms is that the file then has exactly one coordinate system. Scene space and node space coincide, so there is no second coordinate system for a consumer to lose and nothing for two consumers to compose differently. The [origin](#origin---datum-coordinate-system-location) is therefore unambiguous: the zero of node space is the zero of scene space is the link origin. Including a node transform is both unrecoverable and unsafe. E.g., Gazebo composes node transforms down the tree and bakes them into the vertices, so the structure a hierarchy expressed is not observable in the Gazebo input. And the two consumers compose a root transform against the up-axis correction in opposite orders. Gazebo applies its correction outside the root transform ([source](https://github.com/gazebosim/gz-common/blob/a08c258d4e566b1e1624cb85f12ab78068ab2870/graphics/src/AssimpLoader.cc#L955-L976)), RViz post-multiplies inside it ([source](https://github.com/ros2/rviz/blob/baab61a68bc089217dfaa4f270276dc7a30268b1/rviz_rendering/src/rviz_rendering/mesh_loader_helpers/assimp_loader.cpp#L215-L222)), so a translation of 0.5 m along the file's Y puts the part 0.5 m up in one and 0.5 m to the side in the other. `probe/coords/make_markers.py` writes `marker_roottrans` and `marker_twonode` to demonstrate both, and they are deliberately non-conforming files.
 
-**Implementation Note.** Including a node transform is both unrecoverable and unsafe. E.g., Gazebo composes node transforms down the tree and bakes them into the vertices, so the structure a hierarchy expressed is not observable in the Gazebo input. And the two consumers compose a root transform against the up-axis correction in opposite orders. Gazebo applies its correction outside the root transform ([source](https://github.com/gazebosim/gz-common/blob/a08c258d4e566b1e1624cb85f12ab78068ab2870/graphics/src/AssimpLoader.cc#L955-L976)), RViz post-multiplies inside it ([source](https://github.com/ros2/rviz/blob/baab61a68bc089217dfaa4f270276dc7a30268b1/rviz_rendering/src/rviz_rendering/mesh_loader_helpers/assimp_loader.cpp#L215-L222)), so a translation of 0.5 m along the file's Y puts the part 0.5 m up in one and 0.5 m to the side in the other. `probe/coords/make_markers.py` writes `marker_roottrans` and `marker_twonode` to demonstrate both, and they are deliberately non-conforming files.
-
-**Implementation Note.** The prohibition is on the **presence** of each key, not on its value. glTF omits any component equal to its default, so an absent key and an identity value describe the same geometry.
 
 ### Datum specification
 
@@ -230,17 +225,13 @@ The datum point MUST be a geometric feature of the part: a vertex, a hole center
 
 It MUST NOT be a derived quantity. A center of mass, a bounding-box center, a silhouette center and a centroid of any kind are all computable properties rather than features: they reference nothing, they move when the geometry changes, and a different tool computes a different one.
 
-The datum point SHOULD be the least-derived feature available. Where a derived point is unavoidable, the manifest MUST name the artifact and the configuration it was derived from, so that it can be reproduced.
-
-
 **Implementation Note.** A point in the datum specification and a point on the hardware are two different things, and a mature practice has both. ISO 5459 calls the second a *datum target*: a point, line or area designated so that every supplier seats the part identically. A definition without a realization cannot be measured on the bench; a realization without a definition cannot be reproduced on a redesign. Where a delivery has a physical realization the manifest SHOULD record it in `gltfrp:datumTarget`.
 
-#### What the manifest carries
+#### What the manifest carries % CLAUDE: Combine the two places where the manifest is discussed and specified.  It should only be in one place.  
 
 | Property | Type | What it records |
 |---|---|---|
 | `gltfrp:datumPoint` | Text | REQUIRED for a `base` part. The point, named as a feature of this part |
-| `gltfrp:datumDerivedFrom` | Text | REQUIRED where the point is derived rather than a feature. The artifact and configuration it was derived from |
 | `gltfrp:datumTarget` | Text | OPTIONAL. The physical realization, in the sense of ISO 5459 |
 | `gltfrp:forward` | Choice: `+X`, `-X`, `+Y`, `-Y`, `+Z`, `-Z` | The forward axis as delivered. The [Axes](#axes) section requires `+X`; this is the modeler's attestation of it |
 | `gltfrp:up` | Choice: as above | The up axis as delivered. The [Axes](#axes) section requires `+Z` |
@@ -395,11 +386,11 @@ A delivered file MUST NOT contain:
 
 ## Authoring toolchain
 
-The version stack is pinned at patch level, because the behavior that changed during this project's audit changed in a patch release. Anything coarser would not have caught it.
+The version stack is pinned at patch level, because the behavior has been observe to be changning at the patch release level. 
 
 | | Version | Why it is pinned |
 |---|---|---|
-| Blender | 5.2.2 LTS | The authoring tool. Its `+Y Up` export option is the one that must be off ([Axes](#axes)), and its Set Origin behavior is what the [Origin](#origin) section warns about |
+| Blender | 5.2.2 LTS | The authoring tool. Its `+Y Up` export option is the one that must be off ([Axes](#axes)), and its Set Origin behavior is what the [Origin](#origin---datum-coordinate-system-location) section warns about |
 | `io_scene_gltf2` | 5.2.40 | The exporter. Writes `asset.generator` as `Khronos glTF Blender I/O v5.2.40` |
 | ROS | Lyrical | The distribution floor. RViz rotates glTF on load only from Lyrical onward, which is what makes the correction in the [Axes](#axes) section a single default rather than version dependent |
 | `rviz2`, `rviz_rendering` | 15.2.5 | The consumer that rotates a glTF mesh as it loads |
@@ -407,11 +398,9 @@ The version stack is pinned at patch level, because the behavior that changed du
 | `gz-common` | 7.3.0, via `ros-lyrical-gz-common-vendor` 0.3.6 | The loader. Composes node transforms and bakes them into the vertices, which is why the [Scenes and nodes](#scenes-and-nodes) section prohibits them. Also the version carrying the `.gltf` extension-comparison bug behind the [File format](#file-format) section |
 | assimp | 6.0.4 | What `gz-common` parses the file with |
 
-A delivery MUST record the exporter that produced it, which glTF does automatically in `asset.generator`, and the integrator SHOULD check it against the pin above.
 
-**Implementation Note.** The pin is necessary and not sufficient. `asset.generator` records the tool and never the settings, so two files from the same exporter can still differ in image format, tangents and compression, which is why the [Conformance testing](#conformance-testing) section's checks constrain the outcome rather than the settings. The authoring half is also a convention rather than a technical constraint, because the modeler is outside this project's infrastructure: nothing stops a delivery arriving from another version, and the acceptance check is what notices.
+**Implementation Note.** The pin is necessary and not sufficient. `asset.generator` records the tool and never the settings, so two files from the same exporter can still differ in image format, tangents and compression, which is why the [Conformance testing](#conformance-testing) section's checks constrain the outcome rather than the settings. Also, this is a reason it is recommended to save the exporter settings in the `.blend` asset source so that it can be re-exported with reporducible results. 
 
-**Implementation Note.** Where these came from. Every version above was read out of the drydock container and the installed Blender rather than from documentation: `gz sim --versions`, the `ros2 pkg xml` version of each RViz package, `dpkg -l` for assimp and the gz-common vendor package, the `libgz-common-*.so.7.3.0` soname for the library itself, and `io_scene_gltf2`'s `bl_info` for the exporter. Earlier deliveries report `v5.1.20`, which is Blender 5.1: they predate this pin and the profile does not hold them to it.
 
 ## Conformance testing
 

@@ -21,7 +21,7 @@ Supporting documentation:
 
 Tools and utilities, with their source code:
 
-6. Command-line tools, [src/gltf_robotics/](src/gltf_robotics/) with tests in [tests/](tests/). A Python package with three commands: `gltf-check` tests a file against the profile's rules, `gltf-summary` describes what a file contains without judging it, and `gltf-assess` measures a list of assets published elsewhere.
+6. Command-line tools, [src/gltf_robotics/](src/gltf_robotics/) with tests in [tests/](tests/). A Python package with four commands: `gltf-check` tests a file against the profile's rules, `gltf-manifest` writes a part's manifest into its file from the commission, `gltf-summary` describes what a file contains without judging it, and `gltf-assess` measures a list of assets published elsewhere.
 7. Probes, [probe/](probe/). Tools for questions that reading a file cannot answer. `glb_probe` loads a file through Gazebo's own loader and reports what was built, and a marker generator writes test assets for coordinate-system questions.
 8. Figures, [figures/](figures/). A Python drawing kit and the scene scripts that generate the coordinate-system illustrations used in the documentation.
 

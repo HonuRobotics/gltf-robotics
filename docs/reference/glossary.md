@@ -46,7 +46,7 @@ A situation feature of the part that the coordinate system is referenced to. The
 
 ### datum coordinate system
 
-What a datum specification evaluates to against a particular piece of geometry. In a conforming delivery it is the same thing as the part coordinate system, the origin, node space and scene space. The profile narrows all of them to one. The profile's [Origin](../profile.md#origin) section says so normatively.
+What a datum specification evaluates to against a particular piece of geometry. In a conforming delivery it is the same thing as the part coordinate system, the origin, node space and scene space. The profile narrows all of them to one. The profile's [Origin](../profile.md#origin---datum-coordinate-system-location) section says so normatively.
 
 One coordinate system, several names. glTF distinguishes *node space*, the coordinate system a node's vertices are expressed in, from *scene space*, what node space becomes once node transforms are composed down from the root. The profile's [Scenes and nodes](../profile.md#scenes-and-nodes) section requires exactly one node carrying no transform, which collapses the distinction: node space, scene space, the part coordinate system, the datum coordinate system and the origin are all the same thing in a conforming delivery. Narrowing them to one is a deliberate act of the profile, and it is why the terms are listed here as equivalents and not distinguished.
 
@@ -64,7 +64,7 @@ The party who commissions a visual model, checks it and integrates it as a robot
 
 ### manifest
 
-The metadata a delivery carries about itself, expressed as `KHR_xmp_json_ld` and attached to the glTF `asset` object. See the profile's [manifest](../profile.md#the-manifest) section.
+The metadata a delivery carries about itself, expressed as `KHR_xmp_json_ld` and attached to the glTF `asset` object. It is written from the commission by `gltf-manifest`. See the profile's [manifest](../profile.md#the-manifest) section.
 
 ### modeler
 
@@ -80,7 +80,7 @@ A single physical component, geometry only, no joints. The unit the profile deli
 
 ### part coordinate system
 
-The coordinate system in which a part's geometry is expressed. Its axes are fixed by the profile's [Axes](../profile.md#axes) section (+X forward, +Y left, +Z up, per ISO 9787 §5.5 and REP 103) and its origin by the profile's [Origin](../profile.md#origin) section.
+The coordinate system in which a part's geometry is expressed. Its axes are fixed by the profile's [Axes](../profile.md#axes) section (+X forward, +Y left, +Z up, per ISO 9787 §5.5 and REP 103) and its origin by the profile's [Origin](../profile.md#origin---datum-coordinate-system-location) section.
 
 ### submesh
 

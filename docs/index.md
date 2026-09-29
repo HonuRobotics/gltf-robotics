@@ -19,7 +19,7 @@ Supporting documentation:
 
 Tools and utilities, with their source code in the repository:
 
-- [Command-line tools](https://github.com/HonuRobotics/gltf-robotics/tree/main/src/gltf_robotics). `gltf-check` tests a file against the profile's rules, `gltf-summary` describes what a file contains, and `gltf-assess` measures a list of assets published elsewhere.
+- [Command-line tools](https://github.com/HonuRobotics/gltf-robotics/tree/main/src/gltf_robotics). `gltf-check` tests a file against the profile's rules, `gltf-manifest` writes a part's manifest into its file from the commission, `gltf-summary` describes what a file contains, and `gltf-assess` measures a list of assets published elsewhere.
 - [Probes](https://github.com/HonuRobotics/gltf-robotics/tree/main/probe). `glb_probe` loads a file through Gazebo's own loader and reports what was built, and a marker generator writes test assets for coordinate-system questions.
 - [Figures](https://github.com/HonuRobotics/gltf-robotics/tree/main/figures). The drawing kit and scene scripts that generate the coordinate-system illustrations.
 

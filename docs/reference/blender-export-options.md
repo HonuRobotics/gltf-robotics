@@ -11,7 +11,7 @@ Confirm these. They are already Blender's defaults, so the work is checking rath
 | UI label | Identifier | Value | Why |
 |---|---|---|---|
 | Format | `export_format` | GLB | the profile's [File format](../profile.md#file-format) section prohibits `.gltf` |
-| At Collection Center | `at_collection_center` | False | it relocates the origin, which the profile's [Origin](../profile.md#origin) and [Datum specification](../profile.md#datum-specification) sections govern |
+| At Collection Center | `at_collection_center` | False | it relocates the origin, which the profile's [Origin](../profile.md#origin---datum-coordinate-system-location) and [Datum specification](../profile.md#datum-specification) sections govern |
 | UVs | `export_texcoords` | True | the profile's [Geometry](../profile.md#geometry) section requires `TEXCOORD_0` on every primitive |
 | Normals | `export_normals` | True | the profile's [Geometry](../profile.md#geometry) section requires `NORMAL` |
 | Materials | `export_materials` | EXPORT | the profile's [Materials](../profile.md#materials) section |
@@ -71,7 +71,7 @@ There is no export option that applies object transforms. `export_apply` is Appl
 
 The profile's [Scenes and nodes](../profile.md#scenes-and-nodes) section requires the node to carry no `translation`, `rotation`, `scale` or `matrix`, and that is achieved in the scene before the export dialog is ever opened. An object left with a transform exports as a node carrying it, no matter how the dialog is set.
 
-The operation is not `Object ▸ Apply ▸ All Transforms`, which is the one a reader expects. Applying a location or a rotation holds the geometry still in the world and moves the origin relative to the part, destroying the datum that the profile's [Origin](../profile.md#origin) section requires; clearing them moves the geometry with the object and preserves it. Scale is the exception and must be applied, because clearing it changes the part's size. Measured on 5.2.2 with an origin set 1 m off the geometry: applying moved it 5.42 m relative to the part, clearing moved it not at all.
+The operation is not `Object ▸ Apply ▸ All Transforms`, which is the one a reader expects. Applying a location or a rotation holds the geometry still in the world and moves the origin relative to the part, destroying the datum that the profile's [Origin](../profile.md#origin---datum-coordinate-system-location) section requires; clearing them moves the geometry with the object and preserves it. Scale is the exception and must be applied, because clearing it changes the part's size. Measured on 5.2.2 with an origin set 1 m off the geometry: applying moved it 5.42 m relative to the part, clearing moved it not at all.
 
 ## Top of the dialog
 
@@ -104,7 +104,7 @@ The operation is not `Object ▸ Apply ▸ All Transforms`, which is the one a r
 | … with Nested Collections | `use_active_collection_with_nested` | True | default |
 | Limit to ▸ Active Scene | `use_active_scene` | False | open — the profile's [Scenes and nodes](../profile.md#scenes-and-nodes) section requires exactly one scene, and six deliveries carried leftover empty ones |
 | Collection by name | `collection` | `''` | default |
-| At Collection Center | `at_collection_center` | False | required False — it would move the origin, which the profile's [Origin](../profile.md#origin) and [Datum specification](../profile.md#datum-specification) sections govern |
+| At Collection Center | `at_collection_center` | False | required False — it would move the origin, which the profile's [Origin](../profile.md#origin---datum-coordinate-system-location) and [Datum specification](../profile.md#datum-specification) sections govern |
 | Data ▸ Custom Properties | `export_extras` | False | open — the archive-the-source question in the profile's [manifest](../profile.md#the-manifest) section |
 | Data ▸ Cameras | `export_cameras` | False | required False — the profile's [Prohibited content](../profile.md#prohibited-content) section prohibits `cameras` |
 | Data ▸ Punctual Lights | `export_lights` | False | required False — the profile's [Prohibited content](../profile.md#prohibited-content) section prohibits `KHR_lights_punctual` |
