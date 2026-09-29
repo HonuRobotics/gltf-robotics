@@ -4,7 +4,6 @@ The [profile](profile.md) states what a delivered visual model must be. This doc
 
 The process begins with a commission, a vehicle or a batch of parts to be modeled, and ends when the integrator accepts the delivered files. Placing an accepted part in the simulation model, the macro and the RViz correction, is the consuming project's work and is out of scope here.
 
-To write: a paragraph on why a written process is needed at all. The failures that motivated it were not modeling mistakes but handoff gaps: intent never stated, origins decided at the keyboard, both parties assuming the other had checked the file.
 
 ## Roles
 
@@ -12,45 +11,42 @@ The two parties are the modeler, who authors and delivers the visual model, and 
 
 These and the other terms this document uses, among them part, delivery, commission, specification and datasheet, are defined in the project [glossary](reference/glossary.md).
 
-## The three steps at a glance
+## Outline
 
 | Step | Owner | Input | Output | Gate to the next step |
 |---|---|---|---|---|
 | 1. Specify | Integrator | Reference material, datasheets, the vehicle's datum decision | One specification per commission, one block per part | Every block complete and agreed with the modeler |
 | 2. Model | Modeler | The specification and the profile | One `<part>.visual.glb` per part, manifest filled from the specification | The modeler's own checks pass |
-| 3. Verify | Modeler, then integrator | The delivery and the specification | Acceptance, or a rejection naming what failed | All checks pass |
+| 3. Verify | Modeler, then integrator | The delivery and the specification | Acceptance, or request for modifcation | All checks pass |
 
-Rejection in step 3 sends the part back to step 2. It sends the commission back to step 1 only when the specification itself was wrong or silent on the point that failed. Nothing enters step 2 without an agreed specification, and nothing leaves step 3 without the integrator's acceptance.
 
-## Step 1: Specify
+## Step 1: Specify % CLAUDE: The word "specification" is too close to the other work on profile, standards, specs etc.   Let's call this commission (verb) and the commission (noun) is the document.
 
-The integrator writes the specification before any modeling starts. It is the only written statement of intent the process has, and it is what the visual checks in step 3 are judged against. Profile section 12's second question, whether the model is what was intended, can only be answered against something written down.
+The integrator writes the specification before any modeling starts. It is the written statement of intent and is what the visual checks in step 3 are judged against. We can only vefify compliance with intent if we have a clear, shared understanding of the intent and associated design decisions.  
 
 ### What the specification contains
 
-To write: expand each item to one sentence. Each item names the profile section and the manifest property it feeds, so the manifest in step 2 is copied from the specification rather than authored from memory.
+To write: expand each item to one sentence. Each item names the profile section and the manifest property it feeds, so the manifest in step 2 is copied from the specification.
 
 Per commission:
 
 - Sources: datasheets, drawings, vendor pages, and any CAD, scans or vendor models handed over (profile 4.1.4, `dc:relation`, `dc:source`)
-- Licensing and texture redistribution terms (`dc:rights`)
+- Licensing and texture redistribution terms (`dc:rights`) % CLAUDE: Give a typical phrase for Honu Robotics - Apache license
 - The base part, exactly one per vehicle, and the vehicle's datum decision (5.6.2, `gltfrp:partRole`)
-- The authoring toolchain the modeler will use, against the pin in section 11
-- Where the `.blend` and CAD will be archived (`xmpMM:DerivedFrom`)
-- The default visual requirement for the commission, provisional while the budgets in 6.2 are open
-- Dates for the three agreement moves below
+- The authoring toolchain the modeler will use, against the pin in section 11 % CLAUDE: Huh?  Section 11 of what?  Referencing sections of markdown is brittle as references don't update when the reference updates.  
+- If  the `.blend` and CAD will be archived (`xmpMM:DerivedFrom`) and if so where? 
 
 Per part:
 
-- Part name, lowercase snake_case, and role, base or component (4.1, 4.1.4)
+- Part name, following [profile.md]
 - Reference images, with what each view shows and what matters in it
 - Cited dimensions, each as a named quantity with its source, and the tolerance held, or an explicit statement that no published figure exists (`gltfrp:nominalDimension`, `gltfrp:dimensionTolerance`)
-- The datum point: the single geometric feature the origin is referenced to (profile 5.6, `gltfrp:datumPoint`). Orientation is not specified per part; profile 5.2 fixes it for every delivery
+- The datum point: the single geometric feature the origin coordinate system is referenced to (profile 5.6, `gltfrp:datumPoint`). Orientation is not specified per part; the [profile.md] specifies the orientation of the coodinate system convention - following ISO and ROS REP, not glTF 2.0. 
 - Datum targets where a physical realization exists (`gltfrp:datumTarget`)
-- The feature that defines forward, and its sense, where the shape does not determine it (5.2)
-- Visual requirement: what must read at the viewing distance, what may be simplified
-- Materials per region, metal or non-metal, finish reference (7, 8)
-- Cutouts and translucent regions, named (9)
+- The feature that defines forward, and its sense, where the shape does not determine it 
+- Visual requirement: what must read at the viewing distance, what may be simplified % CLAUDE: ?
+- Materials per region, metal or non-metal, finish reference (7, 8) % CLAUDE: ?
+- Cutouts and translucent regions, named (9) % CLAUDE: ?
 - Priorities: what matters most on this part, in order
 - Notes to the modeler
 
@@ -66,7 +62,7 @@ To write: how a change to the specification after this point is handled. It is a
 
 ### Gate
 
-Every part block has a name, a role, a datum specification that closes all six degrees of freedom, a cited dimension or an explicit "none published", and a visual requirement. The modeler has the final version in hand. A modeler who starts a part without a datum specification stops and asks; there is no default, and nothing downstream can recover the intent.
+Every part block has a name, a role, a datum specification that closes all six degrees of freedom, a cited dimension or an explicit "none published", and a visual requirement. 
 
 ## Step 2: Model
 
