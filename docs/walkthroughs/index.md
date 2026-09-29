@@ -1,11 +1,15 @@
 # Walkthroughs
 
-Worked examples, run end to end, with the real output of each tool quoted rather than described. A how-to says what to do; a walkthrough shows what happens, including where the result is surprising.
+Complete step-by-step examples and how-tos. Each one is run end to end, with the real output of each tool quoted, including where the result is surprising.
 
-- [Minimum viable workflow](blender_mesh_coordinate_ex.md) — one mesh from Blender to Gazebo and RViz, the simplest thing that exercises the whole pipeline, used to test the conventions and verify the tools against a file we made ourselves.
+- [Minimum viable workflow](blender_mesh_coordinate_ex.md). One mesh from Blender to Gazebo and RViz, the simplest thing that exercises the whole pipeline, used to test the conventions and verify the tools against a file we made ourselves.
+- [Exporting from Blender](exporting-from-blender.md). The export defaults that produce most of the defects we see, and what to do instead.
+- [Checking a delivery](checking-a-delivery.md). The four conformance questions, what answers each, and how to read `gltf-check` output.
 
 ```{toctree}
 :maxdepth: 2
 
 blender_mesh_coordinate_ex
+exporting-from-blender
+checking-a-delivery
 ```

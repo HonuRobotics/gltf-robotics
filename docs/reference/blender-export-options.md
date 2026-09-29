@@ -221,7 +221,7 @@ A reading worth testing rather than adopting. Of the 110 options, four are chang
 
 If that holds, then the defects in delivered files do not come from the export dialog. They come from the scene: transforms not applied, `metallicFactor` left to a node graph the exporter cannot read, `Cube.001` names, leftover empty scenes, JPEG source textures, `BLEND` on an opaque hull. None of those is a checkbox in this dialog, which is why the four items under [Four things that decide the result and are not in this dialog](#four-things-that-decide-the-result-and-are-not-in-this-dialog) carry more weight than the thirteen that are.
 
-That sits awkwardly against the opening line of our [export guide](../how-to/exporting-from-blender.md), which says most defects "are export defaults rather than modelling mistakes". Both can be true if "defaults" is read broadly enough to include Blender's material and naming defaults, and the guide's own examples are mostly of that kind. Worth resolving in wording once the rows below are settled.
+That sits awkwardly against the opening line of our [export guide](../walkthroughs/exporting-from-blender.md), which says most defects "are export defaults rather than modelling mistakes". Both can be true if "defaults" is read broadly enough to include Blender's material and naming defaults, and the guide's own examples are mostly of that kind. Worth resolving in wording once the rows below are settled.
 
 ## Open rows, as a worklist
 

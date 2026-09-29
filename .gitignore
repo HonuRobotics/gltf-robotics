@@ -5,8 +5,8 @@ __pycache__/
 _build/
 build/
 
-# Assessment run artifacts. See docs/project/decisions.md for the open
-# question of whether cache/ should be committed for offline reproducibility.
+# Assessment run artifacts. Whether cache/ should be committed for offline
+# reproducibility is an open question.
 assess/cache/
 assess/rig/
 assess/results.json

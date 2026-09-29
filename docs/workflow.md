@@ -77,7 +77,7 @@ Every part block has a name, a role, a datum specification that closes all six d
 
 ### Build to the profile
 
-Profile sections 5 to 10 are the rules the model is built to. The [Blender export guide](how-to/exporting-from-blender.md) is the tool-specific practice for meeting them, and the [walkthrough](walkthroughs/blender_mesh_coordinate_ex.md) shows one file going through end to end. The origin is placed by evaluating the datum specification against the geometry, never chosen from a menu (5.4).
+Profile sections 5 to 10 are the rules the model is built to. The [Blender export guide](walkthroughs/exporting-from-blender.md) is the tool-specific practice for meeting them, and the [walkthrough](walkthroughs/blender_mesh_coordinate_ex.md) shows one file going through end to end. The origin is placed by evaluating the datum specification against the geometry, never chosen from a menu (5.4).
 
 ### Export
 
@@ -97,26 +97,39 @@ Profile section 12 asks four questions of a delivery: valid, intended, compliant
 
 ### What the modeler checks
 
-To write: one paragraph each.
+The Khronos glTF Validator answers whether the file is legal glTF. It is a single binary from the [glTF-Validator releases](https://github.com/KhronosGroup/glTF-Validator/releases), and the Sample Viewer runs the same validator inline. The delivery passes with zero errors. Warnings and infos are read and explained: a warning that a normal-mapped primitive has no tangents is expected, because neither consumer reads them (profile section 6). A clean run says nothing about whether the materials are right, since the validator cannot know that a plastic hull reads as metal.
 
-- The Khronos glTF Validator: zero errors, warnings read.
-- The Khronos Sample Viewer, against the specification's images and material notes. The viewer assumes glTF's Y-up convention and shows every conforming part on its side; read it for materials, textures, transparency and validity, and ignore the pose. Blender's viewport answers nothing, because it shows Blender's materials and not the exported file.
-- `gltf-check`: no failures, every warning understood.
-- `gltf-summary`: the origin line agrees with the datum specification. An origin on a mounting face reads 0.00 or 1.00 on that axis; 0.50 on all three axes is the bounding-box midpoint and almost always means the origin was inherited rather than specified.
+```bash
+gltf_validator -o -a <part>.visual.glb
+```
+
+The [Khronos Sample Viewer](https://github.khronos.org/glTF-Sample-Viewer-Release/) answers whether the file looks as intended, judged by a person against the specification's images and material notes. The viewer assumes glTF's Y-up convention and shows every conforming part on its side; read it for materials, textures, transparency and validity, and ignore the pose. Blender's viewport answers nothing, because it shows Blender's materials and not the exported file. Other viewers, such as Babylon, three.js and F3D, are useful for inspecting names and material assignment and are not the reference.
+
+`gltf-check` answers whether the file satisfies the profile: no failures, every warning understood. It reads the file and does not render it, so it needs no Gazebo and no GPU. It covers the container and header, extensions, scene and node structure, primitive attributes, materials, image format and size, transparency and the manifest. How to read its output is in the [checking walkthrough](walkthroughs/checking-a-delivery.md).
+
+`gltf-summary` shows where the origin sits, and the origin line has to agree with the datum specification. An origin on a mounting face reads 0.00 or 1.00 on that axis; 0.50 on all three axes is the bounding-box midpoint and almost always means the origin was inherited and not specified.
 
 The modeler delivers with a note that these four were done. The integrator does not repeat the first two.
 
 ### What the integrator checks
 
-To write: one paragraph each.
+`gltf-check` again, with the output kept with the review.
 
-- `gltf-check` again, output kept with the review.
-- `glb_probe`: loads without error, every submesh has a material, submesh name equals the part name.
-- Gazebo, in the parts world: scale against a known object, orientation, origin, no white-metal patches, no dark hull, cutouts actually cut, thin parts visible from both sides.
-- RViz with the URDF: renders, upright, stays up. Passing in Gazebo is necessary and never sufficient; a normal map with no base color renders in Gazebo and terminates RViz.
-- Extents against the datasheet, within the specified tolerance, and the manifest's cited dimension matching the specification.
-- Origin and orientation by eye against the datum specification, naming what the origin sits on in the part's own terms.
-- The specification's visual requirement and priorities, the one check with a written answer key.
+`glb_probe` loads the file through the installed `gz-common`, exactly as Gazebo does, and prints the submeshes and materials the loader built. It is built and run inside drydock; the command is in the [probe README](https://github.com/HonuRobotics/gltf-robotics/tree/main/probe). The delivery passes when the output has no `[error]` lines, every submesh has a material, and the submesh name equals the part name. It is the only stand-in for Gazebo that needs no GPU. It does not render, so it settles what a material is and not how it looks.
+
+Gazebo, in the parts world: scale against a known object, orientation and origin, then the material defects by name. White-metal patches mean a primitive with no material, a dark hull means metalness was left at its default, cutouts have to be cut, and thin parts have to be visible from both sides. Other viewers do not predict any of this, because they honor `BLEND`, `doubleSided` and extensions that Gazebo ignores.
+
+RViz with the URDF: the part renders, is upright and RViz stays up. Passing in Gazebo is necessary and never sufficient; a normal map with no base color renders in Gazebo and terminates RViz.
+
+Extents against the datasheet, within the specified tolerance, and the manifest's cited dimension matching the specification.
+
+Origin and orientation by eye against the datum specification, naming what the origin sits on in the part's own terms.
+
+The specification's visual requirement and priorities, the one check with a written answer key.
+
+### When the checks run
+
+The checks run when a delivery is reviewed, which is the moment it can be rejected. They are not CI tests: once a part is merged it has already been checked, and rerunning every check on every commit would slow every unrelated change. The consuming project's base color guard stays in its tests, because it is cheap and it catches a defect that terminates RViz. No probe output is committed per part; the checker output kept with the review is the record.
 
 ### Who answers what
 
@@ -151,3 +164,12 @@ Out of scope here. The consuming project owns placement, the part macro and the 
 - Visual requirement tiers have no numbers until profile 6.2 closes.
 - A component part's datum is a SHOULD (5.6.3), so a component block may leave it out; this document does not decide whether it should.
 - Where the filled specification is archived is the consuming project's decision.
+- Whether the modeler delivers anything besides the visual model, such as collision geometry or a `model.sdf`. The profile covers the visual model only (1.1), so today that is whatever the commission asks for.
+
+Open in the step 3 checks:
+
+- Which release of the Khronos validator is used. Profile section 11 does not pin it.
+- Whether a metallic-roughness texture's metallic channel matches the material. Settling it needs the decoded texels, which `gltf-check` does not read, so it warns and a person decides.
+- Triangle budgets have no check until profile 6.2 closes, and per-map texture size caps have none until profile 8 closes. `gltf-check` enforces only the 2048 px ceiling.
+- Extents are compared with the datasheet by hand. Nothing yet compares the measured extent with the manifest's `gltfrp:nominalDimension` and tolerance.
+- A headless render of the parts world, so a redelivery can be compared before and after without a GUI session. Not built.

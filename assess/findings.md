@@ -49,7 +49,7 @@ What the other 51 glTF files tell us, all of them props, scenes or test uploads.
 - Container: 53 GLB to 1 `.gltf` plus `.bin`, and the one non-GLB is the broken one.
 - Tooling: 50 of 54 from the Blender glTF exporter, versions 3.3 through 5.1. Two from Sketchfab, one from Unity. No pipeline diversity to learn from.
 - Scope actually used: zero animations, zero skins, zero cameras, across every file. Every primitive is mode 4. Exactly one primitive in the entire corpus carries `TANGENT`, which agrees with what `glb_probe` found about our own loader.
-- Texture format: 5,429 JPEG images against 95 PNG. Forty-four of the 54 carry normal maps and 37 carry packed metallic-roughness maps, overwhelmingly as JPEG. This contradicts spec decision 4 and REP-158 head-on. It does not overturn either -- a corpus of warehouse props is not evidence about correctness -- but it does say that assets delivered to us by anyone working in the normal way will arrive with JPEG normal maps, so the spec needs to state the rule and the remedy rather than assume the toolchain produces PNG.
+- Texture format: 5,429 JPEG images against 95 PNG. Forty-four of the 54 carry normal maps and 37 carry packed metallic-roughness maps, overwhelmingly as JPEG. This contradicts profile section 8 and REP-158 head-on. It does not overturn either -- a corpus of warehouse props is not evidence about correctness -- but it does say that assets delivered to us by anyone working in the normal way will arrive with JPEG normal maps, so the spec needs to state the rule and the remedy rather than assume the toolchain produces PNG.
 - The metalness default trap is live: 128 materials across 9 models leave `metallicFactor` unset, so 1.0, with no metallic-roughness texture to override it. `dhyutin/trial` is 8 of 8; `proque/atmos` is 80 of 404. The same defect we found in four of fifteen delivered parts.
 - Extensions: `KHR_materials_specular` in 29 models, `KHR_materials_ior` in 13, `KHR_materials_transmission` in 9, `KHR_texture_transform` in 6, `KHR_materials_unlit` in 2. Five models put `KHR_texture_transform` in `extensionsRequired` rather than `extensionsUsed`, which a spec-compliant reader must refuse to load outright. Those five are a ready-made conformance probe for what Gazebo actually does -- `OpenRobotics/Distribution_Warehouse` is the convenient one.
 
@@ -62,7 +62,7 @@ One caution about reading Fuel for SDF convention rather than for assets. Across
 
 ### The question left open when this moved
 
-The section it came from ended with one unanswered question: which popular projects, measurable by GitHub analytics, use glTF assets in Gazebo. It was answered separately, by code search rather than by analytics, in [community-exemplars.md](../docs/evidence/community-exemplars.md), and the cohort it names is what group `ros` of [examples.yaml](examples.yaml) is drawn from. What that document could not do is say what those assets contain, one criterion at a time, in a form that stays true when they change. That is what this directory is for.
+The section it came from ended with one unanswered question: which popular projects, measurable by GitHub analytics, use glTF assets in Gazebo. It was answered separately, by code search rather than by analytics, in [community-exemplars.md](../docs/assessments/community-exemplars.md), and the cohort it names is what group `ros` of [examples.yaml](examples.yaml) is drawn from. What that document could not do is say what those assets contain, one criterion at a time, in a form that stays true when they change. That is what this directory is for.
 
 ---
 
@@ -89,7 +89,7 @@ Profile section 6.1 requires [0,1] and REP-158 requires it too, reserving anythi
 
 ### Nobody uses alpha, and four fifths of materials ask for two-sided rendering
 
-Across 601 materials there is not one `MASK` and not one `BLEND`. Every material in the corpus is `OPAQUE`. Section 9 of the spec, and review decision 6 with it, is legislating for a case that this corpus never exercises -- which is either a reason to keep the rule cheap, or a warning that we are the ones who will find the bugs.
+Across 601 materials there is not one `MASK` and not one `BLEND`. Every material in the corpus is `OPAQUE`. Section 9 of the profile is legislating for a case that this corpus never exercises -- which is either a reason to keep the rule cheap, or a warning that we are the ones who will find the bugs.
 
 Meanwhile 462 of those 601 materials are `doubleSided`. Gazebo honors `doubleSided` only on a `MASK` material, and there are none, so four fifths of the materials in this corpus are asking for two-sided rendering and being back-face culled instead. Nobody appears to have noticed, which suggests the geometry has thickness anyway and the flag is a Blender default rather than an intent. It also means the spec's advice that thin geometry needs thickness is the right advice, and that it is being followed accidentally.
 
@@ -155,7 +155,7 @@ In rough order of how much the evidence moves:
 
 1. Section 6.1, the [0,1] UV rule. The corpus says it forbids a technique in normal use, including by the Gazebo team. Keep it, but state the cost and the reason rather than implying consensus.
 2. Section 10, the `extensionsRequired` prohibition. Run `Distribution_Warehouse` through `glb_probe` before the rule is finalized; the prediction in the review and the prediction in the glTF spec disagree, and one file settles it.
-3. Section 9, transparency. The corpus has no `MASK` and no `BLEND` at all, and 79 percent `doubleSided` that Gazebo ignores. Decision 6 can be taken on our own terms; there is no practice to defer to.
+3. Section 9, transparency. The corpus has no `MASK` and no `BLEND` at all, and 79 percent `doubleSided` that Gazebo ignores. The open question in profile section 9 can be settled on our own terms; there is no practice to defer to.
 4. Section 8, texture format. Unchanged in substance, sharper in framing: state that conforming deliveries will be the exception, and that the remedy is a re-export rather than a conversion.
 5. Section 6.3, one primitive per material. Now measured at 41 of 49 in the wild, so the proposed rule is free.
 6. Section 5.1, scale. Two files in the corpus are in millimeters by design and one appears to be wrong by a factor of a hundred. A measured extent check belongs in the acceptance tooling.

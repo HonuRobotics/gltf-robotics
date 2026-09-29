@@ -288,9 +288,9 @@ Where a component attaches by a single mounting interface, the datum point SHOUL
 
 **Note.** The two questions below stay open. They are deferred until after the initial release and a round of prototyping, at which point there should be cases to reason from.
 
-> **Open.** Whether a component datum becomes a requirement. It is a SHOULD because the mounting interface is usually obvious from the geometry and a wrong origin on a component is recoverable by editing one transform, where a wrong base datum is not. Settling it needs the pilot to say whether component origins cause trouble. Tracked as review decision 2.
+> **Open.** Whether a component datum becomes a requirement. It is a SHOULD because the mounting interface is usually obvious from the geometry and a wrong origin on a component is recoverable by editing one transform, where a wrong base datum is not. Settling it needs the pilot to say whether component origins cause trouble.
 
-> **Open.** What a delivery does when the component part's nominal geometry is not published anywhere. A datum point names a feature of the part, which presumes an authority on what the part is; for an off-the-shelf component that is the vendor drawing, and for a custom part it may be nothing but the CAD. Not settled. Not yet on the review's decision list.
+> **Open.** What a delivery does when the component part's nominal geometry is not published anywhere. A datum point names a feature of the part, which presumes an authority on what the part is; for an off-the-shelf component that is the vendor drawing, and for a custom part it may be nothing but the CAD. Not settled.
 
 ## 6. Geometry
 
@@ -304,7 +304,7 @@ The model SHOULD NOT contain degenerate, zero-area triangles.
 
 `TANGENT` is OPTIONAL and is NOT REQUIRED.
 
-**Implementation Note.** Exporting tangents is harmless and improves portability to other viewers, and the Khronos validator emits a portability warning when a normal-mapped primitive omits them. Neither of this project's consumers reads them: the loader has no tangent channel, and the renderer generates its own from the first UV set. What the renderer needs instead is a clean UV set on normal-mapped surfaces, since that is the input to that generation. Across the 54 glTF models in Fuel, exactly one primitive carries tangents.
+**Implementation Note.** Exporting tangents is harmless and improves portability to other viewers, and the Khronos validator emits a portability warning when a normal-mapped primitive omits them. Neither of this project's consumers reads them: the loader has no tangent channel, and the renderer generates its own from the first UV set. What the renderer needs instead is a clean UV set on normal-mapped surfaces, since that is the input to that generation.
 
 ### 6.1 UV sets
 
@@ -316,11 +316,11 @@ The model MUST carry `TEXCOORD_0`, with coordinates inside the range 0 to 1. A s
 
 **Implementation Note.** The two paragraphs above previously contradicted each other, requiring exactly one UV set and then permitting a second. `gltf-check` implements the rule as now written and fails a third set; it had been failing the permitted lightmap set as well.
 
-> **Open.** Whether the 0-to-1 requirement survives. It is the most contested rule in this profile and the disagreement is not marginal: the Khronos Real-time Asset Creation Guidelines endorse tiling above 1 for repeating patterns (section 15), REP 158 reserves the range outside 0 to 1 for exactly that, and 19 of the 49 assets measured in the corpus do it, the Gazebo team's own files among them. The rule is kept for now because tiling defeats the texel-density measurement the acceptance tooling relies on, and because half-float storage degrades precision outside the range. Neither reason is about correctness, and a part needing a repeating material is the case that would settle it. Tracked as review decision 5.
+> **Open.** Whether the 0-to-1 requirement survives. It is the most contested rule in this profile and the disagreement is not marginal: the Khronos Real-time Asset Creation Guidelines endorse tiling above 1 for repeating patterns (section 15), and REP 158 reserves the range outside 0 to 1 for exactly that. The rule is kept for now because tiling defeats the texel-density measurement the acceptance tooling relies on, and because half-float storage degrades precision outside the range. Neither reason is about correctness, and a part needing a repeating material is the case that would settle it.
 
 ### 6.2 Budgets
 
-> **Open.** The triangle budget per part. The earlier draft proposed about 25,000; the current library ranges from 164 to 21,776. A single number is not defensible until each part states how much detail its role warrants, so the proposal is to record a visual requirement per part as one of a few named tiers, for example functional for the vehicles and the parts fitted to them, accessory for sensors and brackets, and scenery for items seen at distance, and then to set a triangle and texture budget per tier. Tracked as review decisions 5 and 18.
+> **Open.** The triangle budget per part. The earlier draft proposed about 25,000. A single number is not defensible until each part states how much detail its role warrants, so the proposal is to record a visual requirement per part as one of a few named tiers, for example functional for the vehicles and the parts fitted to them, accessory for sensors and brackets, and scenery for items seen at distance, and then to set a triangle and texture budget per tier.
 
 **Implementation Note.** Neither consumer imposes a triangle limit. Texture memory dominates the cost, not geometry.
 
@@ -338,7 +338,7 @@ A delivery MUST be usable as one whole mesh. Neither the part macro nor any worl
 
 **Implementation Note.** Together these keep the upstream naming defect permanently outside this project: if nothing ever selects a submesh, it does not matter that submeshes cannot be told apart. The alternative, making selection work, needs one primitive per node and a naming rule for each, and section 5.5's one-node rule forecloses it. The two rules are the same decision seen from two sides.
 
-**Implementation Note.** The evidence for closing this rather than leaving it open is in [the corpus findings](https://github.com/HonuRobotics/gltf-robotics/blob/main/assess/findings.md): of the assets measured, only `Open-RMF/Caddy` uses submesh selection at all, 12 of 42 could not support it if they tried because primitives share node names, and a search of this project's own model repositories for `<submesh>` returns nothing.
+**Implementation Note.** This is closed rather than left open because nothing here depends on the alternative: a search of this project's own model repositories for `<submesh>` returns nothing, so the rule costs no existing model anything.
 
 ## 7. Materials
 
@@ -348,7 +348,7 @@ The metallic-roughness workflow MUST be used. The specular-glossiness extension 
 
 `metallicFactor` and the metalness channel together MUST reflect what the part is made of. Plastics, composites and painted surfaces MUST be non-metallic. Only metal surfaces may be metallic.
 
-**Implementation Note.** This is the most common and most damaging defect found in the current library. The glTF default for `metallicFactor` is 1.0, so a material whose metalness nobody set is fully metallic, and a metallic-roughness texture whose blue channel is white makes it metallic regardless of the factor. A plastic hull declared metallic renders dark under every light. Four of fifteen delivered files currently have this defect, and the same trap is live across Fuel.
+**Implementation Note.** The glTF default for `metallicFactor` is 1.0, so a material whose metalness nobody set is fully metallic, and a metallic-roughness texture whose blue channel is white makes it metallic regardless of the factor. A plastic hull declared metallic renders dark under every light.
 
 Any material carrying a texture MUST also carry a `baseColorTexture`.
 
@@ -356,21 +356,21 @@ Any material carrying a texture MUST also carry a `baseColorTexture`.
 
 A material property that is uniform across the surface SHOULD be delivered as a factor, not as a texture. A texture whose every texel is identical is a factor written the long way and costs a decode, a sampler and a file for nothing.
 
-**Implementation Note.** All seven metallic-roughness textures in the current library are a single uniform color, six of them white, which is the metalness defect above seen from the other side: a constant-white blue channel tells the renderer the part is metal everywhere.
+**Implementation Note.** A uniform white metallic-roughness texture is the metalness defect above seen from the other side: a constant-white blue channel tells the renderer the part is metal everywhere.
 
 `normalTexture.scale` and `occlusionTexture.strength` MUST be 1.0. Both are ignored by this project's consumers, so a value baked into the file will not be applied.
 
 Material names SHOULD name the component they cover, not a color. Material names are not read by either consumer and are hygiene only.
 
-**Implementation Note.** The materials in the file are what renders. The generated part SDF declares no `<material>`, and if one were declared it would replace every embedded material with that one, so per-primitive materials survive only while nothing overrides them. This matches every glTF exemplar found outside the project, none of which declares a material in SDF.
+**Implementation Note.** The materials in the file are what renders. The generated part SDF declares no `<material>`, and if one were declared it would replace every embedded material with that one, so per-primitive materials survive only while nothing overrides them.
 
 A part's materials are carried in the delivered file. An SDF `<visual>` for a part MUST NOT declare a `<material>`.
 
 **Implementation Note.** This was an open question and is now settled, against a rule this project used to follow. The `maritime_ws` workspace configuration still says "PBR materials must be declared in the SDF. They are not read out of a `.glb`", which came from a sandbox that saw bright mis-lit facets on the BlueBoat hull and worked around them in SDF. The review refuted it: gz-common reads the full metallic-roughness set from the file, verified in source and with a probe, and the symptom was the hull's metallic-roughness map being solid white in its blue channel, which is metalness 1.0 everywhere. The workaround masked a texture defect that section 7's metalness rule now catches directly.
 
-**Implementation Note.** Why the prohibition is the right way round. `gz-sim`'s `SceneManager` loads an SDF `<material>`, if one is present, and sets that single material on the whole geometry, replacing every embedded material; absent one, it uses the submesh materials from the file with the visual's `<transparency>` multiplied in. So declaring a material in SDF does not supplement the file, it discards it, and because SDF gives one material per visual, a multi-material part loses every distinction section 6.3 exists to preserve. The generated part SDF has never emitted one, so this rule records existing behavior rather than changing it. Review decision: none was allocated; the question is closed by the review's own findings.
+**Implementation Note.** Why the prohibition is the right way round. `gz-sim`'s `SceneManager` loads an SDF `<material>`, if one is present, and sets that single material on the whole geometry, replacing every embedded material; absent one, it uses the submesh materials from the file with the visual's `<transparency>` multiplied in. So declaring a material in SDF does not supplement the file, it discards it, and because SDF gives one material per visual, a multi-material part loses every distinction section 6.3 exists to preserve. The generated part SDF has never emitted one, so this rule records existing behavior rather than changing it.
 
-It was written for COLLADA, where the SDF is the only place a PBR material can live. For GLB it contradicts the rule above, the generated part SDF, and every glTF exemplar found. Proposed: restate the workspace rule as applying to COLLADA visuals only. Not yet on the review's decision list.
+It was written for COLLADA, where the SDF is the only place a PBR material can live. For GLB it contradicts the rule above and the generated part SDF. Proposed: restate the workspace rule as applying to COLLADA visuals only.
 
 ## 8. Textures
 
@@ -386,9 +386,9 @@ Normal, metallic, roughness and packed ORM textures MUST be PNG, which [REP 158]
 
 **Implementation Note.** The rule follows from the transfer function glTF assigns to each slot. Base color and emissive are sRGB color, which is what JPEG was designed for. Normal, metallic-roughness and occlusion are linear data whose channels are unrelated scalars or the components of one vector, and JPEG's chroma subsampling blends channels that have nothing to do with each other. Measured on the BlueBoat normal map, JPEG at quality 95 with 4:4:4 subsampling leaves a mean error of 0.4 degrees and a 99.9th percentile above 6 degrees, concentrated at UV shell boundaries.
 
-**Implementation Note.** Deliveries from anyone working in the normal way will arrive with JPEG normal maps: every normal map in the current library is JPEG, as are most in Fuel and in the Gazebo team's own demo assets. The Blender exporter inherits the format of the source image, so this is a texture-authoring decision, not an export setting. A JPEG normal map cannot be repaired by converting it to PNG, because the damage is already in the pixels; the remedy is to re-export from the source texture.
+**Implementation Note.** Deliveries from anyone working in the normal way will arrive with JPEG normal maps, as most in Fuel and in the Gazebo team's own demo assets do. The Blender exporter inherits the format of the source image, so this is a texture-authoring decision, not an export setting. A JPEG normal map cannot be repaired by converting it to PNG, because the damage is already in the pixels; the remedy is to re-export from the source texture.
 
-> **Open.** Whether base color and emissive textures may be JPEG, and the size cap per map type. Proposed: PNG by default for every map. JPEG is permitted for `baseColorTexture` and `emissiveTexture` only when all four hold: the material is `OPAQUE`, so no alpha is needed; the encoder is set to libjpeg quality 95 or better with 4:4:4 chroma subsampling, not a default; the JPEG is smaller than the PNG, which for flat maps it often is not; and the image is plugged into no other slot. Every JPEG in the current library is quality 75 at 4:2:0 and fails the second condition. For size, roughness and metalness maps SHOULD be smaller than the base color map, because they receive no mipmaps and shimmer at distance. Tracked as review decision 4.
+> **Open.** Whether base color and emissive textures may be JPEG, and the size cap per map type. Proposed: PNG by default for every map. JPEG is permitted for `baseColorTexture` and `emissiveTexture` only when all four hold: the material is `OPAQUE`, so no alpha is needed; the encoder is set to libjpeg quality 95 or better with 4:4:4 chroma subsampling, not a default; the JPEG is smaller than the PNG, which for flat maps it often is not; and the image is plugged into no other slot. For size, roughness and metalness maps SHOULD be smaller than the base color map, because they receive no mipmaps and shimmer at distance.
 
 **Implementation Note.** Base color and emissive are treated as sRGB; every other map is linear. 16-bit images are converted to 8 bits on upload and buy nothing. PNG and JPEG both decode to the same size in video memory, so the choice costs disk and transfer, never GPU memory.
 
@@ -408,7 +408,7 @@ An opaque part MUST NOT be tagged `alphaMode: BLEND`.
 
 **Implementation Note.** A base color texture needs an alpha channel in exactly one case: the opacity varies across the surface of one material, which is the cutout case above. Uniform translucency is a factor, not a channel. The BlueBoat chassis is a cutout region wearing the wrong clothes: 0.56 percent of its map is non-opaque and the whole hull is tagged `BLEND` for it, where `MASK` at cutoff 0.5 loses nothing.
 
-> **Open.** How uniform translucency, such as an acrylic tube, is expressed, and whether `BLEND` is used at all given that this project's primary consumer ignores it. Proposed: give each translucent region its own material with the opacity in `baseColorFactor` alpha and the texture RGB only. Whether that material is tagged `BLEND` for the benefit of other viewers, or left `OPAQUE` so the file reads the same everywhere, is the part still to agree. Tracked as review decision 6.
+> **Open.** How uniform translucency, such as an acrylic tube, is expressed, and whether `BLEND` is used at all given that this project's primary consumer ignores it. Proposed: give each translucent region its own material with the opacity in `baseColorFactor` alpha and the texture RGB only. Whether that material is tagged `BLEND` for the benefit of other viewers, or left `OPAQUE` so the file reads the same everywhere, is the part still to agree.
 
 **Implementation Note.** Gazebo honors `MASK` and ignores `BLEND` entirely, rendering the material opaque. Uniform opacity reaches it instead through the alpha of `baseColorFactor`, on any alpha mode, and is applied twice, so an alpha of 0.5 renders at about 0.25. `doubleSided` is honored only on a `MASK` material; every other surface is back-face culled, so thin geometry needs thickness.
 
@@ -424,7 +424,7 @@ A delivered file MUST NOT contain:
 
 **Implementation Note.** These are prohibited for different reasons, and the reasons matter if one is ever reconsidered. Draco decodes correctly in both consumers but defeats the project's own inspection tools. Texture transform is parsed and then ignored, so textures render in the wrong place. Animations are imported and force the bounding box to a unit cube, breaking culling. Cameras and lights are ignored harmlessly. `KHR_xmp_json_ld`, which carries the manifest of 4.1.4, is not prohibited: it is declared in `extensionsUsed`, has no effect on appearance, and a consumer that ignores it is behaving correctly. An empty `extensionsRequired` is the single check that covers the general case, and it is worth being clear about what that check buys. The glTF specification requires a conforming reader to refuse a file outright when it requires an extension the reader does not implement, so one reading of this rule is that it saves us from a file that would fail to load. Measurement says otherwise: `Distribution_Warehouse`, which declares `KHR_texture_transform` in `extensionsRequired`, loads through gz-common without complaint, building 3,010 submeshes and 19 materials. Gazebo is not a conforming reader on this point. The rule therefore protects against a file that loads and is silently wrong, which is the worse failure and the one nobody notices. The Gazebo team's own demo assets declare `KHR_texture_transform` and `KHR_materials_specular`, so files from that workflow will fail this section and need re-export.
 
-> **Open: Future.** Which of these prohibitions are permanent. Two are not statements about the format: Draco decodes correctly in both consumers and is prohibited only because it defeats this project's own inspection tools, and KTX2 is prohibited because Gazebo cannot read it while Drake recommends it for performance (section 15). Both would be reconsidered if the tooling or the consumer changed, and compressed geometry and supercompressed textures are the two levers with real size savings behind them. Animations, cameras and lights are prohibited on their merits and are not expected to change. Not yet on the review's decision list.
+> **Open: Future.** Which of these prohibitions are permanent. Two are not statements about the format: Draco decodes correctly in both consumers and is prohibited only because it defeats this project's own inspection tools, and KTX2 is prohibited because Gazebo cannot read it while Drake recommends it for performance (section 15). Both would be reconsidered if the tooling or the consumer changed, and compressed geometry and supercompressed textures are the two levers with real size savings behind them. Animations, cameras and lights are prohibited on their merits and are not expected to change.
 
 ## 11. Authoring toolchain
 
@@ -440,7 +440,7 @@ The version stack is pinned at patch level, because the behavior that changed du
 | `gz-common` | 7.3.0, via `ros-lyrical-gz-common-vendor` 0.3.6 | The loader. Composes node transforms and bakes them into the vertices, which is why section 5.5 prohibits them. Also the version carrying the `.gltf` extension-comparison bug behind section 4.2 |
 | assimp | 6.0.4 | What `gz-common` parses the file with |
 
-A delivery MUST record the exporter that produced it, which glTF does automatically in `asset.generator`, and the integrator SHOULD check it against the pin above. Review decisions 8, 10 and 17 are resolved.
+A delivery MUST record the exporter that produced it, which glTF does automatically in `asset.generator`, and the integrator SHOULD check it against the pin above.
 
 **Implementation Note.** The pin is necessary and not sufficient. `asset.generator` records the tool and never the settings, so two files from the same exporter can still differ in image format, tangents and compression, which is why section 12's checks constrain the outcome rather than the settings. The authoring half is also a convention rather than a technical constraint, because the modeler is outside this project's infrastructure: nothing stops a delivery arriving from another version, and the acceptance check is what notices.
 
@@ -459,13 +459,7 @@ A delivery conforms when all of the following hold. The first two are the modele
 
 **Implementation Note.** These are four different questions and they fail independently. A file can be valid and not what the modeler meant. It can be both and still render wrong in Gazebo, which implements a subset of glTF and is actively changing. Passing in Gazebo is necessary and never sufficient, because a defect can be masked by something Gazebo ignores. External viewers such as Babylon and F3D are not a Gazebo proxy either; `glb_probe`, which prints what the loader built, is.
 
-### 12.1 Checks (Informative)
-
-The mechanical checks implied by this specification, and where they are described, are collected in the review document: file-level lint in section 2.2, the loader probe in section 2.1, the validator in section 2.6, the render checks in section 2.3, and the pass or fail table in section 2.5.
-
-**Implementation Note.** The probe and the lint are not CI tests. They run when an incoming part is reviewed, which is the moment a delivery can be rejected; once a part is merged to the production branch it has already been checked, and re-running the whole suite on every commit is bloat that would slow every unrelated change. The existing base color guard stays, because it is cheap and it catches a defect that terminates RViz. Review decision 7 is resolved: no.
-
-**Implementation Note.** A probe dump is not committed per part. The argument for it was a readable diff when a binary mesh is redelivered, which is real but not worth a generated artifact per part in the repository; the checker's output at review time answers the same question at the moment it matters. Review decision 14 is resolved: no.
+The checks that answer each question, who runs them and when, are described in the [workflow](workflow.md#step-3-verify).
 
 ## 13. Open questions (Informative)
 
@@ -475,26 +469,24 @@ Every Open and Open: Future block in this document, in order. Settled rules are 
 
 Nothing in the document governs these points, so a delivery cannot fail to conform on one.
 
-| Section | Question | Decision |
-|---|---|---|
-| 5.6.3 | Component datum becomes a requirement | none yet, deferred |
-| 5.6.3 | When the part's nominal geometry is unpublished | none yet, deferred |
-| 6.1 | Whether the 0-to-1 UV requirement survives | 5 |
-| 6.2 | Triangle budget, by visual requirement tier | 5, 18 |
-| 8 | Base color format and per-map size caps | 4 |
-| 9 | Uniform translucency and use of BLEND | 6 |
+| Section | Question |
+|---|---|
+| 5.6.3 | Component datum becomes a requirement (deferred) |
+| 5.6.3 | When the part's nominal geometry is unpublished (deferred) |
+| 6.1 | Whether the 0-to-1 UV requirement survives |
+| 6.2 | Triangle budget, by visual requirement tier |
+| 8 | Base color format and per-map size caps |
+| 9 | Uniform translucency and use of BLEND |
 
 ### 13.2 Open: Future, not blocking this draft
 
 The rule beside each of these is normative and a delivery must satisfy it. What is open is only whether the simple form stays.
 
-| Section | Rule | Why the simple form | Decision |
-|---|---|---|---|
-| 4.1 | One part per delivered file | Simplicity: one part, one model, one file is a mapping every tool can assume | none yet |
-| 4.2 | Binary container as the only permitted form | Simplicity, and two of the reasons are defects with upstream fixes pending | none yet |
-| 10 | Which prohibitions are permanent | Draco defeats our own inspection tools; KTX2 is unreadable by Gazebo | none yet |
-
-Decision numbers refer to section 10 of [VISUAL_ASSET_PIPELINE_REVIEW.md](reference/pipeline-review.md). Review decision 9, contributing the loader table upstream, is not a rule of this specification and is not listed. Items marked "none yet" were raised after the review's list was written and should be added to it.
+| Section | Rule | Why the simple form |
+|---|---|---|
+| 4.1 | One part per delivered file | Simplicity: one part, one model, one file is a mapping every tool can assume |
+| 4.2 | Binary container as the only permitted form | Simplicity, and two of the reasons are defects with upstream fixes pending |
+| 10 | Which prohibitions are permanent | Draco defeats our own inspection tools; KTX2 is unreadable by Gazebo |
 
 ## 14. References (Informative)
 

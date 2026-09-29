@@ -44,7 +44,7 @@ The one decision that is settled in our spec and contested everywhere else.
 |---|---|---|---|
 | B1 | Container: self-contained `.glb`, or `.gltf` with side files | Spec 4.2 requires `.glb`. Drake refuses `.glb` outright and TRI and JPL both ship `.gltf` plus `.bin`, so this is the live disagreement. | tool |
 | B2 | Referenced files that do not resolve | The failure mode `.glb` exists to prevent. Fuel's only articulated glTF robot ships a 404 texture. | tool |
-| B3 | Images embedded or external | Spec 4.2 leaves this open (decision 16). Worth knowing whether anybody mixes the two. | tool |
+| B3 | Images embedded or external | Profile 4.2 requires embedded images and marks external ones Open: Future. Worth knowing whether anybody mixes the two. | tool |
 | B4 | File size, and the geometry-to-texture split | Textures are 59 percent of our own bytes. Whether that ratio holds elsewhere decides whether external images would actually buy anything. | tool |
 | B5 | Number of files per model, and per link | The per-link-mesh versus one-file-plus-`<submesh>` question in spec 5.5 and 6.3. Fuel is 92 percent one file per link. | planned |
 | B6 | Whether an SDF or URDF ships beside the asset, and what it declares | Whether `<material>`, `<pbr>` or `<submesh>` appear at all. Directly against the workspace `<pbr>`-in-SDF rule. | planned |
@@ -147,7 +147,7 @@ The group with the highest defect rate in every corpus looked at so far, includi
 | F3 | Materials carrying a texture but no `baseColorTexture` | RViz terminates on one. A target constraint rather than a glTF rule. Spec 7. | tool |
 | F4 | Specular-glossiness workflow | Prohibited by spec 7, and long deprecated by Khronos. | tool |
 | F5 | `alphaMode` distribution | Gazebo honors `MASK` and ignores `BLEND` entirely, rendering it opaque. Spec 9. | tool |
-| F6 | `baseColorFactor` alpha below 1 | How uniform translucency actually reaches Gazebo -- and it is applied twice, so 0.5 renders at about 0.25. Spec 9, decision 6. | tool |
+| F6 | `baseColorFactor` alpha below 1 | How uniform translucency actually reaches Gazebo -- and it is applied twice, so 0.5 renders at about 0.25. Profile 9. | tool |
 | F7 | `doubleSided` | Honored only on a `MASK` material; everything else is back-face culled, so thin geometry needs thickness. | tool |
 | F8 | `normalTexture.scale`, `occlusionTexture.strength` | Spec 7 requires 1.0 because neither consumer reads them, so a baked value is a silent difference between viewers. | tool |
 | F9 | Whether uniform properties are delivered as factors or as uniform textures | A texture whose every texel is identical is a factor written the long way. All seven of our own metallic-roughness maps are uniform. Spec 7. | planned |

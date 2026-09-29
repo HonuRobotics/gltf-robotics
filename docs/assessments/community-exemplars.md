@@ -36,7 +36,7 @@ What the files themselves contain is more surprising than the SDF:
 | `Distribution_Warehouse/base_visual.glb` | 85.5 MB | 3,010 | 331,438 | 27 JPEG | `KHR_texture_transform` |
 | `iche033/simple_warehouse` `thor_table.glb` | 49.7 MB | 91 | 187,508 | PNG base and MR, mixed normals | none |
 
-All from `Khronos glTF Blender I/O` v4.4 to v4.5. Three things follow. The texture-format rule we derived, and REP-158 with it, is not what the Gazebo team practices: normal and metallic-roughness maps here are JPEG. Extensions are used casually, including `KHR_texture_transform`, which our own audit found Gazebo's loader ignores, so textures should misplace — either the transform is identity in that file or the audit's finding needs revisiting against Jetty. And there is no size discipline at all: 85 MB in one visual, 3,010 nodes, against the budget question in section 10 of the pipeline review.
+All from `Khronos glTF Blender I/O` v4.4 to v4.5. Three things follow. The texture-format rule we derived, and REP-158 with it, is not what the Gazebo team practices: normal and metallic-roughness maps here are JPEG. Extensions are used casually, including `KHR_texture_transform`, which our own audit found Gazebo's loader ignores, so textures should misplace — either the transform is identity in that file or the audit's finding needs revisiting against Jetty. And there is no size discipline at all: 85 MB in one visual, 3,010 nodes, against the budget question that is open in profile section 6.2.
 
 ### open-rmf/rmf_site — glTF generated rather than authored
 
@@ -104,4 +104,4 @@ Ekumen's own robot, `Ekumen-OS/andino`, is STL and JPEG with no glTF anywhere; t
 
 - REP-158, "OpenUSD Conventions for Simulation Asset Interoperability in Open Source Robotics", in `openrobotics/reps` — drafted PR #29 (merged 2026-06-17), peer review addressed in PR #30 (2026-07-13). The [Discourse thread](https://discourse.openrobotics.org/t/draft-rep-158-openusd-conventions-for-simulation-asset-interoperability-in-open-source-robotics/55526) carries the substantive debate, including a mesh-granularity exchange directly on our per-link question: combining meshes to the smallest possible set is preferable for performance, acknowledged as context-dependent rather than prescribed.
 - ["ROS2 URDF Mesh File Types"](https://discourse.openrobotics.org/t/ros2-urdf-mesh-file-types/54954), May 2026, opened because Blender 5.0 dropped COLLADA export. Converging on glTF 2.0 for visual and STL for collision, blocked on Isaac Sim's URDF importer still accepting only dae, obj and stl. No governance action, no migration plan.
-- The gz-common assimp loader PRs, which the pipeline review already tracks.
+- The gz-common assimp loader PRs. Two of them are recorded in [Gazebo and RViz loader behavior](../reference/loader-behavior.md).

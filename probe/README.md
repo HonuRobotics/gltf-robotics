@@ -8,7 +8,7 @@ Tools that answer what reading a glTF file cannot.
 |---|---|
 | `glb_probe/` | loads a file through Gazebo's own `gz-common` loader and prints what it built — submesh names, material count, what survived. Built and run inside drydock, against the installed gz-common rather than a branch. |
 | `coords/make_markers.py` | writes coordinate-frame probe assets from scratch, no dependencies. Each variant isolates one question about how a frame is expressed, so a rendered view answers it unambiguously. |
-| `glb_community_probe.py` | the survey script behind the community-exemplars evidence. |
+| `glb_community_probe.py` | the survey script behind the community-exemplars assessment. |
 
 ## glb_probe
 

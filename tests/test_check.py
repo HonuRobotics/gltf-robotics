@@ -335,7 +335,7 @@ def _packet(g):
 
 
 def test_a_missing_manifest_fails(write_model):
-    """Required since review decision 13: provenance cannot be reconstructed later.
+    """Required by profile 4.1.4: provenance cannot be reconstructed later.
 
     It was a SHOULD while the argument against was that no existing delivery
     carried one. That argument is withdrawn -- the existing files are not trusted
