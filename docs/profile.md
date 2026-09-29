@@ -46,38 +46,7 @@ Two kinds of text blocks mark open issues:
 
 ## 3. Terminology
 
-The definitions below govern within this profile and supersede any other meaning these terms may carry elsewhere. Terms drawn from glTF keep their glTF meaning and are not redefined here. 
-
-assembly::
-A collection of parts and the joints between them. Out of scope: an assembly is expressed by the consuming project in its own description format, never in delivered geometry.
-
-asset::
-Avoided in normative text. In 3D work the word spans meshes, textures, rigs, scenes and library entries at every scale, and glTF itself uses `asset` for the metadata object inside a file, so it cannot be used precisely. Where this profile means the delivered file it says *visual model*; where it means the glTF object it writes `asset` in code font.
-
-coordinate system::
-Used throughout in preference to *frame* and to *space*. All three are in use elsewhere (REP 103 says frame, ISO 9787 says coordinate system, graphics says space) and they are treated here as naming the same thing. Where an external document is quoted its own word is kept. What each coordinate system here is called in ISO 9787, in REP 103 and in glTF is tabulated in the [coordinate systems reference](reference/coordinate-systems.md#our-coordinate-system-names).
-
-datum::
-A situation feature of the part that the coordinate system is referenced to. Section 5.6 states which features may serve and requires that those named together fix all six degrees of freedom. A datum is named before modelling starts; it is not measured from the geometry afterwards.
-
-datum coordinate system::
-What a datum specification evaluates to against a particular piece of geometry. In a conforming delivery it is the same thing as the part coordinate system, the origin, node space and scene space. This profile narrows all of them to one. Section 5.4 says so normatively.
-
-origin::
-The location and orientation of the datum coordinate system relative to the visual geometry. Not a point chosen at the keyboard and not a measured property of the mesh: it is what the datum specification of 5.6 evaluates to.
-
-part::
-A single physical component, geometry only, no joints. The unit this profile delivers. A part has a coordinate system and a place in an assembly.
-
-part coordinate system::
-The coordinate system in which a part's geometry is expressed. Its axes are fixed by section 5.2 (+X forward, +Y left, +Z up, per ISO 9787 §5.5 and REP 103) and its origin by section 5.4.
-
-visual model::
-The visual geometry delivered for a part: the file `<part>.visual.glb` and its contents.
-
-**Implementation Note.** One coordinate system, several names. glTF distinguishes *node space*, the coordinate system a node's vertices are expressed in, from *scene space*, what node space becomes once node transforms are composed down from the root. Section 5.5 requires exactly one node carrying no transform, which collapses the distinction: node space, scene space, the part coordinate system, the datum coordinate system and the origin are all the same thing in a conforming delivery. Narrowing them to one is a deliberate act of this profile, and it is why the terms are listed here as equivalents rather than distinguished.
-
-**Implementation Note.** "part" and "assembly" are this profile's own terms and no standard defines them. The closest published vocabulary is ISO 10303 (STEP), which distinguishes a part from an assembly the same way for mechanical product data; the usage here is consistent with it but does not depend on it.
+The terms this profile uses are defined in the project [glossary](reference/glossary.md). Those definitions govern within this profile and supersede any other meaning the terms may carry elsewhere. Terms drawn from glTF keep their glTF meaning and are not redefined.
 
 ## 4. Delivery
 
@@ -179,7 +148,7 @@ Two details in the URL are deliberate. It carries `/1.0/` so that a later, incom
 
 ## 5. Coordinate systems and units
 
-The vocabulary this section uses (coordinate system, datum, origin, node space, scene space) is defined once in section 3 and not restated here.
+The vocabulary this section uses (coordinate system, datum, origin, node space, scene space) is defined once in the [glossary](reference/glossary.md) and not restated here.
 
 ### 5.1 Units
 
@@ -326,7 +295,7 @@ The model MUST carry `TEXCOORD_0`, with coordinates inside the range 0 to 1. A s
 
 ### 6.3 Primitives and submeshes
 
-**Implementation Note.** "Submesh" is a Gazebo word rather than a glTF one. It is not a node arrangement and not a second mesh. Gazebo's loader walks the node hierarchy and emits one submesh for every primitive it meets, naming each after the node that instantiated that primitive's mesh, never after the mesh or the material. One node holding one mesh of four primitives therefore arrives as four submeshes all bearing that node's name, and two nodes arrive as the sum of their primitives, each batch carrying its own node's name. The submesh count is the primitive count; the names come from the nodes. The loader probe in section 2.1 of the review prints that list, and is the only way to see it without a renderer.
+**Implementation Note.** "Submesh" is a Gazebo word rather than a glTF one. It is not a node arrangement and not a second mesh. Gazebo's loader walks the node hierarchy and emits one submesh for every primitive it meets, naming each after the node that instantiated that primitive's mesh, never after the mesh or the material. One node holding one mesh of four primitives therefore arrives as four submeshes all bearing that node's name, and two nodes arrive as the sum of their primitives, each batch carrying its own node's name. The submesh count is the primitive count; the names come from the nodes. The loader probe, `glb_probe`, prints that list, and is the only way to see it without a renderer.
 
 **Implementation Note.** A part has more than one primitive when it has more than one material, and in practice only then, because a primitive holds at most one `material` and glTF has no other way to put two materials on one mesh. The specification gives one further reason, to limit the number of indices per draw call, which does not arise at these part sizes. So the primitive count of a well-formed part is its material count, and section 7 already requires every primitive to have a material.
 
@@ -366,7 +335,7 @@ Material names SHOULD name the component they cover, not a color. Material names
 
 A part's materials are carried in the delivered file. An SDF `<visual>` for a part MUST NOT declare a `<material>`.
 
-**Implementation Note.** This was an open question and is now settled, against a rule this project used to follow. The `maritime_ws` workspace configuration still says "PBR materials must be declared in the SDF. They are not read out of a `.glb`", which came from a sandbox that saw bright mis-lit facets on the BlueBoat hull and worked around them in SDF. The review refuted it: gz-common reads the full metallic-roughness set from the file, verified in source and with a probe, and the symptom was the hull's metallic-roughness map being solid white in its blue channel, which is metalness 1.0 everywhere. The workaround masked a texture defect that section 7's metalness rule now catches directly.
+**Implementation Note.** This was an open question and is now settled, against a rule this project used to follow. The `maritime_ws` workspace configuration still says "PBR materials must be declared in the SDF. They are not read out of a `.glb`", which came from a sandbox that saw bright mis-lit facets on the BlueBoat hull and worked around them in SDF. That was refuted: gz-common reads the full metallic-roughness set from the file, verified in source and with a probe, and the symptom was the hull's metallic-roughness map being solid white in its blue channel, which is metalness 1.0 everywhere. The workaround masked a texture defect that section 7's metalness rule now catches directly.
 
 **Implementation Note.** Why the prohibition is the right way round. `gz-sim`'s `SceneManager` loads an SDF `<material>`, if one is present, and sets that single material on the whole geometry, replacing every embedded material; absent one, it uses the submesh materials from the file with the visual's `<transparency>` multiplied in. So declaring a material in SDF does not supplement the file, it discards it, and because SDF gives one material per visual, a multi-material part loses every distinction section 6.3 exists to preserve. The generated part SDF has never emitted one, so this rule records existing behavior rather than changing it.
 

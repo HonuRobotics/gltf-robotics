@@ -2,6 +2,7 @@
 
 Background the profile's rules rest on, and the material a reader needs to argue with them.
 
+- [Glossary](glossary.md) — the vocabulary of the whole project, in one place.
 - [Coordinate systems](coordinate-systems.md) — what ISO 9787, the ROS REPs and glTF each say about frames, where they disagree, and which one a delivered model is expressed in. Claims are marked firm, practice, open or corrected.
 - [Gazebo and RViz loader behavior](loader-behavior.md) — what Gazebo and RViz build from a `.glb`, read out of the `gz-common` and `rviz_rendering` sources. A snapshot from 2026-09-04, not re-verified since.
 - [Blender glTF export options](blender-export-options.md) — all 110 properties of the export operator with their defaults, read out by introspection, and which ones the profile settles.
@@ -11,6 +12,7 @@ Background the profile's rules rest on, and the material a reader needs to argue
 ```{toctree}
 :maxdepth: 2
 
+glossary
 coordinate-systems
 loader-behavior
 blender-export-options

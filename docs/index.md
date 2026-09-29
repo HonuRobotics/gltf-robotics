@@ -15,7 +15,7 @@ Supporting documentation:
 
 - [Walkthroughs](walkthroughs/index.md). Complete step-by-step examples and how-tos: one mesh from Blender to Gazebo and RViz, exporting from Blender, and checking a delivery.
 - [Assessments](assessments/index.md). Measurements of what glTF assets published by other projects contain. They show what is in the field and are not a basis for the profile's rules. Audits of our own deliveries are planned.
-- [Reference](reference/index.md). Coordinate systems, Blender's glTF export options, PBR materials and notes on glTF itself.  These are notes and artifacts from working through issues and conventions.  
+- [Reference](reference/index.md). The project glossary, coordinate systems, Blender's glTF export options, PBR materials and notes on glTF itself.  These are notes and artifacts from working through issues and conventions.  
 
 Tools and utilities, with their source code in the repository:
 

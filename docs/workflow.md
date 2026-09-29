@@ -1,6 +1,6 @@
 # Honu glTF Asset Workflow
 
-The [profile](profile.md) states what a delivered visual model must be. This document states the process that produces one: two parties, three steps, in order. Where the two would overlap, this document cites the profile and does not restate it. Requirements live there; who does what, and when, lives here.
+The [profile](profile.md) states what a delivered visual model must be. This document states the process that produces and integrates the asset. 
 
 The process begins with a commission, a vehicle or a batch of parts to be modeled, and ends when the integrator accepts the delivered files. Placing an accepted part in the simulation model, the macro and the RViz correction, is the consuming project's work and is out of scope here.
 
@@ -8,14 +8,9 @@ To write: a paragraph on why a written process is needed at all. The failures th
 
 ## Roles
 
-The two parties are the ones the profile names in section 2.1: the modeler, who authors and delivers the visual model, and the integrator, who commissions it, checks it and integrates it as a robot component. Part, delivery and model carry their profile section 3 meanings.
+The two parties are the modeler, who authors and delivers the visual model, and the integrator, who commissions it, checks it and integrates it as a robot component.
 
-Two words this document needs and the profile does not:
-
-- commission: the unit of work a specification is written for, typically one vehicle or one batch of parts.
-- specification: the visual model specification the integrator writes in step 1 for one commission, with one block per part. The word is used only in this sense here; the profile is never called the specification.
-
-The datasheet is the published source a part's dimensions are cited from. The integrator chooses it in step 1 and measures against it in step 3.
+These and the other terms this document uses, among them part, delivery, commission, specification and datasheet, are defined in the project [glossary](reference/glossary.md).
 
 ## The three steps at a glance
 
