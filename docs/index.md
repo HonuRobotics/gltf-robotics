@@ -5,7 +5,7 @@ Honu Robotics' glTF asset framework for Gazebo and RViz. This is a beta release:
 ## Ready for beta review
 
 - [Honu glTF Asset Profile](profile.md). Normative rules for 3D visual robotic assets, narrowing, extending and clarifying glTF 2.0 for robotics and aligned to ISO and ROS REP conventions.
-- [Honu glTF Asset Workflow](workflow.md). The step-by-step process of asset commissioning, authoring and integration, and who does what.
+- [Honu glTF Asset Workflow](workflow.md). The step-by-step process of asset commissioning, authoring and conformance testing, and who does what.
 
 ## In development, not ready for review
 

@@ -1,8 +1,10 @@
 # Honu glTF Asset Workflow
 
-The [profile](profile.md) states what a delivered visual model must be. This document states the process that produces and integrates the asset.
+The [profile](profile.md) states what a delivered visual model must be. This document states the process that produces one for each part and takes it through conformance testing.
 
-The process begins with a commission, a vehicle or a batch of parts to be modeled, and ends when the integrator accepts the delivered files. Placing an accepted part in the simulation model, the macro and the RViz correction, is the consuming project's work and is out of scope here.
+The process begins with a commission, a vehicle or a batch of parts to be modeled, and ends when each delivered part passes the profile's [conformance testing](profile.md#conformance-testing) and the integrator accepts it. What it produces is individual parts with the correct properties.
+
+Turning accepted parts into a working simulation model is downstream work and out of scope here: declaring joints and actuators, adding sensors and plugins, buoyancy, the part macro and the RViz correction.
 
 ## Roles
 
@@ -146,7 +148,7 @@ All five rows pass. The integrator records the accepted delivery date and the ch
 
 ## After acceptance
 
-Out of scope here. The consuming project owns placement, the part macro and the RViz correction.
+Out of scope here. The consuming project owns everything downstream of an accepted part: placement, the part macro, the RViz correction, joints and actuators, sensors, plugins and buoyancy.
 
 ## Not settled here
 

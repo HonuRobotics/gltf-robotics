@@ -10,7 +10,7 @@ This profile constrains the visual models authored for robotics simulation, curr
 
 This profile builds upon [glTF 2.0](https://registry.khronos.org/glTF/specs/2.0/glTF-2.0.html) to make it actionable for 3D visual model integration in Gazebo for robotics. Every rule here does one of three things:
 
-- **Narrowing.** As a profile, this specification focuses and narrows the standard's affordances for the specific needs of robotics simulation, to make it actionable in the context of developing 3D visual robotic assets. A file can be glTF-compliant and still be unusable in a robotics simulator.
+- **Narrowing.** This profile focuses and narrows the standard's affordances for the specific needs of robotics simulation, to make it actionable in the context of developing 3D visual robotic assets. A file can be glTF-compliant and still be unusable in a robotics simulator.
 - **Adding.** Requiring something the standard does not, to satisfy the constraints of the robotics simulation and visualization consumers of the assets (e.g., Gazebo, RViz). This is required because some consumers implement only part of glTF, so a glTF-compliant asset is not guaranteed to be importable. Added constraints name the downstream consumer that motivates them.
 - **Departing.** Differing from what the standard says, which is done rarely and never silently. The [Axes](#axes) section is the one departure: the delivered file is expressed +X forward, +Y left, +Z up, following ISO 9787 and REP 103 rather than glTF's Y-up and +Z-forward convention, because every other stage of this pipeline uses the robotics convention and holding to glTF's would put a conversion in the middle of it.
 
@@ -20,7 +20,7 @@ This profile is only about the visual 3D asset model and does not cover Collisio
 
 ### Audience
 
-This specification addresses two parties:
+This profile addresses two parties:
 
 - **the modeler**, who authors and delivers a 3D visual asset
 - **the integrator**, who integrates the asset as a functional robot component
@@ -214,7 +214,7 @@ The node MUST be named `<part>` (with no numeric suffix such as `.001` and no sp
 
 ### Datum specification
 
-A coordinate system has six degrees of freedom to fix: three of location and three of orientation. This profile fixes them in two different ways, and the split is what keeps the specification short.
+A coordinate system has six degrees of freedom to fix: three of location and three of orientation. This profile fixes them in two different ways, and the split is what keeps the datum specification short.
 
 **Orientation is fixed once, for every delivery, by the [Axes](#axes) section.** +X forward, +Y left, +Z up, from ISO 9787:2013 §5.5 and REP 103. It is not a per-part decision and is not named in a manifest as though it were.
 
@@ -233,7 +233,7 @@ It MUST NOT be a derived quantity. A center of mass, a bounding-box center, a si
 The datum point SHOULD be the least-derived feature available. Where a derived point is unavoidable, the manifest MUST name the artifact and the configuration it was derived from, so that it can be reproduced.
 
 
-**Implementation Note.** A point in the specification and a point on the hardware are two different things, and a mature practice has both. ISO 5459 calls the second a *datum target*: a point, line or area designated so that every supplier seats the part identically. A definition without a realization cannot be measured on the bench; a realization without a definition cannot be reproduced on a redesign. Where a delivery has a physical realization the manifest SHOULD record it in `gltfrp:datumTarget`.
+**Implementation Note.** A point in the datum specification and a point on the hardware are two different things, and a mature practice has both. ISO 5459 calls the second a *datum target*: a point, line or area designated so that every supplier seats the part identically. A definition without a realization cannot be measured on the bench; a realization without a definition cannot be reproduced on a redesign. Where a delivery has a physical realization the manifest SHOULD record it in `gltfrp:datumTarget`.
 
 #### What the manifest carries
 
@@ -295,7 +295,7 @@ The model MUST carry `TEXCOORD_0`, with coordinates inside the range 0 to 1. A s
 
 ### Primitives
 
-**Implementation Note.** A part has more than one primitive when it has more than one material, and in practice only then, because a primitive holds at most one `material` and glTF has no other way to put two materials on one mesh. The specification gives one further reason, to limit the number of indices per draw call, which does not arise at these part sizes. So the primitive count of a well-formed part is its material count, and the [Materials](#materials) section already requires every primitive to have a material.
+**Implementation Note.** A part has more than one primitive when it has more than one material, and in practice only then, because a primitive holds at most one `material` and glTF has no other way to put two materials on one mesh. The glTF specification gives one further reason, to limit the number of indices per draw call, which does not arise at these part sizes. So the primitive count of a well-formed part is its material count, and the [Materials](#materials) section already requires every primitive to have a material.
 
 A primitive MUST exist only to carry a material distinct from its siblings, so that a mesh's primitive count equals its material count and nothing is split for any other reason.
 
@@ -419,7 +419,7 @@ A delivery conforms when all of the following hold. The first two are the modele
 
 1. **Valid.** Zero errors from the Khronos glTF Validator.
 2. **Intended.** The model renders as the modeler intended in a conformant viewer. The Khronos glTF Sample Viewer is the reference. Blender's viewport is not, because it shows Blender's materials rather than the exported file.
-3. **Compliant.** Every MUST in this specification is satisfied, checked mechanically where possible.
+3. **Compliant.** Every MUST in this profile is satisfied, checked mechanically where possible.
 4. **Usable.** The part renders correctly in Gazebo and loads in RViz.
 
 **Implementation Note.** These are four different questions and they fail independently. A file can be valid and not what the modeler meant. It can be both and still render wrong in Gazebo, which implements a subset of glTF and is actively changing. Passing in Gazebo is necessary and never sufficient, because a defect can be masked by something Gazebo ignores. External viewers such as Babylon and F3D are not a Gazebo proxy either; `glb_probe`, which prints what the loader built, is.
@@ -451,7 +451,7 @@ The rule beside each of these is normative and a delivery must satisfy it. What 
 
 ## References (Informative)
 
-The workflow this specification serves is built on published standards owned by other people, and defines project convention only where no standard reaches. This is deliberate. A project-local convention must be taught to every modeler, defended in every review and remembered by everyone who touches the pipeline. A standard is documented by someone else, understood by people not yet hired, and supported by software nobody here has to maintain.
+The workflow this profile serves is built on published standards owned by other people, and defines project convention only where no standard reaches. This is deliberate. A project-local convention must be taught to every modeler, defended in every review and remembered by everyone who touches the pipeline. A standard is documented by someone else, understood by people not yet hired, and supported by software nobody here has to maintain.
 
 | Standard | Title | Role here |
 |---|---|---|
@@ -460,7 +460,7 @@ The workflow this specification serves is built on published standards owned by 
 | [BCP 14](https://www.rfc-editor.org/info/bcp14), IETF | Key words for use in RFCs to Indicate Requirement Levels: [RFC 2119](https://www.rfc-editor.org/rfc/rfc2119) as amended by [RFC 8174](https://www.rfc-editor.org/rfc/rfc8174) | The meaning of the requirement keywords in this document |
 | [REP 158](https://github.com/openrobotics/reps/blob/main/_posts/rep-0158%3A2006.md), ROS and Gazebo (Draft) | OpenUSD Conventions for Simulation Asset Interoperability in Open Source Robotics | A strict OpenUSD profile for simulation assets. Its section 3 defines the export pathway to other formats, glTF 2.0 among them, and its geometry, material and texture rules are written for that pathway. Cited below wherever a rule here matches one of its requirements |
 
-Three obligations follow from that design goal, and this document is bound by all of them. Where this specification departs from a standard, the departure is stated explicitly and the reason given, never left as a silent local habit. Where it adds a requirement the standard does not make, the rule says which consumer needs it, so that a reader can tell a limitation of our tools from a property of the format. And where a standard is silent, this specification says so plainly rather than implying an authority that does not exist.
+Three obligations follow from that design goal, and this document is bound by all of them. Where this profile departs from a standard, the departure is stated explicitly and the reason given, never left as a silent local habit. Where it adds a requirement the standard does not make, the rule says which consumer needs it, so that a reader can tell a limitation of our tools from a property of the format. And where a standard is silent, this profile says so plainly rather than implying an authority that does not exist.
 
 **Implementation Note.** Gazebo's glTF support carries no roadmap commitment, and this document does not treat it as one. The published Gazebo roadmap has no glTF, GLB, PBR or mesh-format item. The direction is on record only in project management committee minutes: [2026-08-17](https://discourse.openrobotics.org/t/gazebo-pmc-meeting-minutes-2026-08-17/57494) discusses deprecating COLLADA in favor of glTF and GLB and leaves it unresolved, and [2026-06-15](https://discourse.openrobotics.org/t/gazebo-pmc-meeting-minutes-2026-06-15/55498) decided to move mesh loading to Assimp by default. Behavior is what `MeshManager.cc` does today, which routes `gltf`, `glb` and `fbx` to the Assimp loader while `dae`, `obj` and `stl` keep their custom ones. Rules below cite that behavior as intent or as fact accordingly, never a roadmap.
 
