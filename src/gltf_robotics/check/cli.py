@@ -35,7 +35,7 @@ SCOPE = (
 # which question was asked.
 TITLES = {
     "4.1": "named <part>.visual.glb, with <part> in lowercase snake_case",
-    "4.1.1": "carries a KHR_xmp_json_ld manifest, and its contents agree with the file",
+    "4.1.4": "carries a KHR_xmp_json_ld manifest, and its contents agree with the file",
     "4.2": "delivered as binary .glb rather than .gltf",
     "4.3": "asset header declares glTF 2.0 and no minVersion",
     "5.1": "expressed in metres at real-world scale",

@@ -50,7 +50,7 @@ def pack_glb(gltf, buffer):
 
 
 def manifest(role="component", **over):
-    """A profile 4.1.1 manifest packet that satisfies 4.1.1 and 5.6.
+    """A profile 4.1.4 manifest packet that satisfies 4.1.4 and 5.6.
 
     A component declaring a single mounting plane plus a line and a point, which
     together constrain all six degrees of freedom -- the shape section 5.6.2

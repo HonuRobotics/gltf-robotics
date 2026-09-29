@@ -105,7 +105,7 @@ The operation is not `Object ▸ Apply ▸ All Transforms`, which is the one a r
 | Limit to ▸ Active Scene | `use_active_scene` | False | open — profile 5.5 requires exactly one scene, and six deliveries carried leftover empty ones |
 | Collection by name | `collection` | `''` | default |
 | At Collection Center | `at_collection_center` | False | required False — it would move the origin, which profile 5.4 and 5.6 govern |
-| Data ▸ Custom Properties | `export_extras` | False | open — the archive-the-source question in profile 4.1.1 |
+| Data ▸ Custom Properties | `export_extras` | False | open — the archive-the-source question in profile 4.1.4 |
 | Data ▸ Cameras | `export_cameras` | False | required False — profile 10 prohibits `cameras` |
 | Data ▸ Punctual Lights | `export_lights` | False | required False — profile 10 prohibits `KHR_lights_punctual` |
 
@@ -228,7 +228,7 @@ That sits awkwardly against the opening line of our [export guide](../how-to/exp
 - `export_apply` — do we want modifiers baked, and does the answer differ for a delivery versus a working file?
 - `export_image_format` — the wording that makes clear `AUTO` is necessary and not sufficient.
 - `export_all_vertex_colors` and the rest of the vertex-colour group — what actually triggers the fake `COLOR_0`, and does any rule care?
-- `export_extras` — a candidate for the manifest question in profile 4.1.1.
+- `export_extras` — a candidate for the manifest question in profile 4.1.4.
 - `use_active_scene` — whether it, rather than `use_selection` alone, is how "exactly one scene" in profile 5.5 gets enforced at export time.
 - `export_shared_accessors` — whether it changes what `glb_probe` reports.
 - `export_current_frame` — whether a static part is safe on the default.

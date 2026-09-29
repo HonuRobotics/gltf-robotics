@@ -26,6 +26,7 @@ It parses the glTF rather than rendering it, so it needs no Gazebo, no GPU and n
 :maxdepth: 3
 
 The Profile <profile/index>
+The Workflow <workflow/workflow>
 How-to guides <how-to/index>
 Walkthroughs <walkthroughs/index>
 Reference <reference/index>

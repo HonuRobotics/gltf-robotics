@@ -100,7 +100,7 @@ The **mesh datablock** name is unconstrained, and nothing reads it. Renaming it 
 
 The gazebo coordiante system (frame) for the monkey_baseline model is that same a the local and global frame in Blender.   
 
-#### The +Y Up Export
+### The +Y Up Export
 
 If we **DO** select the +Y Up option for export, what happens
 
@@ -110,7 +110,7 @@ If we **DO** select the +Y Up option for export, what happens
 Write a custom SDF world to import the glb.   My throw away is at `monkeys.sdf`, but the paths are absolute.
 
 
-#### Transforms, frames, coordinate systems and spaces
+### Transforms, frames, coordinate systems and spaces
 
 If we translate and rotate in blender, then re-export (with +Y Up **NOT** selected) then we see...
 
@@ -166,7 +166,7 @@ examples/monkey_xform.glb  (69764 bytes, .glb)
   ```
 
 
-#### 3. See what AssimpLoader receives
+### 3. See what AssimpLoader receives
 
 This needs to be done in our container. 
 Build the diagnostic tool and run it on the test file. 
@@ -182,7 +182,7 @@ export GLB="examples/monkey_baseline.glb"
 This loads the file through `gz-common`'s `AssimpLoader`, the same code path `gz sim` uses, and prints what it built. What is built can differ from what is in the file, so this allows introspection at this step.  
 Note the submesh name: Gazebo names each submesh after the glTF node, so this is where a Blender object name ends up.
 
-#### 4. Write a world and a URDF
+### 4. Write a world and a URDF
 
 Both are small enough to write inline. `$HOME` expands here because the heredoc delimiter is unquoted.
 
@@ -227,14 +227,14 @@ The visual origin's roll of -90 degrees is the workflow's default for every glTF
 
 The `world` link and the fixed joint are there for TF, not for the mesh. `robot_state_publisher` publishes one transform per joint, so a one-link robot publishes nothing at all, TF knows no frames, and RViz reports `Frame [base_link] does not exist` against the fixed frame. The mesh still draws, because tf2 resolves a frame to itself as identity, but a TF display has nothing to show. One fixed joint gives TF a `world` to `base_link` transform and both problems go away.
 
-#### 5. Gazebo
+### 5. Gazebo
 
 ```bash
 gz sim -v2 ~/maritime_ws/tools/gltf-robotics/examples/monkey.sdf
 ```
 
 
-#### 6. RViz
+### 6. RViz
 
 Two commands, two shells. 
 
@@ -250,7 +250,7 @@ rviz2 -d ~/maritime_ws/tools/gltf-robotics/examples/monkey.rviz
 RVIZ 
 ![rviz ](./images/monkey_bline_3ways.png)
 
-#### What RViz does to a glTF file, and how to undo it
+### What RViz does to a glTF file, and how to undo it
 
 RViz rotates every `.gltf`, `.glb` and `.vrm` mesh by +90 degrees about X as it loads, taking glTF's Y-up to ROS's Z-up: `(x, y, z)` in the file becomes `(x, -z, y)` on the link. It is hard-coded in the mesh loader, [assimp_loader.cpp lines 215 to 222](https://github.com/ros2/rviz/blob/baab61a68bc089217dfaa4f270276dc7a30268b1/rviz_rendering/src/rviz_rendering/mesh_loader_helpers/assimp_loader.cpp#L215-L222) on the `lyrical` branch, which is rviz_rendering 15.2.5, the version in the drydock container:
 

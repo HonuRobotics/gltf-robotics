@@ -71,7 +71,7 @@ A delivered `.glb` is an export, and an export is lossy in one direction that ma
 
 It does not belong in the simulation repository — it is large, it is binary, it changes wholesale on every save, and nothing in the build reads it. Keep it wherever the project keeps things that must survive without being versioned alongside code, and cite it in the manifest's `xmpMM:DerivedFrom` so a delivered file says where its source went.
 
-This is a practice rather than a rule. Profile section 4.1.1 does not require the archive, because whether a file was kept is not a property of the file that arrived. What it does say is that if you keep one, the manifest should point at it, which costs nothing.
+This is a practice rather than a rule. Profile section 4.1.4 does not require the archive, because whether a file was kept is not a property of the file that arrived. What it does say is that if you keep one, the manifest should point at it, which costs nothing.
 
 ## Versions
 

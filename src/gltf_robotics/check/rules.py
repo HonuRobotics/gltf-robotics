@@ -100,7 +100,7 @@ class Model:
     def manifest(self):
         """The XMP packet the asset object points at, or None.
 
-        Profile 4.1.1 puts the manifest in KHR_xmp_json_ld and attaches it to
+        Profile 4.1.4 puts the manifest in KHR_xmp_json_ld and attaches it to
         the glTF `asset` object. The extension keeps packets in a top-level
         array and references them by index, so this follows that indirection.
         """
@@ -176,8 +176,13 @@ def rule_4_3_asset_header(m):
         out.append(Finding("4.3", FAIL, "asset.version is not \"2.0\"",
                            repr(asset.get("version"))))
     if "minVersion" in asset:
-        out.append(Finding("4.3", FAIL, "asset.minVersion is present",
-                           repr(asset["minVersion"])))
+        # 4.3 relaxed this from MUST NOT to SHOULD NOT. It remains a real hazard --
+        # a stray minVersion is a hard load failure in a consumer that would
+        # otherwise have coped -- but there is no glTF 2.1 for it to be right about.
+        out.append(Finding("4.3", WARN, "asset.minVersion is present",
+                           repr(asset["minVersion"]) + ". A consumer that does not meet it "
+                           "refuses the file outright, and there is no glTF 2.1 for it to "
+                           "legitimately require."))
     return out or [Finding("4.3", PASS, "asset header is 2.0 with no minVersion")]
 
 
@@ -553,7 +558,7 @@ def rule_5_2_axes(m):
 
     Nothing in a glTF file records which way its author meant up or forward, so
     the geometry cannot settle this. What can be checked is the manifest's
-    declaration under 4.1.1, and a declaration that disagrees with 5.2 is a
+    declaration under 4.1.4, and a declaration that disagrees with 5.2 is a
     straightforward failure: the rule is decided, not interim.
 
     An absent declaration is a WARN rather than a FAIL because it is the second
@@ -563,10 +568,10 @@ def rule_5_2_axes(m):
     packet = m.manifest() or {}
     declared = {key: packet.get(key) for key, _ in REQUIRED_AXES}
     if all(v is None for v in declared.values()):
-        # Section 4.1.1 requires the declaration and reports its absence. Saying
+        # Section 4.1.4 requires the declaration and reports its absence. Saying
         # so twice would make one omission look like two defects.
         return Finding("5.2", SKIP, "the axes are not declared, so there is nothing to compare",
-                       "section 4.1.1 reports the missing declaration; nothing in the geometry "
+                       "section 4.1.4 reports the missing declaration; nothing in the geometry "
                        "records an axis, so this rule can only check what a manifest states")
     wrong = [f"{key} is {declared[key]!r}, expected {want!r}"
              for key, want in REQUIRED_AXES if declared[key] != want]
@@ -583,7 +588,7 @@ def rule_5_1_scale(m):
     return Finding("5.1", ADVISORY, "scale is not checkable from the file",
                    "glTF says meters and nothing in the file confirms it. Two assets in the "
                    "corpus are millimetre files corrected downstream. What would catch a wrong "
-                   "scale is a cited dimensional figure per part, which section 4.1.1 now records in "
+                   "scale is a cited dimensional figure per part, which section 4.1.4 now records in "
                    "the manifest as gltfrp:nominalDimension with a tolerance.")
 
 
@@ -602,7 +607,7 @@ def _listvals(packet, key):
 
 
 def rule_4_1_1_manifest(m):
-    """Section 4.1.1: a delivery MUST carry a manifest declaring three properties.
+    """Section 4.1.4: a delivery MUST carry a manifest declaring three properties.
 
     The three are `gltfrp:partRole`, `gltfrp:forward` and `gltfrp:up`, and each
     records something no measurement can recover: whether 5.6's datum rule
@@ -614,10 +619,10 @@ def rule_4_1_1_manifest(m):
     if packet is None:
         used = set(m.gltf.get("extensionsUsed", []))
         if "KHR_xmp_json_ld" in used:
-            return [Finding("4.1.1", FAIL, "KHR_xmp_json_ld is present but no packet reaches the asset",
+            return [Finding("4.1.4", FAIL, "KHR_xmp_json_ld is present but no packet reaches the asset",
                             "the manifest must be attached to the glTF asset object to describe the "
                             "whole delivery")]
-        return [Finding("4.1.1", FAIL, "no manifest",
+        return [Finding("4.1.4", FAIL, "no manifest",
                         "a delivery must carry one in KHR_xmp_json_ld attached to the asset object, "
                         "declaring at least gltfrp:partRole, gltfrp:forward and gltfrp:up. "
                         "Provenance cannot be reconstructed afterwards.")]
@@ -626,30 +631,30 @@ def rule_4_1_1_manifest(m):
     for key, what in (("gltfrp:forward", "which axis the part faces"),
                       ("gltfrp:up", "which axis is up")):
         if packet.get(key) is None:
-            out.append(Finding("4.1.1", FAIL, f"the manifest does not declare {key}",
+            out.append(Finding("4.1.4", FAIL, f"the manifest does not declare {key}",
                                f"one of the three required properties: {what}. Nothing in a glTF "
                                f"file records it, so an undeclared axis cannot be checked at all"))
 
     role = packet.get("gltfrp:partRole")
     if role is None:
-        out.append(Finding("4.1.1", FAIL, "the manifest does not declare gltfrp:partRole",
+        out.append(Finding("4.1.4", FAIL, "the manifest does not declare gltfrp:partRole",
                            "one of the three required properties; base or component"))
     elif role not in ("base", "component"):
-        out.append(Finding("4.1.1", FAIL, f"gltfrp:partRole is {role!r}",
+        out.append(Finding("4.1.4", FAIL, f"gltfrp:partRole is {role!r}",
                            "must be base or component"))
 
     tool = packet.get("xmp:CreatorTool")
     generator = m.gltf.get("asset", {}).get("generator")
     if tool and generator and tool != generator:
-        out.append(Finding("4.1.1", FAIL, "xmp:CreatorTool disagrees with asset.generator",
+        out.append(Finding("4.1.4", FAIL, "xmp:CreatorTool disagrees with asset.generator",
                            f"manifest says {tool!r}, the file says {generator!r}. This is what a "
                            "manifest copied from another part and never edited looks like."))
 
     missing = [k for k in ("dc:source", "dc:creator", "dc:date") if k not in packet]
     if missing:
-        out.append(Finding("4.1.1", WARN, "the manifest omits recommended provenance",
+        out.append(Finding("4.1.4", WARN, "the manifest omits recommended provenance",
                            ", ".join(missing)))
-    return out or [Finding("4.1.1", PASS, f"manifest present, role {role}")]
+    return out or [Finding("4.1.4", PASS, f"manifest present, role {role}")]
 
 
 def rule_5_6_datum(m):

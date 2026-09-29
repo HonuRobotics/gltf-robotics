@@ -42,9 +42,11 @@ def test_filename_without_visual_suffix_warns(write_model):
     assert failures(path) == set()
 
 
-def test_min_version_is_prohibited(write_model):
+def test_min_version_warns(write_model):
+    """4.3 relaxed this to SHOULD NOT, so it reviews rather than fails."""
     path = write_model(lambda g: g["asset"].update(minVersion="2.0"))
-    assert failures(path) == {"4.3"}
+    assert failures(path) == set()
+    assert "4.3" in warnings(path)
 
 
 def test_generator_must_be_recorded(write_model):
@@ -65,13 +67,13 @@ def test_declared_axes_must_match_the_profile(write_model):
 
 
 def test_undeclared_axes_are_reported_once_by_4_1_1_not_twice(write_model):
-    """One omission, one defect. 4.1.1 owns presence; 5.2 owns the values."""
+    """One omission, one defect. 4.1.4 owns presence; 5.2 owns the values."""
     from conftest import manifest
     packet = manifest()
     packet.pop("gltfrp:forward")
     packet.pop("gltfrp:up")
     path = write_model(lambda g: g["extensions"]["KHR_xmp_json_ld"].update(packets=[packet]))
-    assert "4.1.1" in failures(path)
+    assert "4.1.4" in failures(path)
     assert "5.2" not in failures(path)
     assert "5.2" not in warnings(path)
 
@@ -326,7 +328,7 @@ def test_undecided_rules_never_fail(write_model):
     assert not any(f.failed for f in findings if f.section in advisory)
 
 
-# ------------------------------------------- 4.1.1 manifest, 5.6 datum
+# ------------------------------------------- 4.1.4 manifest, 5.6 datum
 
 def _packet(g):
     return g["extensions"]["KHR_xmp_json_ld"]["packets"][0]
@@ -344,7 +346,7 @@ def test_a_missing_manifest_fails(write_model):
         g.pop("extensions")
         g.pop("extensionsUsed")
     path = write_model(mutate)
-    assert "4.1.1" in failures(path)
+    assert "4.1.4" in failures(path)
     # 5.2 has nothing to compare against and must not double-report the omission.
     assert "5.2" not in failures(path)
 
@@ -356,19 +358,19 @@ def test_each_required_manifest_property_fails_when_absent(write_model, key):
     packet = manifest()
     packet.pop(key)
     path = write_model(lambda g: g["extensions"]["KHR_xmp_json_ld"].update(packets=[packet]))
-    assert "4.1.1" in failures(path)
+    assert "4.1.4" in failures(path)
     assert any(key in f.summary for f in check_file(path) if f.level == FAIL)
 
 
 def test_manifest_without_a_role_fails(write_model):
     path = write_model(lambda g: _packet(g).pop("gltfrp:partRole"))
-    assert "4.1.1" in failures(path)
+    assert "4.1.4" in failures(path)
 
 
 def test_creator_tool_must_match_asset_generator(write_model):
     """The copied-from-a-sibling-part failure, made mechanical."""
     path = write_model(lambda g: _packet(g).update({"xmp:CreatorTool": "Some Other Exporter"}))
-    assert "4.1.1" in failures(path)
+    assert "4.1.4" in failures(path)
 
 
 def test_base_part_without_a_datum_fails(write_model):
