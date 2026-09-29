@@ -193,7 +193,7 @@ def _extra_primitive(g, material=0):
 def test_two_primitives_sharing_a_material_fail(write_model):
     """A primitive exists to carry a distinct material; sharing one splits for no reason."""
     path = write_model(_extra_primitive)
-    assert failures(path) == {"Primitives and submeshes"}
+    assert failures(path) == {"Primitives"}
     detail = " ".join(f.detail for f in check_file(path) if f.level == FAIL)
     assert "Housing" in detail
 
@@ -388,7 +388,7 @@ from gltf_robotics.check import cli  # noqa: E402
 def test_verdict_agrees_with_exit_code(write_model, capsys):
     """The text verdict, the JSON flag and the exit code must give one answer.
 
-    The profile's Conformance section defines compliant as every MUST satisfied, so a file carrying
+    The profile's Conformance testing section defines compliant as every MUST satisfied, so a file carrying
     only SHOULD violations is compliant unless --strict says to count them.
     """
     clean = write_model()

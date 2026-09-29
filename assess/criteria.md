@@ -46,7 +46,7 @@ The one decision that is settled in our spec and contested everywhere else.
 | B2 | Referenced files that do not resolve | The failure mode `.glb` exists to prevent. Fuel's only articulated glTF robot ships a 404 texture. | tool |
 | B3 | Images embedded or external | The profile's [File format](../docs/profile.md#file-format) section requires embedded images and marks external ones Open: Future. Worth knowing whether anybody mixes the two. | tool |
 | B4 | File size, and the geometry-to-texture split | Textures are 59 percent of our own bytes. Whether that ratio holds elsewhere decides whether external images would actually buy anything. | tool |
-| B5 | Number of files per model, and per link | The per-link-mesh versus one-file-plus-`<submesh>` question in the profile's [Scenes and nodes](../docs/profile.md#scenes-and-nodes) and [Primitives and submeshes](../docs/profile.md#primitives-and-submeshes) sections. Fuel is 92 percent one file per link. | planned |
+| B5 | Number of files per model, and per link | The per-link-mesh versus one-file-plus-`<submesh>` question in the profile's [Scenes and nodes](../docs/profile.md#scenes-and-nodes) and [Primitives](../docs/profile.md#primitives) sections. Fuel is 92 percent one file per link. | planned |
 | B6 | Whether an SDF or URDF ships beside the asset, and what it declares | Whether `<material>`, `<pbr>` or `<submesh>` appear at all. Directly against the workspace `<pbr>`-in-SDF rule. | planned |
 
 ## C. Scene and node structure
@@ -60,8 +60,8 @@ What the file is, as a tree. This is the group that decides whether anything dow
 | C2a | Total node count, and whether any node has children | The profile's [Scenes and nodes](../docs/profile.md#scenes-and-nodes) section requires exactly one node and no children. C2 alone passes a file that hangs a hierarchy under one root, which the rule no longer permits. | tool |
 | C3 | Root node carries `rotation` or `matrix` | The profile's [Scenes and nodes](../docs/profile.md#scenes-and-nodes) section forbids the key, whatever its value, so this is measured on presence and an identity rotation counts. Two reasons: the two consumers compose a root transform in opposite orders, and `gltf_to_yup.py` refuses such a file. | tool |
 | C4 | Root node carries a `translation` or a `scale` | The profile's [Scenes and nodes](../docs/profile.md#scenes-and-nodes) section forbids these too, so all four transform keys are now one rule. Scale in the transform rather than the mesh data is silently wrong in anything reading accessor bounds — Fuel's Caddy bakes 0.0255 into every node — and `gltf_to_yup.py` ignores scale entirely, so it survives conversion unrotated. | tool |
-| C5 | Node count, depth, and duplicate names | Depth and duplication are what made `<submesh>` selection ambiguous, which the profile's [Primitives and submeshes](../docs/profile.md#primitives-and-submeshes) section now rules out; the measurement stays, as the evidence for that rule and as the way C2a is reported. | tool |
-| C6 | Primitives sharing a node name | Gazebo names a submesh after its node, so these are indistinguishable to SDF: the selection takes the first and silently drops the rest. The profile's [Primitives and submeshes](../docs/profile.md#primitives-and-submeshes) section. | tool |
+| C5 | Node count, depth, and duplicate names | Depth and duplication are what made `<submesh>` selection ambiguous, which the profile's [Primitives](../docs/profile.md#primitives) section now rules out; the measurement stays, as the evidence for that rule and as the way C2a is reported. | tool |
+| C6 | Primitives sharing a node name | Gazebo names a submesh after its node, so these are indistinguishable to SDF: the selection takes the first and silently drops the rest. The profile's [Primitives](../docs/profile.md#primitives) section. | tool |
 | C7 | Node names that an exporter invented (`Cylinder002`) | Whether anything in the file is addressable at all. Fuel's Ionic Mascot has 148 such nodes. | tool |
 | C8 | Mesh instancing: one mesh used by several nodes | Changes what the loader builds, and what a triangle count means. | tool |
 | C9 | Meshes reachable from no scene | Dead weight that still costs bytes. | tool |
@@ -134,7 +134,7 @@ The corpus table of measured readings is the cheap way to choose what to look at
 | E6 | Triangle and vertex counts | The profile's [Budgets](../docs/profile.md#budgets) section has no defensible budget yet. The corpus ranges over four orders of magnitude, which is itself the finding. | tool |
 | E7 | Index component type | A `uint32` index buffer on a small mesh is waste; `uint16` on a large one is a correctness question. | tool |
 | E8 | Degenerate, zero-area triangles | The profile's [Geometry](../docs/profile.md#geometry) section says they should not be there. | planned |
-| E9 | Primitive count against material count | The profile's [Primitives and submeshes](../docs/profile.md#primitives-and-submeshes) section proposes that a primitive exists only to carry a distinct material. Whether the corpus splits primitives for other reasons tells us if the rule is free. | tool |
+| E9 | Primitive count against material count | The profile's [Primitives](../docs/profile.md#primitives) section proposes that a primitive exists only to carry a distinct material. Whether the corpus splits primitives for other reasons tells us if the rule is free. | tool |
 
 ## F. Materials
 
@@ -187,7 +187,7 @@ The group with the highest defect rate in every corpus looked at so far, includi
 
 ## J. What the consumer will actually do with it
 
-The end of the assessment, and the part that cannot be read out of the file. The profile's [Conformance](../docs/profile.md#conformance) section is explicit that valid, intended, compliant and usable are four different questions that fail independently.
+The end of the assessment, and the part that cannot be read out of the file. The profile's [Conformance testing](../docs/profile.md#conformance-testing) section is explicit that valid, intended, compliant and usable are four different questions that fail independently.
 
 | id | What we measure | Why we want to know | From |
 |---|---|---|---|

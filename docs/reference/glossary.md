@@ -84,7 +84,7 @@ The coordinate system in which a part's geometry is expressed. Its axes are fixe
 
 ### submesh
 
-A Gazebo word, not a glTF one. Gazebo's loader emits one submesh for every primitive it meets and names each after the node that instantiated that primitive's mesh. See the profile's [Primitives and submeshes](../profile.md#primitives-and-submeshes) section.
+Gazebo's word and SDF's, not a glTF term and not an assimp one. Gazebo's loader turns every glTF primitive into one submesh, and SDF's `<mesh><submesh>` element selects one by name. The project's documents say *primitive* and use this word only when they mean Gazebo's object or the SDF element. See the profile's [Primitives](../profile.md#primitives) section.
 
 ### visual model
 

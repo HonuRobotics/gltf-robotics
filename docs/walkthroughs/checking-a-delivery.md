@@ -1,6 +1,6 @@
 # Checking a delivery
 
-Four questions decide whether a delivery is good, they fail independently, and no single tool answers more than one of them. The profile's [Conformance](../profile.md#conformance) section states them; this page says what to actually run.
+Four questions decide whether a delivery is good, they fail independently, and no single tool answers more than one of them. The profile's [Conformance testing](../profile.md#conformance-testing) section states them; this page says what to actually run.
 
 | | Question | How |
 |---|---|---|
@@ -40,7 +40,7 @@ Every run opens with a legend, then one block per profile section: the section n
 
 `SKIP` is a rule with nothing to examine — the texture rules on a file with no images, the datum rule on a file that declares no part role.
 
-The last two lines are the tally and the verdict. The verdict says *compliant* rather than *conforms* on purpose: compliant is the profile's [Conformance](../profile.md#conformance) section's third question, every MUST satisfied, and it is the only one of the four this tool answers. A file with only `WARN` findings is therefore compliant, with things to review before delivering; `--strict` counts them as failures instead. The exit code and the `--json` output follow the same rule as the text, so a script and a reader never disagree about a file.
+The last two lines are the tally and the verdict. The verdict says *compliant* rather than *conforms* on purpose: compliant is the profile's [Conformance testing](../profile.md#conformance-testing) section's third question, every MUST satisfied, and it is the only one of the four this tool answers. A file with only `WARN` findings is therefore compliant, with things to review before delivering; `--strict` counts them as failures instead. The exit code and the `--json` output follow the same rule as the text, so a script and a reader never disagree about a file.
 
 ## What a clean run does not mean
 

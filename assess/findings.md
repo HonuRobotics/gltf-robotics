@@ -33,7 +33,7 @@ The three that qualify:
 | `proque/atmos` | GLB | 9 | 0 | 195,403 | Thrusters, IMU, barometer, navsat; factor-only materials |
 | `proque/atmos_dual` | GLB | 13 | 4 | 1,463,312 | Mixes one GLB with four DAE meshes; absolute versioned URL as the mesh URI |
 
-`Open-RMF/Caddy` is worth reading in full, because it is the one model in Fuel that answers the question behind the profile's [Primitives and submeshes](../docs/profile.md#primitives-and-submeshes) section -- does anything downstream ever need to select a sub-entity out of the file. It carries the whole vehicle in `polaris.gltf` and each link picks its own part out by node name:
+`Open-RMF/Caddy` is worth reading in full, because it is the one model in Fuel that answers the question behind the profile's [Primitives](../docs/profile.md#primitives) section -- does anything downstream ever need to select a sub-entity out of the file. It carries the whole vehicle in `polaris.gltf` and each link picks its own part out by node name:
 
 ```xml
 <mesh>
@@ -131,7 +131,7 @@ Counted over the 42 assets in scope, which is the denominator [ASSESSMENT.md](AS
 
 15 of 42 carry a rotation or matrix on the root node, which is the Blender Y-up conversion node nobody removes, and 22 of 42 carry a root scale. Exactly half, 21 of 42, have the shape our spec requires: one root node, named, unrotated.
 
-Two structural findings cut the other way, in favour of rules we have. The primitive count equals the material count in 35 of 42, which is the rule the profile's [Primitives and submeshes](../docs/profile.md#primitives-and-submeshes) section now states, free of charge. And nothing in the corpus uses more than one scene, has an animation, a skin, a camera or vertex colors, or a non-triangle primitive, and only two assets carry tangents. Leaving aside the two probes, which were chosen to violate it, the prohibitions in the profile's [Prohibited content](../docs/profile.md#prohibited-content) section cost the corpus nothing at all.
+Two structural findings cut the other way, in favour of rules we have. The primitive count equals the material count in 35 of 42, which is the rule the profile's [Primitives](../docs/profile.md#primitives) section now states, free of charge. And nothing in the corpus uses more than one scene, has an animation, a skin, a camera or vertex colors, or a non-triangle primitive, and only two assets carry tangents. Leaving aside the two probes, which were chosen to violate it, the prohibitions in the profile's [Prohibited content](../docs/profile.md#prohibited-content) section cost the corpus nothing at all.
 
 12 of 42 have primitives sharing a node name, so an SDF `<submesh>` selection on those names would take the first and silently drop the rest. That is the upstream naming defect, live in 29% of the corpus.
 
@@ -157,7 +157,7 @@ In rough order of how much the evidence moves:
 2. The profile's [Prohibited content](../docs/profile.md#prohibited-content) section, the `extensionsRequired` prohibition. Run `Distribution_Warehouse` through `glb_probe` before the rule is finalized; the prediction in the review and the prediction in the glTF spec disagree, and one file settles it.
 3. The profile's [Transparency](../docs/profile.md#transparency) section, transparency. The corpus has no `MASK` and no `BLEND` at all, and 79 percent `doubleSided` that Gazebo ignores. The open question in the profile's [Transparency](../docs/profile.md#transparency) section can be settled on our own terms; there is no practice to defer to.
 4. The profile's [Textures](../docs/profile.md#textures) section, texture format. Unchanged in substance, sharper in framing: state that conforming deliveries will be the exception, and that the remedy is a re-export rather than a conversion.
-5. The profile's [Primitives and submeshes](../docs/profile.md#primitives-and-submeshes) section, one primitive per material. Now measured at 41 of 49 in the wild, so the proposed rule is free.
+5. The profile's [Primitives](../docs/profile.md#primitives) section, one primitive per material. Now measured at 41 of 49 in the wild, so the proposed rule is free.
 6. The profile's [Units](../docs/profile.md#units) section, scale. Two files in the corpus are in millimeters by design and one appears to be wrong by a factor of a hundred. A measured extent check belongs in the acceptance tooling.
 7. The profile's [Scenes and nodes](../docs/profile.md#scenes-and-nodes) section, the single unrotated root node. Fewer than half the corpus complies, and the failures are export defaults rather than decisions. The rule stands; the note should say that a delivery arriving without it is normal and is fixed at export, not in review.
 

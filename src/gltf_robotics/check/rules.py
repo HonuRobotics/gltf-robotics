@@ -8,7 +8,7 @@ A rule that is normative today but recorded as Open because a more capable
 version is plausible later still fails, because it is normative today.
 
 What is deliberately not here: the four conformance questions in profile
-the profile's Conformance section fail independently, and only "compliant" is decidable by reading the
+the profile's Conformance testing section fail independently, and only "compliant" is decidable by reading the
 file. Validity belongs to the Khronos validator, intent to a human at a
 reference viewer, and usability to Gazebo and RViz -- for which `probe/` exists.
 A clean run here is one of four answers, not the answer.
@@ -364,14 +364,14 @@ def rule_6_3_primitives(m):
                 f"mesh {mi} primitives {idx} all use material "
                 f"{names[mat].get('name', mat) if mat < len(names) else mat!r}"
                 for mat, idx in sorted(shared.items()))
-            out.append(Finding("Primitives and submeshes", FAIL,
+            out.append(Finding("Primitives", FAIL,
                                f"{plural(sum(len(i) for i in shared.values()), 'primitive')} "
                                f"share a material with a sibling",
                                f"{detail}. A primitive should exist only to carry a distinct "
                                f"material, and primitives under one node are indistinguishable "
                                f"to an SDF <submesh> selection"))
     total = sum(len(mesh.get("primitives", [])) for mesh in m.get("meshes"))
-    return out or [Finding("Primitives and submeshes", PASS,
+    return out or [Finding("Primitives", PASS,
                            f"{plural(total, 'primitive')}, each carrying a distinct material")]
 
 

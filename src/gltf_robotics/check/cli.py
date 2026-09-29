@@ -25,7 +25,7 @@ LEGEND = [
 ]
 
 SCOPE = (
-    "This answers only the 'compliant' question of the profile's Conformance section: does the file satisfy "
+    "This answers only the 'compliant' question of the profile's Conformance testing section: does the file satisfy "
     "the rules that can be decided by reading it. Valid (Khronos validator), intended "
     "(reference viewer) and usable (glb_probe, Gazebo, RViz) are separate checks."
 )
@@ -44,7 +44,7 @@ TITLES = {
     "Datum specification": "names the datum point its origin is referenced to",
     "Geometry": "every primitive is triangles carrying POSITION, NORMAL and TEXCOORD_0",
     "UV sets": "UV coordinates present, and inside the range 0 to 1",
-    "Primitives and submeshes": "a primitive exists only to carry a material distinct from its siblings",
+    "Primitives": "a primitive exists only to carry a material distinct from its siblings",
     "Materials": "every primitive has a material, with metalness stated rather than defaulted",
     "Textures": "textures are PNG in the linear slots and at most 2048 px on a side",
     "Transparency": "transparency declared per material: MASK for cutouts, never BLEND on an opaque part",
@@ -105,7 +105,7 @@ def sections(findings, level):
 def verdict(findings, strict=False):
     """The closing two lines: the tally, then whether the file is compliant.
 
-    Compliant is the profile's Conformance section's word: every MUST satisfied. A SHOULD
+    Compliant is the profile's Conformance testing section's word: every MUST satisfied. A SHOULD
     violation therefore does not break it unless --strict says to count it, and
     that is the same rule the exit code and the JSON use.
     """

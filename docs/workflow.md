@@ -82,7 +82,7 @@ The modeler's own checks in step 3 pass. The delivery is one `<part>.visual.glb`
 
 ## Step 3: Verify
 
-The profile's [Conformance](profile.md#conformance) section asks four questions of a delivery: valid, intended, compliant, usable. They fail independently and no single tool answers more than one. The first two are the modeler's to answer before delivering, the last two the integrator's after. The split is stated here so that neither party assumes the other checked the thing.
+The profile's [Conformance testing](profile.md#conformance-testing) section asks four questions of a delivery: valid, intended, compliant, usable. They fail independently and no single tool answers more than one. The first two are the modeler's to answer before delivering, the last two the integrator's after. The split is stated here so that neither party assumes the other checked the thing.
 
 ### What the modeler checks
 
