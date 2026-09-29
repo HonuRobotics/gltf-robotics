@@ -160,9 +160,13 @@ The remaining properties SHOULD be carried:
 
 **Note.** This needs to be evaluated as we prototype the workflow.  This could be overkill.  
 
-**Implementation Note.** The prefix `gltfrp` denotes this profile's own namespace, `https://honurobotics.github.io/gltf-robotics/ns/profile/1.0/`. The URL is an identifier, not a fetch target -- nothing resolves it at load time and a consumer that cannot reach the network reads the manifest normally. It is a URL because that is how XML and JSON-LD namespaces guarantee uniqueness without a registry: whoever controls the domain controls the name. It is versioned so that a later incompatible property set can coexist with this one, and named for the profile rather than for the organization publishing it, so that generalizing later does not orphan files already written. % CLAUDE: Explain this to me
+**Implementation Note.** What the `gltfrp` prefix is, and why it looks odd.
 
+A manifest mixes properties from several vocabularies: `dc:creator` comes from Dublin Core, `xmp:CreatorTool` from Adobe's XMP schema, and `gltfrp:partRole` from this profile. A namespace is what keeps them from colliding -- Dublin Core's `dc:source` and some future robotics `source` can coexist because the prefix says which vocabulary each belongs to. The prefix itself is a local shorthand; what actually identifies the vocabulary is the URL it expands to, declared once in the packet's `@context`.
 
+The URL is an identifier, not an address. Nothing fetches it, at load time or ever, and a consumer with no network reads the manifest normally. It is a URL only because that is how XML and JSON-LD guarantee a name is unique without anyone maintaining a registry: whoever controls the domain controls every name under it, so no two vocabularies can accidentally claim the same one. That it also happens to resolve to this profile's documentation is a convenience for a human reading a file, not part of the mechanism.
+
+Two details in the URL are deliberate. It carries `/1.0/` so that a later, incompatible set of properties can be given `/2.0/` and the two can coexist in one corpus without a file having to say which it meant. And it is named for the profile rather than for Honu Robotics, so that if this profile is ever adopted or maintained elsewhere the namespace does not have to move -- moving it would invalidate the vocabulary every already-delivered file declares.
 
 
 ### 4.3 Asset header
@@ -221,8 +225,7 @@ That is the whole rule. This profile narrows glTF's several coordinate systems a
 
 
 
-**Implementation Note.** glTF gives you the point % CLAUDE: what point?  be specific
- but not its meaning. The origin is load-bearing in the file -- it is the zero every vertex position is expressed relative to, and the link origin a consumer uses -- but no field records what that zero is *referenced to*. Nothing distinguishes an origin placed on a mounting face from one left wherever the authoring tool put it. That is why the datum is carried in the manifest, and why no validator can check it.
+**Implementation Note.** No requried glTF field records what geometry is *referenced to*, which is why the datum is carried in the manifest, and why no validator can check it.
 
 ### 5.5 Scenes and nodes
 
@@ -242,64 +245,52 @@ The node MUST be named `<part>` (with no numeric suffix such as `.001` and no sp
 
 ### 5.6 Datum specification
 
-A datum coordinate system is specified by naming the feature(s) of the part it is referenced to.  This definition is provided prior to 3D authoring and recorded in the manifest.  
+A coordinate system has six degrees of freedom to fix: three of location and three of orientation. This profile fixes them in two different ways, and the split is what keeps the specification short.
 
-#### 5.6.1 What may serve as a datum
+**Orientation is fixed once, for every delivery, by section 5.2.** +X forward, +Y left, +Z up, from ISO 9787:2013 §5.5 and REP 103. It is not a per-part decision and is not named in a manifest as though it were.
 
-A datum feature MUST be one of exactly four kinds: % CLAUDE:  I think we can actually strengthen the case using the information in tools/gltf-robotics/docs/reference/coordinate-systems.md.  In that document we discovered specific ways to constrain the DOFs based on ISO and ASME standards.  Cite the appropriate standards and then narrow that down to fixing the datum by defining both a geometric point feature as the location of the datum coordinate system origin  (the welded tab example) and the orientatino (ISO robotics standard and ROS REP 103)
+**Location is fixed per part, by naming one point.** That is the datum specification: a single geometric point feature of the part, stated before authoring begins and recorded in the manifest.
 
-| Kind | What it is |
-|---|---|
-| point | a single location |
-| straight line | an axis, or the intersection of two planes |
-| plane | a flat face, or a plane constructed through named features |
-| helix | a thread axis with its lead |
+**Implementation Note.** Why one point is enough, and why it is the right kind of feature. Each kind of situation feature constrains a different subset of the six: a plane fixes one translation and two rotations, an axis fixes two translations and two rotations, and a point fixes all three translations and no rotations. 
 
-Nothing else may be named as a datum.
+This is a narrowing of general datum practice. ASME Y14.5 and ISO 5459 build a datum reference frame from an ordered set of features -- primary, secondary, tertiary -- precisely because in mechanical inspection the orientation is not known in advance and has to be established from the part. 
 
-This list is taken from the concept of a *situation feature* in ISO 17450-1 §3.3.1.1.3, which enumerates the same four and characterizes them as geometrical attributes of ideal features, carrying no dimensional parameters of their own. The standard is paywalled and not reproduced here; the rule above is this profile's own and stands without it, so a reader need not obtain ISO 17450-1 to apply it.
+#### 5.6.1 The datum point
 
-% CLAUDE: We have no local copy of ISO 17450-1, so the four kinds above are stated from the working note in coordinate-systems.md rather than read from the standard. Worth confirming against ISO's free preview, which usually includes Clause 3 terms and definitions, before this hardens further. If the enumeration differs, this rule and FEATURE_KINDS in the checker both change.
+The datum point MUST be a geometric feature of the part: a vertex, a hole center, the intersection of named faces or axes, a fiducial or a survey mark.
 
-A derived quantity, such as a center of mass or a bounding box are not situation features and MUST NOT be named as datums.
+It MUST NOT be a derived quantity. A center of mass, a bounding-box center, a silhouette center and a centroid of any kind are all computable properties rather than features: they reference nothing, they move when the geometry changes, and a different tool computes a different one.
 
-**Implementation Note.** The exclusion is not pedantry. "The center of the outline projected on the ground" is three derivations deep and moves when a sensor mast is added; a wheel axis intersected with the ground plane is one derivation deep and does not. Derivation depth predicts whether the coordinate system survives a design change.
+The datum point SHOULD be the least-derived feature available. Where a derived point is unavoidable, the manifest MUST name the artifact and the configuration it was derived from, so that it can be reproduced.
 
-#### 5.6.2 A **base** part
 
-A delivery whose `gltfrp:partRole` is `base` MUST carry a manifest, and that manifest MUST carry a datum specification.
+**Implementation Note.** A point in the specification and a point on the hardware are two different things, and a mature practice has both. ISO 5459 calls the second a *datum target* -- a point, line or area designated so that every supplier seats the part identically. A definition without a realization cannot be measured on the bench; a realization without a definition cannot be reproduced on a redesign. Where a delivery has a physical realization the manifest SHOULD record it in `gltfrp:datumTarget`.
 
-The specification MUST consist of an ordered list of datum features, in order of precedence, each naming the feature and stating which degrees of freedom it constrains. Together they MUST constrain all six: three translational and three rotational, each exactly once.
+#### 5.6.2 What the manifest carries
 
 | Property | Type | What it records |
 |---|---|---|
-| `gltfrp:datumFeature` | ordered list of Text | Each feature, named on this part, in order of precedence |
-| `gltfrp:datumFeatureKind` | ordered list of Choice: `point`, `line`, `plane`, `helix` | The situation-feature kind of each, positionally matching the list above |
-| `gltfrp:datumConstrains` | ordered list of Text | The degrees of freedom each constrains, as `Tx`, `Ty`, `Tz`, `Rx`, `Ry`, `Rz`, positionally matching |
-| `gltfrp:up` | Choice: as above | Which axis of the delivered file the part's up direction lies along |
-| `gltfrp:datumTarget` | Text | OPTIONAL. The physical realization, where one exists: a datum target point, line or area in the sense of ISO 5459 |
+| `gltfrp:datumPoint` | Text | REQUIRED for a `base` part. The point, named as a feature of this part |
+| `gltfrp:datumDerivedFrom` | Text | REQUIRED where the point is derived rather than a feature. The artifact and configuration it was derived from |
+| `gltfrp:datumTarget` | Text | OPTIONAL. The physical realization, in the sense of ISO 5459 |
+| `gltfrp:forward` | Choice: `+X`, `-X`, `+Y`, `-Y`, `+Z`, `-Z` | The forward axis as delivered. Section 5.2 requires `+X`; this is the modeler's attestation of it |
+| `gltfrp:up` | Choice: as above | The up axis as delivered. Section 5.2 requires `+Z` |
 
-For a displacement hull the specification SHOULD be naval architecture's three planes: the baseline, the centreline plane, and a transverse plane through the aft perpendicular, with the reference point at their intersection. [ISO 7462](https://www.iso.org/standard/14211.html) gives the terminology.
+A delivery whose `gltfrp:partRole` is `base` MUST carry `gltfrp:datumPoint`. A `component` delivery SHOULD.
 
-**Implementation Note.** `gltfrp:forward` and `gltfrp:up` are declared rather than derived because nothing in a glTF file records either. A file states vertex positions and node transforms; it has no forward axis and no up axis. Declaring them is what turns section 5.2 from a convention nobody can test into a property a tool can verify, and the declaration MUST agree with section 5.2: `+X` and `+Z`. A delivery declaring anything else fails 5.2; a delivery declaring neither fails this section, since these are two of the three required properties.
+**Implementation Note.** `gltfrp:forward` and `gltfrp:up` restate what section 5.2 already requires. The declaration is an attestation: the modeler states which way the part was built, and `gltf-check` fails a delivery whose attestation contradicts section 5.2. It converts part of the convention that could only be checked manually, by eye, into an algoritmic test that (partially) covers the requirement.
 
-**Implementation Note.** Why the base specifically. A base part's datum is the definition of `base_link`, and localization reports against it, so it is the one coordinate system in the vehicle whose meaning cannot be recovered by measuring anything later. REP 105 says `base_link` is rigidly attached to the mobile robot base and declines to say where; the standards agree it must be stated and none of them state it for you. `base_footprint` is derived at runtime and is not a datum.
-
-**Implementation Note.** The three lists are positionally matched rather than nested because `KHR_xmp_json_ld` forbids the JSON-LD mechanisms that would express a list of records: expanded term definitions, value objects and local contexts are all prohibited. Parallel arrays are the cost of keeping the manifest inside the file. The six-degree-of-freedom completeness rule is what keeps them checkable: `gltf-check` can confirm the lists are the same length, that every kind is legal, and that the constrained degrees of freedom are exactly the six with no repetition, without reading any geometry.
+**Implementation Note.** Why the base part specifically. A base part's datum is the definition of `base_link`, and localization reports against it, so it is the one coordinate system in the vehicle whose meaning cannot be recovered by measuring anything afterwards. REP 105 says `base_link` is rigidly attached to the mobile robot base and declines to say where on it; the standards agree the placement must be stated and none of them state it for you. `base_footprint` is a derived runtime frame and is not a datum.
 
 #### 5.6.3 A component part
 
-A delivery whose `gltfrp:partRole` is `component` SHOULD carry a datum specification on the same terms.
+Where a component attaches by a single mounting interface, the datum point SHOULD be the center of that interface. ISO 9787 §5.3 defines the mechanical interface coordinate system with its origin at the center of the mechanical interface, which is the same choice arrived at from the standard rather than from convenience.
 
-Where the part attaches by a single mounting interface, that interface SHOULD be the primary datum. ISO 9787 §5.3 defines the mechanical interface coordinate system with its origin at the center of the mechanical interface and its `+Z` pointing perpendicularly away from it, which is a ready-made single-feature specification for the common case.
+**Note.** The two questions below stay open. They are deferred until after the initial release and a round of prototyping, at which point there should be cases to reason from.
 
-**Note.** The three questions below stay open. They are deferred until after the initial release and a round of prototyping, at which point there should be cases to reason from.
+> **Open.** Whether a component datum becomes a requirement. It is a SHOULD because the mounting interface is usually obvious from the geometry and a wrong origin on a component is recoverable by editing one transform, where a wrong base datum is not. Settling it needs the pilot to say whether component origins actually cause trouble. Tracked as review decision 2.
 
-> **Open.** Whether a component datum becomes a requirement. It is a SHOULD because the mounting interface is usually obvious from the geometry and a wrong origin on a component is recoverable by editing one transform, where a wrong base datum is not. Settling it needs the pilot to say whether component origins actually cause trouble. It bears directly on 5.4, which is the same question asked as a coordinate rather than as a reference. Review decision 2 is resolved and covered the origin rather than this, so this question carries no decision number; deferred, per the note above.
-
-> **Open.** What a delivery does when the component part's nominal geometry is not published anywhere. A datum specification names features of the part, which presumes an authority on what the part is; for an off-the-shelf component that is the vendor drawing, and for a custom part it may be nothing but the CAD. Not settled. Not yet on the review's decision list.
-
-> **Open.** Whether the completeness rule admits under-constrained specifications. ASME Y14.5 permits a datum reference frame that constrains fewer than six degrees of freedom; a delivery cannot use one, because the leftover degrees of freedom would be resolved differently by every consumer. This profile therefore requires all six, which is stricter than the standard it borrows from, and that departure should be stated in 1.1 if it stands. Not yet on the review's decision list.
+> **Open.** What a delivery does when the component part's nominal geometry is not published anywhere. A datum point names a feature of the part, which presumes an authority on what the part is; for an off-the-shelf component that is the vendor drawing, and for a custom part it may be nothing but the CAD. Not settled. Not yet on the review's decision list.
 
 ## 6. Geometry
 
@@ -488,7 +479,6 @@ Nothing in the document governs these points, so a delivery cannot fail to confo
 |---|---|---|
 | 5.6.3 | Component datum becomes a requirement | none yet, deferred |
 | 5.6.3 | When the part's nominal geometry is unpublished | none yet, deferred |
-| 5.6.3 | Whether under-constrained datums are admitted | none yet, deferred |
 | 6.1 | Whether the 0-to-1 UV requirement survives | 5 |
 | 6.2 | Triangle budget, by visual requirement tier | 5, 18 |
 | 8 | Base color format and per-map size caps | 4 |

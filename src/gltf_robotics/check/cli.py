@@ -41,7 +41,7 @@ TITLES = {
     "5.1": "expressed in metres at real-world scale",
     "5.2": "declares +X forward and +Z up, per ISO 9787 and REP 103",
     "5.5": "exactly one scene and one named node, with no children and no transform",
-    "5.6": "declares the datum features its coordinate system is referenced to",
+    "5.6": "names the datum point its origin is referenced to",
     "6": "every primitive is triangles carrying POSITION, NORMAL and TEXCOORD_0",
     "6.1": "UV coordinates present, and inside the range 0 to 1",
     "6.3": "a primitive exists only to carry a material distinct from its siblings",

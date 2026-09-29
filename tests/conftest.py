@@ -68,9 +68,7 @@ def manifest(role="component", **over):
         "dc:date": {"@list": ["2026-09-27T00:00:00Z"]},
         "xmp:CreatorTool": "gltf-robotics test fixtures",
         "gltfrp:partRole": role,
-        "gltfrp:datumFeature": {"@list": ["mounting face", "bore axis", "keyway origin"]},
-        "gltfrp:datumFeatureKind": {"@list": ["plane", "line", "point"]},
-        "gltfrp:datumConstrains": {"@list": ["Tz Rx Ry", "Tx Ty", "Rz"]},
+        "gltfrp:datumPoint": "center of the mounting face, on the bore axis",
         "gltfrp:forward": "+X",
         "gltfrp:up": "+Z",
     }

@@ -39,9 +39,7 @@ SKIP = "skip"
 
 LINEAR_SLOTS = ("normal", "metallicRoughness", "occlusion")
 NS = "https://honurobotics.github.io/gltf-robotics/ns/profile/1.0/"
-FEATURE_KINDS = ("point", "line", "plane", "helix")
 AXES = ("+X", "-X", "+Y", "-Y", "+Z", "-Z")
-DOF = ("Tx", "Ty", "Tz", "Rx", "Ry", "Rz")
 PROHIBITED_EXTENSIONS = {
     "KHR_draco_mesh_compression": "Draco mesh compression",
     "KHR_texture_basisu": "KTX2/Basis textures",
@@ -592,20 +590,6 @@ def rule_5_1_scale(m):
                    "the manifest as gltfrp:nominalDimension with a tolerance.")
 
 
-def _listvals(packet, key):
-    """An XMP ordered or unordered array as a plain list.
-
-    KHR_xmp_json_ld requires arrays to be wrapped in `@list` or `@set`, so the
-    value is a dict with one of those keys rather than a bare array.
-    """
-    v = packet.get(key)
-    if v is None:
-        return None
-    if isinstance(v, dict):
-        return v.get("@list") or v.get("@set") or []
-    return v if isinstance(v, list) else [v]
-
-
 def rule_4_1_1_manifest(m):
     """Section 4.1.4: a delivery MUST carry a manifest declaring three properties.
 
@@ -658,78 +642,52 @@ def rule_4_1_1_manifest(m):
 
 
 def rule_5_6_datum(m):
-    """Section 5.6: a base part MUST carry a complete datum specification."""
+    """Section 5.6: the datum is one point; orientation comes from 5.2.
+
+    The ordered-list-and-six-degrees-of-freedom machinery this rule used to
+    implement is gone. Section 5.2 fixes all three rotations for every delivery,
+    and a point fixes all three translations, so one named point is a complete
+    specification and there is no bookkeeping left to check.
+    """
     packet = m.manifest()
     role = (packet or {}).get("gltfrp:partRole")
-
     if packet is None or role is None:
         return [Finding("5.6", SKIP, "no declared role, so no datum requirement applies")]
 
-    features = _listvals(packet, "gltfrp:datumFeature")
-    kinds = _listvals(packet, "gltfrp:datumFeatureKind")
-    constrains = _listvals(packet, "gltfrp:datumConstrains")
-    forward = packet.get("gltfrp:forward")
-    up = packet.get("gltfrp:up")
-
-    required = role == "base"
-    level = FAIL if required else WARN
-
-    if not features:
-        return [Finding("5.6", level, f"a {role} part carries no datum specification",
-                        "a base part must declare one; a component part should" if required
-                        else "a component part should declare one, usually its mounting interface")]
-
     out = []
-    if not (len(features) == len(kinds or []) == len(constrains or [])):
-        out.append(Finding("5.6", FAIL, "the datum lists are not the same length",
-                           f"{len(features)} features, {len(kinds or [])} kinds, "
-                           f"{len(constrains or [])} constraint entries. The three lists are "
-                           "positionally matched."))
-        return out
+    point = packet.get("gltfrp:datumPoint")
+    if not point:
+        out.append(Finding(
+            "5.6", FAIL if role == "base" else WARN,
+            f"a {role} part names no datum point",
+            "5.6 requires a base part to name the point its origin is referenced to, and "
+            "recommends it for a component. Without one the origin is a number with no meaning: "
+            "nothing distinguishes a deliberate placement from wherever the tool left it."))
 
-    bad = [k for k in kinds if k not in FEATURE_KINDS]
-    if bad:
-        out.append(Finding("5.6", FAIL, "a datum feature is not a situation feature",
-                           ", ".join(map(repr, bad)) + f". ISO 17450-1 closes the list to "
-                           f"{', '.join(FEATURE_KINDS)}."))
+    # A derived point is permitted only if the manifest says what it was derived from.
+    derived_words = ("centroid", "center of mass", "centre of mass", "bounding box",
+                     "bounding-box", "silhouette", "median", "average", "mean")
+    if point and any(w in str(point).lower() for w in derived_words):
+        if not packet.get("gltfrp:datumDerivedFrom"):
+            out.append(Finding(
+                "5.6", FAIL, "the datum point looks derived and names no source",
+                f"{point!r}. A computed property references nothing and moves when the geometry "
+                "changes. If it is genuinely unavoidable, gltfrp:datumDerivedFrom MUST name the "
+                "artifact and configuration it came from."))
 
-    seen = []
-    for entry in constrains:
-        seen.extend(str(entry).replace(",", " ").split())
-    unknown = sorted({d for d in seen if d not in DOF})
-    if unknown:
-        out.append(Finding("5.6", FAIL, "unrecognised degree of freedom",
-                           ", ".join(map(repr, unknown)) + f". Expected from {', '.join(DOF)}."))
-    dupes = sorted({d for d in seen if seen.count(d) > 1})
-    if dupes:
-        out.append(Finding("5.6", FAIL, "a degree of freedom is constrained more than once",
-                           ", ".join(dupes)))
-    absent = [d for d in DOF if d not in seen]
-    if absent:
-        out.append(Finding("5.6", level, "the datum specification is under-constrained",
-                           f"{', '.join(absent)} unconstrained. The named features must constrain "
-                           "all six degrees of freedom, or the coordinate system is not determined "
-                           "and every consumer resolves the remainder differently."))
+    # Stale properties from the ordered-list form, which 5.6 no longer defines.
+    stale = [k for k in ("gltfrp:datumFeature", "gltfrp:datumFeatureKind",
+                         "gltfrp:datumConstrains") if k in packet]
+    if stale:
+        out.append(Finding("5.6", WARN, "the manifest uses the superseded datum properties",
+                           ", ".join(stale) + ". 5.6 now names a single gltfrp:datumPoint; "
+                           "orientation comes from 5.2 and is not part of the datum."))
 
-    for name, value in (("gltfrp:forward", forward), ("gltfrp:up", up)):
-        if value is None:
-            out.append(Finding("5.6", level, f"{name} is not declared",
-                               "nothing in a glTF file records a forward or up axis, so an "
-                               "undeclared one cannot be checked at all"))
-        elif value not in AXES:
-            out.append(Finding("5.6", FAIL, f"{name} is {value!r}",
-                               f"expected one of {', '.join(AXES)}"))
-    if forward and up and forward in AXES and up in AXES and forward[1] == up[1]:
-        out.append(Finding("5.6", FAIL, "forward and up are the same axis",
-                           f"forward {forward}, up {up}"))
-
-    if "realizedPose" in packet or "gltfrp:realizedPose" in packet:
+    if "gltfrp:realizedPose" in packet or "realizedPose" in packet:
         out.append(Finding("5.6", FAIL, "the manifest records a realized pose",
                            "a realized pose is derived by measurement, never authored; recording "
                            "it beside the rule that derives it creates two sources of truth"))
-    return out or [Finding("5.6", PASS,
-                           f"{len(features)} datum features constraining all six DOF, "
-                           f"forward {forward}, up {up}")]
+    return out or [Finding("5.6", PASS, f"datum point: {point}")]
 
 
 RULES = [

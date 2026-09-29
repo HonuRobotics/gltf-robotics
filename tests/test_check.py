@@ -373,63 +373,6 @@ def test_creator_tool_must_match_asset_generator(write_model):
     assert "4.1.4" in failures(path)
 
 
-def test_base_part_without_a_datum_fails(write_model):
-    def mutate(g):
-        p = _packet(g)
-        p["gltfrp:partRole"] = "base"
-        for k in ("gltfrp:datumFeature", "gltfrp:datumFeatureKind", "gltfrp:datumConstrains"):
-            p.pop(k)
-    path = write_model(mutate)
-    assert "5.6" in failures(path)
-
-
-def test_component_without_a_datum_only_warns(write_model):
-    def mutate(g):
-        p = _packet(g)
-        for k in ("gltfrp:datumFeature", "gltfrp:datumFeatureKind", "gltfrp:datumConstrains"):
-            p.pop(k)
-    path = write_model(mutate)
-    assert failures(path) == set()
-    assert "5.6" in warnings(path)
-
-
-def test_under_constrained_base_datum_fails(write_model):
-    """Five of six degrees of freedom is not a coordinate system."""
-    def mutate(g):
-        p = _packet(g)
-        p["gltfrp:partRole"] = "base"
-        p["gltfrp:datumConstrains"] = {"@list": ["Tz Rx Ry", "Tx Ty", ""]}
-    path = write_model(mutate)
-    assert "5.6" in failures(path)
-    assert any("under-constrained" in f.summary for f in check_file(path))
-
-
-def test_doubly_constrained_datum_fails(write_model):
-    def mutate(g):
-        p = _packet(g)
-        p["gltfrp:datumConstrains"] = {"@list": ["Tz Rx Ry", "Tx Ty Tz", "Rz"]}
-    path = write_model(mutate)
-    assert "5.6" in failures(path)
-
-
-def test_feature_kind_must_be_a_situation_feature(write_model):
-    """ISO 17450-1 closes the list to point, line, plane, helix."""
-    path = write_model(
-        lambda g: _packet(g).update({"gltfrp:datumFeatureKind": {"@list": ["silhouette", "line", "point"]}}))
-    assert "5.6" in failures(path)
-
-
-def test_mismatched_datum_list_lengths_fail(write_model):
-    path = write_model(
-        lambda g: _packet(g).update({"gltfrp:datumFeatureKind": {"@list": ["plane", "line"]}}))
-    assert "5.6" in failures(path)
-
-
-def test_forward_and_up_must_differ(write_model):
-    path = write_model(lambda g: _packet(g).update({"gltfrp:up": "-X"}))
-    assert "5.6" in failures(path)
-
-
 def test_realized_pose_must_not_be_authored(write_model):
     """5.6: a derived quantity recorded beside its rule is two sources of truth."""
     path = write_model(
@@ -491,3 +434,47 @@ def test_legend_prints_once_per_run(write_model, capsys):
     assert out.count("-> compliant") == 2
     for mark, _ in cli.LEGEND:
         assert f"  {mark}  " in out
+
+
+def test_base_part_without_a_datum_point_fails(write_model):
+    def mutate(g):
+        p = _packet(g)
+        p["gltfrp:partRole"] = "base"
+        p.pop("gltfrp:datumPoint")
+    path = write_model(mutate)
+    assert "5.6" in failures(path)
+
+
+def test_component_without_a_datum_point_only_warns(write_model):
+    path = write_model(lambda g: _packet(g).pop("gltfrp:datumPoint"))
+    assert failures(path) == set()
+    assert "5.6" in warnings(path)
+
+
+def test_derived_datum_point_without_a_source_fails(write_model):
+    """A computed property references nothing and moves with the geometry."""
+    path = write_model(
+        lambda g: _packet(g).update({"gltfrp:datumPoint": "the center of mass"}))
+    assert "5.6" in failures(path)
+
+
+def test_derived_datum_point_is_allowed_if_its_source_is_named(write_model):
+    def mutate(g):
+        p = _packet(g)
+        p["gltfrp:datumPoint"] = "the center of mass"
+        p["gltfrp:datumDerivedFrom"] = "hull CAD rev C, empty configuration"
+    path = write_model(mutate)
+    assert failures(path) == set()
+
+
+def test_superseded_datum_properties_warn(write_model):
+    """The ordered-list form 5.6 used to define is no longer part of the profile."""
+    path = write_model(lambda g: _packet(g).update(
+        {"gltfrp:datumFeature": {"@list": ["mounting face"]}}))
+    assert "5.6" in warnings(path)
+
+
+def test_declared_axes_must_agree_with_5_2(write_model):
+    """5.2 owns the orientation; the manifest attests to it and can contradict it."""
+    path = write_model(lambda g: _packet(g).update({"gltfrp:up": "-X"}))
+    assert "5.2" in failures(path)
