@@ -78,6 +78,12 @@ def test_a_base_part_needs_a_datum_point(write_model, commission):
         manifest.stamp(commission(partRole="base", datumPoint=None), path)
 
 
+def test_a_cited_dimension_with_no_figure_is_refused(write_model, commission):
+    path = write_model(strip)
+    with pytest.raises(manifest.ManifestError, match="readable figure"):
+        manifest.stamp(commission(nominalDimension="about a meter long"), path)
+
+
 def test_a_part_missing_from_the_commission_is_refused(write_model, commission):
     path = write_model(strip, name="other_part.visual.glb")
     with pytest.raises(manifest.ManifestError, match="other_part"):

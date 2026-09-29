@@ -130,7 +130,7 @@ The remaining properties SHOULD be carried:
 | `dc:rights` | Text | Licensing, and for purchased textures the redistribution terms |
 | `dc:relation` | URI | The published source the part's dimensions are cited from |
 | `xmpMM:DerivedFrom` | ResourceRef | The authoring source (e.g., blend file), where one is archived |
-| `gltfrp:nominalDimension` | Text | The cited figure itself, as a quantity with its dimension named, for example "length overall 1.146 m" |
+| `gltfrp:nominalDimension` | Text | The cited figure itself, as a quantity with its dimension named and its unit (`m`, `cm` or `mm`), for example "length overall 1.146 m" |
 | `gltfrp:dimensionTolerance` | Real | Meters. The band the measured extent is held to |
 
 **Note.** This needs to be evaluated as we prototype the workflow.  This could be overkill.  

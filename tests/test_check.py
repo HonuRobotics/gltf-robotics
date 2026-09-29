@@ -334,6 +334,75 @@ def _packet(g):
     return g["extensions"]["KHR_xmp_json_ld"]["packets"][0]
 
 
+# ------------------------------------ units: the extent against the cited dimension
+# The baseline is a square 1 m on a side in the XY plane, so its extents are 1, 1, 0.
+
+def _cite(text, tolerance=0.005):
+    def mutate(g):
+        _packet(g)["gltfrp:nominalDimension"] = text
+        if tolerance is not None:
+            _packet(g)["gltfrp:dimensionTolerance"] = tolerance
+    return mutate
+
+
+def _units(path):
+    return [f for f in check_file(path) if f.section == "Units"]
+
+
+def test_a_cited_dimension_that_matches_an_extent_passes(write_model):
+    from gltf_robotics.check.rules import PASS
+    (finding,) = _units(write_model(_cite("length overall 1.002 m")))
+    assert finding.level == PASS
+    assert "X extent" in finding.summary
+
+
+def test_a_cited_dimension_outside_tolerance_fails(write_model):
+    (finding,) = _units(write_model(_cite("length overall 1.2 m")))
+    assert finding.level == FAIL
+    assert "X 1 m" in finding.detail and "0.2" in finding.detail
+
+
+def test_a_file_in_millimeters_is_named_as_such(write_model):
+    def mutate(g):
+        _cite("length overall 1 m")(g)
+        g["accessors"][0]["min"] = [-500.0, -500.0, 0.0]
+        g["accessors"][0]["max"] = [500.0, 500.0, 0.0]
+    (finding,) = _units(write_model(mutate))
+    assert finding.level == FAIL
+    assert "millimeters" in finding.detail
+
+
+def test_a_cited_dimension_in_millimeters_is_converted(write_model):
+    from gltf_robotics.check.rules import PASS
+    (finding,) = _units(write_model(_cite("length overall 1000 mm")))
+    assert finding.level == PASS
+
+
+def test_a_cited_dimension_without_a_tolerance_warns(write_model):
+    (finding,) = _units(write_model(_cite("length overall 1 m", tolerance=None)))
+    assert finding.level == WARN
+    assert "tolerance" in finding.summary
+
+
+def test_a_cited_dimension_with_no_figure_warns(write_model):
+    (finding,) = _units(write_model(_cite("about a meter long")))
+    assert finding.level == WARN
+    assert "readable figure" in finding.summary
+
+
+def test_every_cited_figure_is_checked(write_model):
+    from gltf_robotics.check.rules import PASS
+    findings = _units(write_model(_cite("length overall 1 m; height 0.3 m")))
+    assert [f.level for f in findings] == [PASS, FAIL]
+    assert "height" in findings[1].summary
+
+
+def test_no_cited_dimension_stays_open(write_model):
+    from gltf_robotics.check.rules import ADVISORY
+    (finding,) = _units(write_model())
+    assert finding.level == ADVISORY
+
+
 def test_a_missing_manifest_fails(write_model):
     """Required by the profile's manifest section: provenance cannot be reconstructed later.
 

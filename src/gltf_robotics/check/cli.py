@@ -38,7 +38,7 @@ TITLES = {
     "File format": "delivered as binary .glb rather than .gltf",
     "The manifest": "carries a KHR_xmp_json_ld manifest, and its contents agree with the file",
     "Asset header": "asset header declares glTF 2.0 and no minVersion",
-    "Units": "expressed in metres at real-world scale",
+    "Units": "in meters at real-world scale, checked against the cited dimension",
     "Axes": "declares +X forward and +Z up, per ISO 9787 and REP 103",
     "Scenes and nodes": "exactly one scene and one named node, with no children and no transform",
     "Datum specification": "names the datum point its origin is referenced to",

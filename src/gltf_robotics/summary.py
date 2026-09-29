@@ -12,8 +12,8 @@ draw attention to is where the origin sits inside the bounding box, since that
 is invisible in every viewer and is the first thing a coordinate question turns
 on.
 
-Parsing, resolution and the transform maths are all reused: `Model` from the
-checker, and `node_matrix` / `mat_mul` / `transform_bounds` from the assessor.
+Parsing, resolution and the transform maths are all reused: `Model` and the
+node-walking helpers from the checker, and `transform_bounds` from the assessor.
 """
 
 import argparse
@@ -21,42 +21,12 @@ import json
 import pathlib
 import sys
 
-from .assess.gltf_assess import (mat_mul, node_matrix, plural, read_accessor,
-                                 transform_bounds)
-from .check.rules import Model
+from .assess.gltf_assess import plural, read_accessor, transform_bounds
+from .check.rules import Model, union, world_matrices
 
-IDENTITY = [[1.0, 0, 0, 0], [0, 1.0, 0, 0], [0, 0, 1.0, 0], [0, 0, 0, 1.0]]
 TRS_KEYS = ("translation", "rotation", "scale", "matrix")
 # Present in a file means present in the delivery; the checker decides whether that is allowed.
 NOTABLE = ("animations", "skins", "cameras")
-
-
-def world_matrices(model):
-    """Node index -> its composed 4x4, walking down from every root."""
-    nodes = model.get("nodes")
-    out = {}
-
-    def walk(i, parent, seen):
-        if i in seen or not 0 <= i < len(nodes):
-            return
-        matrix = mat_mul(parent, node_matrix(nodes[i]))
-        out[i] = matrix
-        for child in nodes[i].get("children", []):
-            walk(child, matrix, seen | {i})
-
-    for root in model.root_nodes():
-        walk(root, IDENTITY, frozenset())
-    return out
-
-
-def union(boxes):
-    """The AABB enclosing several (lo, hi) pairs, or None."""
-    boxes = [b for b in boxes if b]
-    if not boxes:
-        return None
-    lo = [min(b[0][i] for b in boxes) for i in range(3)]
-    hi = [max(b[1][i] for b in boxes) for i in range(3)]
-    return lo, hi
 
 
 def vertex_mean(model, accessor_index):

@@ -24,9 +24,12 @@ from ..assess.gltf_assess import (
     Resolver,
     Source,
     load_structure,
+    mat_mul,
     material_maps,
+    node_matrix,
     read_accessor,
     sniff_image,
+    transform_bounds,
 )
 
 # Rule outcome levels. FAIL and WARN come from the profile's own MUST/SHOULD;
@@ -46,6 +49,11 @@ PROHIBITED_EXTENSIONS = {
     "KHR_texture_transform": "KHR_texture_transform",
     "KHR_materials_pbrSpecularGlossiness": "the specular-glossiness workflow",
 }
+IDENTITY = [[1.0, 0, 0, 0], [0, 1.0, 0, 0], [0, 0, 1.0, 0], [0, 0, 0, 1.0]]
+# Units a cited dimension may be written in, as meters per unit.
+UNITS = {"m": 1.0, "cm": 0.01, "mm": 0.001}
+# What a wrong scale usually is: the ratio of the file's extent to the cited figure.
+SCALE_SUSPECTS = ((1000.0, "millimeters"), (100.0, "centimeters"), (39.37, "inches"))
 
 
 @dataclasses.dataclass
@@ -125,6 +133,71 @@ class Model:
         if "bufferView" not in image:
             return None
         return self.resolver.view_bytes(image["bufferView"], limit=limit)
+
+    def extent(self):
+        """(lo, hi) of everything the file places, or None.
+
+        From the bounds each POSITION accessor declares, composed through the
+        node transforms. glTF requires those bounds, so this reads no geometry.
+        """
+        nodes, meshes, accessors = self.get("nodes"), self.get("meshes"), self.get("accessors")
+        boxes = []
+        for index, matrix in world_matrices(self).items():
+            mesh_index = nodes[index].get("mesh")
+            if mesh_index is None or not 0 <= mesh_index < len(meshes):
+                continue
+            for prim in meshes[mesh_index].get("primitives", []):
+                pos = prim.get("attributes", {}).get("POSITION")
+                if pos is None or not 0 <= pos < len(accessors):
+                    continue
+                lo, hi = accessors[pos].get("min"), accessors[pos].get("max")
+                if lo and hi:
+                    boxes.append(transform_bounds(matrix, lo, hi))
+        return union(boxes)
+
+
+def world_matrices(model):
+    """Node index -> its composed 4x4, walking down from every root."""
+    nodes = model.get("nodes")
+    out = {}
+
+    def walk(i, parent, seen):
+        if i in seen or not 0 <= i < len(nodes):
+            return
+        matrix = mat_mul(parent, node_matrix(nodes[i]))
+        out[i] = matrix
+        for child in nodes[i].get("children", []):
+            walk(child, matrix, seen | {i})
+
+    for root in model.root_nodes():
+        walk(root, IDENTITY, frozenset())
+    return out
+
+
+def union(boxes):
+    """The AABB enclosing several (lo, hi) pairs, or None."""
+    boxes = [b for b in boxes if b]
+    if not boxes:
+        return None
+    lo = [min(b[0][i] for b in boxes) for i in range(3)]
+    hi = [max(b[1][i] for b in boxes) for i in range(3)]
+    return lo, hi
+
+
+def parse_dimensions(text):
+    """[(label, meters)] for every figure with a unit in a cited dimension.
+
+    "length overall 1.146 m; beam 0.93 m" gives two. The label is whatever
+    precedes the figure, kept so a finding can say which dimension it means.
+    """
+    out = []
+    pattern = re.compile(r"([-+]?\d+(?:\.\d+)?)\s*(mm|cm|m)\b")
+    for piece in re.split(r"[;,]", str(text)):
+        match = pattern.search(piece)
+        if match:
+            label = piece[:match.start()].strip() or "cited dimension"
+            out.append((label, float(match.group(1)) * UNITS[match.group(2)]))
+    return out
 
 
 def plural(n, singular, plural_form=None):
@@ -582,12 +655,63 @@ def rule_5_2_axes(m):
 
 
 def rule_5_1_scale(m):
-    """The profile's Units section requires meters. A file cannot state its own units."""
-    return Finding("Units", ADVISORY, "scale is not checkable from the file",
-                   "glTF says meters and nothing in the file confirms it. Two assets in the "
-                   "corpus are millimetre files corrected downstream. What would catch a wrong "
-                   "scale is a cited dimensional figure per part, which the profile's manifest section now records in "
-                   "the manifest as gltfrp:nominalDimension with a tolerance.")
+    """The profile's Units section requires meters at real-world scale.
+
+    A file cannot state its own units, so the only check is against a figure
+    from outside it: the dimension the manifest cites. Each cited figure has to
+    match one of the three axis extents within the manifest's own tolerance.
+    Which axis is not prescribed; the finding says which one matched.
+    """
+    packet = m.manifest() or {}
+    cited = packet.get("gltfrp:nominalDimension")
+    if not cited:
+        return Finding("Units", ADVISORY, "scale cannot be checked: the manifest cites no dimension",
+                       "glTF says meters and nothing in the file confirms it. A cited figure in "
+                       "gltfrp:nominalDimension, with gltfrp:dimensionTolerance, is what this "
+                       "rule compares the geometry against.")
+    box = m.extent()
+    if box is None:
+        return Finding("Units", SKIP, "no geometry bounds to measure")
+    figures = parse_dimensions(cited)
+    if not figures:
+        return Finding("Units", WARN, "the cited dimension has no readable figure",
+                       f"{cited!r}. Expected a number with its unit, m, cm or mm, for example "
+                       "'length overall 1.146 m'.")
+
+    extents = [box[1][i] - box[0][i] for i in range(3)]
+    measured = ", ".join(f"{axis} {value:.4g} m" for axis, value in zip("XYZ", extents))
+    tolerance = packet.get("gltfrp:dimensionTolerance")
+    try:
+        tolerance = None if tolerance is None else float(tolerance)
+    except (TypeError, ValueError):
+        tolerance = None
+
+    out = []
+    for label, figure in figures:
+        nearest = min(range(3), key=lambda i: abs(extents[i] - figure))
+        difference = abs(extents[nearest] - figure)
+        axis = "XYZ"[nearest]
+        what = f"{label} {figure:.4g} m"
+        if tolerance is None:
+            out.append(Finding(
+                "Units", WARN, f"{what} has no tolerance to be held to",
+                f"nearest extent is {axis} {extents[nearest]:.4g} m, a difference of "
+                f"{difference:.3g} m. Extents: {measured}. State gltfrp:dimensionTolerance."))
+        elif difference <= tolerance:
+            out.append(Finding(
+                "Units", PASS, f"{what} matches the {axis} extent {extents[nearest]:.4g} m",
+                f"difference {difference:.3g} m, tolerance {tolerance:.3g} m. Extents: {measured}"))
+        else:
+            hint = ""
+            for ratio, unit in SCALE_SUSPECTS:
+                if figure > 0 and any(abs(e / figure - ratio) <= 0.02 * ratio for e in extents):
+                    hint = f" An extent is about {ratio:g} times the figure: the file looks like {unit}."
+                    break
+            out.append(Finding(
+                "Units", FAIL, f"{what} matches no extent",
+                f"extents: {measured}. The nearest is {axis}, off by {difference:.3g} m against "
+                f"a tolerance of {tolerance:.3g} m.{hint}"))
+    return out
 
 
 def rule_4_1_1_manifest(m):

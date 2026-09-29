@@ -20,6 +20,8 @@ import sys
 
 import yaml
 
+from .check.rules import parse_dimensions
+
 GLB_MAGIC = b"glTF"
 CHUNK_JSON = 0x4E4F534A
 CHUNK_BIN = 0x004E4942
@@ -101,6 +103,11 @@ def values_for(commission, part):
         raise ManifestError(f"'{part}': partRole must be base or component, not {role!r}")
     if role == "base" and not values.get("datumPoint"):
         raise ManifestError(f"'{part}' is the base part and names no datumPoint")
+    cited = values.get("nominalDimension")
+    if cited and not parse_dimensions(cited):
+        raise ManifestError(f"'{part}': nominalDimension {cited!r} has no readable figure. "
+                            "Write a number with its unit, m, cm or mm, for example "
+                            "'length overall 1.146 m'.")
     return values
 
 

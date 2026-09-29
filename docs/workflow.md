@@ -22,7 +22,7 @@ These and the other terms this document uses, among them part, delivery, commiss
 
 ## Step 1: Commission
 
-The integrator writes the commission before any modeling starts. It is the written statement of intent and is what the visual checks in step 3 are judged against. Compliance with intent can only be verified when both parties share a clear understanding of the intent and of the design decisions behind it.
+The integrator writes the commission before any modeling starts. It is the written statement of intent and is what the visual acceptance checks are judged against. Compliance with intent can only be verified when both parties share a clear understanding of the intent and of the design decisions behind it.
 
 ### What the commission contains
 
@@ -30,7 +30,7 @@ The commission is a YAML file, started from the [commission template](commission
 
 To write: expand each item to one sentence.
 
-For the whole commission:
+For the whole commission (could be a single part or multiple parts):
 
 - Sources: datasheets, drawings, vendor pages, and any CAD, scans or vendor models handed over (`source`, `dimensionSource`)
 - Licensing and texture redistribution terms (`rights`). For Honu Robotics' own work the usual entry is "Copyright 2026 Honu Robotics. Licensed under the Apache License, Version 2.0." A purchased texture adds its own redistribution terms
@@ -52,31 +52,23 @@ For each part:
 - Priorities: what matters most on this part, in order
 - Notes to the modeler
 
-### Agreeing the commission
+### Commissioning process
 
-Three moves, all before modeling starts:
-
-1. The written commission goes to the modeler.
-2. A meeting walks through it against the reference images, so intent is clarified in conversation rather than inferred from text.
+1. The draft commission YAML file is delivered to the modeler - typically by inclusion in a git repo.
+2. If necessary, a discussion walks through commission intent against the reference images, so intent is clarified in conversation rather than inferred from text.
 3. The integrator issues the final written part-by-part priorities, amended by what the meeting found.
 
-To write: how a change to the commission after this point is handled. It is written down, not agreed in passing.
-
-### Gate
-
-Every part block has a name, a datum point, a cited dimension or an explicit "none published", and a visual requirement. The modeler has the final version in hand. A modeler who starts a part without a datum point stops and asks; there is no default, and nothing downstream can recover the intent.
+If any modifications are needed to keep the commission YAML file in alignment with the modeling deliverable, the written YAML file should be updated.  At delivery, the YAML commission and part geometry should agree.
 
 ## Step 2: Model
 
-### Build to the profile
+### Build to the [Honu Asset Profile](./profile.md) and export
 
-The profile's sections from [Coordinate systems and units](profile.md#coordinate-systems-and-units) to [Prohibited content](profile.md#prohibited-content) are the rules the model is built to. The [Blender export guide](walkthroughs/exporting-from-blender.md) is the tool-specific practice for meeting them, and the [walkthrough](walkthroughs/blender_mesh_coordinate_ex.md) shows one file going through end to end. The origin is placed by evaluating the datum specification against the geometry, never chosen from a menu ([Origin](profile.md#origin---datum-coordinate-system-location)).
+The profile inlcudes the rules the model is built to. 
 
-### Export
+The [Blender export guide](walkthroughs/exporting-from-blender.md) is the tool-specific practice for meeting them.
 
-To write: one paragraph. The toolchain pin ([Authoring toolchain](profile.md#authoring-toolchain)), the exporter's `+Y Up` option off ([Axes](profile.md#axes)), clear location and rotation and apply scale before export ([Scenes and nodes](profile.md#scenes-and-nodes)), and the authoring source kept outside the simulation repository and cited from the manifest.
-
-### Fill the manifest from the commission
+### Fill the manifest from the commission (can be done by modeler or implementer)
 
 After export, one command writes [the manifest](profile.md#the-manifest) into the file:
 
@@ -86,27 +78,21 @@ gltf-manifest commission.yaml <part>.visual.glb
 
 It finds the part's block in the commission by the file's name and copies the values in. It fills in the forward and up axes as `+X` and `+Z`, and the delivery date as today. Only the file's metadata changes; the geometry and textures are copied through untouched.
 
-The modeler never types a property name or a namespace prefix. The manifest inside the file uses prefixed names such as `gltfrp:partRole`, and `gltf-manifest --keys` lists which commission key writes which. Because the manifest is generated from the commission, step 3 can compare the delivery with what was asked for.
-
 The command refuses a key it does not know, so a misspelled key is caught here. If the commission changes after delivery, the integrator reruns the command; no re-export is needed.
-
-### Gate
-
-The modeler's own checks in step 3 pass. The delivery is one `<part>.visual.glb` per part, named per the profile's [File naming](profile.md#file-naming) section, plus whatever the commission asked to accompany it.
 
 ## Step 3: Verify
 
-The profile's [Conformance testing](profile.md#conformance-testing) section asks four questions of a delivery: valid, intended, compliant, usable. They fail independently and no single tool answers more than one. The first two are the modeler's to answer before delivering, the last two the integrator's after. The split is stated here so that neither party assumes the other checked the thing.
+The profile's [Conformance testing](profile.md#conformance-testing) section asks four questions of a delivery: valid, intended, compliant, usable. They fail independently and no single tool answers more than one. 
 
 ### What the modeler checks
 
-The Khronos glTF Validator answers whether the file is legal glTF. It is a single binary from the [glTF-Validator releases](https://github.com/KhronosGroup/glTF-Validator/releases), and the Sample Viewer runs the same validator inline. The delivery passes with zero errors. Warnings and infos are read and explained: a warning that a normal-mapped primitive has no tangents is expected, because neither consumer reads them ([Geometry](profile.md#geometry)). A clean run says nothing about whether the materials are right, since the validator cannot know that a plastic hull reads as metal.
+The Khronos glTF Validator answers whether the file is legal glTF. It is a single binary from the [glTF-Validator releases](https://github.com/KhronosGroup/glTF-Validator/releases), and the Sample Viewer runs the same validator inline. The delivery passes with zero errors. Warnings and infos are read and explained: a warning that a normal-mapped primitive has no tangents is expected, because neither consumer reads them ([Geometry](profile.md#geometry)). 
 
 ```bash
 gltf_validator -o -a <part>.visual.glb
 ```
 
-The [Khronos Sample Viewer](https://github.khronos.org/glTF-Sample-Viewer-Release/) answers whether the file looks as intended, judged by a person against the commission's images and material notes. The viewer assumes glTF's Y-up convention and shows every conforming part on its side; read it for materials, textures, transparency and validity, and ignore the pose. Blender's viewport answers nothing, because it shows Blender's materials and not the exported file. Other viewers, such as Babylon, three.js and F3D, are useful for inspecting names and material assignment and are not the reference.
+The [Khronos Sample Viewer](https://github.khronos.org/glTF-Sample-Viewer-Release/) answers whether the file looks as intended, judged by a person against the commission's images and material notes. The viewer assumes glTF's Y-up convention and shows every conforming part on its side; read it for materials, textures, transparency and validity, and ignore the pose. 
 
 `gltf-check` answers whether the file satisfies the profile: no failures, every warning understood. It reads the file and does not render it, so it needs no Gazebo and no GPU. It covers the container and header, extensions, scene and node structure, primitive attributes, materials, image format and size, transparency and the manifest. How to read its output is in the [checking walkthrough](walkthroughs/checking-a-delivery.md).
 
@@ -116,23 +102,17 @@ The modeler delivers with a note that these four were done. The integrator does 
 
 ### What the integrator checks
 
-`gltf-check` again, with the output kept with the review.
-
-`glb_probe` loads the file through the installed `gz-common`, exactly as Gazebo does, and prints the submeshes and materials the loader built. It is built and run inside drydock; the command is in the [probe README](https://github.com/HonuRobotics/gltf-robotics/tree/main/probe). The delivery passes when the output has no `[error]` lines, every submesh has a material, and the submesh name equals the part name. It is the only stand-in for Gazebo that needs no GPU. It does not render, so it settles what a material is and not how it looks.
-
-Gazebo, in the parts world: scale against a known object, orientation and origin, then the material defects by name. White-metal patches mean a primitive with no material, a dark hull means metalness was left at its default, cutouts have to be cut, and thin parts have to be visible from both sides. Other viewers do not predict any of this, because they honor `BLEND`, `doubleSided` and extensions that Gazebo ignores.
-
-RViz with the URDF: the part renders, is upright and RViz stays up. Passing in Gazebo is necessary and never sufficient; a normal map with no base color renders in Gazebo and terminates RViz.
-
-Extents against the datasheet, within the specified tolerance, and the manifest's cited dimension matching the commission.
-
-Origin and orientation by eye against the datum specification, naming what the origin sits on in the part's own terms.
-
-The commission's visual requirement and priorities, the one check with a written answer key.
+* `gltf-check` again, with the output kept with the review.
+* `glb_probe` loads the file through the installed `gz-common`, exactly as Gazebo does, and prints the submeshes and materials the loader built. It is built and run inside drydock; the command is in the [probe README](https://github.com/HonuRobotics/gltf-robotics/tree/main/probe). The delivery passes when the output has no `[error]` lines, every submesh has a material, and the submesh name equals the part name.  It does not render, so it settles what a material is and not how it looks.
+* Gazebo, standalone parts.   This step identifies Gazebo rendering issues that may or may not be consistent with glTF 2.0, e.g.,  white-metal patches mean a primitive with no material, a dark hull means metalness was left at its default. Other viewers do not predict any of this, because they honor `BLEND`, `doubleSided` and extensions that Gazebo ignores.
+* RViz with the URDF: the part renders, is upright and RViz stays up. Passing in Gazebo is necessary and never sufficient; a normal map with no base color renders in Gazebo and terminates RViz.
+* Extents. `gltf-check` compares the file's extent with the dimension the manifest cites, within the manifest's tolerance, and says which axis matched. The integrator confirms that the cited dimension is the one in the commission.
+* Origin and orientation by eye against the datum specification, naming what the origin sits on in the part's own terms.
+* The commission's visual requirement and priorities. 
 
 ### When the checks run
 
-The checks run when a delivery is reviewed, which is the moment it can be rejected. They are not CI tests: once a part is merged it has already been checked, and rerunning every check on every commit would slow every unrelated change. The consuming project's base color guard stays in its tests, because it is cheap and it catches a defect that terminates RViz. No probe output is committed per part; the checker output kept with the review is the record.
+The checks run when a delivery is reviewed.  These  are not CI tests: once a part is merged it has already been checked, and rerunning every check on every commit would slow every unrelated change. 
 
 ### Who answers what
 
@@ -142,21 +122,8 @@ The checks run when a delivery is reviewed, which is the moment it can be reject
 | Intended | Modeler | Sample Viewer, against the commission | Signed off by the modeler, pose ignored |
 | Compliant | Modeler, then integrator | `gltf-check` | No failures, warnings reviewed, open items discussed |
 | Usable | Integrator | `glb_probe`, Gazebo, RViz | Loads, renders upright, RViz stays up |
-| Matches the commission | Integrator | `gltf-summary`, datasheet, eyes | Within tolerance, datum recognized, priorities met |
+| Matches the commission | Integrator | `gltf-check`, `gltf-summary`, datasheet, eyes | Within tolerance, datum recognized, priorities met |
 
-The last row is this workflow's own gate rather than a profile question. Not every failure is the modeler's to fix: a defect that turns out to be a consumer limitation becomes a target constraint recorded in the profile, not a rejection.
-
-### Rejection and redelivery
-
-A rejection names the question that failed and either the profile section or the commission field behind it, with the tool output attached. A disagreement is then with a rule or a field, not with a person.
-
-A redelivery is a complete delivery under the same part name, with the manifest's date updated and the modeler's four checks redone. The integrator reruns every check, not only the one that failed, because a `.glb` is opaque in a diff and the previous run's output kept with the review is the only before-and-after comparison.
-
-If the failure was the commission's, wrong or silent on the point, step 1 reopens and the block is amended before the modeler works again.
-
-### Gate
-
-All five rows pass. The integrator records the accepted delivery date and the checker output, and the part goes to the consuming project's [add-part procedure](https://honurobotics.github.io/bluerobotics_models/lyrical/how-to/add-part.html).
 
 ## After acceptance
 
@@ -165,14 +132,7 @@ Out of scope here. The consuming project owns everything downstream of an accept
 ## Not settled here
 
 - Visual requirement tiers have no numbers until the profile's [Budgets](profile.md#budgets) section closes.
-- A component part's datum is a SHOULD ([component part](profile.md#a-component-part)), so a component block may leave it out; this document does not decide whether it should.
-- Where the filled commission is archived is the consuming project's decision.
-- Whether the modeler delivers anything besides the visual model, such as collision geometry or a `model.sdf`. The profile covers the visual model only ([Scope](profile.md#scope)), so today that is whatever the commission asks for.
+- A component part's datum is a SHOULD ([component part](profile.md#a-component-part)), so a component block may leave it out; this document does not decide whether it should.  The **component** profile is still a work in progress. 
+- Whether the modeler delivers anything besides the visual model, such as collision geometry or a `model.sdf`. The profile covers the visual model only ([Scope](profile.md#scope)), so today that is whatever the commission asks for.  Yes - we'll sort that out later.
 
-Open in the step 3 checks:
 
-- Which release of the Khronos validator is used. The profile's [Authoring toolchain](profile.md#authoring-toolchain) section does not pin it.
-- Whether a metallic-roughness texture's metallic channel matches the material. Settling it needs the decoded texels, which `gltf-check` does not read, so it warns and a person decides.
-- Triangle budgets have no check until the profile's [Budgets](profile.md#budgets) section closes, and per-map texture size caps have none until the profile's [Textures](profile.md#textures) section closes. `gltf-check` enforces only the 2048 px ceiling.
-- Extents are compared with the datasheet by hand. Nothing yet compares the measured extent with the manifest's `gltfrp:nominalDimension` and tolerance.
-- A headless render of the parts world, so a redelivery can be compared before and after without a GUI session. Not built.
