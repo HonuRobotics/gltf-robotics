@@ -6,19 +6,19 @@ None of it is a substitute for checking the result: run [`gltf-check`](checking-
 
 ## Author in the ROS frame, and do not let the exporter convert
 
-Blender is Z-up and right-handed, the same convention as ISO 9787 and REP 103, so a part is modelled x forward, y left, z up — exactly the part coordinate system the macro uses. Turn the exporter's `+Y Up` option **off**. The file then carries those axes unchanged, which is what profile section 5.2 requires.
+Blender is Z-up and right-handed, the same convention as ISO 9787 and REP 103, so a part is modelled x forward, y left, z up — exactly the part coordinate system the macro uses. Turn the exporter's `+Y Up` option **off**. The file then carries those axes unchanged, which is what the profile's [Axes](../profile.md#axes) section requires.
 
 The consequence is that every delivered file has forward on +X and up on +Z, and Gazebo shows it correctly with an identity visual pose. RViz rotates every glTF mesh +90° about X as it loads, so the URDF visual that shows the part carries `rpy="-1.5708 0 0"` to undo it. That line is the integrator's, not yours: do not rotate the part in Blender to compensate for either consumer, and expect the Khronos Sample Viewer and other glTF viewers to show the part on its side, because they assume Y-up. The [coordinate-systems reference](../reference/coordinate-systems.md#one-body-one-mesh-who-rotates-what) explains who rotates what.
 
 ## Clear location and rotation, apply scale, before exporting
 
-Profile section 5.5 requires exactly one node carrying no translation, rotation, scale or matrix. Any object transform left unapplied in Blender is written as that node's TRS, and a node transform is a genuine hazard rather than cosmetic: Gazebo composes it outside its (absent) correction and RViz composes it inside its rotation, so the same file lands in two different places in the two consumers.
+The profile's [Scenes and nodes](../profile.md#scenes-and-nodes) section requires exactly one node carrying no translation, rotation, scale or matrix. Any object transform left unapplied in Blender is written as that node's TRS, and a node transform is a genuine hazard rather than cosmetic: Gazebo composes it outside its (absent) correction and RViz composes it inside its rotation, so the same file lands in two different places in the two consumers.
 
-Getting there is not "apply all transforms", which is the instruction you will expect. Applying a location or a rotation holds the geometry still in the world and moves the origin relative to the part, which destroys the datum section 5.4 requires; clearing them moves the geometry with the object and preserves it. Scale is the exception and must be applied, because clearing it changes the part's size. Set the scene unit scale to 1.0 as well. A file at the wrong scale is silently wrong — nothing downstream can detect it, and two assets in the wider corpus are millimetre files corrected by a URDF `scale` further down.
+Getting there is not "apply all transforms", which is the instruction you will expect. Applying a location or a rotation holds the geometry still in the world and moves the origin relative to the part, which destroys the datum the profile's [Origin](../profile.md#origin) section requires; clearing them moves the geometry with the object and preserves it. Scale is the exception and must be applied, because clearing it changes the part's size. Set the scene unit scale to 1.0 as well. A file at the wrong scale is silently wrong — nothing downstream can detect it, and two assets in the wider corpus are millimetre files corrected by a URDF `scale` further down.
 
 ## Where the origin goes is not yours to choose
 
-The part's coordinate system is specified before modelling starts, by naming the features it is referenced to — its datum. Profile sections 5.4 and 5.6 have the rule. Your job is to put the object origin where that specification puts it, so the origin arrives with the commission rather than being decided at the keyboard.
+The part's coordinate system is specified before modelling starts, by naming the features it is referenced to — its datum. The profile's [Origin](../profile.md#origin) and [Datum specification](../profile.md#datum-specification) sections have the rule. Your job is to put the object origin where that specification puts it, so the origin arrives with the commission rather than being decided at the keyboard.
 
 Four steps, in this order:
 
@@ -55,7 +55,7 @@ Under its default Automatic image setting the exporter writes JPEG when the sour
 
 This matters because chroma subsampling blends channels that are unrelated in a normal or ORM map, and converting an existing JPEG to PNG preserves the damage rather than undoing it. A re-export from the original texture is the remedy.
 
-Profile section 8 requires PNG for normal, metallic, roughness and packed ORM maps, and for anything carrying alpha. Base colour and emissive may be JPEG. Textures are capped at 2048 pixels on each side.
+The profile's [Textures](../profile.md#textures) section requires PNG for normal, metallic, roughness and packed ORM maps, and for anything carrying alpha. Base colour and emissive may be JPEG. Textures are capped at 2048 pixels on each side.
 
 Be aware that the corpus disagrees with this rule more sharply than with any other in the profile: counted by image, normal maps in the wider corpus run 38 JPEG to 4 PNG. The rule is about what this project accepts, not a description of what arrives.
 
@@ -71,10 +71,10 @@ A delivered `.glb` is an export, and an export is lossy in one direction that ma
 
 It does not belong in the simulation repository — it is large, it is binary, it changes wholesale on every save, and nothing in the build reads it. Keep it wherever the project keeps things that must survive without being versioned alongside code, and cite it in the manifest's `xmpMM:DerivedFrom` so a delivered file says where its source went.
 
-This is a practice rather than a rule. Profile section 4.1.4 does not require the archive, because whether a file was kept is not a property of the file that arrived. What it does say is that if you keep one, the manifest should point at it, which costs nothing.
+This is a practice rather than a rule. The profile's [manifest](../profile.md#the-manifest) section does not require the archive, because whether a file was kept is not a property of the file that arrived. What it does say is that if you keep one, the manifest should point at it, which costs nothing.
 
 ## Versions
 
-The toolchain is pinned at patch level in [profile section 11](../profile.md): Blender 5.2.2 LTS with `io_scene_gltf2` 5.2.40, which writes `asset.generator` as `Khronos glTF Blender I/O v5.2.40`. Earlier deliveries report `v5.1.20`, which is Blender 5.1; they predate the pin and are not held to it.
+The toolchain is pinned at patch level in the profile's [Authoring toolchain](../profile.md#authoring-toolchain) section: Blender 5.2.2 LTS with `io_scene_gltf2` 5.2.40, which writes `asset.generator` as `Khronos glTF Blender I/O v5.2.40`. Earlier deliveries report `v5.1.20`, which is Blender 5.1; they predate the pin and are not held to it.
 
 The generator string records the tool and never the settings, so two files from the same exporter can still differ in image format, tangents and compression. That is why the checks constrain the outcome rather than the settings, and why `will_save_settings` is worth turning on — it puts the settings in the `.blend` where a re-export can reproduce them.

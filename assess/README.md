@@ -52,7 +52,7 @@ Four of the criteria in group D are not measurable at all: which axis is up, whi
 
 ## What it cannot tell you
 
-The tool reads the file. It does not load it, and the distinction matters more here than it usually would: profile section 12 is explicit that valid, intended, compliant and usable are four different questions that fail independently. In particular, what gz-common's loader builds from a file is not always what the file says -- submesh names come from nodes rather than meshes, extensions are parsed and then ignored, and the installed version differs from the branch. That is what `glb_probe` is for, inside drydock, and `criteria.md` marks the criteria that need it. Anything visual needs a window and a person.
+The tool reads the file. It does not load it, and the distinction matters more here than it usually would: the profile's [Conformance](../docs/profile.md#conformance) section is explicit that valid, intended, compliant and usable are four different questions that fail independently. In particular, what gz-common's loader builds from a file is not always what the file says -- submesh names come from nodes rather than meshes, extensions are parsed and then ignored, and the installed version differs from the branch. That is what `glb_probe` is for, inside drydock, and `criteria.md` marks the criteria that need it. Anything visual needs a window and a person.
 
 ## Automating it
 

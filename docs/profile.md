@@ -2,9 +2,9 @@
 
 This "profile" is based on the glTF 2.0 specification and interprets and constrains the specification for use in 3D asset authoring for robotic simulation.  This document, in combination with the companion [workflow](workflow.md), constitute actionable guidance for authoring and integrating robot 3D visual models. 
 
-## 1. Introduction
+## Introduction
 
-### 1.1 Scope
+### Scope
 
 This profile constrains the visual models authored for robotics simulation, currently mobile robots and specifically maritime robots. The aspiration is to generalize this, but at the current time we are prototyping the profile and workflow for this project and set of models. 
 
@@ -12,13 +12,13 @@ This profile builds upon [glTF 2.0](https://registry.khronos.org/glTF/specs/2.0/
 
 - **Narrowing.** As a profile, this specification focuses and narrows the standard's affordances for the specific needs of robotics simulation, to make it actionable in the context of developing 3D visual robotic assets. A file can be glTF-compliant and still be unusable in a robotics simulator.
 - **Adding.** Requiring something the standard does not, to satisfy the constraints of the robotics simulation and visualization consumers of the assets (e.g., Gazebo, RViz). This is required because some consumers implement only part of glTF, so a glTF-compliant asset is not guaranteed to be importable. Added constraints name the downstream consumer that motivates them.
-- **Departing.** Differing from what the standard says, which is done rarely and never silently. Section 5.2 is the one departure: the delivered file is expressed +X forward, +Y left, +Z up, following ISO 9787 and REP 103 rather than glTF's Y-up and +Z-forward convention, because every other stage of this pipeline uses the robotics convention and holding to glTF's would put a conversion in the middle of it.
+- **Departing.** Differing from what the standard says, which is done rarely and never silently. The [Axes](#axes) section is the one departure: the delivered file is expressed +X forward, +Y left, +Z up, following ISO 9787 and REP 103 rather than glTF's Y-up and +Z-forward convention, because every other stage of this pipeline uses the robotics convention and holding to glTF's would put a conversion in the middle of it.
 
 This profile is only about the visual 3D asset model and does not cover Collision geometry, inertia properties, joints, etc. 
 
-## 2. Document conventions
+## Document conventions
 
-### 2.1 Audience
+### Audience
 
 This specification addresses two parties:
 
@@ -26,16 +26,16 @@ This specification addresses two parties:
 - **the integrator**, who integrates the asset as a functional robot component
 
 
-### 2.2 Normative terminology
+### Normative terminology
 
 The key words MUST, MUST NOT, REQUIRED, SHALL, SHALL NOT, SHOULD, SHOULD NOT, RECOMMENDED, MAY and OPTIONAL are to be interpreted as described in [BCP 14](https://www.rfc-editor.org/info/bcp14), and only when they appear in capitals.
 
 
-### 2.3 Informative language
+### Informative language
 
 Some text is purely informative, giving background or explaining why a guideline or rule exists.  All Notes, Implementation Notes and Examples are informative. Everything not so marked is normative.
 
-### 2.4 Open issues
+### Open issues
 
 Two kinds of text blocks mark open issues:
 
@@ -44,21 +44,21 @@ Two kinds of text blocks mark open issues:
 > **Open: Future.** An open question that is TBD.  These issues are included for tracking purposes
 
 
-## 3. Terminology
+## Terminology
 
 The terms this profile uses are defined in the project [glossary](reference/glossary.md). Those definitions govern within this profile and supersede any other meaning the terms may carry elsewhere. Terms drawn from glTF keep their glTF meaning and are not redefined.
 
-## 4. Delivery
+## Delivery
 
 A delivery is a single `.glb` file carrying a single part. Everything in this section follows from that sentence.
 
-### 4.1 File
+### File
 
 A delivery MUST consist of exactly one file, and that file MUST describe exactly one part. A compound object (a whole vehicle, or several parts carried as separate nodes in one file) MUST NOT be delivered.
 
 > **Open: Future.** Whether a compound delivery is worth supporting later. The rule above is the minimal form and could be extended.
 
-#### 4.1.1 File naming
+#### File naming
 
 A delivery SHOULD be named `<part>.visual.glb`, where `<part>` is the part name.
 
@@ -66,7 +66,7 @@ The part name MUST be lowercase snake_case: lowercase letters, digits and unders
 
 **Implementation Note.** This profile states the naming rule itself rather than citing a consuming project's convention, because the dependency runs the other way: a project may narrow or extend this profile, and this profile must stand without it. Where a project's contract is stricter, the stricter rule governs there and this one remains the floor.
 
-#### 4.1.2 File format
+#### File format
 
 The visual model MUST be glTF 2.0 in the binary container, `.glb`, and that file MUST be self-contained: no external `.bin`, no external images, nothing to resolve at load time.
 
@@ -80,26 +80,26 @@ The file MUST validate against the Khronos glTF Validator with zero errors. Vali
 
 > **Open: Future.** Whether a delivery stays a single self-contained binary file. Today it is: one `.glb`, textures embedded, nothing to resolve at load time and nothing that can arrive incomplete. That is the KISS form and it governs. This one block tracks every way of going beyond it:
 >
-> - permitting `.gltf` with a side `.bin`, which would reach Drake, the one consumer that cannot read `.glb` at all (section 15)
+> - permitting `.gltf` with a side `.bin`, which would reach Drake, the one consumer that cannot read `.glb` at all ([Closely related work](#closely-related-work-informative))
 > - permitting external texture files, which version independently in git so re-authoring one map does not rewrite the geometry, and which a consumer can load lazily
 > - either of the above once the two defects behind the current rule are fixed upstream: the gz-common extension-comparison bug, and Gazebo's eager texture decoding
 
-#### 4.1.3 glTF structure
+#### glTF structure
 
 Each rule is stated normatively where it belongs and repeated here only as a list:
 
 | | Rule | Stated in |
 |---|---|---|
-| One part | the file describes exactly one part | 4.1 |
-| One scene | exactly one scene, listing only the node | 5.5 |
-| One node | exactly one node, no children | 5.5 |
-| No transform | that node carries no `translation`, `rotation`, `scale` or `matrix` | 5.5 |
+| One part | the file describes exactly one part | [File](#file) |
+| One scene | exactly one scene, listing only the node | [Scenes and nodes](#scenes-and-nodes) |
+| One node | exactly one node, no children | [Scenes and nodes](#scenes-and-nodes) |
+| No transform | that node carries no `translation`, `rotation`, `scale` or `matrix` | [Scenes and nodes](#scenes-and-nodes) |
 | One coordinate system | ; Blender (global, local); glTF (scene space, node space) and the origin coordinate system and the datum coordinate system all  coincide | 3, 5.4 |
-| One mesh | one and only one mesh on that node | 6.3 |
+| One mesh | one and only one mesh on that node | [Primitives and submeshes](#primitives-and-submeshes) |
 
 **Implementation Note.** The rules above are one decision seen from six directions: a delivered file is a single part in a single coordinate system, with nothing in its structure that a consumer could compose differently or lose. Everything that would express placement or hierarchy belongs in the robot description, not in the geometry.
 
-#### 4.1.4 The manifest
+#### The manifest
 
 A delivery MUST carry a manifest.
 
@@ -109,9 +109,9 @@ Three properties are the required minimum, and a delivery that carries only thes
 
 | Property | Type | What it records |
 |---|---|---|
-| `gltfrp:partRole` | Choice: `base`, `component` | Whether this part establishes a vehicle's reference coordinate system, or attaches to one. Section 5.6 imposes more on a `base` |
-| `gltfrp:forward` | Choice from the six signed axes | Which axis of the delivered file the part's forward direction lies along. MUST be `+X` (section 5.2) |
-| `gltfrp:up` | Choice from the six signed axes | Which axis is up. MUST be `+Z` (section 5.2) |
+| `gltfrp:partRole` | Choice: `base`, `component` | Whether this part establishes a vehicle's reference coordinate system, or attaches to one. The [Datum specification](#datum-specification) section imposes more on a `base` |
+| `gltfrp:forward` | Choice from the six signed axes | Which axis of the delivered file the part's forward direction lies along. MUST be `+X` ([Axes](#axes)) |
+| `gltfrp:up` | Choice from the six signed axes | Which axis is up. MUST be `+Z` ([Axes](#axes)) |
 
 
 The remaining properties SHOULD be carried:
@@ -138,7 +138,7 @@ The URL is an identifier, not an address. Nothing fetches it, at load time or ev
 Two details in the URL are deliberate. It carries `/1.0/` so that a later, incompatible set of properties can be given `/2.0/` and the two can coexist in one corpus without a file having to say which it meant. And it is named for the profile rather than for Honu Robotics, so that if this profile is ever adopted or maintained elsewhere the namespace does not have to move. Moving it would invalidate the vocabulary every already-delivered file declares.
 
 
-### 4.3 Asset header
+### Asset header
 
 `asset.version` MUST be `"2.0"`.
 
@@ -146,17 +146,17 @@ Two details in the URL are deliberate. It carries `/1.0/` so that a later, incom
 
 **Implementation Note.**  The Khronos registry carries version 2.0 only, currently revision 2.0.1, and states that every update to it is a backwards-compatible patch; new capability arrives as extensions rather than as minor versions.
 
-## 5. Coordinate systems and units
+## Coordinate systems and units
 
 The vocabulary this section uses (coordinate system, datum, origin, node space, scene space) is defined once in the [glossary](reference/glossary.md) and not restated here.
 
-### 5.1 Units
+### Units
 
 All linear distances MUST be in meters, at real-world scale, as glTF requires.
 
 The Blender scene unit scale MUST be 1.0, and object scale MUST be applied before export. 
 
-### 5.2 Axes
+### Axes
 
 The delivered file MUST be expressed with **+X forward, +Y left and +Z up**: the mobile platform coordinate system of [ISO 9787:2013](https://www.iso.org/standard/59444.html) §5.5, which is the same convention as [REP 103](https://www.ros.org/reps/rep-0103.html). 
 
@@ -182,21 +182,21 @@ The last row is the consequence of deviation from the glTF convention.
 
 The derivation, with both loaders quoted and the probe measurements that confirm them, is [One body, one mesh: who rotates what](reference/coordinate-systems.md#one-body-one-mesh-who-rotates-what) in the coordinate-systems reference; the [walkthrough](walkthroughs/blender_mesh_coordinate_ex.md) shows the same file in both consumers.
 
-### 5.3 Forward axis
+### Forward axis
 
-Fixed by section 5.2, together with the other two axes: +X forward.
+Fixed by the [Axes](#axes) section, together with the other two axes: +X forward.
 
-### 5.4 Origin
+### Origin
 
-The origin MUST be what the datum specification of section 5.6 evaluates to against the delivered geometry.
+The origin MUST be what the [datum specification](#datum-specification) evaluates to against the delivered geometry.
 
-That is the whole rule. This profile narrows glTF's several coordinate systems and robotics' several names for them down to one, so in a conforming delivery the origin, the datum coordinate system, the part coordinate system, node space and scene space are the same thing, and section 3 lists them as equivalents. There is nothing here to relate to anything else.
+That is the whole rule. This profile narrows glTF's several coordinate systems and robotics' several names for them down to one, so in a conforming delivery the origin, the datum coordinate system, the part coordinate system, node space and scene space are the same thing, and the [glossary](reference/glossary.md#datum-coordinate-system) lists them as equivalents. There is nothing here to relate to anything else.
 
 
 
 **Implementation Note.** No requried glTF field records what geometry is *referenced to*, which is why the datum is carried in the manifest, and why no validator can check it.
 
-### 5.5 Scenes and nodes
+### Scenes and nodes
 
 The delivered file MUST contain exactly one scene, and that scene MUST list only the node.
 
@@ -206,17 +206,17 @@ The node MUST be named `<part>` (with no numeric suffix such as `.001` and no sp
 
 **Implementation Note.** The node name within the glTF is an interface. Gazebo (throught the assimp loader) applies the node name to the "submesh" that instantiates the mesh.  The node name (within glTF) is the identifier an SDF `<submesh>` selects by, and it propagates into names derived downstream.  The mesh name is read by neither consumer, so a `_mesh` suffix is free and tells a reader which is which.
 
-**Implementation Note.** The point of the rule forbidding node transforms is that the file then has exactly one coordinate system. Scene space and node space coincide, so there is no second coordinate system for a consumer to lose and nothing for two consumers to compose differently. Section 5.4's origin is therefore unambiguous: the zero of node space is the zero of scene space is the link origin.
+**Implementation Note.** The point of the rule forbidding node transforms is that the file then has exactly one coordinate system. Scene space and node space coincide, so there is no second coordinate system for a consumer to lose and nothing for two consumers to compose differently. The [origin](#origin) is therefore unambiguous: the zero of node space is the zero of scene space is the link origin.
 
 **Implementation Note.** Including a node transform is both unrecoverable and unsafe. E.g., Gazebo composes node transforms down the tree and bakes them into the vertices, so the structure a hierarchy expressed is not observable in the Gazebo input. And the two consumers compose a root transform against the up-axis correction in opposite orders. Gazebo applies its correction outside the root transform ([source](https://github.com/gazebosim/gz-common/blob/a08c258d4e566b1e1624cb85f12ab78068ab2870/graphics/src/AssimpLoader.cc#L955-L976)), RViz post-multiplies inside it ([source](https://github.com/ros2/rviz/blob/baab61a68bc089217dfaa4f270276dc7a30268b1/rviz_rendering/src/rviz_rendering/mesh_loader_helpers/assimp_loader.cpp#L215-L222)), so a translation of 0.5 m along the file's Y puts the part 0.5 m up in one and 0.5 m to the side in the other. `probe/coords/make_markers.py` writes `marker_roottrans` and `marker_twonode` to demonstrate both, and they are deliberately non-conforming files.
 
 **Implementation Note.** The prohibition is on the **presence** of each key, not on its value. glTF omits any component equal to its default, so an absent key and an identity value describe the same geometry.
 
-### 5.6 Datum specification
+### Datum specification
 
 A coordinate system has six degrees of freedom to fix: three of location and three of orientation. This profile fixes them in two different ways, and the split is what keeps the specification short.
 
-**Orientation is fixed once, for every delivery, by section 5.2.** +X forward, +Y left, +Z up, from ISO 9787:2013 §5.5 and REP 103. It is not a per-part decision and is not named in a manifest as though it were.
+**Orientation is fixed once, for every delivery, by the [Axes](#axes) section.** +X forward, +Y left, +Z up, from ISO 9787:2013 §5.5 and REP 103. It is not a per-part decision and is not named in a manifest as though it were.
 
 **Location is fixed per part, by naming one point.** That is the datum specification: a single geometric point feature of the part, stated before authoring begins and recorded in the manifest.
 
@@ -224,7 +224,7 @@ A coordinate system has six degrees of freedom to fix: three of location and thr
 
 This is a narrowing of general datum practice. ASME Y14.5 and ISO 5459 build a datum reference frame from an ordered set of features (primary, secondary, tertiary) precisely because in mechanical inspection the orientation is not known in advance and has to be established from the part. 
 
-#### 5.6.1 The datum point
+#### The datum point
 
 The datum point MUST be a geometric feature of the part: a vertex, a hole center, the intersection of named faces or axes, a fiducial or a survey mark.
 
@@ -235,33 +235,33 @@ The datum point SHOULD be the least-derived feature available. Where a derived p
 
 **Implementation Note.** A point in the specification and a point on the hardware are two different things, and a mature practice has both. ISO 5459 calls the second a *datum target*: a point, line or area designated so that every supplier seats the part identically. A definition without a realization cannot be measured on the bench; a realization without a definition cannot be reproduced on a redesign. Where a delivery has a physical realization the manifest SHOULD record it in `gltfrp:datumTarget`.
 
-#### 5.6.2 What the manifest carries
+#### What the manifest carries
 
 | Property | Type | What it records |
 |---|---|---|
 | `gltfrp:datumPoint` | Text | REQUIRED for a `base` part. The point, named as a feature of this part |
 | `gltfrp:datumDerivedFrom` | Text | REQUIRED where the point is derived rather than a feature. The artifact and configuration it was derived from |
 | `gltfrp:datumTarget` | Text | OPTIONAL. The physical realization, in the sense of ISO 5459 |
-| `gltfrp:forward` | Choice: `+X`, `-X`, `+Y`, `-Y`, `+Z`, `-Z` | The forward axis as delivered. Section 5.2 requires `+X`; this is the modeler's attestation of it |
-| `gltfrp:up` | Choice: as above | The up axis as delivered. Section 5.2 requires `+Z` |
+| `gltfrp:forward` | Choice: `+X`, `-X`, `+Y`, `-Y`, `+Z`, `-Z` | The forward axis as delivered. The [Axes](#axes) section requires `+X`; this is the modeler's attestation of it |
+| `gltfrp:up` | Choice: as above | The up axis as delivered. The [Axes](#axes) section requires `+Z` |
 
 A delivery whose `gltfrp:partRole` is `base` MUST carry `gltfrp:datumPoint`. A `component` delivery SHOULD.
 
-**Implementation Note.** `gltfrp:forward` and `gltfrp:up` restate what section 5.2 already requires. The declaration is an attestation: the modeler states which way the part was built, and `gltf-check` fails a delivery whose attestation contradicts section 5.2. It converts part of the convention that could only be checked manually, by eye, into an algoritmic test that (partially) covers the requirement.
+**Implementation Note.** `gltfrp:forward` and `gltfrp:up` restate what the [Axes](#axes) section already requires. The declaration is an attestation: the modeler states which way the part was built, and `gltf-check` fails a delivery whose attestation contradicts the [Axes](#axes) section. It converts part of the convention that could only be checked manually, by eye, into an algoritmic test that (partially) covers the requirement.
 
 **Implementation Note.** Why the base part specifically. A base part's datum is the definition of `base_link`, and localization reports against it, so it is the one coordinate system in the vehicle whose meaning cannot be recovered by measuring anything afterwards. REP 105 says `base_link` is rigidly attached to the mobile robot base and declines to say where on it; the standards agree the placement must be stated and none of them state it for you. `base_footprint` is a derived runtime frame and is not a datum.
 
-#### 5.6.3 A component part
+#### A component part
 
 Where a component attaches by a single mounting interface, the datum point SHOULD be the center of that interface. ISO 9787 §5.3 defines the mechanical interface coordinate system with its origin at the center of the mechanical interface, which is the same choice arrived at from the standard rather than from convenience.
 
-**Note.** The two questions below stay open. They are deferred until after the initial release and a round of prototyping, at which point there should be cases to reason from.
+**Note.** The questions below stay open. They are deferred until after the initial release and a round of prototyping. 
 
 > **Open.** Whether a component datum becomes a requirement. It is a SHOULD because the mounting interface is usually obvious from the geometry and a wrong origin on a component is recoverable by editing one transform, where a wrong base datum is not. Settling it needs the pilot to say whether component origins cause trouble.
 
 > **Open.** What a delivery does when the component part's nominal geometry is not published anywhere. A datum point names a feature of the part, which presumes an authority on what the part is; for an off-the-shelf component that is the vendor drawing, and for a custom part it may be nothing but the CAD. Not settled.
 
-## 6. Geometry
+## Geometry
 
 Every primitive MUST use triangle topology.
 
@@ -275,7 +275,7 @@ The model SHOULD NOT contain degenerate, zero-area triangles.
 
 **Implementation Note.** Exporting tangents is harmless and improves portability to other viewers, and the Khronos validator emits a portability warning when a normal-mapped primitive omits them. Neither of this project's consumers reads them: the loader has no tangent channel, and the renderer generates its own from the first UV set. What the renderer needs instead is a clean UV set on normal-mapped surfaces, since that is the input to that generation.
 
-### 6.1 UV sets
+### UV sets
 
 The model MUST carry `TEXCOORD_0`, with coordinates inside the range 0 to 1. A second UV set, `TEXCOORD_1`, MAY be present and then only to carry a baked ambient occlusion lightmap. No further UV set may be present.
 
@@ -285,31 +285,31 @@ The model MUST carry `TEXCOORD_0`, with coordinates inside the range 0 to 1. A s
 
 **Implementation Note.** The two paragraphs above previously contradicted each other, requiring exactly one UV set and then permitting a second. `gltf-check` implements the rule as now written and fails a third set; it had been failing the permitted lightmap set as well.
 
-> **Open.** Whether the 0-to-1 requirement survives. It is the most contested rule in this profile and the disagreement is not marginal: the Khronos Real-time Asset Creation Guidelines endorse tiling above 1 for repeating patterns (section 15), and REP 158 reserves the range outside 0 to 1 for exactly that. The rule is kept for now because tiling defeats the texel-density measurement the acceptance tooling relies on, and because half-float storage degrades precision outside the range. Neither reason is about correctness, and a part needing a repeating material is the case that would settle it.
+> **Open.** Whether the 0-to-1 requirement survives. It is the most contested rule in this profile and the disagreement is not marginal: the Khronos Real-time Asset Creation Guidelines endorse tiling above 1 for repeating patterns ([Closely related work](#closely-related-work-informative)), and REP 158 reserves the range outside 0 to 1 for exactly that. The rule is kept for now because tiling defeats the texel-density measurement the acceptance tooling relies on, and because half-float storage degrades precision outside the range. Neither reason is about correctness, and a part needing a repeating material is the case that would settle it.
 
-### 6.2 Budgets
+### Budgets
 
 > **Open.** The triangle budget per part. The earlier draft proposed about 25,000. A single number is not defensible until each part states how much detail its role warrants, so the proposal is to record a visual requirement per part as one of a few named tiers, for example functional for the vehicles and the parts fitted to them, accessory for sensors and brackets, and scenery for items seen at distance, and then to set a triangle and texture budget per tier.
 
 **Implementation Note.** Neither consumer imposes a triangle limit. Texture memory dominates the cost, not geometry.
 
-### 6.3 Primitives and submeshes
+### Primitives and submeshes
 
 **Implementation Note.** "Submesh" is a Gazebo word rather than a glTF one. It is not a node arrangement and not a second mesh. Gazebo's loader walks the node hierarchy and emits one submesh for every primitive it meets, naming each after the node that instantiated that primitive's mesh, never after the mesh or the material. One node holding one mesh of four primitives therefore arrives as four submeshes all bearing that node's name, and two nodes arrive as the sum of their primitives, each batch carrying its own node's name. The submesh count is the primitive count; the names come from the nodes. The loader probe, `glb_probe`, prints that list, and is the only way to see it without a renderer.
 
-**Implementation Note.** A part has more than one primitive when it has more than one material, and in practice only then, because a primitive holds at most one `material` and glTF has no other way to put two materials on one mesh. The specification gives one further reason, to limit the number of indices per draw call, which does not arise at these part sizes. So the primitive count of a well-formed part is its material count, and section 7 already requires every primitive to have a material.
+**Implementation Note.** A part has more than one primitive when it has more than one material, and in practice only then, because a primitive holds at most one `material` and glTF has no other way to put two materials on one mesh. The specification gives one further reason, to limit the number of indices per draw call, which does not arise at these part sizes. So the primitive count of a well-formed part is its material count, and the [Materials](#materials) section already requires every primitive to have a material.
 
-**Implementation Note.** What follows from that. SDF can select one submesh from a file with `<mesh><submesh><name>`, and Gazebo resolves the name by returning the first submesh that matches it and then stopping. Primitives sharing a node are therefore indistinguishable: such a selection takes the first and drops the rest, with no error and no warning. Naming submeshes after their node rather than after themselves is a known upstream defect, `gz-common` pull request 659, open and unfinished since December 2024, so the collision cannot be designed around by naming things more carefully at this end. The neighboring override is in section 7: an SDF `<material>` replaces the material on every primitive with one, so per-primitive materials survive only while nothing declares one.
+**Implementation Note.** What follows from that. SDF can select one submesh from a file with `<mesh><submesh><name>`, and Gazebo resolves the name by returning the first submesh that matches it and then stopping. Primitives sharing a node are therefore indistinguishable: such a selection takes the first and drops the rest, with no error and no warning. Naming submeshes after their node rather than after themselves is a known upstream defect, `gz-common` pull request 659, open and unfinished since December 2024, so the collision cannot be designed around by naming things more carefully at this end. The neighboring override is in the [Materials](#materials) section: an SDF `<material>` replaces the material on every primitive with one, so per-primitive materials survive only while nothing declares one.
 
 A primitive MUST exist only to carry a material distinct from its siblings, so that a mesh's primitive count equals its material count and nothing is split for any other reason.
 
 A delivery MUST be usable as one whole mesh. Neither the part macro nor any world may depend on `<mesh><submesh>` to select part of one.
 
-**Implementation Note.** Together these keep the upstream naming defect permanently outside this project: if nothing ever selects a submesh, it does not matter that submeshes cannot be told apart. The alternative, making selection work, needs one primitive per node and a naming rule for each, and section 5.5's one-node rule forecloses it. The two rules are the same decision seen from two sides.
+**Implementation Note.** Together these keep the upstream naming defect permanently outside this project: if nothing ever selects a submesh, it does not matter that submeshes cannot be told apart. The alternative, making selection work, needs one primitive per node and a naming rule for each, and the [Scenes and nodes](#scenes-and-nodes) section's one-node rule forecloses it. The two rules are the same decision seen from two sides.
 
 **Implementation Note.** This is closed rather than left open because nothing here depends on the alternative: a search of this project's own model repositories for `<submesh>` returns nothing, so the rule costs no existing model anything.
 
-## 7. Materials
+## Materials
 
 The metallic-roughness workflow MUST be used. The specular-glossiness extension MUST NOT be used.
 
@@ -335,13 +335,13 @@ Material names SHOULD name the component they cover, not a color. Material names
 
 A part's materials are carried in the delivered file. An SDF `<visual>` for a part MUST NOT declare a `<material>`.
 
-**Implementation Note.** This was an open question and is now settled, against a rule this project used to follow. The `maritime_ws` workspace configuration still says "PBR materials must be declared in the SDF. They are not read out of a `.glb`", which came from a sandbox that saw bright mis-lit facets on the BlueBoat hull and worked around them in SDF. That was refuted: gz-common reads the full metallic-roughness set from the file, verified in source and with a probe, and the symptom was the hull's metallic-roughness map being solid white in its blue channel, which is metalness 1.0 everywhere. The workaround masked a texture defect that section 7's metalness rule now catches directly.
+**Implementation Note.** This was an open question and is now settled, against a rule this project used to follow. The `maritime_ws` workspace configuration still says "PBR materials must be declared in the SDF. They are not read out of a `.glb`", which came from a sandbox that saw bright mis-lit facets on the BlueBoat hull and worked around them in SDF. That was refuted: gz-common reads the full metallic-roughness set from the file, verified in source and with a probe, and the symptom was the hull's metallic-roughness map being solid white in its blue channel, which is metalness 1.0 everywhere. The workaround masked a texture defect that the [Materials](#materials) section's metalness rule now catches directly.
 
-**Implementation Note.** Why the prohibition is the right way round. `gz-sim`'s `SceneManager` loads an SDF `<material>`, if one is present, and sets that single material on the whole geometry, replacing every embedded material; absent one, it uses the submesh materials from the file with the visual's `<transparency>` multiplied in. So declaring a material in SDF does not supplement the file, it discards it, and because SDF gives one material per visual, a multi-material part loses every distinction section 6.3 exists to preserve. The generated part SDF has never emitted one, so this rule records existing behavior rather than changing it.
+**Implementation Note.** Why the prohibition is the right way round. `gz-sim`'s `SceneManager` loads an SDF `<material>`, if one is present, and sets that single material on the whole geometry, replacing every embedded material; absent one, it uses the submesh materials from the file with the visual's `<transparency>` multiplied in. So declaring a material in SDF does not supplement the file, it discards it, and because SDF gives one material per visual, a multi-material part loses every distinction the [Primitives and submeshes](#primitives-and-submeshes) section exists to preserve. The generated part SDF has never emitted one, so this rule records existing behavior rather than changing it.
 
 It was written for COLLADA, where the SDF is the only place a PBR material can live. For GLB it contradicts the rule above and the generated part SDF. Proposed: restate the workspace rule as applying to COLLADA visuals only.
 
-## 8. Textures
+## Textures
 
 Embedded images MUST be PNG or JPEG. No other image format loads.
 
@@ -367,7 +367,7 @@ Occlusion, roughness and metalness MAY be packed into a single texture, with occ
 
 Image names SHOULD identify what the map is, for example `Albedo-<component>` and `Normal-<component>`. It is the only clue a reviewer has for telling maps apart in a delivery.
 
-## 9. Transparency
+## Transparency
 
 Transparency MUST be planned per material and MUST NOT be painted per pixel as a gradient.
 
@@ -381,7 +381,7 @@ An opaque part MUST NOT be tagged `alphaMode: BLEND`.
 
 **Implementation Note.** Gazebo honors `MASK` and ignores `BLEND` entirely, rendering the material opaque. Uniform opacity reaches it instead through the alpha of `baseColorFactor`, on any alpha mode, and is applied twice, so an alpha of 0.5 renders at about 0.25. `doubleSided` is honored only on a `MASK` material; every other surface is back-face culled, so thin geometry needs thickness.
 
-## 10. Prohibited content
+## Prohibited content
 
 A delivered file MUST NOT contain:
 
@@ -391,33 +391,31 @@ A delivered file MUST NOT contain:
 - KTX2 or Basis textures
 - the `KHR_texture_transform` extension
 
-**Implementation Note.** These are prohibited for different reasons, and the reasons matter if one is ever reconsidered. Draco decodes correctly in both consumers but defeats the project's own inspection tools. Texture transform is parsed and then ignored, so textures render in the wrong place. Animations are imported and force the bounding box to a unit cube, breaking culling. Cameras and lights are ignored harmlessly. `KHR_xmp_json_ld`, which carries the manifest of 4.1.4, is not prohibited: it is declared in `extensionsUsed`, has no effect on appearance, and a consumer that ignores it is behaving correctly. An empty `extensionsRequired` is the single check that covers the general case, and it is worth being clear about what that check buys. The glTF specification requires a conforming reader to refuse a file outright when it requires an extension the reader does not implement, so one reading of this rule is that it saves us from a file that would fail to load. Measurement says otherwise: `Distribution_Warehouse`, which declares `KHR_texture_transform` in `extensionsRequired`, loads through gz-common without complaint, building 3,010 submeshes and 19 materials. Gazebo is not a conforming reader on this point. The rule therefore protects against a file that loads and is silently wrong, which is the worse failure and the one nobody notices. The Gazebo team's own demo assets declare `KHR_texture_transform` and `KHR_materials_specular`, so files from that workflow will fail this section and need re-export.
+**Implementation Note.** These are prohibited for different reasons, and the reasons matter if one is ever reconsidered. Draco decodes correctly in both consumers but defeats the project's own inspection tools. Texture transform is parsed and then ignored, so textures render in the wrong place. Animations are imported and force the bounding box to a unit cube, breaking culling. Cameras and lights are ignored harmlessly. `KHR_xmp_json_ld`, which carries [the manifest](#the-manifest), is not prohibited: it is declared in `extensionsUsed`, has no effect on appearance, and a consumer that ignores it is behaving correctly. An empty `extensionsRequired` is the single check that covers the general case, and it is worth being clear about what that check buys. The glTF specification requires a conforming reader to refuse a file outright when it requires an extension the reader does not implement, so one reading of this rule is that it saves us from a file that would fail to load. Measurement says otherwise: `Distribution_Warehouse`, which declares `KHR_texture_transform` in `extensionsRequired`, loads through gz-common without complaint, building 3,010 submeshes and 19 materials. Gazebo is not a conforming reader on this point. The rule therefore protects against a file that loads and is silently wrong, which is the worse failure and the one nobody notices. The Gazebo team's own demo assets declare `KHR_texture_transform` and `KHR_materials_specular`, so files from that workflow will fail this section and need re-export.
 
-> **Open: Future.** Which of these prohibitions are permanent. Two are not statements about the format: Draco decodes correctly in both consumers and is prohibited only because it defeats this project's own inspection tools, and KTX2 is prohibited because Gazebo cannot read it while Drake recommends it for performance (section 15). Both would be reconsidered if the tooling or the consumer changed, and compressed geometry and supercompressed textures are the two levers with real size savings behind them. Animations, cameras and lights are prohibited on their merits and are not expected to change.
+> **Open: Future.** Which of these prohibitions are permanent. Two are not statements about the format: Draco decodes correctly in both consumers and is prohibited only because it defeats this project's own inspection tools, and KTX2 is prohibited because Gazebo cannot read it while Drake recommends it for performance ([Closely related work](#closely-related-work-informative)). Both would be reconsidered if the tooling or the consumer changed, and compressed geometry and supercompressed textures are the two levers with real size savings behind them. Animations, cameras and lights are prohibited on their merits and are not expected to change.
 
-## 11. Authoring toolchain
+## Authoring toolchain
 
 The version stack is pinned at patch level, because the behavior that changed during this project's audit changed in a patch release. Anything coarser would not have caught it.
 
 | | Version | Why it is pinned |
 |---|---|---|
-| Blender | 5.2.2 LTS | The authoring tool. Its `+Y Up` export option is the one that must be off (section 5.2), and its Set Origin behavior is what section 5.4 warns about |
+| Blender | 5.2.2 LTS | The authoring tool. Its `+Y Up` export option is the one that must be off ([Axes](#axes)), and its Set Origin behavior is what the [Origin](#origin) section warns about |
 | `io_scene_gltf2` | 5.2.40 | The exporter. Writes `asset.generator` as `Khronos glTF Blender I/O v5.2.40` |
-| ROS | Lyrical | The distribution floor. RViz rotates glTF on load only from Lyrical onward, which is what makes the correction in section 5.2 a single default rather than version dependent |
+| ROS | Lyrical | The distribution floor. RViz rotates glTF on load only from Lyrical onward, which is what makes the correction in the [Axes](#axes) section a single default rather than version dependent |
 | `rviz2`, `rviz_rendering` | 15.2.5 | The consumer that rotates a glTF mesh as it loads |
 | Gazebo Sim | 10.5.0 | The consumer that performs no up-axis conversion at all |
-| `gz-common` | 7.3.0, via `ros-lyrical-gz-common-vendor` 0.3.6 | The loader. Composes node transforms and bakes them into the vertices, which is why section 5.5 prohibits them. Also the version carrying the `.gltf` extension-comparison bug behind section 4.2 |
+| `gz-common` | 7.3.0, via `ros-lyrical-gz-common-vendor` 0.3.6 | The loader. Composes node transforms and bakes them into the vertices, which is why the [Scenes and nodes](#scenes-and-nodes) section prohibits them. Also the version carrying the `.gltf` extension-comparison bug behind the [File format](#file-format) section |
 | assimp | 6.0.4 | What `gz-common` parses the file with |
 
 A delivery MUST record the exporter that produced it, which glTF does automatically in `asset.generator`, and the integrator SHOULD check it against the pin above.
 
-**Implementation Note.** The pin is necessary and not sufficient. `asset.generator` records the tool and never the settings, so two files from the same exporter can still differ in image format, tangents and compression, which is why section 12's checks constrain the outcome rather than the settings. The authoring half is also a convention rather than a technical constraint, because the modeler is outside this project's infrastructure: nothing stops a delivery arriving from another version, and the acceptance check is what notices.
+**Implementation Note.** The pin is necessary and not sufficient. `asset.generator` records the tool and never the settings, so two files from the same exporter can still differ in image format, tangents and compression, which is why the [Conformance](#conformance) section's checks constrain the outcome rather than the settings. The authoring half is also a convention rather than a technical constraint, because the modeler is outside this project's infrastructure: nothing stops a delivery arriving from another version, and the acceptance check is what notices.
 
 **Implementation Note.** Where these came from. Every version above was read out of the drydock container and the installed Blender rather than from documentation: `gz sim --versions`, the `ros2 pkg xml` version of each RViz package, `dpkg -l` for assimp and the gz-common vendor package, the `libgz-common-*.so.7.3.0` soname for the library itself, and `io_scene_gltf2`'s `bl_info` for the exporter. Earlier deliveries report `v5.1.20`, which is Blender 5.1: they predate this pin and the profile does not hold them to it.
 
-
-
-## 12. Conformance
+## Conformance testing
 
 A delivery conforms when all of the following hold. The first two are the modeler's responsibility, the third and fourth the integrator's.
 
@@ -430,34 +428,30 @@ A delivery conforms when all of the following hold. The first two are the modele
 
 The checks that answer each question, who runs them and when, are described in the [workflow](workflow.md#step-3-verify).
 
-## 13. Open questions (Informative)
+## Open questions (Informative)
 
-Every Open and Open: Future block in this document, in order. Settled rules are not listed: they are the normative text. Section 2.4 defines the two marks.
-
-### 13.1 Open: the to-do list for this draft
-
-Nothing in the document governs these points, so a delivery cannot fail to conform on one.
+### Open: the to-do list for this draft
 
 | Section | Question |
 |---|---|
-| 5.6.3 | Component datum becomes a requirement (deferred) |
-| 5.6.3 | When the part's nominal geometry is unpublished (deferred) |
-| 6.1 | Whether the 0-to-1 UV requirement survives |
-| 6.2 | Triangle budget, by visual requirement tier |
-| 8 | Base color format and per-map size caps |
-| 9 | Uniform translucency and use of BLEND |
+| [A component part](#a-component-part) | Component datum becomes a requirement (deferred) |
+| [A component part](#a-component-part) | When the part's nominal geometry is unpublished (deferred) |
+| [UV sets](#uv-sets) | Whether the 0-to-1 UV requirement survives |
+| [Budgets](#budgets) | Triangle budget, by visual requirement tier |
+| [Textures](#textures) | Base color format and per-map size caps |
+| [Transparency](#transparency) | Uniform translucency and use of BLEND |
 
-### 13.2 Open: Future, not blocking this draft
+### Open: Future, not blocking this draft
 
 The rule beside each of these is normative and a delivery must satisfy it. What is open is only whether the simple form stays.
 
 | Section | Rule | Why the simple form |
 |---|---|---|
-| 4.1 | One part per delivered file | Simplicity: one part, one model, one file is a mapping every tool can assume |
-| 4.2 | Binary container as the only permitted form | Simplicity, and two of the reasons are defects with upstream fixes pending |
-| 10 | Which prohibitions are permanent | Draco defeats our own inspection tools; KTX2 is unreadable by Gazebo |
+| [File](#file) | One part per delivered file | Simplicity: one part, one model, one file is a mapping every tool can assume |
+| [File format](#file-format) | Binary container as the only permitted form | Simplicity, and two of the reasons are defects with upstream fixes pending |
+| [Prohibited content](#prohibited-content) | Which prohibitions are permanent | Draco defeats our own inspection tools; KTX2 is unreadable by Gazebo |
 
-## 14. References (Informative)
+## References (Informative)
 
 The workflow this specification serves is built on published standards owned by other people, and defines project convention only where no standard reaches. This is deliberate. A project-local convention must be taught to every modeler, defended in every review and remembered by everyone who touches the pipeline. A standard is documented by someone else, understood by people not yet hired, and supported by software nobody here has to maintain.
 
@@ -472,16 +466,16 @@ Three obligations follow from that design goal, and this document is bound by al
 
 **Implementation Note.** Gazebo's glTF support carries no roadmap commitment, and this document does not treat it as one. The published Gazebo roadmap has no glTF, GLB, PBR or mesh-format item. The direction is on record only in project management committee minutes: [2026-08-17](https://discourse.openrobotics.org/t/gazebo-pmc-meeting-minutes-2026-08-17/57494) discusses deprecating COLLADA in favor of glTF and GLB and leaves it unresolved, and [2026-06-15](https://discourse.openrobotics.org/t/gazebo-pmc-meeting-minutes-2026-06-15/55498) decided to move mesh loading to Assimp by default. Behavior is what `MeshManager.cc` does today, which routes `gltf`, `glb` and `fbx` to the Assimp loader while `dae`, `obj` and `stl` keep their custom ones. Rules below cite that behavior as intent or as fact accordingly, never a roadmap.
 
-## 15. Closely related work (Informative)
+## Closely related work (Informative)
 
 This profile is not the first attempt to make glTF actionable for a particular consumer. Three efforts are close enough to compare against, and the comparison is useful in both directions: it shows which of our rules are obvious enough that others reached them independently, and which are ours alone and therefore carry more risk.
 
 | Effort | What it profiles | Where we agree | Where we differ |
 |---|---|---|---|
-| [Drake mesh file formats](https://drake.mit.edu/doxygen_cxx/group__geometry__file__formats.html), Toyota Research Institute | glTF as consumed by one robotics simulator, stated as a supported-feature list rather than a specification | Animation and skinning ignored; vertex normals required; PBR as the reason to prefer glTF over OBJ | Drake does not support `.glb` at all, where we require it. Its published corpus is `.gltf` with external `.bin` and `.png`, and it recommends `KHR_texture_basisu`, which section 10 prohibits because Gazebo cannot read it |
+| [Drake mesh file formats](https://drake.mit.edu/doxygen_cxx/group__geometry__file__formats.html), Toyota Research Institute | glTF as consumed by one robotics simulator, stated as a supported-feature list rather than a specification | Animation and skinning ignored; vertex normals required; PBR as the reason to prefer glTF over OBJ | Drake does not support `.glb` at all, where we require it. Its published corpus is `.gltf` with external `.bin` and `.png`, and it recommends `KHR_texture_basisu`, which the [Prohibited content](#prohibited-content) section prohibits because Gazebo cannot read it |
 | [REP 158](https://github.com/openrobotics/reps/blob/main/_posts/rep-0158%3A2006.md), ROS and Gazebo (Draft) | OpenUSD for simulation-asset interchange, with glTF 2.0 as one export target | PNG required for normal, metallic, roughness and packed ORM maps; JPEG permitted for base color and emissive without alpha; UVs packed into [0, 1]; the ROS right-handed convention | Its subject is USD and glTF is downstream of it, so its rules are written for an export pathway rather than for a delivered glTF file. It is also Draft and unratified |
-| [Real-time Asset Creation Guidelines](https://github.com/KhronosGroup/3DC-Asset-Creation) v2.0.0, Khronos 3D Commerce | glTF for real-time product visualization on web, apps and XR | A single self-contained file is generally preferred; more than one UV map is discouraged; naming restricted to letters, digits, underscore and hyphen with no spaces; metalness should be black or white, gray only for anti-aliasing | It endorses UV tiling above 1 for repeating patterns, which section 6.1 forbids. Its target is photorealism at product scale, so it has no equivalent of a part frame, an origin convention or a collision companion |
+| [Real-time Asset Creation Guidelines](https://github.com/KhronosGroup/3DC-Asset-Creation) v2.0.0, Khronos 3D Commerce | glTF for real-time product visualization on web, apps and XR | A single self-contained file is generally preferred; more than one UV map is discouraged; naming restricted to letters, digits, underscore and hyphen with no spaces; metalness should be black or white, gray only for anti-aliasing | It endorses UV tiling above 1 for repeating patterns, which the [UV sets](#uv-sets) section forbids. Its target is photorealism at product scale, so it has no equivalent of a part frame, an origin convention or a collision companion |
 
-Two things follow. The Khronos guidelines are the same exercise as this one in a different domain, and where they and this profile agree the rule is probably not controversial: the metalness rule in section 7 is the clearest case, arrived at there from art-pipeline experience and here from measuring what robotics assets ship. Where all three differ from us the disagreement is usually about the consumer, not about glTF, and section 10's prohibitions are the place that shows most plainly: an extension Drake recommends for performance is one Gazebo cannot read.
+Two things follow. The Khronos guidelines are the same exercise as this one in a different domain, and where they and this profile agree the rule is probably not controversial: the metalness rule in the [Materials](#materials) section is the clearest case, arrived at there from art-pipeline experience and here from measuring what robotics assets ship. Where all three differ from us the disagreement is usually about the consumer, not about glTF, and the [Prohibited content](#prohibited-content) section's prohibitions are the place that shows most plainly: an extension Drake recommends for performance is one Gazebo cannot read.
 
 Nothing above is a survey. It is three efforts that publish enough detail to compare, and their existence is not evidence that a practice is settled.

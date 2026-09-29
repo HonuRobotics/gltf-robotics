@@ -33,7 +33,7 @@ The three that qualify:
 | `proque/atmos` | GLB | 9 | 0 | 195,403 | Thrusters, IMU, barometer, navsat; factor-only materials |
 | `proque/atmos_dual` | GLB | 13 | 4 | 1,463,312 | Mixes one GLB with four DAE meshes; absolute versioned URL as the mesh URI |
 
-`Open-RMF/Caddy` is worth reading in full, because it is the one model in Fuel that answers the question behind spec section 6.3 -- does anything downstream ever need to select a sub-entity out of the file. It carries the whole vehicle in `polaris.gltf` and each link picks its own part out by node name:
+`Open-RMF/Caddy` is worth reading in full, because it is the one model in Fuel that answers the question behind the profile's [Primitives and submeshes](../docs/profile.md#primitives-and-submeshes) section -- does anything downstream ever need to select a sub-entity out of the file. It carries the whole vehicle in `polaris.gltf` and each link picks its own part out by node name:
 
 ```xml
 <mesh>
@@ -49,7 +49,7 @@ What the other 51 glTF files tell us, all of them props, scenes or test uploads.
 - Container: 53 GLB to 1 `.gltf` plus `.bin`, and the one non-GLB is the broken one.
 - Tooling: 50 of 54 from the Blender glTF exporter, versions 3.3 through 5.1. Two from Sketchfab, one from Unity. No pipeline diversity to learn from.
 - Scope actually used: zero animations, zero skins, zero cameras, across every file. Every primitive is mode 4. Exactly one primitive in the entire corpus carries `TANGENT`, which agrees with what `glb_probe` found about our own loader.
-- Texture format: 5,429 JPEG images against 95 PNG. Forty-four of the 54 carry normal maps and 37 carry packed metallic-roughness maps, overwhelmingly as JPEG. This contradicts profile section 8 and REP-158 head-on. It does not overturn either -- a corpus of warehouse props is not evidence about correctness -- but it does say that assets delivered to us by anyone working in the normal way will arrive with JPEG normal maps, so the spec needs to state the rule and the remedy rather than assume the toolchain produces PNG.
+- Texture format: 5,429 JPEG images against 95 PNG. Forty-four of the 54 carry normal maps and 37 carry packed metallic-roughness maps, overwhelmingly as JPEG. This contradicts the profile's [Textures](../docs/profile.md#textures) section and REP-158 head-on. It does not overturn either -- a corpus of warehouse props is not evidence about correctness -- but it does say that assets delivered to us by anyone working in the normal way will arrive with JPEG normal maps, so the spec needs to state the rule and the remedy rather than assume the toolchain produces PNG.
 - The metalness default trap is live: 128 materials across 9 models leave `metallicFactor` unset, so 1.0, with no metallic-roughness texture to override it. `dhyutin/trial` is 8 of 8; `proque/atmos` is 80 of 404. The same defect we found in four of fifteen delivered parts.
 - Extensions: `KHR_materials_specular` in 29 models, `KHR_materials_ior` in 13, `KHR_materials_transmission` in 9, `KHR_texture_transform` in 6, `KHR_materials_unlit` in 2. Five models put `KHR_texture_transform` in `extensionsRequired` rather than `extensionsUsed`, which a spec-compliant reader must refuse to load outright. Those five are a ready-made conformance probe for what Gazebo actually does -- `OpenRobotics/Distribution_Warehouse` is the convenient one.
 
@@ -71,7 +71,7 @@ The section it came from ended with one unanswered question: which popular proje
 > Stale as of the same day. The numbers below were counted over all 49 assets. The report has since been narrowed twice -- the Khronos control files are out of the corpus summary, and so is anything not changed in the last three years -- so its figures are over 42 assets and will not match these. This section needs a pass once the corpus definition settles. The conclusions are unaffected; the counts are not.
 
 
-Forty-nine assets, listed in [examples.yaml](examples.yaml) and measured into [ASSESSMENT.md](ASSESSMENT.md): the Gazebo team's own demo assets, the six Fuel models worth reading closely, the robots shipped as glTF by projects outside the Gazebo team, two Khronos reference files as a control, and two more Khronos files packaged with Draco and KTX2 as a deliberate probe of the prohibitions in spec sections 8 and 10. It is a sample rather than a population, and it is weighted -- seventeen of the forty-nine are jetty_demo, which is one team and one workflow, not seventeen independent opinions. The two probes are ours, not practice, and are called out wherever they move a number. Read the percentages with that in mind.
+Forty-nine assets, listed in [examples.yaml](examples.yaml) and measured into [ASSESSMENT.md](ASSESSMENT.md): the Gazebo team's own demo assets, the six Fuel models worth reading closely, the robots shipped as glTF by projects outside the Gazebo team, two Khronos reference files as a control, and two more Khronos files packaged with Draco and KTX2 as a deliberate probe of the prohibitions in the profile's [Textures](../docs/profile.md#textures) and [Prohibited content](../docs/profile.md#prohibited-content) sections. It is a sample rather than a population, and it is weighted -- seventeen of the forty-nine are jetty_demo, which is one team and one workflow, not seventeen independent opinions. The two probes are ours, not practice, and are called out wherever they move a number. Read the percentages with that in mind.
 
 ### Robot assets are untextured; textured assets are not robots
 
@@ -85,11 +85,11 @@ The mechanism is visible in the generator strings. The untextured robot files co
 
 Nineteen of the forty-nine put UV coordinates outside [0,1], including one of the two Khronos reference assets. The Gazebo team's own files run u to about 2.0 across seven models, `thor_table` runs v from -499 to 501, and `fuel/atmos` covers -7.4 to 8.4 in both axes. This is deliberate tiling against a REPEAT sampler, not an authoring accident: it is how a surface gets a repeating material without a large map.
 
-Profile section 6.1 requires [0,1] and REP-158 requires it too, reserving anything outside for "seamless tiling with repeat wrap modes" -- which is exactly what these files are doing. So the rule is not wrong, but it is narrower than it reads, and it forbids a technique in normal use by the team that maintains our primary consumer. Worth stating in the spec as a deliberate cost, with the reason (half-float UV storage after load, and the texel-density measurement it makes possible) rather than as a rule everyone would agree with.
+The profile's [UV sets](../docs/profile.md#uv-sets) section requires [0,1] and REP-158 requires it too, reserving anything outside for "seamless tiling with repeat wrap modes" -- which is exactly what these files are doing. So the rule is not wrong, but it is narrower than it reads, and it forbids a technique in normal use by the team that maintains our primary consumer. Worth stating in the spec as a deliberate cost, with the reason (half-float UV storage after load, and the texel-density measurement it makes possible) rather than as a rule everyone would agree with.
 
 ### Nobody uses alpha, and four fifths of materials ask for two-sided rendering
 
-Across 601 materials there is not one `MASK` and not one `BLEND`. Every material in the corpus is `OPAQUE`. Section 9 of the profile is legislating for a case that this corpus never exercises -- which is either a reason to keep the rule cheap, or a warning that we are the ones who will find the bugs.
+Across 601 materials there is not one `MASK` and not one `BLEND`. Every material in the corpus is `OPAQUE`. The profile's [Transparency](../docs/profile.md#transparency) section of the profile is legislating for a case that this corpus never exercises -- which is either a reason to keep the rule cheap, or a warning that we are the ones who will find the bugs.
 
 Meanwhile 462 of those 601 materials are `doubleSided`. Gazebo honors `doubleSided` only on a `MASK` material, and there are none, so four fifths of the materials in this corpus are asking for two-sided rendering and being back-face culled instead. Nobody appears to have noticed, which suggests the geometry has thickness anyway and the flag is a Blender default rather than an intent. It also means the spec's advice that thin geometry needs thickness is the right advice, and that it is being followed accidentally.
 
@@ -113,7 +113,7 @@ Both predictions cannot be right, and this is the one asset that settles it. The
 
 **Settled, 2026-09-18.** Run through `glb_probe` against the installed gz-common, `Distribution_Warehouse` loads. The probe reports 3,010 submeshes, 19 materials and a bounding box of roughly 62 by 74 by 13 metres, with no error and no refusal, from a file whose `extensionsRequired` is `["KHR_texture_transform"]`. So the glTF specification's requirement -- that a conforming reader refuse a file requiring an extension it does not implement -- is not what Gazebo does, and the reading of the code in the review was right.
 
-That changes what section 10's prohibition is for. It is not protecting us from a file that will fail to load; it is protecting us from one that loads and is quietly wrong, which is the worse case and the harder one to notice. The rule stands and its reason should be restated in those terms.
+That changes what the profile's [Prohibited content](../docs/profile.md#prohibited-content) section's prohibition is for. It is not protecting us from a file that will fail to load; it is protecting us from one that loads and is quietly wrong, which is the worse case and the harder one to notice. The rule stands and its reason should be restated in those terms.
 
 Two things the probe does not settle. Whether the textures actually land in the wrong place needs a rendered view, since the loader reports what it built and not what it looks like; the prediction is that the transform is dropped and the textures are misplaced. And the same file carries two UV sets and 3,010 root nodes, so it violates several other sections independently -- it is a probe of one rule, not a representative delivery.
 
@@ -121,27 +121,27 @@ Two things the probe does not settle. Whether the textures actually land in the 
 
 Counted by image rather than by use, normal maps are 38 JPEG to 4 PNG, and metallic-roughness maps 39 JPEG to 6 PNG. Base color is 45 JPEG to 13 PNG, which is the one slot where JPEG is defensible. The 10 to 13 KTX2 images in each slot are all from the Khronos probe and are nobody's practice.
 
-This is the sharpest spec-versus-practice disagreement in the assessment, and it is not close. Profile section 8 and REP-158 both require PNG for linear data; the corpus, including every asset the Gazebo team ships, uses JPEG. Nothing here changes the physics -- chroma subsampling really does blend channels that have nothing to do with each other -- but it does settle how the rule should be written. It is a rule about what we accept, not a description of what arrives, and the spec already says so. What it should add is that the remedy is a re-export from the source texture, because converting a JPEG normal map to PNG preserves the damage.
+This is the sharpest spec-versus-practice disagreement in the assessment, and it is not close. The profile's [Textures](../docs/profile.md#textures) section and REP-158 both require PNG for linear data; the corpus, including every asset the Gazebo team ships, uses JPEG. Nothing here changes the physics -- chroma subsampling really does blend channels that have nothing to do with each other -- but it does settle how the rule should be written. It is a rule about what we accept, not a description of what arrives, and the spec already says so. What it should add is that the remedy is a re-export from the source texture, because converting a JPEG normal map to PNG preserves the damage.
 
 Seven assets exceed the 2048 texture cap, all at 4096, and all in the Gazebo and warehouse cohort. There is no size discipline anywhere in the corpus: one warehouse is 85 MB in a single visual.
 
-### Structure: the rules in section 5.5 are broken by export default
+### Structure: the rules in the profile's [Scenes and nodes](../docs/profile.md#scenes-and-nodes) section are broken by export default
 
 Counted over the 42 assets in scope, which is the denominator [ASSESSMENT.md](ASSESSMENT.md) uses for every figure below: the corpus is 49 assets, 5 are excluded as more than three years stale, and the 2 Khronos reference assets are read individually as a control on the tool rather than as evidence about the community.
 
 15 of 42 carry a rotation or matrix on the root node, which is the Blender Y-up conversion node nobody removes, and 22 of 42 carry a root scale. Exactly half, 21 of 42, have the shape our spec requires: one root node, named, unrotated.
 
-Two structural findings cut the other way, in favour of rules we have. The primitive count equals the material count in 35 of 42, which is the rule section 6.3 now states, free of charge. And nothing in the corpus uses more than one scene, has an animation, a skin, a camera or vertex colors, or a non-triangle primitive, and only two assets carry tangents. Leaving aside the two probes, which were chosen to violate it, the prohibitions in section 10 cost the corpus nothing at all.
+Two structural findings cut the other way, in favour of rules we have. The primitive count equals the material count in 35 of 42, which is the rule the profile's [Primitives and submeshes](../docs/profile.md#primitives-and-submeshes) section now states, free of charge. And nothing in the corpus uses more than one scene, has an animation, a skin, a camera or vertex colors, or a non-triangle primitive, and only two assets carry tangents. Leaving aside the two probes, which were chosen to violate it, the prohibitions in the profile's [Prohibited content](../docs/profile.md#prohibited-content) section cost the corpus nothing at all.
 
 12 of 42 have primitives sharing a node name, so an SDF `<submesh>` selection on those names would take the first and silently drop the rest. That is the upstream naming defect, live in 29% of the corpus.
 
-Two rules tightened since these were measured, and the corpus diverges from both more than the figures above suggest. Section 5.5 now requires exactly **one** node with no children and no transform of any kind, where it previously allowed children and tolerated a root translation: 11 of the assets carry actual child-node hierarchies, and the deepest runs to 148 nodes at depth 4. Section 5.2 now requires a Z-up file, which every asset here fails by construction, since all of them follow glTF's convention. Neither divergence is a defect in those assets. They were authored to the standard; this profile departs from it, and the departure is stated in 5.2.
+Two rules tightened since these were measured, and the corpus diverges from both more than the figures above suggest. The profile's [Scenes and nodes](../docs/profile.md#scenes-and-nodes) section now requires exactly **one** node with no children and no transform of any kind, where it previously allowed children and tolerated a root translation: 11 of the assets carry actual child-node hierarchies, and the deepest runs to 148 nodes at depth 4. The profile's [Axes](../docs/profile.md#axes) section now requires a Z-up file, which every asset here fails by construction, since all of them follow glTF's convention. Neither divergence is a defect in those assets. They were authored to the standard; this profile departs from it, and the departure is stated in 5.2.
 
 ### Scale is not reliably meters, and one asset is visibly wrong
 
 `rosbot/body` measures 214 x 166 x 199, `tri/skydio_2` 133 x 161 x 30: both are millimeter files corrected downstream by a URDF `scale`, which husarion does deliberately and documents. glTF says meters, and neither file is at meters.
 
-`jetty/Picking_Bin` looked like a third case at 8 x 18 x 9 meters on 36 triangles, and is not: its `model.sdf` places hand-authored colliders 8 x 17.3 x 9 meters around it, so the file is internally consistent and it is the name that misleads. That is the more useful lesson. An extent measurement catches a file that disagrees with itself, and this one does not; what would catch a wrong scale is a cited dimensional figure per part, which is exactly the open question in spec section 4.1.
+`jetty/Picking_Bin` looked like a third case at 8 x 18 x 9 meters on 36 triangles, and is not: its `model.sdf` places hand-authored colliders 8 x 17.3 x 9 meters around it, so the file is internally consistent and it is the name that misleads. That is the more useful lesson. An extent measurement catches a file that disagrees with itself, and this one does not; what would catch a wrong scale is a cited dimensional figure per part, which is exactly the open question in the profile's [File](../docs/profile.md#file) section.
 
 ### What it cost
 
@@ -153,13 +153,13 @@ The whole corpus is 309 MB of asset and was assessed by fetching 75 MB of it, in
 
 In rough order of how much the evidence moves:
 
-1. Section 6.1, the [0,1] UV rule. The corpus says it forbids a technique in normal use, including by the Gazebo team. Keep it, but state the cost and the reason rather than implying consensus.
-2. Section 10, the `extensionsRequired` prohibition. Run `Distribution_Warehouse` through `glb_probe` before the rule is finalized; the prediction in the review and the prediction in the glTF spec disagree, and one file settles it.
-3. Section 9, transparency. The corpus has no `MASK` and no `BLEND` at all, and 79 percent `doubleSided` that Gazebo ignores. The open question in profile section 9 can be settled on our own terms; there is no practice to defer to.
-4. Section 8, texture format. Unchanged in substance, sharper in framing: state that conforming deliveries will be the exception, and that the remedy is a re-export rather than a conversion.
-5. Section 6.3, one primitive per material. Now measured at 41 of 49 in the wild, so the proposed rule is free.
-6. Section 5.1, scale. Two files in the corpus are in millimeters by design and one appears to be wrong by a factor of a hundred. A measured extent check belongs in the acceptance tooling.
-7. Section 5.5, the single unrotated root node. Fewer than half the corpus complies, and the failures are export defaults rather than decisions. The rule stands; the note should say that a delivery arriving without it is normal and is fixed at export, not in review.
+1. The profile's [UV sets](../docs/profile.md#uv-sets) section, the [0,1] UV rule. The corpus says it forbids a technique in normal use, including by the Gazebo team. Keep it, but state the cost and the reason rather than implying consensus.
+2. The profile's [Prohibited content](../docs/profile.md#prohibited-content) section, the `extensionsRequired` prohibition. Run `Distribution_Warehouse` through `glb_probe` before the rule is finalized; the prediction in the review and the prediction in the glTF spec disagree, and one file settles it.
+3. The profile's [Transparency](../docs/profile.md#transparency) section, transparency. The corpus has no `MASK` and no `BLEND` at all, and 79 percent `doubleSided` that Gazebo ignores. The open question in the profile's [Transparency](../docs/profile.md#transparency) section can be settled on our own terms; there is no practice to defer to.
+4. The profile's [Textures](../docs/profile.md#textures) section, texture format. Unchanged in substance, sharper in framing: state that conforming deliveries will be the exception, and that the remedy is a re-export rather than a conversion.
+5. The profile's [Primitives and submeshes](../docs/profile.md#primitives-and-submeshes) section, one primitive per material. Now measured at 41 of 49 in the wild, so the proposed rule is free.
+6. The profile's [Units](../docs/profile.md#units) section, scale. Two files in the corpus are in millimeters by design and one appears to be wrong by a factor of a hundred. A measured extent check belongs in the acceptance tooling.
+7. The profile's [Scenes and nodes](../docs/profile.md#scenes-and-nodes) section, the single unrotated root node. Fewer than half the corpus complies, and the failures are export defaults rather than decisions. The rule stands; the note should say that a delivery arriving without it is normal and is fixed at export, not in review.
 
 ## Open threads
 

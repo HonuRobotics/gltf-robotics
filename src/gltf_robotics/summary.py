@@ -214,7 +214,7 @@ def transform_lines(transform, indent="        "):
     This is the map from node space to scene space, so when the two geometry
     blocks below disagree these are the numbers that account for it. All three
     are printed even when they are identity, because a reader checking a file
-    against profile 5.5 should not have to infer a component's value from its
+    against the profile's Scenes and nodes section should not have to infer a component's value from its
     absence from the report.
 
     Stated and defaulted are still distinguished, because 5.5 prohibits all four
@@ -289,7 +289,7 @@ Reading the output
   numbers in the two spaces, so where a node carries a transform the report gives
   both blocks. Every node's transform is printed beneath it, component by component
   and whether the file states it or not, so the difference can be accounted for. Where no node carries a transform the two spaces coincide and one
-  block is given, which is what profile 5.5 is asking for.
+  block is given, which is what the profile's Scenes and nodes section is asking for.
 
   Scene, node, mesh, primitive. A scene lists the root nodes a viewer should draw.
   A node is a coordinate system with an optional transform; it may instantiate one
@@ -411,7 +411,7 @@ def render(s):
                 f"union over {n}, after the node transform above"))
             out.append("")
             out.append("  the two blocks differ only because a node carries a "
-                       "transform; profile 5.5 requires")
+                       "transform; the profile's Scenes and nodes section requires")
             out.append("  exactly one node with no transform, so that they cannot")
         else:
             out.extend(geometry_block(
@@ -434,7 +434,7 @@ def render(s):
             if m["textures"]:
                 out.append(f"       textures: {', '.join(m['textures'])}")
     else:
-        # No editorial: what an absent material renders as is gltf-check's section 7.
+        # No editorial: what an absent material renders as is gltf-check's the profile's Materials section.
         out.append("  materials: none")
 
     if s["images"]:

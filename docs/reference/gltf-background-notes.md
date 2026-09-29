@@ -69,7 +69,7 @@ Scale, from our own measurements: the one 2048 PNG base color in the library is 
 
 The Blender exporter inherits the format from the source image, which is why the library is 31 JPEG to 2 PNG: this is a texture-authoring decision, not an export-dialog one.
 
-**This is the texture format question in profile section 8, and REP-0158 gives it an external authority we thought it lacked** - see the note at the bottom of this file. It mandates lossless PNG for normal, metallic, roughness and packed ORM, and permits JPEG only for color maps without alpha. That is the table above, arrived at independently.
+**This is the texture format question in the profile's [Textures](../profile.md#textures) section, and REP-0158 gives it an external authority we thought it lacked** - see the note at the bottom of this file. It mandates lossless PNG for normal, metallic, roughness and packed ORM, and permits JPEG only for color maps without alpha. That is the table above, arrived at independently.
 
 Q: What would be your proposed guidelines for asset authors?   Draft a guideline, when it is obvious to use one or the other and when there might be good reasons to use either.
 
@@ -204,7 +204,7 @@ Both RGBA maps are defects, in opposite directions. `blueboat_chassis` is case 1
 
 One consequence for the format rule. The alpha requirement does not make PNG the default for base color across the board; it makes PNG mandatory for the small number of materials that are genuinely `MASK`. Fourteen of fifteen parts here are `OPAQUE` and have no alpha requirement at all - their base color format is decided on the size and quality grounds above, not on this one.
 
-> **Flag - Gazebo.** Profile section 9 records that Gazebo honors `MASK` and ignores `BLEND` entirely, rendering the material opaque, and that uniform opacity reaches it through `baseColorFactor` alpha on any alpha mode but is applied twice, so 0.5 renders at about 0.25. If that still holds, case 2 above is not reachable in Gazebo as the spec describes it, and the open question is the one in profile section 9, not this one.
+> **Flag - Gazebo.** The profile's [Transparency](../profile.md#transparency) section records that Gazebo honors `MASK` and ignores `BLEND` entirely, rendering the material opaque, and that uniform opacity reaches it through `baseColorFactor` alpha on any alpha mode but is applied twice, so 0.5 renders at about 0.25. If that still holds, case 2 above is not reachable in Gazebo as the spec describes it, and the open question is the one in the profile's [Transparency](../profile.md#transparency) section, not this one.
 
 Q: "JPEG fine at high quality" is vague. Can we be more explicit?
 
@@ -289,7 +289,7 @@ Status and weight: Draft, 2026-03-03, authors from Robotec.ai, NVIDIA and Ekumen
 
 Three things in it we should act on regardless of whether we ever touch USD:
 
-1. **It is an external authority for the texture format rule in profile section 8.** *"Lossless PNG"* is mandated for normal, metallic, roughness and packed ORM maps; JPEG is permitted only for color maps without alpha. We had concluded the budget row had no authority outside this project. On texture format, it now has one, and it agrees with the analysis above.
+1. **It is an external authority for the texture format rule in the profile's [Textures](../profile.md#textures) section.** *"Lossless PNG"* is mandated for normal, metallic, roughness and packed ORM maps; JPEG is permitted only for color maps without alpha. We had concluded the budget row had no authority outside this project. On texture format, it now has one, and it agrees with the analysis above.
 2. **It supports our +X forward decision.** It requires ROS convention throughout - X forward, Y left, Z up - for exactly the reason we did: the frame is the interface. Note its Z-up applies to the USD *stage*, not to a glTF file, so there is no conflict with our Y-up rule; they are different layers.
 3. **Several of its rules are already ours**: unique UVs packed into [0,1], triangulated geometry, no HDR texture formats.
 
@@ -356,7 +356,7 @@ What the other 51 glTF files tell us, all of them props, scenes or test uploads.
 - **Container**: 53 GLB to 1 `.gltf` plus `.bin`, and the one non-GLB is the broken one.
 - **Tooling**: 50 of 54 from the Blender glTF exporter, versions 3.3 through 5.1. Two from Sketchfab, one from Unity. No pipeline diversity to learn from.
 - **Scope actually used**: zero animations, zero skins, zero cameras, across every file. Every primitive is mode 4. Exactly one primitive in the entire corpus carries `TANGENT`, which agrees with what `glb_probe` found about our own loader.
-- **Texture format**: 5,429 JPEG images against 95 PNG. Forty-four of the 54 carry normal maps and 37 carry packed metallic-roughness maps, overwhelmingly as JPEG. This contradicts profile section 8 and REP-0158 head-on. It does not overturn either - a corpus of warehouse props is not evidence about correctness - but it does say that assets delivered to us by anyone working in the normal way will arrive with JPEG normal maps, so the spec needs to state the rule and the remedy rather than assume the toolchain produces PNG.
+- **Texture format**: 5,429 JPEG images against 95 PNG. Forty-four of the 54 carry normal maps and 37 carry packed metallic-roughness maps, overwhelmingly as JPEG. This contradicts the profile's [Textures](../profile.md#textures) section and REP-0158 head-on. It does not overturn either - a corpus of warehouse props is not evidence about correctness - but it does say that assets delivered to us by anyone working in the normal way will arrive with JPEG normal maps, so the spec needs to state the rule and the remedy rather than assume the toolchain produces PNG.
 - **The metalness default trap is live**: 128 materials across 9 models leave `metallicFactor` unset, so 1.0, with no metallic-roughness texture to override it. `dhyutin/trial` is 8 of 8; `proque/atmos` is 80 of 404. The same defect we found in four of fifteen delivered parts.
 - **Extensions**: `KHR_materials_specular` in 29 models, `KHR_materials_ior` in 13, `KHR_materials_transmission` in 9, `KHR_texture_transform` in 6, `KHR_materials_unlit` in 2. Five models put `KHR_texture_transform` in `extensionsRequired` rather than `extensionsUsed`, which a spec-compliant reader must refuse to load outright. Those five are a ready-made conformance probe for what Gazebo actually does - `OpenRobotics/Distribution_Warehouse` is the convenient one.
 

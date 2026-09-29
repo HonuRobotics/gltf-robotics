@@ -30,9 +30,9 @@ Who made the file, with what, and what it claims to be. Cheap, and it explains m
 
 | id | What we measure | Why we want to know | From |
 |---|---|---|---|
-| A1 | `asset.version` | Anything but `2.0` is not a file we can read. Spec 4.3. | tool |
-| A2 | `asset.minVersion` present | A hard load failure in a consumer that would otherwise have coped. Spec 4.3 turns on how often this appears in practice. | tool |
-| A3 | `asset.generator` | The single best predictor of every material and texture defect. Spec 11 proposes pinning a toolchain; this says how much variety is out there. | tool |
+| A1 | `asset.version` | Anything but `2.0` is not a file we can read. The profile's [Asset header](../docs/profile.md#asset-header) section. | tool |
+| A2 | `asset.minVersion` present | A hard load failure in a consumer that would otherwise have coped. The profile's [Asset header](../docs/profile.md#asset-header) section turns on how often this appears in practice. | tool |
+| A3 | `asset.generator` | The single best predictor of every material and texture defect. The profile's [Authoring toolchain](../docs/profile.md#authoring-toolchain) section proposes pinning a toolchain; this says how much variety is out there. | tool |
 | A4 | `asset.copyright`, and the license beside the file | Whether an asset can be used as a reference, or only read. | judgement |
 | A5 | Where it came from, and who maintains it | An asset from the Gazebo team is evidence about Gazebo; an asset from a props marketplace is not. | judgement |
 
@@ -42,11 +42,11 @@ The one decision that is settled in our spec and contested everywhere else.
 
 | id | What we measure | Why we want to know | From |
 |---|---|---|---|
-| B1 | Container: self-contained `.glb`, or `.gltf` with side files | Spec 4.2 requires `.glb`. Drake refuses `.glb` outright and TRI and JPL both ship `.gltf` plus `.bin`, so this is the live disagreement. | tool |
+| B1 | Container: self-contained `.glb`, or `.gltf` with side files | The profile's [File format](../docs/profile.md#file-format) section requires `.glb`. Drake refuses `.glb` outright and TRI and JPL both ship `.gltf` plus `.bin`, so this is the live disagreement. | tool |
 | B2 | Referenced files that do not resolve | The failure mode `.glb` exists to prevent. Fuel's only articulated glTF robot ships a 404 texture. | tool |
-| B3 | Images embedded or external | Profile 4.2 requires embedded images and marks external ones Open: Future. Worth knowing whether anybody mixes the two. | tool |
+| B3 | Images embedded or external | The profile's [File format](../docs/profile.md#file-format) section requires embedded images and marks external ones Open: Future. Worth knowing whether anybody mixes the two. | tool |
 | B4 | File size, and the geometry-to-texture split | Textures are 59 percent of our own bytes. Whether that ratio holds elsewhere decides whether external images would actually buy anything. | tool |
-| B5 | Number of files per model, and per link | The per-link-mesh versus one-file-plus-`<submesh>` question in spec 5.5 and 6.3. Fuel is 92 percent one file per link. | planned |
+| B5 | Number of files per model, and per link | The per-link-mesh versus one-file-plus-`<submesh>` question in the profile's [Scenes and nodes](../docs/profile.md#scenes-and-nodes) and [Primitives and submeshes](../docs/profile.md#primitives-and-submeshes) sections. Fuel is 92 percent one file per link. | planned |
 | B6 | Whether an SDF or URDF ships beside the asset, and what it declares | Whether `<material>`, `<pbr>` or `<submesh>` appear at all. Directly against the workspace `<pbr>`-in-SDF rule. | planned |
 
 ## C. Scene and node structure
@@ -55,13 +55,13 @@ What the file is, as a tree. This is the group that decides whether anything dow
 
 | id | What we measure | Why we want to know | From |
 |---|---|---|---|
-| C1 | Scene count and which is default | Spec 5.5 requires exactly one. Leftover empty scenes are a common export artifact. | tool |
-| C2 | Root node count | Spec 5.5 requires exactly one. | tool |
-| C2a | Total node count, and whether any node has children | Spec 5.5 requires exactly one node and no children. C2 alone passes a file that hangs a hierarchy under one root, which the rule no longer permits. | tool |
-| C3 | Root node carries `rotation` or `matrix` | Spec 5.5 forbids the key, whatever its value, so this is measured on presence and an identity rotation counts. Two reasons: the two consumers compose a root transform in opposite orders, and `gltf_to_yup.py` refuses such a file. | tool |
-| C4 | Root node carries a `translation` or a `scale` | Spec 5.5 forbids these too, so all four transform keys are now one rule. Scale in the transform rather than the mesh data is silently wrong in anything reading accessor bounds — Fuel's Caddy bakes 0.0255 into every node — and `gltf_to_yup.py` ignores scale entirely, so it survives conversion unrotated. | tool |
-| C5 | Node count, depth, and duplicate names | Depth and duplication are what made `<submesh>` selection ambiguous, which spec 6.3 now rules out; the measurement stays, as the evidence for that rule and as the way C2a is reported. | tool |
-| C6 | Primitives sharing a node name | Gazebo names a submesh after its node, so these are indistinguishable to SDF: the selection takes the first and silently drops the rest. Spec 6.3. | tool |
+| C1 | Scene count and which is default | The profile's [Scenes and nodes](../docs/profile.md#scenes-and-nodes) section requires exactly one. Leftover empty scenes are a common export artifact. | tool |
+| C2 | Root node count | The profile's [Scenes and nodes](../docs/profile.md#scenes-and-nodes) section requires exactly one. | tool |
+| C2a | Total node count, and whether any node has children | The profile's [Scenes and nodes](../docs/profile.md#scenes-and-nodes) section requires exactly one node and no children. C2 alone passes a file that hangs a hierarchy under one root, which the rule no longer permits. | tool |
+| C3 | Root node carries `rotation` or `matrix` | The profile's [Scenes and nodes](../docs/profile.md#scenes-and-nodes) section forbids the key, whatever its value, so this is measured on presence and an identity rotation counts. Two reasons: the two consumers compose a root transform in opposite orders, and `gltf_to_yup.py` refuses such a file. | tool |
+| C4 | Root node carries a `translation` or a `scale` | The profile's [Scenes and nodes](../docs/profile.md#scenes-and-nodes) section forbids these too, so all four transform keys are now one rule. Scale in the transform rather than the mesh data is silently wrong in anything reading accessor bounds — Fuel's Caddy bakes 0.0255 into every node — and `gltf_to_yup.py` ignores scale entirely, so it survives conversion unrotated. | tool |
+| C5 | Node count, depth, and duplicate names | Depth and duplication are what made `<submesh>` selection ambiguous, which the profile's [Primitives and submeshes](../docs/profile.md#primitives-and-submeshes) section now rules out; the measurement stays, as the evidence for that rule and as the way C2a is reported. | tool |
+| C6 | Primitives sharing a node name | Gazebo names a submesh after its node, so these are indistinguishable to SDF: the selection takes the first and silently drops the rest. The profile's [Primitives and submeshes](../docs/profile.md#primitives-and-submeshes) section. | tool |
 | C7 | Node names that an exporter invented (`Cylinder002`) | Whether anything in the file is addressable at all. Fuel's Ionic Mascot has 148 such nodes. | tool |
 | C8 | Mesh instancing: one mesh used by several nodes | Changes what the loader builds, and what a triangle count means. | tool |
 | C9 | Meshes reachable from no scene | Dead weight that still costs bytes. | tool |
@@ -70,12 +70,12 @@ What the file is, as a tree. This is the group that decides whether anything dow
 
 | id | What we measure | Why we want to know | From |
 |---|---|---|---|
-| D1 | Overall extent in meters | Whether the file is at real-world scale. Spec 5.1. A model in millimeters corrected by a URDF `scale` is a real pattern, not a mistake: husarion does it deliberately. | tool |
-| D2 | Where the origin sits inside the bounding box, per axis, as a fraction | Spec 5.4 is open on where a part's origin should sit. Reported as a reading -- "centered in X, centered in Y, on the -Z face" -- because that is the form a convention is written in. | tool |
-| D3 | Which file axis is up | glTF says Y-up and every consumer assumes it. A Z-up file renders correctly in one consumer and wrong in the other, and no measurement can tell them apart: both are a box of triangles. Spec 5.2. | rig |
-| D4 | Which file axis the part faces | Spec 5.3 is the one candidate departure from glTF. Whether anybody in the corpus faces +Z would settle it, and only a person who recognizes the front of a forklift can say. | rig |
+| D1 | Overall extent in meters | Whether the file is at real-world scale. The profile's [Units](../docs/profile.md#units) section. A model in millimeters corrected by a URDF `scale` is a real pattern, not a mistake: husarion does it deliberately. | tool |
+| D2 | Where the origin sits inside the bounding box, per axis, as a fraction | The profile's [Origin](../docs/profile.md#origin) section is open on where a part's origin should sit. Reported as a reading -- "centered in X, centered in Y, on the -Z face" -- because that is the form a convention is written in. | tool |
+| D3 | Which file axis is up | glTF says Y-up and every consumer assumes it. A Z-up file renders correctly in one consumer and wrong in the other, and no measurement can tell them apart: both are a box of triangles. The profile's [Axes](../docs/profile.md#axes) section. | rig |
+| D4 | Which file axis the part faces | The profile's [Forward axis](../docs/profile.md#forward-axis) section is the one candidate departure from glTF. Whether anybody in the corpus faces +Z would settle it, and only a person who recognizes the front of a forklift can say. | rig |
 | D5 | Scale baked into node transforms rather than vertices | See C4; recorded separately because it is a units question as well as a structural one. | tool |
-| D6 | What the origin sits on, in the part's own terms | The other half of D2, and the half that matters: "on the -Z face" is only useful once somebody says that face is the wheel contact plane. Spec 5.4's proposed convention is stated in these terms. | rig |
+| D6 | What the origin sits on, in the part's own terms | The other half of D2, and the half that matters: "on the -Z face" is only useful once somebody says that face is the wheel contact plane. The profile's [Origin](../docs/profile.md#origin) section's proposed convention is stated in these terms. | rig |
 | D7 | Whether our `gltf_up:=z` rotation makes the part stand up | The rule in `parts.xacro` is a bet about what arrives. The rig applies it beside the untouched file, so the bet is visible rather than assumed. | rig |
 
 ### Determining the origin and orientation by eye
@@ -103,7 +103,7 @@ Two copies rather than one, because the interesting answer is usually comparativ
 
 1. Run the rig command and read the three lines it prints: extent, the measured origin reading, and the marker legend.
 2. Open the Gazebo world. Look down each marker arm in turn. Decide which file axis points up, and which the front of the part faces. If the part has no front -- a drum, a pallet, a bin -- say so and leave forward empty rather than inventing one.
-3. Name what the origin sits on in the part's own terms: the wheel contact plane, the base of the mast, the mounting flange, the centroid. This is the answer spec 5.4 is asking for, and it is the one nothing else in the assessment can produce.
+3. Name what the origin sits on in the part's own terms: the wheel contact plane, the base of the mast, the mounting flange, the centroid. This is the answer the profile's [Origin](../docs/profile.md#origin) section is asking for, and it is the one nothing else in the assessment can produce.
 4. Open the same rig in RViz. The two consumers do not agree: the Y-up rotation that RViz applies to a glTF mesh merged to `rolling` on 2025-06-16 and was not backported, so a part that stands up in Gazebo may be ninety degrees off in RViz depending on the distribution. Note the distribution you looked at.
 5. Record the answers in `visual-notes.yaml`, in the file's own axes rather than in ROS axes, because the file is what is being described. Date it and sign it. An entry with a date and no answers is a useful record too: it says somebody looked and could not tell.
 
@@ -126,15 +126,15 @@ The corpus table of measured readings is the cheap way to choose what to look at
 
 | id | What we measure | Why we want to know | From |
 |---|---|---|---|
-| E1 | Primitive modes | Spec 6 requires triangles. Everything in Fuel is mode 4, so the rule may be free. | tool |
-| E2 | Attributes present: `POSITION`, `NORMAL`, `TEXCOORD_0`, `TANGENT`, `COLOR_n`, joints and weights | Spec 6. Missing normals are generated on import and discard the author's intent. Tangents are never read by our consumers; exactly one primitive in Fuel carries them. | tool |
-| E3 | UV set count | Spec 6.1 allows a second set only for a baked occlusion lightmap. | tool |
-| E4 | UV range, and whether coordinates leave [0,1] | Spec 6.1 and REP-158 both require [0,1]. Outside that range, tiling depends on sampler wrap modes. | tool+geo |
+| E1 | Primitive modes | The profile's [Geometry](../docs/profile.md#geometry) section requires triangles. Everything in Fuel is mode 4, so the rule may be free. | tool |
+| E2 | Attributes present: `POSITION`, `NORMAL`, `TEXCOORD_0`, `TANGENT`, `COLOR_n`, joints and weights | The profile's [Geometry](../docs/profile.md#geometry) section. Missing normals are generated on import and discard the author's intent. Tangents are never read by our consumers; exactly one primitive in Fuel carries them. | tool |
+| E3 | UV set count | The profile's [UV sets](../docs/profile.md#uv-sets) section allows a second set only for a baked occlusion lightmap. | tool |
+| E4 | UV range, and whether coordinates leave [0,1] | The profile's [UV sets](../docs/profile.md#uv-sets) section and REP-158 both require [0,1]. Outside that range, tiling depends on sampler wrap modes. | tool+geo |
 | E5 | UV shell fill: the fraction of the map the shells land on | Texture memory paid for and not used. `glb_inventory.py` already reports this for our own files. | planned |
-| E6 | Triangle and vertex counts | Spec 6.2 has no defensible budget yet. The corpus ranges over four orders of magnitude, which is itself the finding. | tool |
+| E6 | Triangle and vertex counts | The profile's [Budgets](../docs/profile.md#budgets) section has no defensible budget yet. The corpus ranges over four orders of magnitude, which is itself the finding. | tool |
 | E7 | Index component type | A `uint32` index buffer on a small mesh is waste; `uint16` on a large one is a correctness question. | tool |
-| E8 | Degenerate, zero-area triangles | Spec 6 says they should not be there. | planned |
-| E9 | Primitive count against material count | Spec 6.3 proposes that a primitive exists only to carry a distinct material. Whether the corpus splits primitives for other reasons tells us if the rule is free. | tool |
+| E8 | Degenerate, zero-area triangles | The profile's [Geometry](../docs/profile.md#geometry) section says they should not be there. | planned |
+| E9 | Primitive count against material count | The profile's [Primitives and submeshes](../docs/profile.md#primitives-and-submeshes) section proposes that a primitive exists only to carry a distinct material. Whether the corpus splits primitives for other reasons tells us if the rule is free. | tool |
 
 ## F. Materials
 
@@ -142,15 +142,15 @@ The group with the highest defect rate in every corpus looked at so far, includi
 
 | id | What we measure | Why we want to know | From |
 |---|---|---|---|
-| F1 | Primitives with no material | Render as white metal, with no fallback. Spec 7. | tool |
-| F2 | Materials metallic with no metallic-roughness texture to override it, split by whether `metallicFactor` was declared at all | The single most damaging defect we have found, in our own library and in Fuel. The glTF default is 1.0, so silence means metal. Spec 7. | tool |
-| F3 | Materials carrying a texture but no `baseColorTexture` | RViz terminates on one. A target constraint rather than a glTF rule. Spec 7. | tool |
-| F4 | Specular-glossiness workflow | Prohibited by spec 7, and long deprecated by Khronos. | tool |
-| F5 | `alphaMode` distribution | Gazebo honors `MASK` and ignores `BLEND` entirely, rendering it opaque. Spec 9. | tool |
-| F6 | `baseColorFactor` alpha below 1 | How uniform translucency actually reaches Gazebo -- and it is applied twice, so 0.5 renders at about 0.25. Profile 9. | tool |
+| F1 | Primitives with no material | Render as white metal, with no fallback. The profile's [Materials](../docs/profile.md#materials) section. | tool |
+| F2 | Materials metallic with no metallic-roughness texture to override it, split by whether `metallicFactor` was declared at all | The single most damaging defect we have found, in our own library and in Fuel. The glTF default is 1.0, so silence means metal. The profile's [Materials](../docs/profile.md#materials) section. | tool |
+| F3 | Materials carrying a texture but no `baseColorTexture` | RViz terminates on one. A target constraint rather than a glTF rule. The profile's [Materials](../docs/profile.md#materials) section. | tool |
+| F4 | Specular-glossiness workflow | Prohibited by the profile's [Materials](../docs/profile.md#materials) section, and long deprecated by Khronos. | tool |
+| F5 | `alphaMode` distribution | Gazebo honors `MASK` and ignores `BLEND` entirely, rendering it opaque. The profile's [Transparency](../docs/profile.md#transparency) section. | tool |
+| F6 | `baseColorFactor` alpha below 1 | How uniform translucency actually reaches Gazebo -- and it is applied twice, so 0.5 renders at about 0.25. The profile's [Transparency](../docs/profile.md#transparency) section. | tool |
 | F7 | `doubleSided` | Honored only on a `MASK` material; everything else is back-face culled, so thin geometry needs thickness. | tool |
-| F8 | `normalTexture.scale`, `occlusionTexture.strength` | Spec 7 requires 1.0 because neither consumer reads them, so a baked value is a silent difference between viewers. | tool |
-| F9 | Whether uniform properties are delivered as factors or as uniform textures | A texture whose every texel is identical is a factor written the long way. All seven of our own metallic-roughness maps are uniform. Spec 7. | planned |
+| F8 | `normalTexture.scale`, `occlusionTexture.strength` | The profile's [Materials](../docs/profile.md#materials) section requires 1.0 because neither consumer reads them, so a baked value is a silent difference between viewers. | tool |
+| F9 | Whether uniform properties are delivered as factors or as uniform textures | A texture whose every texel is identical is a factor written the long way. All seven of our own metallic-roughness maps are uniform. The profile's [Materials](../docs/profile.md#materials) section. | planned |
 | F10 | Material names | Hygiene only -- neither consumer reads them -- but a name like `Material.003` says what the authoring process was. | tool |
 | F11 | Unused materials | Export residue. | tool |
 
@@ -158,23 +158,23 @@ The group with the highest defect rate in every corpus looked at so far, includi
 
 | id | What we measure | Why we want to know | From |
 |---|---|---|---|
-| G1 | Image format per map slot | Spec 8 and REP-158 both require PNG for normal, metallic-roughness and occlusion. The corpus overwhelmingly ships JPEG. This is the sharpest spec-versus-practice disagreement we have. | tool |
-| G2 | Formats that do not load: KTX2, Basis, WebP, DDS | The part loads untextured with an error naming an unsupported format. TRI ships 48 KTX2 textures. Spec 8. | tool |
-| G3 | Pixel dimensions per map | Spec 8 caps at 2048. Nobody else appears to have a cap. | tool |
+| G1 | Image format per map slot | The profile's [Textures](../docs/profile.md#textures) section and REP-158 both require PNG for normal, metallic-roughness and occlusion. The corpus overwhelmingly ships JPEG. This is the sharpest spec-versus-practice disagreement we have. | tool |
+| G2 | Formats that do not load: KTX2, Basis, WebP, DDS | The part loads untextured with an error naming an unsupported format. TRI ships 48 KTX2 textures. The profile's [Textures](../docs/profile.md#textures) section. | tool |
+| G3 | Pixel dimensions per map | The profile's [Textures](../docs/profile.md#textures) section caps at 2048. Nobody else appears to have a cap. | tool |
 | G4 | Texel density, in texels per millimeter of surface | Pixel count alone does not say whether a map is over- or under-sampled. `glb_inventory.py` computes this for our own files. | planned |
 | G5 | Decoded texture memory | What the GPU actually spends, which the encoded byte count in the file does not tell you. | tool |
-| G6 | ORM packing: occlusion, roughness and metalness in one image | Spec 8 permits it, and it is the efficient form. How common is it? | planned |
-| G7 | Alpha channel on an `OPAQUE` material's base color | glTF ignores it, and a reader cannot tell whether it was meant. Spec 8. | planned |
+| G6 | ORM packing: occlusion, roughness and metalness in one image | The profile's [Textures](../docs/profile.md#textures) section permits it, and it is the efficient form. How common is it? | planned |
+| G7 | Alpha channel on an `OPAQUE` material's base color | glTF ignores it, and a reader cannot tell whether it was meant. The profile's [Textures](../docs/profile.md#textures) section. | planned |
 | G8 | Sampler wrap modes | REPEAT plus UVs outside [0,1] is deliberate tiling; REPEAT with UVs inside is just the default nobody changed. | tool |
-| G9 | Image names | The only signal a reviewer has for telling maps apart. Spec 8. | tool |
+| G9 | Image names | The only signal a reviewer has for telling maps apart. The profile's [Textures](../docs/profile.md#textures) section. | tool |
 
 ## H. Extensions
 
 | id | What we measure | Why we want to know | From |
 |---|---|---|---|
-| H1 | `extensionsRequired`, and what is in it | Spec 10 forbids a non-empty array. A conforming reader must refuse such a file outright; five models in Fuel do this by accident. What Gazebo actually does with one is worth probing. | tool |
-| H2 | Draco compression | Decodes correctly in both consumers but defeats our own inspection tools. Spec 10. | tool |
-| H3 | `KHR_texture_transform` | Parsed and then ignored by Gazebo, so the textures are sampled from the wrong region of the map. Prohibited by spec 10, and used casually by the Gazebo team's own assets, which is a contradiction worth resolving. | tool |
+| H1 | `extensionsRequired`, and what is in it | The profile's [Prohibited content](../docs/profile.md#prohibited-content) section forbids a non-empty array. A conforming reader must refuse such a file outright; five models in Fuel do this by accident. What Gazebo actually does with one is worth probing. | tool |
+| H2 | Draco compression | Decodes correctly in both consumers but defeats our own inspection tools. The profile's [Prohibited content](../docs/profile.md#prohibited-content) section. | tool |
+| H3 | `KHR_texture_transform` | Parsed and then ignored by Gazebo, so the textures are sampled from the wrong region of the map. Prohibited by the profile's [Prohibited content](../docs/profile.md#prohibited-content) section, and used casually by the Gazebo team's own assets, which is a contradiction worth resolving. | tool |
 | H4 | `extensionsUsed` as a whole | Which extensions a normal authoring workflow emits without being asked. `KHR_materials_specular` and `KHR_materials_ior` appear in a third of Fuel. | tool |
 | H5 | What Gazebo does with each extension found | Ignoring an extension is not the same as failing on it, and the spec's prohibitions assume one or the other. | probe |
 
@@ -182,19 +182,19 @@ The group with the highest defect rate in every corpus looked at so far, includi
 
 | id | What we measure | Why we want to know | From |
 |---|---|---|---|
-| I1 | Animations, skins, cameras, lights | Spec 10 prohibits all four, for different reasons: animations force the bounding box to a unit cube and break culling, cameras and lights are ignored harmlessly. Zero in all 54 glTF files in Fuel. | tool |
-| I2 | Whether collision geometry travels in the same file | Nobody in the corpus does this except rmf_site, which emits a separate collision GLB. Bears on spec 4.1. | judgement |
+| I1 | Animations, skins, cameras, lights | The profile's [Prohibited content](../docs/profile.md#prohibited-content) section prohibits all four, for different reasons: animations force the bounding box to a unit cube and break culling, cameras and lights are ignored harmlessly. Zero in all 54 glTF files in Fuel. | tool |
+| I2 | Whether collision geometry travels in the same file | Nobody in the corpus does this except rmf_site, which emits a separate collision GLB. Bears on the profile's [File](../docs/profile.md#file) section. | judgement |
 
 ## J. What the consumer will actually do with it
 
-The end of the assessment, and the part that cannot be read out of the file. Spec 12 is explicit that valid, intended, compliant and usable are four different questions that fail independently.
+The end of the assessment, and the part that cannot be read out of the file. The profile's [Conformance](../docs/profile.md#conformance) section is explicit that valid, intended, compliant and usable are four different questions that fail independently.
 
 | id | What we measure | Why we want to know | From |
 |---|---|---|---|
-| J1 | Khronos glTF Validator: errors, warnings, infos | The only external authority. Spec 4.2 requires zero errors. | planned |
+| J1 | Khronos glTF Validator: errors, warnings, infos | The only external authority. The profile's [File format](../docs/profile.md#file-format) section requires zero errors. | planned |
 | J2 | The submesh list gz-common builds, with names | The names are the file's only addressable interface, and they come from nodes rather than meshes. | probe |
 | J3 | Whether the part renders correctly in Gazebo | Necessary and never sufficient: a defect can be masked by something Gazebo ignores. | render |
-| J4 | Whether it loads in RViz, on which distribution | The Y-up rotation merged to rolling on 2025-06-16 and was not backported, so Jazzy and Kilted render every glTF part rotated. Spec 5.2. | render |
+| J4 | Whether it loads in RViz, on which distribution | The Y-up rotation merged to rolling on 2025-06-16 and was not backported, so Jazzy and Kilted render every glTF part rotated. The profile's [Axes](../docs/profile.md#axes) section. | render |
 | J5 | How it looks in the Khronos sample viewer | The reference for what the author meant, which Blender's viewport is not. | render |
 | J6 | What the assessment cost: bytes fetched, requests made | Whether this list can be run over a library rather than over a handful of files. | tool |
 

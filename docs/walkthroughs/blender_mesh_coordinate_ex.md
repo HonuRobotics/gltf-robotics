@@ -92,7 +92,7 @@ examples/monkey_baseline.glb  (69688 bytes, .glb)
 
 Note that both names pass through from Blender: the node name comes from the object, the mesh name from the mesh datablock. They are not equally free, though, and the profile treats them differently.
 
-The **node** name is constrained, by profile 5.5: `<part>`, no Blender numeric suffix, no spaces. It has to be, because it is the only name in the file either consumer reads — Gazebo names every submesh after the node that instantiated the mesh, never after the mesh or the material, so the node name is what appears downstream and what an SDF would have to address.
+The **node** name is constrained, by the profile's [Scenes and nodes](../profile.md#scenes-and-nodes) section: `<part>`, no Blender numeric suffix, no spaces. It has to be, because it is the only name in the file either consumer reads — Gazebo names every submesh after the node that instantiated the mesh, never after the mesh or the material, so the node name is what appears downstream and what an SDF would have to address.
 
 The **mesh datablock** name is unconstrained, and nothing reads it. Renaming it changes nothing anyone sees. Worth setting anyway so a reader of the `.blend` is not misled, but it is housekeeping rather than a rule.
 
@@ -159,7 +159,7 @@ examples/monkey_xform.glb  (69764 bytes, .glb)
     origin at     x 0.50, y 0.50, z -2.04 OUTSIDE the geometry   = (0 - min) / extent, per axis
                   0 = minimum face, 0.5 = midpoint of the bounding box, 1 = maximum face
 
-  the two blocks differ only because a node carries a transform; profile 5.5
+  the two blocks differ only because a node carries a transform; the profile's [Scenes and nodes](../profile.md#scenes-and-nodes) section
   requires an identity root node so that they cannot
 
   materials: none
@@ -283,7 +283,7 @@ To undo it, put the inverse roll on the URDF visual origin, which is the only pl
 
 The workflow decision is to not export with `+Y Up`. The part is modelled in Blender in the ISO 9787 and REP 103 convention, Z up and X forward, the glTF carries no transforms, and the file's vertices are already on the link axes. Gazebo then needs no correction anywhere. RViz does, because it rotates on the extension alone, so every URDF visual that shows a glTF part carries the inverse roll above as its default origin, as the URDF in step 4 now does. Verified on screen 2026-09-27 with rviz_rendering 15.2.5: with the roll in place, RViz shows the monkey upright and facing the same way as Gazebo.
 
-The undo is exact only because the root node is identity. RViz post-multiplies its rotation onto the root node's own transform, so it acts inside whatever the root carries; the URDF origin acts outside. With an identity root the two rolls cancel and RViz shows the file's vertices exactly as Gazebo does. With a root transform they do not: `monkey_xform.glb` carries a 5 m translation and a 90 degree yaw on its root, and with the undo in place its centre lands 5 m along +Y in RViz where Gazebo puts it 5 m along +Z, because the undo has rotated the root transform along with the mesh. That is a second reason, after the TF one above, for the identity root rule in profile section 5.5.
+The undo is exact only because the root node is identity. RViz post-multiplies its rotation onto the root node's own transform, so it acts inside whatever the root carries; the URDF origin acts outside. With an identity root the two rolls cancel and RViz shows the file's vertices exactly as Gazebo does. With a root transform they do not: `monkey_xform.glb` carries a 5 m translation and a 90 degree yaw on its root, and with the undo in place its centre lands 5 m along +Y in RViz where Gazebo puts it 5 m along +Z, because the undo has rotated the root transform along with the mesh. That is a second reason, after the TF one above, for the identity root rule in the profile's [Scenes and nodes](../profile.md#scenes-and-nodes) section.
 
 The cost of the decision is that the file is not oriented the way the glTF specification says an asset should be, so any other glTF viewer shows the part lying on its side, and a URDF that forgets the roll shows it that way in RViz. The benefit is that Blender, the file and Gazebo agree with no conversion anywhere, and the one correction lives in one place.
 

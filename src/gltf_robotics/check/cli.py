@@ -14,48 +14,49 @@ MARK = {FAIL: "FAIL", WARN: "WARN", ADVISORY: "OPEN", PASS: "PASS", SKIP: "SKIP"
 ORDER = {FAIL: 0, WARN: 1, ADVISORY: 2, PASS: 3, SKIP: 4}
 
 # What each mark obliges the reader to do. The normative strength behind a
-# mark is here rather than on each finding, because a rule can mix them: 5.5
-# fails on a root transform (MUST) and warns on the root name (SHOULD).
+# mark is here rather than on each finding, because a rule can mix them: Scenes
+# and nodes fails on a root transform (MUST) and warns on the root name (SHOULD).
 LEGEND = [
     ("PASS", "the rule is satisfied"),
     ("FAIL", "a MUST in the profile is violated; the delivery is not compliant"),
     ("WARN", "a SHOULD is violated, or a MUST the file alone cannot settle; review before delivering"),
-    ("OPEN", "the profile has not settled this point (section 2.4); nothing to fix, something to discuss"),
+    ("OPEN", "the profile has not settled this point (the profile's Open issues section); nothing to fix, something to discuss"),
     ("SKIP", "nothing in the file for the rule to examine"),
 ]
 
 SCOPE = (
-    "This answers only the 'compliant' question of profile section 12: does the file satisfy "
+    "This answers only the 'compliant' question of the profile's Conformance section: does the file satisfy "
     "the rules that can be decided by reading it. Valid (Khronos validator), intended "
     "(reference viewer) and usable (glb_probe, Gazebo, RViz) are separate checks."
 )
 
 # What each rule tests, stated independently of what it found. A verdict on its
-# own is not readable without this: "PASS §6.1" tells you a rule passed and not
+# own is not readable without this: "PASS UV sets" tells you a rule passed and not
 # which question was asked.
 TITLES = {
-    "4.1": "named <part>.visual.glb, with <part> in lowercase snake_case",
-    "4.1.4": "carries a KHR_xmp_json_ld manifest, and its contents agree with the file",
-    "4.2": "delivered as binary .glb rather than .gltf",
-    "4.3": "asset header declares glTF 2.0 and no minVersion",
-    "5.1": "expressed in metres at real-world scale",
-    "5.2": "declares +X forward and +Z up, per ISO 9787 and REP 103",
-    "5.5": "exactly one scene and one named node, with no children and no transform",
-    "5.6": "names the datum point its origin is referenced to",
-    "6": "every primitive is triangles carrying POSITION, NORMAL and TEXCOORD_0",
-    "6.1": "UV coordinates present, and inside the range 0 to 1",
-    "6.3": "a primitive exists only to carry a material distinct from its siblings",
-    "7": "every primitive has a material, with metalness stated rather than defaulted",
-    "8": "textures are PNG in the linear slots and at most 2048 px on a side",
-    "9": "transparency declared per material: MASK for cutouts, never BLEND on an opaque part",
-    "10": "no prohibited extension, animation, skin, camera or light",
-    "11": "records the exporter that produced it",
+    "File naming": "named <part>.visual.glb, with <part> in lowercase snake_case",
+    "File format": "delivered as binary .glb rather than .gltf",
+    "The manifest": "carries a KHR_xmp_json_ld manifest, and its contents agree with the file",
+    "Asset header": "asset header declares glTF 2.0 and no minVersion",
+    "Units": "expressed in metres at real-world scale",
+    "Axes": "declares +X forward and +Z up, per ISO 9787 and REP 103",
+    "Scenes and nodes": "exactly one scene and one named node, with no children and no transform",
+    "Datum specification": "names the datum point its origin is referenced to",
+    "Geometry": "every primitive is triangles carrying POSITION, NORMAL and TEXCOORD_0",
+    "UV sets": "UV coordinates present, and inside the range 0 to 1",
+    "Primitives and submeshes": "a primitive exists only to carry a material distinct from its siblings",
+    "Materials": "every primitive has a material, with metalness stated rather than defaulted",
+    "Textures": "textures are PNG in the linear slots and at most 2048 px on a side",
+    "Transparency": "transparency declared per material: MASK for cutouts, never BLEND on an opaque part",
+    "Prohibited content": "no prohibited extension, animation, skin, camera or light",
+    "Authoring toolchain": "records the exporter that produced it",
 }
 
 
 def section_key(section):
-    """Sort '4.1.1' between '4.1' and '4.2' rather than lexically."""
-    return tuple(int(p) for p in section.split(".") if p.isdigit())
+    """Profile order, which is the order TITLES is written in."""
+    names = list(TITLES)
+    return names.index(section) if section in names else len(names)
 
 
 def legend(width=88):
@@ -86,7 +87,7 @@ def render(path, findings, verbose, quiet, width=88):
         if quiet and all(f.level in (PASS, SKIP) for f in group):
             continue
         title = TITLES.get(section, "")
-        lines.append(f"  §{section:<5} {title}")
+        lines.append(f"  {section}: {title}")
         for f in sorted(group, key=lambda f: ORDER[f.level]):
             lines.append(f"    {MARK[f.level]:>4}  {f.summary}")
             if f.detail and (verbose or f.level != PASS):
@@ -96,15 +97,15 @@ def render(path, findings, verbose, quiet, width=88):
 
 
 def sections(findings, level):
-    """The sections carrying a finding at `level`, in profile order, as '§n' strings."""
+    """The sections carrying a finding at `level`, in profile order, by name."""
     found = sorted({f.section for f in findings if f.level == level}, key=section_key)
-    return ", ".join(f"§{s}" for s in found)
+    return ", ".join(found)
 
 
 def verdict(findings, strict=False):
     """The closing two lines: the tally, then whether the file is compliant.
 
-    Compliant is profile section 12's word: every MUST satisfied. A SHOULD
+    Compliant is the profile's Conformance section's word: every MUST satisfied. A SHOULD
     violation therefore does not break it unless --strict says to count it, and
     that is the same rule the exit code and the JSON use.
     """

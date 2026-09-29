@@ -102,7 +102,7 @@ UV_SAMPLE = 48
 WHOLE_FILE_MAX = 2 << 20
 
 # Image formats that reach the GPU in this project's consumers. Anything else
-# loads as nothing at all -- see profile section 8.
+# loads as nothing at all -- see the profile's Textures section.
 LOADABLE_MIME = {"image/png", "image/jpeg"}
 
 BLENDER_SUFFIX = re.compile(r"\.\d{3}$")
@@ -686,7 +686,7 @@ def measure(entry, uri, budget_bytes):
     m["bbox_max_m"] = [round(v, 4) for v in hi] if hi[0] > float("-inf") else None
     # Where the file's zero sits inside its own bounding box, per axis, as a
     # fraction: 0 is the low face, 1 the high face, 0.5 the middle. This is the
-    # measurable half of the origin question in spec 5.4 -- it says the origin is
+    # measurable half of the origin question in the profile's Origin section -- it says the origin is
     # centered in two axes and on a face in the third, but not which face that
     # is in the part's own terms. A person in front of the rig says that.
     m["origin_fraction"] = (
@@ -1431,7 +1431,7 @@ def origin_reading(m):
     """The origin's place inside the geometry, in words.
 
     Three fractions are hard to read and easy to misread; "centered in X and Z,
-    on the -Y face" is the sentence a convention is actually written in. Spec 5.4
+    on the -Y face" is the sentence a convention is actually written in. The profile's Origin section
     proposes "centered in plan, zero on the mounting plane", and this is what
     that looks like when it is true.
     """
@@ -1819,7 +1819,7 @@ def summary_tables(results):
     add(f"| Draco compression | {pct(sum(1 for r in results if r['draco_primitives']))} |")
     add("")
 
-    add("### Structure, against the rules in spec 5.5")
+    add("### Structure, against the rules in the profile's Scenes and nodes section")
     add("")
     add("| | |")
     add("|---|---|")

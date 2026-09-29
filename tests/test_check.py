@@ -29,16 +29,16 @@ def test_baseline_conforms(write_model):
     assert warnings(path) == set()
 
 
-# ------------------------------------------------------- section 4: delivery
+# ------------------------------------------------------- delivery
 
 def test_part_name_must_be_snake_case(write_model):
     path = write_model(name="TestPart.visual.glb")
-    assert "4.1" in failures(path)
+    assert "File naming" in failures(path)
 
 
 def test_filename_without_visual_suffix_warns(write_model):
     path = write_model(name="test_part.glb")
-    assert "4.1" in warnings(path)
+    assert "File naming" in warnings(path)
     assert failures(path) == set()
 
 
@@ -46,22 +46,22 @@ def test_min_version_warns(write_model):
     """4.3 relaxed this to SHOULD NOT, so it reviews rather than fails."""
     path = write_model(lambda g: g["asset"].update(minVersion="2.0"))
     assert failures(path) == set()
-    assert "4.3" in warnings(path)
+    assert "Asset header" in warnings(path)
 
 
 def test_generator_must_be_recorded(write_model):
     path = write_model(lambda g: g["asset"].pop("generator"))
-    assert failures(path) == {"11"}
+    assert failures(path) == {"Authoring toolchain"}
 
 
-# ------------------------------------- section 5: coordinate systems, nodes
+# ------------------------------------- coordinate systems, nodes
 
 def test_declared_axes_must_match_the_profile(write_model):
     """5.2 is a decided MUST, so a manifest declaring glTF's convention fails."""
     from conftest import manifest
     path = write_model(lambda g: g["extensions"]["KHR_xmp_json_ld"].update(
         packets=[manifest(**{"gltfrp:up": "+Y"})]))
-    assert "5.2" in failures(path)
+    assert "Axes" in failures(path)
     detail = " ".join(f.detail for f in check_file(path) if f.level == FAIL)
     assert "+Z" in detail
 
@@ -73,14 +73,14 @@ def test_undeclared_axes_are_reported_once_by_4_1_1_not_twice(write_model):
     packet.pop("gltfrp:forward")
     packet.pop("gltfrp:up")
     path = write_model(lambda g: g["extensions"]["KHR_xmp_json_ld"].update(packets=[packet]))
-    assert "4.1.4" in failures(path)
-    assert "5.2" not in failures(path)
-    assert "5.2" not in warnings(path)
+    assert "The manifest" in failures(path)
+    assert "Axes" not in failures(path)
+    assert "Axes" not in warnings(path)
 
 
 def test_two_scenes(write_model):
     path = write_model(lambda g: g["scenes"].append({"nodes": [0]}))
-    assert failures(path) == {"5.5"}
+    assert failures(path) == {"Scenes and nodes"}
 
 
 @pytest.mark.parametrize("key, value", [
@@ -92,7 +92,7 @@ def test_two_scenes(write_model):
 def test_any_node_transform_fails(write_model, key, value):
     """All four keys, so node space and scene space cannot come apart."""
     path = write_model(lambda g: g["nodes"][0].update({key: value}))
-    assert failures(path) == {"5.5"}
+    assert failures(path) == {"Scenes and nodes"}
     assert any(key in f.detail for f in check_file(path) if f.level == FAIL)
 
 
@@ -111,20 +111,20 @@ def test_a_stated_identity_transform_still_fails(write_model, key, identity):
     checker disagreeing with the profile, which prohibits the key.
     """
     path = write_model(lambda g: g["nodes"][0].update({key: identity}))
-    assert failures(path) == {"5.5"}
+    assert failures(path) == {"Scenes and nodes"}
 
 
 def test_several_transform_keys_are_reported_together(write_model):
     path = write_model(lambda g: g["nodes"][0].update(
         translation=[0.0, 0.5, 0.0], scale=[2.0, 2.0, 2.0]))
-    assert failures(path) == {"5.5"}
+    assert failures(path) == {"Scenes and nodes"}
     detail = " ".join(f.detail for f in check_file(path) if f.level == FAIL)
     assert "translation" in detail and "scale" in detail
 
 
 def test_root_node_blender_numeric_suffix(write_model):
     path = write_model(lambda g: g["nodes"][0].update(name="test_part.001"))
-    assert failures(path) == {"5.5"}
+    assert failures(path) == {"Scenes and nodes"}
 
 
 def test_two_root_nodes(write_model):
@@ -132,7 +132,7 @@ def test_two_root_nodes(write_model):
         g["nodes"].append({"name": "second", "mesh": 0})
         g["scenes"][0]["nodes"] = [0, 1]
     path = write_model(mutate)
-    assert failures(path) == {"5.5"}
+    assert failures(path) == {"Scenes and nodes"}
 
 
 def test_a_child_node_fails(write_model):
@@ -141,7 +141,7 @@ def test_a_child_node_fails(write_model):
         g["nodes"][0]["children"] = [1]
         g["nodes"].append({"name": "tip", "mesh": 0})
     path = write_model(mutate)
-    assert failures(path) == {"5.5"}
+    assert failures(path) == {"Scenes and nodes"}
     detail = " ".join(f.detail for f in check_file(path) if f.level == FAIL)
     assert "child" in detail
 
@@ -149,24 +149,24 @@ def test_a_child_node_fails(write_model):
 def test_a_second_node_fails_even_unparented(write_model):
     """Two nodes is two nodes, whether or not the scene lists both."""
     path = write_model(lambda g: g["nodes"].append({"name": "spare", "mesh": 0}))
-    assert failures(path) == {"5.5"}
+    assert failures(path) == {"Scenes and nodes"}
     assert any("2 nodes, expected exactly 1" in s for s in summaries(path))
 
 
-# ----------------------------------------------------- section 6: geometry
+# ----------------------------------------------------- geometry
 
 def test_non_triangle_primitive(write_model):
     path = write_model(lambda g: g["meshes"][0]["primitives"][0].update(mode=5))
-    assert failures(path) == {"6"}
+    assert failures(path) == {"Geometry"}
 
 
 def test_missing_normals(write_model):
     path = write_model(lambda g: g["meshes"][0]["primitives"][0]["attributes"].pop("NORMAL"))
-    assert failures(path) == {"6"}
+    assert failures(path) == {"Geometry"}
 
 
 def test_second_uv_set_is_permitted_for_a_lightmap(write_model):
-    """Profile 6.1 permits TEXCOORD_1, and only for a baked occlusion lightmap."""
+    """The profile's UV sets section permits TEXCOORD_1, and only for a baked occlusion lightmap."""
     path = write_model(
         lambda g: g["meshes"][0]["primitives"][0]["attributes"].update(TEXCOORD_1=2))
     assert failures(path) == set()
@@ -176,12 +176,12 @@ def test_third_uv_set_fails(write_model):
     path = write_model(
         lambda g: g["meshes"][0]["primitives"][0]["attributes"].update(
             TEXCOORD_1=2, TEXCOORD_2=2))
-    assert failures(path) == {"6.1"}
+    assert failures(path) == {"UV sets"}
 
 
 def test_uv_outside_unit_range(write_model):
     path = write_model(lambda g: g["accessors"][2].update(min=[0.0, 0.0], max=[2.0, 1.0]))
-    assert failures(path) == {"6.1"}
+    assert failures(path) == {"UV sets"}
 
 
 def _extra_primitive(g, material=0):
@@ -193,7 +193,7 @@ def _extra_primitive(g, material=0):
 def test_two_primitives_sharing_a_material_fail(write_model):
     """A primitive exists to carry a distinct material; sharing one splits for no reason."""
     path = write_model(_extra_primitive)
-    assert failures(path) == {"6.3"}
+    assert failures(path) == {"Primitives and submeshes"}
     detail = " ".join(f.detail for f in check_file(path) if f.level == FAIL)
     assert "Housing" in detail
 
@@ -208,11 +208,11 @@ def test_two_primitives_with_distinct_materials_pass(write_model):
     assert failures(path) == set()
 
 
-# ---------------------------------------------------- section 7: materials
+# ---------------------------------------------------- materials
 
 def test_primitive_without_material(write_model):
     path = write_model(lambda g: g["meshes"][0]["primitives"][0].pop("material"))
-    assert failures(path) == {"7"}
+    assert failures(path) == {"Materials"}
     assert any("white metal" in f.detail for f in check_file(path))
 
 
@@ -220,7 +220,7 @@ def test_metalness_trap_with_no_texture_to_override(write_model):
     """metallicFactor unset means 1.0: a material that says nothing says metal."""
     path = write_model(
         lambda g: g["materials"][0]["pbrMetallicRoughness"].pop("metallicFactor"))
-    assert failures(path) == {"7"}
+    assert failures(path) == {"Materials"}
 
 
 def test_unset_metalness_with_orm_texture_is_only_a_warning(write_model):
@@ -230,7 +230,7 @@ def test_unset_metalness_with_orm_texture_is_only_a_warning(write_model):
         g["materials"][0]["pbrMetallicRoughness"]["metallicRoughnessTexture"] = {"index": 0}
     path = write_model(mutate)
     assert failures(path) == set()
-    assert warnings(path) == {"7"}
+    assert warnings(path) == {"Materials"}
 
 
 def test_textured_material_without_base_colour(write_model):
@@ -240,9 +240,9 @@ def test_textured_material_without_base_colour(write_model):
         pbr.pop("baseColorTexture")
         g["materials"][0]["normalTexture"] = {"index": 0}
     path = write_model(mutate)
-    # Only section 7. The map reused here is the baseline's PNG, so the texture
+    # Only the profile's Materials section. The map reused here is the baseline's PNG, so the texture
     # format rule is satisfied and must stay quiet.
-    assert failures(path) == {"7"}
+    assert failures(path) == {"Materials"}
     assert any("RViz" in f.detail for f in check_file(path))
 
 
@@ -250,10 +250,10 @@ def test_normal_texture_scale_must_be_one(write_model):
     def mutate(g):
         g["materials"][0]["normalTexture"] = {"index": 0, "scale": 0.5}
     path = write_model(mutate)
-    assert "7" in failures(path)
+    assert "Materials" in failures(path)
 
 
-# ----------------------------------------------------- section 8: textures
+# ----------------------------------------------------- textures
 
 def test_texture_over_2048(write_model):
     from conftest import pad4, png
@@ -263,31 +263,31 @@ def test_texture_over_2048(write_model):
         g["bufferViews"][4]["byteLength"] = len(big)
         return pad4(head + big)
     path = write_model(buffer_mutate=buffer_mutate)
-    assert failures(path) == {"8"}
+    assert failures(path) == {"Textures"}
 
 
-# ------------------------------------------------- section 9: transparency
+# ------------------------------------------------- transparency
 
 def test_blend_is_prohibited(write_model):
     path = write_model(lambda g: g["materials"][0].update(alphaMode="BLEND"))
-    assert failures(path) == {"9"}
+    assert failures(path) == {"Transparency"}
 
 
 def test_mask_requires_cutoff_half(write_model):
     def mutate(g):
         g["materials"][0].update(alphaMode="MASK", alphaCutoff=0.1)
     path = write_model(mutate)
-    assert "9" in failures(path)
+    assert "Transparency" in failures(path)
 
 
 def test_mask_requires_alpha_in_the_base_colour(write_model):
     """The baseline's PNG is colour type 2, so MASK alone has nothing to threshold."""
     path = write_model(lambda g: g["materials"][0].update(alphaMode="MASK"))
-    assert failures(path) == {"9"}
+    assert failures(path) == {"Transparency"}
     assert any("binary alpha" in f.detail for f in check_file(path))
 
 
-# --------------------------------------------- section 10: prohibited content
+# --------------------------------------------- prohibited content
 
 @pytest.mark.parametrize("extension", [
     "KHR_draco_mesh_compression",
@@ -297,26 +297,26 @@ def test_mask_requires_alpha_in_the_base_colour(write_model):
 ])
 def test_prohibited_extensions(write_model, extension):
     path = write_model(lambda g: g.update(extensionsUsed=[extension]))
-    assert failures(path) == {"10"}
+    assert failures(path) == {"Prohibited content"}
 
 
 def test_extensions_required_is_prohibited_even_when_allowed_elsewhere(write_model):
     """The general case: a required extension a reader must refuse the file over."""
     path = write_model(lambda g: g.update(extensionsRequired=["KHR_materials_specular"],
                                           extensionsUsed=["KHR_materials_specular"]))
-    assert failures(path) == {"10"}
+    assert failures(path) == {"Prohibited content"}
 
 
 @pytest.mark.parametrize("key", ["animations", "skins", "cameras"])
 def test_prohibited_content(write_model, key):
     path = write_model(lambda g: g.update(**{key: [{}]}))
-    assert failures(path) == {"10"}
+    assert failures(path) == {"Prohibited content"}
 
 
 # --------------------------------------------------------------- advisories
 
 def test_undecided_rules_never_fail(write_model):
-    """Profile section 2.4: a delivery cannot fail on a point marked Open."""
+    """The profile's Open issues section: a delivery cannot fail on a point marked Open."""
     from gltf_robotics.check.rules import ADVISORY
     findings = check_file(write_model())
     advisory = {f.section for f in findings if f.level == ADVISORY}
@@ -324,7 +324,7 @@ def test_undecided_rules_never_fail(write_model):
     # decided now, so an undeclared axis is a WARN -- a MUST the file cannot
     # settle -- rather than an Open point, and 5.6 is a real rule now that the
     # datum specification has a home.
-    assert advisory == {"5.1"}
+    assert advisory == {"Units"}
     assert not any(f.failed for f in findings if f.section in advisory)
 
 
@@ -335,7 +335,7 @@ def _packet(g):
 
 
 def test_a_missing_manifest_fails(write_model):
-    """Required by profile 4.1.4: provenance cannot be reconstructed later.
+    """Required by the profile's manifest section: provenance cannot be reconstructed later.
 
     It was a SHOULD while the argument against was that no existing delivery
     carried one. That argument is withdrawn -- the existing files are not trusted
@@ -346,9 +346,9 @@ def test_a_missing_manifest_fails(write_model):
         g.pop("extensions")
         g.pop("extensionsUsed")
     path = write_model(mutate)
-    assert "4.1.4" in failures(path)
+    assert "The manifest" in failures(path)
     # 5.2 has nothing to compare against and must not double-report the omission.
-    assert "5.2" not in failures(path)
+    assert "Axes" not in failures(path)
 
 
 @pytest.mark.parametrize("key", ["gltfrp:partRole", "gltfrp:forward", "gltfrp:up"])
@@ -358,26 +358,26 @@ def test_each_required_manifest_property_fails_when_absent(write_model, key):
     packet = manifest()
     packet.pop(key)
     path = write_model(lambda g: g["extensions"]["KHR_xmp_json_ld"].update(packets=[packet]))
-    assert "4.1.4" in failures(path)
+    assert "The manifest" in failures(path)
     assert any(key in f.summary for f in check_file(path) if f.level == FAIL)
 
 
 def test_manifest_without_a_role_fails(write_model):
     path = write_model(lambda g: _packet(g).pop("gltfrp:partRole"))
-    assert "4.1.4" in failures(path)
+    assert "The manifest" in failures(path)
 
 
 def test_creator_tool_must_match_asset_generator(write_model):
     """The copied-from-a-sibling-part failure, made mechanical."""
     path = write_model(lambda g: _packet(g).update({"xmp:CreatorTool": "Some Other Exporter"}))
-    assert "4.1.4" in failures(path)
+    assert "The manifest" in failures(path)
 
 
 def test_realized_pose_must_not_be_authored(write_model):
     """5.6: a derived quantity recorded beside its rule is two sources of truth."""
     path = write_model(
         lambda g: _packet(g).update({"gltfrp:realizedPose": {"@list": [0, 0, 0, 0, 0, 0]}}))
-    assert "5.6" in failures(path)
+    assert "Datum specification" in failures(path)
 
 
 # ------------------------------------------------------------ the CLI output
@@ -388,7 +388,7 @@ from gltf_robotics.check import cli  # noqa: E402
 def test_verdict_agrees_with_exit_code(write_model, capsys):
     """The text verdict, the JSON flag and the exit code must give one answer.
 
-    Profile 12.3 defines compliant as every MUST satisfied, so a file carrying
+    The profile's Conformance section defines compliant as every MUST satisfied, so a file carrying
     only SHOULD violations is compliant unless --strict says to count them.
     """
     clean = write_model()
@@ -396,13 +396,13 @@ def test_verdict_agrees_with_exit_code(write_model, capsys):
 
     warn_only = write_model(name="test_part.glb")
     text = cli.verdict(check_file(warn_only))
-    assert "-> compliant; 1 WARN to review" in text and "§4.1" in text
+    assert "-> compliant; 1 WARN to review" in text and "File naming" in text
     assert "not compliant under --strict" in cli.verdict(check_file(warn_only), strict=True)
     assert cli.main([str(warn_only)]) == 0
     assert cli.main(["--strict", str(warn_only)]) == 1
 
     failing = write_model(lambda g: g["asset"].pop("generator"))
-    assert "-> not compliant: a MUST is violated in §11" in cli.verdict(check_file(failing))
+    assert "-> not compliant: a MUST is violated in Authoring toolchain" in cli.verdict(check_file(failing))
     assert cli.main([str(failing)]) == 1
     capsys.readouterr()
 
@@ -417,12 +417,12 @@ def test_tally_uses_the_same_words_as_the_marks(write_model):
 
 
 def test_every_section_has_a_title(write_model):
-    """A rule added without a TITLES entry would print a bare section number."""
+    """A rule added without a TITLES entry would print a bare section name."""
     out = cli.render(write_model(), check_file(write_model()), verbose=False, quiet=False)
-    headers = [line for line in out.splitlines() if line.startswith("  §")]
+    headers = [line for line in out.splitlines() if line.startswith("  ") and line[2:].split(":")[0] in cli.TITLES]
     assert headers
     for line in headers:
-        assert len(line.split(maxsplit=1)) == 2, f"untitled section: {line!r}"
+        assert line.split(":", 1)[1].strip(), f"untitled section: {line!r}"
     assert {f.section for f in check_file(write_model())} <= set(cli.TITLES)
 
 
@@ -442,20 +442,20 @@ def test_base_part_without_a_datum_point_fails(write_model):
         p["gltfrp:partRole"] = "base"
         p.pop("gltfrp:datumPoint")
     path = write_model(mutate)
-    assert "5.6" in failures(path)
+    assert "Datum specification" in failures(path)
 
 
 def test_component_without_a_datum_point_only_warns(write_model):
     path = write_model(lambda g: _packet(g).pop("gltfrp:datumPoint"))
     assert failures(path) == set()
-    assert "5.6" in warnings(path)
+    assert "Datum specification" in warnings(path)
 
 
 def test_derived_datum_point_without_a_source_fails(write_model):
     """A computed property references nothing and moves with the geometry."""
     path = write_model(
         lambda g: _packet(g).update({"gltfrp:datumPoint": "the center of mass"}))
-    assert "5.6" in failures(path)
+    assert "Datum specification" in failures(path)
 
 
 def test_derived_datum_point_is_allowed_if_its_source_is_named(write_model):
@@ -471,10 +471,10 @@ def test_superseded_datum_properties_warn(write_model):
     """The ordered-list form 5.6 used to define is no longer part of the profile."""
     path = write_model(lambda g: _packet(g).update(
         {"gltfrp:datumFeature": {"@list": ["mounting face"]}}))
-    assert "5.6" in warnings(path)
+    assert "Datum specification" in warnings(path)
 
 
 def test_declared_axes_must_agree_with_5_2(write_model):
     """5.2 owns the orientation; the manifest attests to it and can contradict it."""
     path = write_model(lambda g: _packet(g).update({"gltfrp:up": "-X"}))
-    assert "5.2" in failures(path)
+    assert "Axes" in failures(path)

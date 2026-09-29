@@ -130,7 +130,7 @@ def test_the_geometry_block_says_whether_a_transform_was_involved(write_model):
 
 
 def test_no_material_is_reported_without_editorial(write_model):
-    """What an absent material renders as is gltf-check's section 7, not this tool's."""
+    """What an absent material renders as is gltf-check's the profile's Materials section, not this tool's."""
     def mutate(g):
         g["meshes"][0]["primitives"][0].pop("material")
         g["materials"] = []

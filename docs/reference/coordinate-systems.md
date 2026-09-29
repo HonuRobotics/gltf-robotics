@@ -444,8 +444,8 @@ Each row is one frame; each column is what that frame is called, or what stands 
 **[Firm]** Summarizing what this project actually has to write down, which is much less than the first draft assumed:
 
 - **Adopt as-is, no project text needed:** handedness, length and angle units, roll/pitch/yaw naming, the world coordinate system, the vehicle coordinate system's axes, the sensor optical coordinate system, and glTF's node and scene *vocabulary*. All are settled by ISO 9787, REP 103 or ISO/IEC 12113 and need only a citation.
-- **Narrow:** the mount coordinate system, by dropping ISO's mating-normal axis rule (undecided, above). And glTF's node and scene *model*, to exactly one node with no transform, so that node space and scene space coincide in a delivery (profile 5.5, decided).
-- **Invent, because no standard reaches:** the part coordinate system as a named concept; how an origin is fixed within a part's geometry, which profile 5.4 answers by referring it to a datum specification rather than to any measured centre; and the rule joining the asset coordinate system to the part coordinate system — that is, the value of the visual pose. Which axis the forward direction occupies is no longer ours to invent: profile 5.2 takes ISO 9787 §5.5 and REP 103 wholesale, as a stated departure from glTF.
+- **Narrow:** the mount coordinate system, by dropping ISO's mating-normal axis rule (undecided, above). And glTF's node and scene *model*, to exactly one node with no transform, so that node space and scene space coincide in a delivery (the profile's [Scenes and nodes](../profile.md#scenes-and-nodes) section, decided).
+- **Invent, because no standard reaches:** the part coordinate system as a named concept; how an origin is fixed within a part's geometry, which the profile's [Origin](../profile.md#origin) section answers by referring it to a datum specification rather than to any measured centre; and the rule joining the asset coordinate system to the part coordinate system — that is, the value of the visual pose. Which axis the forward direction occupies is no longer ours to invent: the profile's [Axes](../profile.md#axes) section takes ISO 9787 §5.5 and REP 103 wholesale, as a stated departure from glTF.
 - **[Open]** That last list is short and it is exactly the list the first draft failed to isolate. The next increments should address it in that order.
 
 ## One body, one mesh: who rotates what
@@ -469,7 +469,7 @@ Gazebo:  p_part = Pose · Root · p_node
 RViz:    p_part = Pose · Root · Rx(90) · p_node
 ```
 
-The two agree only when `Root` commutes with `Rx(90)`: when it is the identity, a pure scale, or a rotation about X alone. Any other root transform, a translation included, puts the same file in two different places. That is a statement about tree shape, not about axes, and it is the reason profile [section 5.5](../profile.md) requires an identity root node.
+The two agree only when `Root` commutes with `Rx(90)`: when it is the identity, a pure scale, or a rotation about X alone. Any other root transform, a translation included, puts the same file in two different places. That is a statement about tree shape, not about axes, and it is the reason the profile's [Scenes and nodes](../profile.md#scenes-and-nodes) section requires an identity root node.
 
 ### Gazebo, from source
 
@@ -563,7 +563,7 @@ Every row is what the source predicts. The `.dae` pair is why the project's earl
 
 ### The decision, and what it costs
 
-**[Practice]** This project delivers the file in the body coordinate system: Blender's `+Y Up` off, no transform on the root node, vertices already on the link axes. Profile [section 5.2](../profile.md) is the normative statement and [section 5.5](../profile.md) the root-node rule. In the chain above, that puts the rotation nowhere in the file and nowhere in Gazebo's `Pose`, which stays identity. RViz's rotation is inside the consumer and cannot be removed, so it is undone in `Pose`, on every URDF visual that shows a glTF part:
+**[Practice]** This project delivers the file in the body coordinate system: Blender's `+Y Up` off, no transform on the root node, vertices already on the link axes. the profile's [Axes](../profile.md#axes) section is the normative statement and its [Scenes and nodes](../profile.md#scenes-and-nodes) section the root-node rule. In the chain above, that puts the rotation nowhere in the file and nowhere in Gazebo's `Pose`, which stays identity. RViz's rotation is inside the consumer and cannot be removed, so it is undone in `Pose`, on every URDF visual that shows a glTF part:
 
 ```xml
 <visual><origin xyz="0 0 0" rpy="-1.5708 0 0"/>
@@ -573,13 +573,13 @@ Every row is what the source predicts. The `.dae` pair is why the project's earl
 
 **[Practice]** The cost is that the file is not oriented the way the glTF specification says an asset should be. The Khronos Sample Viewer and every browser viewer assume Y-up, so they show the part on its side, and a URDF that omits the roll shows it that way in RViz. The reference viewer can therefore no longer answer whether a part is correctly oriented, only whether its materials are right. Against that, Blender, the file, Gazebo and the link agree with no conversion anywhere, and the one correction lives in one place, in the robot description, where it is visible in a diff.
 
-**[Open]** How the RViz correction is delivered in the model repositories, given that it depends on the ROS distribution: profile section 5.2 carries the open block. Nothing in this document depends on the answer.
+**[Open]** How the RViz correction is delivered in the model repositories, given that it depends on the ROS distribution: the profile's [Axes](../profile.md#axes) section carries the open block. Nothing in this document depends on the answer.
 
 ## Next increment
 
 The vocabulary and the standards groundwork are settled, and the one-body case above is now airtight: which of Blender, the file, Gazebo and RViz rotates what, read from source and measured. The list of things this project must still decide for itself is short — see "Adopt, narrow, or invent" above. Deliberately not covered yet, in the order it should be taken up:
 
-1. Where the origin sits within a part, and which asset-coordinate-system axis carries forward. These are the two genuine inventions. Forward is answered by profile section 5.2 as a practice; the origin is not.
+1. Where the origin sits within a part, and which asset-coordinate-system axis carries forward. These are the two genuine inventions. Forward is answered by the profile's [Axes](../profile.md#axes) section as a practice; the origin is not.
 2. A second body and a joint between them, which is where the mount-coordinate-system narrowing has to be settled.
 3. Only then: the project's delivery rule.
 
