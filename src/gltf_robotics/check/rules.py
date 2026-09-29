@@ -174,7 +174,7 @@ def rule_4_3_asset_header(m):
         out.append(Finding("Asset header", FAIL, "asset.version is not \"2.0\"",
                            repr(asset.get("version"))))
     if "minVersion" in asset:
-        # 4.3 relaxed this from MUST NOT to SHOULD NOT. It remains a real hazard --
+        # Asset header relaxed this from MUST NOT to SHOULD NOT. It remains a real hazard --
         # a stray minVersion is a hard load failure in a consumer that would
         # otherwise have coped -- but there is no glTF 2.1 for it to be right about.
         out.append(Finding("Asset header", WARN, "asset.minVersion is present",
@@ -556,7 +556,7 @@ def rule_5_2_axes(m):
 
     Nothing in a glTF file records which way its author meant up or forward, so
     the geometry cannot settle this. What can be checked is the manifest's
-    declaration under 4.1.4, and a declaration that disagrees with 5.2 is a
+    declaration under the manifest section, and a declaration that disagrees with Axes is a
     straightforward failure: the rule is decided, not interim.
 
     An absent declaration is a WARN rather than a FAIL because it is the second
@@ -594,7 +594,7 @@ def rule_4_1_1_manifest(m):
     """The profile's manifest section: a delivery MUST carry a manifest declaring three properties.
 
     The three are `gltfrp:partRole`, `gltfrp:forward` and `gltfrp:up`, and each
-    records something no measurement can recover: whether 5.6's datum rule
+    records something no measurement can recover: whether Datum specification's datum rule
     applies, and the two axes that are this profile's departure from glTF. This
     rule owns whether they are *present*; the profile's Axes section owns whether the axis
     values are the ones it requires.
@@ -660,27 +660,26 @@ def rule_5_6_datum(m):
         out.append(Finding(
             "Datum specification", FAIL if role == "base" else WARN,
             f"a {role} part names no datum point",
-            "5.6 requires a base part to name the point its origin is referenced to, and "
+            "The profile requires a base part to name the point its origin is referenced to, and "
             "recommends it for a component. Without one the origin is a number with no meaning: "
             "nothing distinguishes a deliberate placement from wherever the tool left it."))
 
-    # A derived point is permitted only if the manifest says what it was derived from.
+    # A derived quantity is not a feature of the part, whatever it is derived from.
     derived_words = ("centroid", "center of mass", "centre of mass", "bounding box",
                      "bounding-box", "silhouette", "median", "average", "mean")
     if point and any(w in str(point).lower() for w in derived_words):
-        if not packet.get("gltfrp:datumDerivedFrom"):
-            out.append(Finding(
-                "Datum specification", FAIL, "the datum point looks derived and names no source",
-                f"{point!r}. A computed property references nothing and moves when the geometry "
-                "changes. If it is genuinely unavoidable, gltfrp:datumDerivedFrom MUST name the "
-                "artifact and configuration it came from."))
+        out.append(Finding(
+            "Datum specification", FAIL, "the datum point looks derived",
+            f"{point!r}. The datum point must be a geometric feature of the part. A computed "
+            "property references nothing, moves when the geometry changes, and a different "
+            "tool computes a different one."))
 
-    # Stale properties from the ordered-list form, which 5.6 no longer defines.
+    # Stale properties from the ordered-list form, which Datum specification no longer defines.
     stale = [k for k in ("gltfrp:datumFeature", "gltfrp:datumFeatureKind",
-                         "gltfrp:datumConstrains") if k in packet]
+                         "gltfrp:datumConstrains", "gltfrp:datumDerivedFrom") if k in packet]
     if stale:
         out.append(Finding("Datum specification", WARN, "the manifest uses the superseded datum properties",
-                           ", ".join(stale) + ". 5.6 now names a single gltfrp:datumPoint; "
+                           ", ".join(stale) + ". The profile now names a single gltfrp:datumPoint; "
                            "orientation comes from the profile's Axes section and is not part of the datum."))
 
     if "gltfrp:realizedPose" in packet or "realizedPose" in packet:

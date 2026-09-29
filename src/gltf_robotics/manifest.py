@@ -38,7 +38,6 @@ KEYS = {
     "forward": ("gltfrp:forward", "the forward axis as delivered; +X unless stated"),
     "up": ("gltfrp:up", "the up axis as delivered; +Z unless stated"),
     "datumPoint": ("gltfrp:datumPoint", "the feature of the part the origin is referenced to"),
-    "datumDerivedFrom": ("gltfrp:datumDerivedFrom", "what a derived datum point was derived from"),
     "datumTarget": ("gltfrp:datumTarget", "the physical realization of the datum"),
     "nominalDimension": ("gltfrp:nominalDimension", "the cited dimension, with its name and unit"),
     "dimensionTolerance": ("gltfrp:dimensionTolerance", "meters; the band the extent is held to"),

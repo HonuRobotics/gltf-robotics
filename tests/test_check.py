@@ -43,7 +43,7 @@ def test_filename_without_visual_suffix_warns(write_model):
 
 
 def test_min_version_warns(write_model):
-    """4.3 relaxed this to SHOULD NOT, so it reviews rather than fails."""
+    """Asset header relaxed this to SHOULD NOT, so it reviews rather than fails."""
     path = write_model(lambda g: g["asset"].update(minVersion="2.0"))
     assert failures(path) == set()
     assert "Asset header" in warnings(path)
@@ -57,7 +57,7 @@ def test_generator_must_be_recorded(write_model):
 # ------------------------------------- coordinate systems, nodes
 
 def test_declared_axes_must_match_the_profile(write_model):
-    """5.2 is a decided MUST, so a manifest declaring glTF's convention fails."""
+    """Axes is a decided MUST, so a manifest declaring glTF's convention fails."""
     from conftest import manifest
     path = write_model(lambda g: g["extensions"]["KHR_xmp_json_ld"].update(
         packets=[manifest(**{"gltfrp:up": "+Y"})]))
@@ -67,7 +67,7 @@ def test_declared_axes_must_match_the_profile(write_model):
 
 
 def test_undeclared_axes_are_reported_once_by_4_1_1_not_twice(write_model):
-    """One omission, one defect. 4.1.4 owns presence; 5.2 owns the values."""
+    """One omission, one defect. The manifest section owns presence; Axes owns the values."""
     from conftest import manifest
     packet = manifest()
     packet.pop("gltfrp:forward")
@@ -320,15 +320,15 @@ def test_undecided_rules_never_fail(write_model):
     from gltf_robotics.check.rules import ADVISORY
     findings = check_file(write_model())
     advisory = {f.section for f in findings if f.level == ADVISORY}
-    # 5.1 alone: scale cannot be read from a glTF file at all. 5.2's axes are
+    # Units alone: scale cannot be read from a glTF file at all. The axes are
     # decided now, so an undeclared axis is a WARN -- a MUST the file cannot
-    # settle -- rather than an Open point, and 5.6 is a real rule now that the
+    # settle -- rather than an Open point, and Datum specification is a real rule now that the
     # datum specification has a home.
     assert advisory == {"Units"}
     assert not any(f.failed for f in findings if f.section in advisory)
 
 
-# ------------------------------------------- 4.1.4 manifest, 5.6 datum
+# ---------------------------------------------------- manifest, datum
 
 def _packet(g):
     return g["extensions"]["KHR_xmp_json_ld"]["packets"][0]
@@ -347,7 +347,7 @@ def test_a_missing_manifest_fails(write_model):
         g.pop("extensionsUsed")
     path = write_model(mutate)
     assert "The manifest" in failures(path)
-    # 5.2 has nothing to compare against and must not double-report the omission.
+    # Axes has nothing to compare against and must not double-report the omission.
     assert "Axes" not in failures(path)
 
 
@@ -374,7 +374,7 @@ def test_creator_tool_must_match_asset_generator(write_model):
 
 
 def test_realized_pose_must_not_be_authored(write_model):
-    """5.6: a derived quantity recorded beside its rule is two sources of truth."""
+    """Datum specification: a derived quantity recorded beside its rule is two sources of truth."""
     path = write_model(
         lambda g: _packet(g).update({"gltfrp:realizedPose": {"@list": [0, 0, 0, 0, 0, 0]}}))
     assert "Datum specification" in failures(path)
@@ -451,30 +451,31 @@ def test_component_without_a_datum_point_only_warns(write_model):
     assert "Datum specification" in warnings(path)
 
 
-def test_derived_datum_point_without_a_source_fails(write_model):
+def test_derived_datum_point_fails(write_model):
     """A computed property references nothing and moves with the geometry."""
     path = write_model(
         lambda g: _packet(g).update({"gltfrp:datumPoint": "the center of mass"}))
     assert "Datum specification" in failures(path)
 
 
-def test_derived_datum_point_is_allowed_if_its_source_is_named(write_model):
+def test_naming_a_source_does_not_excuse_a_derived_datum_point(write_model):
+    """The profile has no exception: the datum point is a feature of the part."""
     def mutate(g):
         p = _packet(g)
         p["gltfrp:datumPoint"] = "the center of mass"
         p["gltfrp:datumDerivedFrom"] = "hull CAD rev C, empty configuration"
     path = write_model(mutate)
-    assert failures(path) == set()
+    assert "Datum specification" in failures(path)
 
 
 def test_superseded_datum_properties_warn(write_model):
-    """The ordered-list form 5.6 used to define is no longer part of the profile."""
+    """The ordered-list form Datum specification used to define is no longer part of the profile."""
     path = write_model(lambda g: _packet(g).update(
         {"gltfrp:datumFeature": {"@list": ["mounting face"]}}))
     assert "Datum specification" in warnings(path)
 
 
 def test_declared_axes_must_agree_with_5_2(write_model):
-    """5.2 owns the orientation; the manifest attests to it and can contradict it."""
+    """Axes owns the orientation; the manifest attests to it and can contradict it."""
     path = write_model(lambda g: _packet(g).update({"gltfrp:up": "-X"}))
     assert "Axes" in failures(path)

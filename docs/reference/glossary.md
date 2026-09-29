@@ -18,7 +18,7 @@ Avoided in normative text. In 3D work the word spans meshes, textures, rigs, sce
 
 ### base part
 
-The part that establishes a vehicle's reference coordinate system. There is exactly one per vehicle, and its manifest declares `gltfrp:partRole` as `base`. The profile's [What the manifest carries](../profile.md#what-the-manifest-carries) section requires more of it than of a component part.
+The part that establishes a vehicle's reference coordinate system. There is exactly one per vehicle, and its manifest declares `gltfrp:partRole` as `base`. The profile requires [a base part](../profile.md#a-base-part) to name its datum point.
 
 ### commission
 

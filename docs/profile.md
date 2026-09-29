@@ -92,7 +92,7 @@ Each rule is stated normatively where it belongs and repeated here only as a lis
 | One scene | exactly one scene, listing only the node | [Scenes and nodes](#scenes-and-nodes) |
 | One node | exactly one node, no children | [Scenes and nodes](#scenes-and-nodes) |
 | No transform | that node carries no `translation`, `rotation`, `scale` or `matrix` | [Scenes and nodes](#scenes-and-nodes) |
-| One coordinate system | ; Blender (global, local); glTF (scene space, node space) and the origin coordinate system and the datum coordinate system all  coincide | 3, 5.4 |
+| One coordinate system | ; Blender (global, local); glTF (scene space, node space) and the origin coordinate system and the datum coordinate system all  coincide | [Glossary](reference/glossary.md#datum-coordinate-system), [Origin](#origin---datum-coordinate-system-location) |
 | One mesh | one and only one mesh on that node | [Primitives](#primitives) |
 
 **Implementation Note.** The rules above ensure that a delivered file is a single part in a single coordinate system, with nothing in its structure that a consumer could compose differently or lose. Everything that would express placement or hierarchy belongs in the robot description, not in the glTF geometry.
@@ -111,6 +111,14 @@ Three properties are the required minimum:
 | `gltfrp:forward` | Choice from the six signed axes | Which axis of the delivered file the part's forward direction lies along. MUST be `+X` ([Axes](#axes)) |
 | `gltfrp:up` | Choice from the six signed axes | Which axis is up. MUST be `+Z` ([Axes](#axes)) |
 
+**Implementation Note.** `gltfrp:forward` and `gltfrp:up` restate what the [Axes](#axes) section already requires. The declaration is an attestation: the modeler states which way the part was built, and `gltf-check` fails a delivery whose attestation contradicts the [Axes](#axes) section. It converts part of the convention that could only be checked manually, by eye, into an algoritmic test that (partially) covers the requirement.
+
+Two properties record the datum ([Datum specification](#datum-specification)):
+
+| Property | Type | What it records |
+|---|---|---|
+| `gltfrp:datumPoint` | Text | REQUIRED for a `base` part; a `component` part SHOULD carry it. The point, named as a feature of this part |
+| `gltfrp:datumTarget` | Text | OPTIONAL. The physical realization, in the sense of ISO 5459 |
 
 The remaining properties SHOULD be carried:
 
@@ -227,22 +235,15 @@ It MUST NOT be a derived quantity. A center of mass, a bounding-box center, a si
 
 **Implementation Note.** A point in the datum specification and a point on the hardware are two different things, and a mature practice has both. ISO 5459 calls the second a *datum target*: a point, line or area designated so that every supplier seats the part identically. A definition without a realization cannot be measured on the bench; a realization without a definition cannot be reproduced on a redesign. Where a delivery has a physical realization the manifest SHOULD record it in `gltfrp:datumTarget`.
 
-#### What the manifest carries % CLAUDE: Combine the two places where the manifest is discussed and specified.  It should only be in one place.  
+#### A base part
 
-| Property | Type | What it records |
-|---|---|---|
-| `gltfrp:datumPoint` | Text | REQUIRED for a `base` part. The point, named as a feature of this part |
-| `gltfrp:datumTarget` | Text | OPTIONAL. The physical realization, in the sense of ISO 5459 |
-| `gltfrp:forward` | Choice: `+X`, `-X`, `+Y`, `-Y`, `+Z`, `-Z` | The forward axis as delivered. The [Axes](#axes) section requires `+X`; this is the modeler's attestation of it |
-| `gltfrp:up` | Choice: as above | The up axis as delivered. The [Axes](#axes) section requires `+Z` |
-
-A delivery whose `gltfrp:partRole` is `base` MUST carry `gltfrp:datumPoint`. A `component` delivery SHOULD.
-
-**Implementation Note.** `gltfrp:forward` and `gltfrp:up` restate what the [Axes](#axes) section already requires. The declaration is an attestation: the modeler states which way the part was built, and `gltf-check` fails a delivery whose attestation contradicts the [Axes](#axes) section. It converts part of the convention that could only be checked manually, by eye, into an algoritmic test that (partially) covers the requirement.
+A base part MUST name its datum point. It is recorded in [the manifest](#the-manifest) as `gltfrp:datumPoint`.
 
 **Implementation Note.** Why the base part specifically. A base part's datum is the definition of `base_link`, and localization reports against it, so it is the one coordinate system in the vehicle whose meaning cannot be recovered by measuring anything afterwards. REP 105 says `base_link` is rigidly attached to the mobile robot base and declines to say where on it; the standards agree the placement must be stated and none of them state it for you. `base_footprint` is a derived runtime frame and is not a datum.
 
 #### A component part
+
+A component part SHOULD name its datum point, recorded the same way.
 
 Where a component attaches by a single mounting interface, the datum point SHOULD be the center of that interface. ISO 9787 §5.3 defines the mechanical interface coordinate system with its origin at the center of the mechanical interface, which is the same choice arrived at from the standard rather than from convenience.
 
