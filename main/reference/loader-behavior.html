@@ -1,0 +1,734 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gazebo and RViz loader behavior &mdash; Honu glTF Asset Framework main documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/honu.css?v=44af46ee" />
+
+  
+    <link rel="shortcut icon" href="../_static/honu-robotics-favicon.svg"/>
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=a8da1a53"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Blender glTF Export Options" href="blender-export-options.html" />
+    <link rel="prev" title="Coordinate Systems: glTF, Gazebo and ROS" href="coordinate-systems.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Honu glTF Asset Framework
+              <img src="../_static/honu-robotics-white-logo.svg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../profile.html">Profile</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../profile.html#introduction">Introduction</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../profile.html#scope">Scope</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../profile.html#document-conventions">Document conventions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../profile.html#audience">Audience</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../profile.html#normative-terminology">Normative terminology</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../profile.html#informative-language">Informative language</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../profile.html#open-issues">Open issues</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../profile.html#terminology">Terminology</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../profile.html#delivery">Delivery</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../profile.html#file">File</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../profile.html#file-naming">File naming</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../profile.html#file-format">File format</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../profile.html#gltf-structure">glTF structure</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../profile.html#the-manifest">The manifest</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../profile.html#asset-header">Asset header</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../profile.html#coordinate-systems-and-units">Coordinate systems and units</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../profile.html#units">Units</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../profile.html#axes">Axes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../profile.html#forward-axis">Forward axis</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../profile.html#origin-datum-coordinate-system-location">Origin - datum coordinate system location</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../profile.html#scenes-and-nodes">Scenes and nodes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../profile.html#datum-specification">Datum specification</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../profile.html#the-datum-point">The datum point</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../profile.html#a-base-part">A base part</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../profile.html#a-component-part">A component part</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../profile.html#geometry">Geometry</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../profile.html#uv-sets">UV sets</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../profile.html#budgets">Budgets</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../profile.html#primitives">Primitives</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../profile.html#materials">Materials</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../profile.html#textures">Textures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../profile.html#transparency">Transparency</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../profile.html#prohibited-content">Prohibited content</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../profile.html#authoring-toolchain">Authoring toolchain</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../profile.html#conformance-testing">Conformance testing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../profile.html#open-questions-informative">Open questions (Informative)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../profile.html#open-the-to-do-list-for-this-draft">Open: the to-do list for this draft</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../profile.html#open-future-not-blocking-this-draft">Open: Future, not blocking this draft</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../profile.html#references-informative">References (Informative)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../profile.html#closely-related-work-informative">Closely related work (Informative)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../workflow.html">Workflow</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../workflow.html#roles">Roles</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../workflow.html#outline">Outline</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../workflow.html#step-1-commission-integrator">Step 1: Commission [Integrator]</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../workflow.html#commission-yaml-file">Commission YAML file</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../workflow.html#step-2-author-3d-asset-modeler">Step 2: Author 3D asset [Modeler]</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../workflow.html#build-to-the-honu-asset-profile-and-export">Build to the <span class="xref myst">Honu Asset Profile</span> and export</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../workflow.html#step-3-fill-the-glb-manifest-from-the-commission-yaml-integrator">Step 3: Fill the <code class="docutils literal notranslate"><span class="pre">.glb</span></code> manifest from the commission YAML [Integrator]</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../workflow.html#step-3-verify">Step 3: Verify</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../workflow.html#valid">Valid?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../workflow.html#intended">Intended?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../workflow.html#compliant">Compliant?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../workflow.html#what-the-integrator-checks">What the integrator checks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../workflow.html#when-the-checks-run">When the checks run</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../workflow.html#who-answers-what">Who answers what</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../workflow.html#after-acceptance">After acceptance</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../workflow.html#not-settled-here">Not settled here</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../walkthroughs/index.html">Walkthroughs</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../walkthroughs/blender_mesh_coordinate_ex.html">Minimum viable workflow</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../walkthroughs/blender_mesh_coordinate_ex.html#minimum-monkey-mesh">Minimum monkey mesh</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../walkthroughs/blender_mesh_coordinate_ex.html#create-in-blender-and-export">Create in Blender and export</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../walkthroughs/blender_mesh_coordinate_ex.html#baseline">Baseline</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../walkthroughs/blender_mesh_coordinate_ex.html#the-y-up-export">The +Y Up Export</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../walkthroughs/blender_mesh_coordinate_ex.html#transforms-frames-coordinate-systems-and-spaces">Transforms, frames, coordinate systems and spaces</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../walkthroughs/blender_mesh_coordinate_ex.html#see-what-assimploader-receives">3. See what AssimpLoader receives</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../walkthroughs/blender_mesh_coordinate_ex.html#write-a-world-and-a-urdf">4. Write a world and a URDF</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../walkthroughs/blender_mesh_coordinate_ex.html#gazebo">5. Gazebo</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../walkthroughs/blender_mesh_coordinate_ex.html#rviz">6. RViz</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../walkthroughs/blender_mesh_coordinate_ex.html#what-rviz-does-to-a-gltf-file-and-how-to-undo-it">What RViz does to a glTF file, and how to undo it</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../walkthroughs/exporting-from-blender.html">Exporting from Blender</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../walkthroughs/exporting-from-blender.html#author-in-the-ros-frame-and-do-not-let-the-exporter-convert">Author in the ROS frame, and do not let the exporter convert</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../walkthroughs/exporting-from-blender.html#clear-location-and-rotation-apply-scale-before-exporting">Clear location and rotation, apply scale, before exporting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../walkthroughs/exporting-from-blender.html#where-the-origin-goes-is-not-yours-to-choose">Where the origin goes is not yours to choose</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../walkthroughs/exporting-from-blender.html#name-the-object-not-the-mesh">Name the object, not the mesh</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../walkthroughs/exporting-from-blender.html#metalness-is-the-defect-that-keeps-recurring">Metalness is the defect that keeps recurring</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../walkthroughs/exporting-from-blender.html#texture-format-is-decided-by-the-source-image">Texture format is decided by the source image</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../walkthroughs/exporting-from-blender.html#transparency-is-per-material-not-per-pixel">Transparency is per material, not per pixel</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../walkthroughs/exporting-from-blender.html#keep-the-authoring-source-outside-the-simulation-repository">Keep the authoring source, outside the simulation repository</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../walkthroughs/exporting-from-blender.html#versions">Versions</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../walkthroughs/checking-a-delivery.html">Checking a delivery</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../walkthroughs/checking-a-delivery.html#running-the-checker">Running the checker</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../walkthroughs/checking-a-delivery.html#reading-the-output">Reading the output</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../walkthroughs/checking-a-delivery.html#what-a-clean-run-does-not-mean">What a clean run does not mean</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../walkthroughs/workflow_blueboat.html">BlueBoat Walkthrough</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../walkthroughs/workflow_blueboat.html#commission">Commission</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../walkthroughs/workflow_blueboat.html#author">Author</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../walkthroughs/workflow_blueboat.html#fill-manifest">Fill manifest</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../walkthroughs/workflow_blueboat.html#verify">Verify</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../walkthroughs/workflow_blueboat.html#valid">Valid?</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../walkthroughs/workflow_blueboat.html#intended">Intended</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../walkthroughs/workflow_blueboat.html#compliant-gltf-check">Compliant - gltf-check</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="../walkthroughs/workflow_blueboat.html#gltf-probe">gltf probe</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../walkthroughs/workflow_blueboat.html#gazebo-standalone">Gazebo standalone</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../walkthroughs/workflow_blueboat.html#rviz">RVIZ</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../assessments/index.html">Assessments</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../assessments/community-exemplars.html">Community exemplars: who else ships glTF to Gazebo and RViz</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../assessments/community-exemplars.html#method">Method</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../assessments/community-exemplars.html#the-cohort">The cohort</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../assessments/community-exemplars.html#gazebosim-jetty-demo-the-closest-thing-to-an-upstream-reference">gazebosim/jetty_demo — the closest thing to an upstream reference</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../assessments/community-exemplars.html#open-rmf-rmf-site-gltf-generated-rather-than-authored">open-rmf/rmf_site — glTF generated rather than authored</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../assessments/community-exemplars.html#husarion-rosbot-ros-a-commercial-product-doing-it-per-link">husarion/rosbot_ros — a commercial product doing it per-link</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../assessments/community-exemplars.html#robotlocomotion-the-informed-dissent-on-packaging">RobotLocomotion — the informed dissent on packaging</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../assessments/community-exemplars.html#usnistgov-ariac-a-migration-caught-in-the-middle">usnistgov/ARIAC — a migration caught in the middle</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../assessments/community-exemplars.html#vanttec-vanttec-usv-the-nearest-maritime-peer-inverted">vanttec/vanttec_usv — the nearest maritime peer, inverted</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../assessments/community-exemplars.html#the-people-and-the-two-organizations-that-turned-out-not-to-be-doing-this">The people, and the two organizations that turned out not to be doing this</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../assessments/community-exemplars.html#what-this-changes-for-us">What this changes for us</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../assessments/community-exemplars.html#where-the-argument-is-being-had">Where the argument is being had</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="glossary.html">Glossary</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="glossary.html#terms">Terms</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="glossary.html#assembly">assembly</a></li>
+<li class="toctree-l4"><a class="reference internal" href="glossary.html#asset">asset</a></li>
+<li class="toctree-l4"><a class="reference internal" href="glossary.html#base-part">base part</a></li>
+<li class="toctree-l4"><a class="reference internal" href="glossary.html#commission">commission</a></li>
+<li class="toctree-l4"><a class="reference internal" href="glossary.html#component-part">component part</a></li>
+<li class="toctree-l4"><a class="reference internal" href="glossary.html#consumer">consumer</a></li>
+<li class="toctree-l4"><a class="reference internal" href="glossary.html#coordinate-system">coordinate system</a></li>
+<li class="toctree-l4"><a class="reference internal" href="glossary.html#datasheet">datasheet</a></li>
+<li class="toctree-l4"><a class="reference internal" href="glossary.html#datum">datum</a></li>
+<li class="toctree-l4"><a class="reference internal" href="glossary.html#datum-coordinate-system">datum coordinate system</a></li>
+<li class="toctree-l4"><a class="reference internal" href="glossary.html#datum-point">datum point</a></li>
+<li class="toctree-l4"><a class="reference internal" href="glossary.html#delivery">delivery</a></li>
+<li class="toctree-l4"><a class="reference internal" href="glossary.html#integrator">integrator</a></li>
+<li class="toctree-l4"><a class="reference internal" href="glossary.html#manifest">manifest</a></li>
+<li class="toctree-l4"><a class="reference internal" href="glossary.html#modeler">modeler</a></li>
+<li class="toctree-l4"><a class="reference internal" href="glossary.html#origin">origin</a></li>
+<li class="toctree-l4"><a class="reference internal" href="glossary.html#part">part</a></li>
+<li class="toctree-l4"><a class="reference internal" href="glossary.html#part-coordinate-system">part coordinate system</a></li>
+<li class="toctree-l4"><a class="reference internal" href="glossary.html#submesh">submesh</a></li>
+<li class="toctree-l4"><a class="reference internal" href="glossary.html#visual-model">visual model</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="coordinate-systems.html">Coordinate Systems: glTF, Gazebo and ROS</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="coordinate-systems.html#objective">Objective</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="coordinate-systems.html#central-issue">Central Issue</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="coordinate-systems.html#how-claims-in-this-document-are-marked">How claims in this document are marked</a></li>
+<li class="toctree-l3"><a class="reference internal" href="coordinate-systems.html#coordinate-conventions-and-typical-practices">Coordinate Conventions and Typical Practices</a></li>
+<li class="toctree-l3"><a class="reference internal" href="coordinate-systems.html#vocabulary-nomenclature-glossary">Vocabulary / Nomenclature / Glossary</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="coordinate-systems.html#our-formal-default">Our formal default</a></li>
+<li class="toctree-l4"><a class="reference internal" href="coordinate-systems.html#terms-by-stage-of-the-flow">Terms by stage of the flow</a></li>
+<li class="toctree-l4"><a class="reference internal" href="coordinate-systems.html#coordinate-system-origin-and-reference-point">Coordinate system, origin, and reference point</a></li>
+<li class="toctree-l4"><a class="reference internal" href="coordinate-systems.html#the-o-x-y-z-notation">The <code class="docutils literal notranslate"><span class="pre">O</span> <span class="pre">-</span> <span class="pre">X</span> <span class="pre">-</span> <span class="pre">Y</span> <span class="pre">-</span> <span class="pre">Z</span></code> notation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="coordinate-systems.html#specifying-a-coordinate-system-datums-and-what-referenced-to-means">Specifying a coordinate system: datums and what “referenced to” means</a></li>
+<li class="toctree-l4"><a class="reference internal" href="coordinate-systems.html#assumptions">Assumptions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="coordinate-systems.html#standards-summary">Standards Summary</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="coordinate-systems.html#iso-9787-2013">ISO 9787:2013</a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="coordinate-systems.html#robotics">Robotics</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="coordinate-systems.html#categorizing-links-by-their-place-in-the-tree">Categorizing links by their place in the tree</a></li>
+<li class="toctree-l5"><a class="reference internal" href="coordinate-systems.html#manipulation-centric-robots-with-static-base">Manipulation-centric (robots with static base)</a></li>
+<li class="toctree-l5"><a class="reference internal" href="coordinate-systems.html#mobile-centric">Mobile-centric</a></li>
+<li class="toctree-l5"><a class="reference internal" href="coordinate-systems.html#other-conventions-worth-knowing">Other conventions worth knowing</a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="coordinate-systems.html#d-graphics">3D Graphics</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="coordinate-systems.html#what-survives-into-gltf-and-what-does-not">What survives into glTF, and what does not</a></li>
+<li class="toctree-l5"><a class="reference internal" href="coordinate-systems.html#standards-for-3d-assets">Standards for 3D assets</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="coordinate-systems.html#reconciling-the-standards">Reconciling the standards</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="coordinate-systems.html#where-they-agree-and-it-is-most-of-it">Where they agree, and it is most of it</a></li>
+<li class="toctree-l4"><a class="reference internal" href="coordinate-systems.html#the-disagreement-is-one-cyclic-relabeling">The disagreement is one cyclic relabeling</a></li>
+<li class="toctree-l4"><a class="reference internal" href="coordinate-systems.html#our-coordinate-system-names">Our coordinate system names</a></li>
+<li class="toctree-l4"><a class="reference internal" href="coordinate-systems.html#the-full-reconciliation">The full reconciliation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="coordinate-systems.html#adopt-narrow-or-invent">Adopt, narrow, or invent</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="coordinate-systems.html#one-body-one-mesh-who-rotates-what">One body, one mesh: who rotates what</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="coordinate-systems.html#the-chain-and-where-a-rotation-can-be-inserted">The chain, and where a rotation can be inserted</a></li>
+<li class="toctree-l4"><a class="reference internal" href="coordinate-systems.html#gazebo-from-source">Gazebo, from source</a></li>
+<li class="toctree-l4"><a class="reference internal" href="coordinate-systems.html#rviz-from-source">RViz, from source</a></li>
+<li class="toctree-l4"><a class="reference internal" href="coordinate-systems.html#blender-s-exporter-from-source">Blender’s exporter, from source</a></li>
+<li class="toctree-l4"><a class="reference internal" href="coordinate-systems.html#the-probe-measured">The probe, measured</a></li>
+<li class="toctree-l4"><a class="reference internal" href="coordinate-systems.html#the-decision-and-what-it-costs">The decision, and what it costs</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="coordinate-systems.html#next-increment">Next increment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="coordinate-systems.html#references">References</a></li>
+</ul>
+</li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Gazebo and RViz loader behavior</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#the-consumers">The consumers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#the-gazebo-path-step-by-step">The Gazebo path, step by step</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#what-the-loader-reads-from-a-gltf-material">What the loader reads from a glTF material</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#the-rviz-path">The RViz path</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="blender-export-options.html">Blender glTF Export Options</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="blender-export-options.html#directive">Directive</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="blender-export-options.html#four-things-that-decide-the-result-and-are-not-in-this-dialog">Four things that decide the result and are not in this dialog</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="blender-export-options.html#provenance">Provenance</a></li>
+<li class="toctree-l3"><a class="reference internal" href="blender-export-options.html#what-no-option-does">What no option does</a></li>
+<li class="toctree-l3"><a class="reference internal" href="blender-export-options.html#top-of-the-dialog">Top of the dialog</a></li>
+<li class="toctree-l3"><a class="reference internal" href="blender-export-options.html#include">Include</a></li>
+<li class="toctree-l3"><a class="reference internal" href="blender-export-options.html#transform">Transform</a></li>
+<li class="toctree-l3"><a class="reference internal" href="blender-export-options.html#data-scene-graph">Data ▸ Scene Graph</a></li>
+<li class="toctree-l3"><a class="reference internal" href="blender-export-options.html#data-mesh">Data ▸ Mesh</a></li>
+<li class="toctree-l3"><a class="reference internal" href="blender-export-options.html#data-material">Data ▸ Material</a></li>
+<li class="toctree-l3"><a class="reference internal" href="blender-export-options.html#data-shape-keys-skinning-lighting">Data ▸ Shape Keys, Skinning, Lighting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="blender-export-options.html#animation">Animation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="blender-export-options.html#compression">Compression</a></li>
+<li class="toctree-l3"><a class="reference internal" href="blender-export-options.html#what-this-enumeration-suggests-and-needs-checking">What this enumeration suggests, and needs checking</a></li>
+<li class="toctree-l3"><a class="reference internal" href="blender-export-options.html#open-rows-as-a-worklist">Open rows, as a worklist</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pbr-and-gltf.html">PBR, and why glTF is inseparable from it</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pbr-and-gltf.html#the-shift-in-one-sentence">The shift in one sentence</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pbr-and-gltf.html#what-we-had-before-collada-plus-an-image">What we had before: Collada plus an image</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pbr-and-gltf.html#what-pbr-replaces-it-with">What PBR replaces it with</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pbr-and-gltf.html#the-four-terms-in-that-table-reference">The four terms in that table (reference)</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pbr-and-gltf.html#the-differences-that-actually-bite">The differences that actually bite</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pbr-and-gltf.html#why-gltf-and-pbr-cannot-be-separated">Why glTF and PBR cannot be separated</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pbr-and-gltf.html#where-to-go-next">Where to go next</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="gltf-background-notes.html">glTF Background</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="gltf-background-notes.html#references">References</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="gltf-background-notes.html#khronos-org">Khronos.org</a></li>
+<li class="toctree-l4"><a class="reference internal" href="gltf-background-notes.html#gltf-2-0-specification">glTF 2.0 Specification</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="gltf-background-notes.html#https-github-com-khronosgroup-gltf-tutorials">https://github.com/KhronosGroup/glTF-Tutorials</a></li>
+<li class="toctree-l5"><a class="reference internal" href="gltf-background-notes.html#gltf-quickstart">glTF Quickstart</a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="gltf-background-notes.html#video-discussing-vulkan-neural-rendering-slang-ai-more-neil-trevett-khronos-group-interview">Video: Discussing Vulkan, Neural Rendering, SLANG, AI &amp; More - Neil Trevett &amp; Khronos Group Interview</a></li>
+<li class="toctree-l4"><a class="reference internal" href="gltf-background-notes.html#gltf-2-0-quickstart-and-tools">glTF 2.0 Quickstart and tools</a></li>
+<li class="toctree-l4"><a class="reference internal" href="gltf-background-notes.html#openusd-conventions-for-simulation-asset-interoperability-in-open-source-robotics">OpenUSD Conventions for Simulation Asset Interoperability in Open Source Robotics</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="gltf-background-notes.html#closely-related-work-and-examples">Closely Related Work and Examples</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="gltf-background-notes.html#community-standards-documents-discussion-etc">Community standards, documents, discussion, etc.</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="gltf-background-notes.html#gazebo-community-and-developers">Gazebo community and developers</a></li>
+<li class="toctree-l5"><a class="reference internal" href="gltf-background-notes.html#examples">Examples</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="gltf-background-notes.html#fuel">Fuel</a></li>
+<li class="toctree-l6"><a class="reference internal" href="gltf-background-notes.html#repos">Repos</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Honu glTF Asset Framework</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Reference</a></li>
+      <li class="breadcrumb-item active">Gazebo and RViz loader behavior</li>
+      <li class="wy-breadcrumbs-aside">
+              <a href="https://github.com/HonuRobotics/gltf-robotics/blob/main/docs/reference/loader-behavior.md" class="fa fa-github"> Edit on GitHub</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="gazebo-and-rviz-loader-behavior">
+<h1>Gazebo and RViz loader behavior<a class="headerlink" href="#gazebo-and-rviz-loader-behavior" title="Link to this heading"></a></h1>
+<p>What Gazebo and RViz build from a glTF file, read out of their source code and confirmed with <code class="docutils literal notranslate"><span class="pre">glb_probe</span></code> where marked.</p>
+<p>This page is a snapshot taken on 2026-09-04 and has not been re-verified since. It is kept as information we may need to return to, not as a maintained reference. The versions in the first table are the ones the snapshot was read against; the profile’s <a class="reference internal" href="../profile.html#authoring-toolchain"><span class="std std-ref">Authoring toolchain</span></a> section is the current pin, and the loader is under active change, so check a claim against the installed version before relying on it.</p>
+<p>Evidence tags used below:</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Tag</p></th>
+<th class="head"><p>Evidence</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>S</p></td>
+<td><p>Read in the source of the version listed</p></td>
+</tr>
+<tr class="row-odd"><td><p>P</p></td>
+<td><p>Observed by running <code class="docutils literal notranslate"><span class="pre">glb_probe</span></code> against our files inside the drydock container</p></td>
+</tr>
+<tr class="row-even"><td><p>U</p></td>
+<td><p>Not verified</p></td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<div><p><strong>Open.</strong> Whether to contribute the material table below to Gazebo, on the open documentation issue that asked for it, and whether to file an issue for the <code class="docutils literal notranslate"><span class="pre">SceneManager</span></code> material-override TODO. Both are small, and neither is a rule of the profile.</p>
+</div></blockquote>
+<section id="the-consumers">
+<h2>The consumers<a class="headerlink" href="#the-consumers" title="Link to this heading"></a></h2>
+<p>Read out of the drydock container on 2026-09-04. Nothing in this project pins them: the Gazebo libraries are whatever the <code class="docutils literal notranslate"><span class="pre">ros-lyrical-gz-*-vendor</span></code> packages (the Jetty line) resolve to on Ubuntu 26.04, and assimp is the Ubuntu package. An <code class="docutils literal notranslate"><span class="pre">apt</span> <span class="pre">upgrade</span></code> or an image rebuild can move any row, and every S-tagged claim below is tied to these numbers.</p>
+<p><strong>Is any of this stable?</strong> No, and the Gazebo project’s written record is unambiguous about it. glTF loading arrived in Gazebo Garden in 2022 and has been under continuous correction since. The metallic-roughness maps were being written out rotated ninety degrees. Every PBR texture was treated as color data, so meshes rendered visibly too dark. Embedded JPEG textures failed to load at all, with an error message about texture settings that named nothing relevant. The root node transform was dropped, then restored for glTF only. Occlusion was disabled because the renderer could not use it, then re-enabled from a different channel. Nine changes to the loader alone merged between July and September 2026, and the rotation and default-material behavior changed again between the version installed here and the next patch release, which is the table below. A recollection that an older Gazebo handled GLB very differently is not a false memory. It is what this history predicts.</p>
+<p><strong>How much resolution does the tracking need?</strong> Patch level. The change that moved under us during this audit was 7.3.0 to 7.3.1, so tracking at the minor version would not have caught it, and a pin that names anything coarser than the patch would not be worth writing. The same applies to assimp, which is the component actually doing the parsing and is versioned independently of everything else here. The profile’s <a class="reference internal" href="../profile.html#authoring-toolchain"><span class="std std-ref">Authoring toolchain</span></a> section pins the stack at patch level for this reason.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Component</p></th>
+<th class="head"><p>Version</p></th>
+<th class="head"><p>Role</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>gz-sim</p></td>
+<td><p>10.5.0</p></td>
+<td><p>Chooses whether the SDF material or the mesh’s own materials are used</p></td>
+</tr>
+<tr class="row-odd"><td><p>gz-rendering</p></td>
+<td><p>10.0.2</p></td>
+<td><p>Builds the Ogre-Next mesh and material from what gz-common loaded</p></td>
+</tr>
+<tr class="row-even"><td><p>gz-common</p></td>
+<td><p>7.3.0</p></td>
+<td><p>The loader: <code class="docutils literal notranslate"><span class="pre">AssimpLoader.cc</span></code> (external library, version not pinned, so could introduce instability), <code class="docutils literal notranslate"><span class="pre">Image.cc</span></code> (stb_image), <code class="docutils literal notranslate"><span class="pre">Material.cc</span></code>, <code class="docutils literal notranslate"><span class="pre">Pbr.cc</span></code>, <code class="docutils literal notranslate"><span class="pre">SubMesh.cc</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>Ogre-Next</p></td>
+<td><p>2.3.3</p></td>
+<td><p>The renderer: HLMS PBS datablocks, tangent generation at mesh import</p></td>
+</tr>
+<tr class="row-even"><td><p>assimp</p></td>
+<td><p>6.0.4 (Ubuntu, linked against Draco)</p></td>
+<td><p>Parses glTF for both Gazebo and RViz</p></td>
+</tr>
+<tr class="row-odd"><td><p>rviz_rendering</p></td>
+<td><p>15.2.5 (Ogre 1.9)</p></td>
+<td><p>RViz mesh loader: <code class="docutils literal notranslate"><span class="pre">mesh_loader_helpers/assimp_loader.cpp</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>Blender glTF I/O</p></td>
+<td><p>5.1.20</p></td>
+<td><p>The exporter that wrote every delivered file</p></td>
+</tr>
+</tbody>
+</table>
+<p>Sources read: branches <code class="docutils literal notranslate"><span class="pre">gz-common7</span></code>, <code class="docutils literal notranslate"><span class="pre">gz-rendering10</span></code>, <code class="docutils literal notranslate"><span class="pre">gz-sim10</span></code>, assimp tag <code class="docutils literal notranslate"><span class="pre">v6.0.4</span></code>, ogre-next <code class="docutils literal notranslate"><span class="pre">v2-3</span></code> and rviz <code class="docutils literal notranslate"><span class="pre">rolling</span></code>. Nothing below is from memory of older versions. gz-common 7 decodes images with stb_image, not FreeImage, which changes what “supported image format” means compared with older Gazebo.</p>
+<p>One caveat on that. The gz-common source read here is the <code class="docutils literal notranslate"><span class="pre">gz-common7</span></code> branch tip, which is ahead of the installed 7.3.0: releases 7.3.1 (2026-08-18) and 7.4.0 (2026-08-24) exist upstream, plus merges not yet released. Two of those changes are in <code class="docutils literal notranslate"><span class="pre">AssimpLoader.cc</span></code> and are compared against the 7.3.0 tag here:</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Behavior</p></th>
+<th class="head"><p>7.3.0, the installed version</p></th>
+<th class="head"><p>7.3.1 and later, the branch read</p></th>
+<th class="head"><p>Effect on us</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>glTF root node rotation</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">useIdentityRotation</span> <span class="pre">=</span> <span class="pre">(extension</span> <span class="pre">!=</span> <span class="pre">&quot;glb&quot;</span> <span class="pre">&amp;&amp;</span> <span class="pre">extension</span> <span class="pre">!=</span> <span class="pre">&quot;glTF&quot;)</span></code>. The extension is lowercased before the comparison, so <code class="docutils literal notranslate"><span class="pre">&quot;glTF&quot;</span></code> never matches and a <code class="docutils literal notranslate"><span class="pre">.gltf</span></code> file loses its root rotation. <code class="docutils literal notranslate"><span class="pre">.glb</span></code> matches and keeps it.</p></td>
+<td><p>The literal is corrected to <code class="docutils literal notranslate"><span class="pre">&quot;gltf&quot;</span></code>, so both keep it (gz-common PR 858)</p></td>
+<td><p>None. We deliver <code class="docutils literal notranslate"><span class="pre">.glb</span></code> only, which took the same path before and after. It is a small argument for requiring GLB over <code class="docutils literal notranslate"><span class="pre">.gltf</span></code> on this version.</p></td>
+</tr>
+<tr class="row-odd"><td><p>assimp’s own default material</p></td>
+<td><p>No filter exists. Every assimp material becomes a gz <code class="docutils literal notranslate"><span class="pre">Material</span></code>.</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">IsDefaultMaterial</span></code> skips a material named <code class="docutils literal notranslate"><span class="pre">DefaultMaterial</span></code> carrying exactly two properties (gz-common PR 858)</p></td>
+<td><p>None. A glTF primitive without a material gets a fully populated synthesized material, which fails that two-property test, so it survives on both. Probe-confirmed on 7.3.0 (the Gazebo path below, step 6).</p></td>
+</tr>
+<tr class="row-even"><td><p>Gazebo has not implemented the whole of glTF, it is openly still working on the parts it does implement, and the project publishes almost nothing saying which parts those are. Expecting it to agree with the specification was never a safe assumption, and the table above is the compact demonstration: one file, one specification, two adjacent patch releases, different behavior. A file is correct because it validates and matches its intent. Gazebo tells us what will ship today, on this version, which is a different and more perishable question.</p></td>
+<td><p></p></td>
+<td><p></p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+<p>Where the branch and the installed version could differ, a P-tagged observation wins over an S-tagged one, because the probe links against the installed library and the source is the branch. Every S claim on this page was checked for such a gap; these two are the only ones found, and neither changes a conclusion.</p>
+</section>
+<section id="the-gazebo-path-step-by-step">
+<h2>The Gazebo path, step by step<a class="headerlink" href="#the-gazebo-path-step-by-step" title="Link to this heading"></a></h2>
+<ol class="arabic simple">
+<li><p>The gz-sim server never loads a visual mesh. Visuals are loaded by whichever process renders: the GUI, or a rendering sensor. Collision meshes are loaded by the physics side through the same gz-common loader. [S]</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">MeshManager</span></code> dispatches on the lowercased extension: <code class="docutils literal notranslate"><span class="pre">stl</span></code> to the STL loader, <code class="docutils literal notranslate"><span class="pre">dae</span></code> to the Collada loader, <code class="docutils literal notranslate"><span class="pre">obj</span></code> to the OBJ loader, and <code class="docutils literal notranslate"><span class="pre">gltf</span></code>, <code class="docutils literal notranslate"><span class="pre">glb</span></code>, <code class="docutils literal notranslate"><span class="pre">fbx</span></code> to <code class="docutils literal notranslate"><span class="pre">AssimpLoader</span></code>. The two <code class="docutils literal notranslate"><span class="pre">.dae</span></code> files still in the tree (<code class="docutils literal notranslate"><span class="pre">ping360</span></code>, <code class="docutils literal notranslate"><span class="pre">bluerov2_heavy_chassis</span></code>) therefore go through a different loader with different material semantics; they are outside the profile until converted. [S]</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">AssimpLoader::Load</span></code> imports with <code class="docutils literal notranslate"><span class="pre">JoinIdenticalVertices</span></code>, <code class="docutils literal notranslate"><span class="pre">RemoveRedundantMaterials</span></code>, <code class="docutils literal notranslate"><span class="pre">SortByPType</span></code>, <code class="docutils literal notranslate"><span class="pre">FlipUVs</span></code>, <code class="docutils literal notranslate"><span class="pre">PopulateArmatureData</span></code>, <code class="docutils literal notranslate"><span class="pre">Triangulate</span></code> and <code class="docutils literal notranslate"><span class="pre">GenNormals</span></code>. Not requested: <code class="docutils literal notranslate"><span class="pre">CalcTangentSpace</span></code> (tangents are never computed here), <code class="docutils literal notranslate"><span class="pre">FindDegenerates</span></code> (degenerate triangles survive), <code class="docutils literal notranslate"><span class="pre">GenUVCoords</span></code>. Assimp assertion failures and exceptions are caught and reported as a load failure, not a crash. [S]</p></li>
+<li><p>Root transform: for <code class="docutils literal notranslate"><span class="pre">glb</span></code> the root node transform is kept as exported; for other formats its rotation is dropped, and on the installed 7.3.0 that wrongly includes <code class="docutils literal notranslate"><span class="pre">.gltf</span></code> (see the table above). Every node’s translation, rotation, scale or matrix is multiplied down the tree and baked into the vertices. Node transforms are therefore honored, not ignored. [S, P: the T200 files carry a 2.8 mm translation node and the probe’s bounding box shifts by exactly that.]</p></li>
+<li><p>Each assimp mesh, which is one glTF primitive, becomes one gz <code class="docutils literal notranslate"><span class="pre">SubMesh</span></code> named after the glTF node that carries it, not after the glTF mesh. Seven primitives on one node become seven submeshes with the same name. [S, P: <code class="docutils literal notranslate"><span class="pre">bluerov2_chassis</span></code> yields seven submeshes all named <code class="docutils literal notranslate"><span class="pre">Frame.001</span></code>.] Vertices, normals (authored ones kept; generated only when absent), every UV set, and 32-bit indices are copied. Tangents and vertex colors are not stored: <code class="docutils literal notranslate"><span class="pre">SubMesh</span></code> has no tangent channel and the factory has a <code class="docutils literal notranslate"><span class="pre">TODO:</span> <span class="pre">diffuse</span> <span class="pre">colors</span></code>. [S]</p></li>
+<li><p>Materials: <code class="docutils literal notranslate"><span class="pre">CreateMaterial</span></code> builds a gz <code class="docutils literal notranslate"><span class="pre">Material</span></code> plus <code class="docutils literal notranslate"><span class="pre">Pbr</span></code> for every assimp material (on 7.3.1 and later, every one that is not assimp’s own two-property default). The table in the next section lists what it reads. A glTF primitive with no material gets assimp’s synthesized glTF default (white, metallic 1, roughness 1, opaque), which is fully populated and so survives that filter on either version; Gazebo renders it as dull white metal. [S, P: <code class="docutils literal notranslate"><span class="pre">material[6]</span></code> on the chassis.]</p></li>
+<li><p>gz-rendering’s <code class="docutils literal notranslate"><span class="pre">Ogre2MeshFactory</span></code> builds an Ogre v1 mesh (positions, normals, all UV sets as float2, a dummy UV set if there is none, 32-bit indices) and then calls <code class="docutils literal notranslate"><span class="pre">importV1(v1Mesh,</span> <span class="pre">halfPos=false,</span> <span class="pre">halfTexCoords=true,</span> <span class="pre">qTangents=true)</span></code>. Ogre-Next’s <code class="docutils literal notranslate"><span class="pre">importV1</span></code> with <code class="docutils literal notranslate"><span class="pre">qTangents=true</span></code> generates tangents from UV set 0 whenever the mesh lacks them, which for us is always. UVs are stored as 16-bit half floats. [S]</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">BaseMaterial::CopyFrom</span></code> copies, in order: ambient, diffuse (RGBA), specular, emissive, shininess, transparency, alpha-from-texture (enabled, threshold, two-sided), render order, base color texture, then the PBR set: normal, roughness and metalness maps, roughness and metalness factors, environment map, emissive map, light map with its UV set. Ogre-Next combines factor and map for metalness and roughness; the factor is a multiplier on the map as in glTF. [S for the copy order; U for the exact shader combination, which is documented behavior of Ogre-Next’s PBS but not re-read in shader source for this audit.]</p></li>
+<li><p>Textures are uploaded from memory as RGBA8; base color and emissive as sRGB, normal, roughness and metalness as linear (Ogre-Next’s <code class="docutils literal notranslate"><span class="pre">suggestUsingSRGB</span></code>). Normal maps are reduced to a two-channel signed format, so only R and G are used and the blue channel is reconstructed. Mipmaps are generated for the base color and normal maps only; roughness and metalness maps get none. Sampler wrap is always repeat; the glTF sampler is not read. 16-bit PNGs decode but are converted to 8-bit on upload. [S]</p></li>
+<li><p>Transparency: Ogre2’s <code class="docutils literal notranslate"><span class="pre">UpdateTransparency</span></code> computes <code class="docutils literal notranslate"><span class="pre">opacity</span> <span class="pre">=</span> <span class="pre">(1</span> <span class="pre">-</span> <span class="pre">transparency)</span> <span class="pre">*</span> <span class="pre">diffuse.alpha</span></code>; anything below 1.0 moves the material to the transparent render queue. <code class="docutils literal notranslate"><span class="pre">SetAlphaFromTexture</span></code> (MASK) switches on alpha test with the cutoff, a transparent-alpha blend block, and two-sided lighting, which in Ogre-Next also disables back-face culling. Nothing else touches the cull mode, whose default is <code class="docutils literal notranslate"><span class="pre">CULL_CLOCKWISE</span></code>: back faces of OPAQUE and BLEND materials are culled regardless of <code class="docutils literal notranslate"><span class="pre">doubleSided</span></code>. [S, P: <code class="docutils literal notranslate"><span class="pre">twoSided</span> <span class="pre">0</span></code> on every delivered material although all are exported <code class="docutils literal notranslate"><span class="pre">doubleSided:</span> <span class="pre">true</span></code>.]</p></li>
+<li><p>gz-sim <code class="docutils literal notranslate"><span class="pre">SceneManager</span></code>: if the SDF <code class="docutils literal notranslate"><span class="pre">&lt;visual&gt;</span></code> carries a <code class="docutils literal notranslate"><span class="pre">&lt;material&gt;</span></code>, that one material is loaded and set on the whole geometry, replacing every embedded material. If it does not, the submesh materials from the file are used, with the visual’s <code class="docutils literal notranslate"><span class="pre">&lt;transparency&gt;</span></code> multiplied in. The generated part SDF never emits <code class="docutils literal notranslate"><span class="pre">&lt;material&gt;</span></code>, so embedded materials are what renders. This also means an SDF-side material can only ever be a single material per visual: per-primitive materials are lost the moment one is declared. [S]</p></li>
+</ol>
+</section>
+<section id="what-the-loader-reads-from-a-gltf-material">
+<h2>What the loader reads from a glTF material<a class="headerlink" href="#what-the-loader-reads-from-a-gltf-material" title="Link to this heading"></a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>glTF field</p></th>
+<th class="head"><p>assimp property</p></th>
+<th class="head"><p>gz-common result</p></th>
+<th class="head"><p>Renders as</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">baseColorFactor</span></code> RGB</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">COLOR_DIFFUSE</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">Diffuse</span></code></p></td>
+<td><p>Multiplies the base color texture (alpha, see next row)</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">baseColorFactor</span></code> alpha</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">COLOR_DIFFUSE</span></code> alpha and <code class="docutils literal notranslate"><span class="pre">OPACITY</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">Diffuse.A</span> <span class="pre">=</span> <span class="pre">a</span></code> and <code class="docutils literal notranslate"><span class="pre">Transparency</span> <span class="pre">=</span> <span class="pre">1</span> <span class="pre">-</span> <span class="pre">a</span></code></p></td>
+<td><p>Opacity <code class="docutils literal notranslate"><span class="pre">a</span> <span class="pre">*</span> <span class="pre">a</span></code> in Ogre2, on every alpha mode, because both terms carry it [S; visual confirmation pending, U]</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">baseColorTexture</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">aiTextureType_DIFFUSE</span></code></p></td>
+<td><p>base color image (UV set 0 assumed)</p></td>
+<td><p>sRGB albedo with mipmaps</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">alphaMode:</span> <span class="pre">MASK</span></code>, <code class="docutils literal notranslate"><span class="pre">alphaCutoff</span></code>, <code class="docutils literal notranslate"><span class="pre">doubleSided</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">GLTF_ALPHAMODE</span></code>, <code class="docutils literal notranslate"><span class="pre">GLTF_ALPHACUTOFF</span></code>, <code class="docutils literal notranslate"><span class="pre">TWOSIDED</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">SetAlphaFromTexture(true,</span> <span class="pre">cutoff,</span> <span class="pre">twoSided)</span></code></p></td>
+<td><p>Alpha test at cutoff, no back-face culling. Only read when a base color texture exists</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">alphaMode:</span> <span class="pre">BLEND</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">GLTF_ALPHAMODE</span></code></p></td>
+<td><p>nothing (<code class="docutils literal notranslate"><span class="pre">BLEND</span> <span class="pre">not</span> <span class="pre">supported</span> <span class="pre">yet</span></code> in source)</p></td>
+<td><p>Opaque, texture alpha ignored</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">doubleSided</span></code> on OPAQUE or BLEND</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">TWOSIDED</span></code></p></td>
+<td><p>not read</p></td>
+<td><p>Back faces culled</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">metallicFactor</span></code>, <code class="docutils literal notranslate"><span class="pre">roughnessFactor</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">METALLIC_FACTOR</span></code>, <code class="docutils literal notranslate"><span class="pre">ROUGHNESS_FACTOR</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">Pbr::Metalness</span></code>, <code class="docutils literal notranslate"><span class="pre">Pbr::Roughness</span></code>; metalness also becomes the Phong specular color</p></td>
+<td><p>Multipliers on the maps</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">metallicRoughnessTexture</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">GLTF_PBRMETALLICROUGHNESS_METALLICROUGHNESS_TEXTURE</span></code></p></td>
+<td><p>split into a metalness map (B) and a roughness map (G), 8-bit single channel</p></td>
+<td><p>Linear, no mipmaps</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">occlusionTexture</span></code> on UV set 0</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">aiTextureType_LIGHTMAP</span></code>, uv index 0</p></td>
+<td><p>R channel extracted into a light map on set 0</p></td>
+<td><p>Ambient occlusion</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">occlusionTexture</span></code> on UV set 1 or higher</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">aiTextureType_LIGHTMAP</span></code>, uv index n</p></td>
+<td><p>whole image as light map on set n</p></td>
+<td><p>Baked lightmap on its own UVs</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">normalTexture</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">aiTextureType_NORMALS</span></code></p></td>
+<td><p>normal map, tangent space</p></td>
+<td><p>R and G only; <code class="docutils literal notranslate"><span class="pre">scale</span></code> ignored</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">emissiveFactor</span></code>, <code class="docutils literal notranslate"><span class="pre">emissiveTexture</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">COLOR_EMISSIVE</span></code>, <code class="docutils literal notranslate"><span class="pre">aiTextureType_EMISSIVE</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">Emissive</span></code>, emissive map</p></td>
+<td><p>sRGB emissive, 0 to 1</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">KHR_materials_emissive_strength</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">EMISSIVE_INTENSITY</span></code></p></td>
+<td><p>not read</p></td>
+<td><p>No HDR emissive</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">KHR_materials_transmission</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">TRANSMISSION_FACTOR</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">Transparency</span> <span class="pre">=</span> <span class="pre">factor</span></code></p></td>
+<td><p>Transparent, so not ignored</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">KHR_texture_transform</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">UVTRANSFORM</span></code></p></td>
+<td><p>not read</p></td>
+<td><p>Textures render untransformed, i.e. misplaced</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">KHR_materials_pbrSpecularGlossiness</span></code></p></td>
+<td><p>diffuse and specular colors, <code class="docutils literal notranslate"><span class="pre">aiTextureType_SPECULAR</span></code></p></td>
+<td><p>diffuse color, specular map name only</p></td>
+<td><p>No roughness or metalness maps; not a working import</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">KHR_materials_specular</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">COLOR_SPECULAR</span></code>, <code class="docutils literal notranslate"><span class="pre">SPECULAR_FACTOR</span></code>, specular textures</p></td>
+<td><p>specular color and a specular map name</p></td>
+<td><p>Effectively ignored under the metal workflow</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">KHR_materials_clearcoat</span></code>, <code class="docutils literal notranslate"><span class="pre">sheen</span></code>, <code class="docutils literal notranslate"><span class="pre">ior</span></code>, <code class="docutils literal notranslate"><span class="pre">volume</span></code>, <code class="docutils literal notranslate"><span class="pre">anisotropy</span></code>, <code class="docutils literal notranslate"><span class="pre">unlit</span></code></p></td>
+<td><p>read by assimp</p></td>
+<td><p>not read</p></td>
+<td><p>Ignored</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">KHR_draco_mesh_compression</span></code></p></td>
+<td><p>decoded by assimp (Ubuntu build links Draco)</p></td>
+<td><p>plain geometry</p></td>
+<td><p>Works in both consumers</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">KHR_texture_basisu</span></code>, <code class="docutils literal notranslate"><span class="pre">EXT_texture_webp</span></code></p></td>
+<td><p>parsed by assimp</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">Unable</span> <span class="pre">to</span> <span class="pre">load</span> <span class="pre">embedded</span> <span class="pre">texture.</span> <span class="pre">Unsupported</span> <span class="pre">compressed</span> <span class="pre">image</span> <span class="pre">format</span></code></p></td>
+<td><p>Untextured, with an error on the console</p></td>
+</tr>
+<tr class="row-even"><td><p>Embedded PNG or JPEG</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">aiTexture</span></code> with format hint</p></td>
+<td><p>decoded with stb_image</p></td>
+<td><p>Works. Only these two hints are accepted</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">samplers</span></code></p></td>
+<td><p>read by assimp</p></td>
+<td><p>not read</p></td>
+<td><p>Always repeat, linear</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">COLOR_0</span></code> vertex colors</p></td>
+<td><p>read by assimp</p></td>
+<td><p>not copied</p></td>
+<td><p>Ignored</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">TANGENT</span></code></p></td>
+<td><p>read by assimp</p></td>
+<td><p>not copied</p></td>
+<td><p>Ogre-Next regenerates from UV0</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">animations</span></code>, <code class="docutils literal notranslate"><span class="pre">skins</span></code></p></td>
+<td><p>read</p></td>
+<td><p>skeleton and animation built</p></td>
+<td><p>Bounding box forced to a unit cube when an animation exists, so a stray animation breaks culling</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">cameras</span></code>, <code class="docutils literal notranslate"><span class="pre">KHR_lights_punctual</span></code></p></td>
+<td><p>read by assimp</p></td>
+<td><p>not read</p></td>
+<td><p>Ignored</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="the-rviz-path">
+<h2>The RViz path<a class="headerlink" href="#the-rviz-path" title="Link to this heading"></a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">rviz_rendering::AssimpLoader</span></code> imports with <code class="docutils literal notranslate"><span class="pre">SortByPType</span></code>, <code class="docutils literal notranslate"><span class="pre">GenNormals</span></code>, <code class="docutils literal notranslate"><span class="pre">Triangulate</span></code>, <code class="docutils literal notranslate"><span class="pre">GenUVCoords</span></code>, <code class="docutils literal notranslate"><span class="pre">FlipUVs</span></code>, then for <code class="docutils literal notranslate"><span class="pre">.gltf</span></code>, <code class="docutils literal notranslate"><span class="pre">.glb</span></code> and <code class="docutils literal notranslate"><span class="pre">.vrm</span></code> multiplies the root node by a +90 degree rotation about X, taking glTF Y-up to ROS Z-up. Materials are Ogre 1.9 fixed-function: diffuse, ambient, specular, emissive colors, shininess, opacity from <code class="docutils literal notranslate"><span class="pre">baseColorFactor</span></code> alpha, and exactly one texture, looked up as <code class="docutils literal notranslate"><span class="pre">aiTextureType_DIFFUSE</span></code>. Metalness, roughness, normal, occlusion and emissive maps do not exist in RViz. [S]</p>
+<p>The lookup loop is the known trap: it iterates every material property and, on any <code class="docutils literal notranslate"><span class="pre">$tex.file</span></code> entry, asks for the diffuse texture. A material whose only texture is a normal map has such an entry, the diffuse lookup fails, the resulting path resolves to the mesh directory, and the resource retriever’s exception terminates RViz. That is why <code class="docutils literal notranslate"><span class="pre">gltf_bake_basecolor.py</span></code> and the guard in <code class="docutils literal notranslate"><span class="pre">test/test_parts.py</span></code> exist in <code class="docutils literal notranslate"><span class="pre">bluerobotics_models</span></code> (commit <code class="docutils literal notranslate"><span class="pre">01b05f9</span></code>), and why the profile’s <a class="reference internal" href="../profile.html#materials"><span class="std std-ref">Materials</span></a> section requires that a material with any texture also has a base color texture. [S, and the repo’s own regression test]</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="coordinate-systems.html" class="btn btn-neutral float-left" title="Coordinate Systems: glTF, Gazebo and ROS" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="blender-export-options.html" class="btn btn-neutral float-right" title="Blender glTF Export Options" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright Honu Robotics.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    <span class="fa fa-book"> Other Versions</span>
+    v: main
+    <span class="fa fa-caret-down"></span>
+  </span>
+  <div class="rst-other-versions">
+    <dl id="honu-version-list">
+      <dt>Distributions</dt>
+      <dd><a href="/gltf-robotics/main/" data-version="main">Main</a></dd>
+    </dl>
+  </div>
+</div>
+<script>
+  (function () {
+    var current = "main";
+    var base = "/gltf-robotics/";
+
+    /* Keep the reader on the same page when switching versions; the
+       version root href stays as the fallback for pages a version lacks. */
+    function wire() {
+      document.querySelectorAll('.rst-other-versions a[data-version]').forEach(function (a) {
+        var target = a.getAttribute('data-version');
+        var path = window.location.pathname;
+        if (target !== current && path.indexOf('/' + current + '/') !== -1) {
+          a.href = path.replace('/' + current + '/', '/' + target + '/');
+        }
+      });
+    }
+
+    if (!window.fetch) { wire(); return; }
+
+    /* The deploy tool maintains versions.json at the site root; reading it
+       at runtime lets builds published before a new distribution existed
+       still offer it in the flyout. Offline or local preview builds fall
+       back to the build time list rendered above. */
+    fetch(base + 'versions.json', {cache: 'no-cache'}).then(function (response) {
+      if (!response.ok) { throw new Error(response.status); }
+      return response.json();
+    }).then(function (entries) {
+      var list = document.getElementById('honu-version-list');
+      if (!list || !entries.length) { return; }
+      list.querySelectorAll('dd').forEach(function (dd) { dd.remove(); });
+      entries.forEach(function (entry) {
+        var a = document.createElement('a');
+        a.href = entry.url;
+        a.setAttribute('data-version', entry.name);
+        a.textContent = entry.name.charAt(0).toUpperCase() + entry.name.slice(1);
+        var dd = document.createElement('dd');
+        dd.appendChild(a);
+        list.appendChild(dd);
+      });
+    }).catch(function () {}).finally(wire);
+  })();
+</script><script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

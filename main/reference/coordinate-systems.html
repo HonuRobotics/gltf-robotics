@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Coordinate Systems: glTF, Gazebo and ROS &mdash; glTF for Robot Simulation main documentation</title>
+  <title>Coordinate Systems: glTF, Gazebo and ROS &mdash; Honu glTF Asset Framework main documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../_static/honu.css?v=44af46ee" />
@@ -21,8 +21,8 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Visual asset pipeline: technical review and proposed guidelines" href="pipeline-review.html" />
-    <link rel="prev" title="Reference" href="index.html" /> 
+    <link rel="next" title="Gazebo and RViz loader behavior" href="loader-behavior.html" />
+    <link rel="prev" title="Glossary" href="glossary.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -34,7 +34,7 @@
           
           
           <a href="../index.html" class="icon icon-home">
-            glTF for Robot Simulation
+            Honu glTF Asset Framework
               <img src="../_static/honu-robotics-white-logo.svg" class="logo" alt="Logo"/>
           </a>
 <div role="search">
@@ -46,90 +46,191 @@
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="../profile/index.html">The Profile</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../profile/profile.html">The glTF Robotics Profile</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../profile/profile.html#introduction">1. Introduction</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../profile/profile.html#scope">1.1 Scope</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../profile/profile.html#closely-related-work-informative">1.2 Closely related work (Informative)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../profile.html">Profile</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../profile.html#introduction">Introduction</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../profile.html#scope">Scope</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="../profile/profile.html#document-conventions">2. Document conventions</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../profile/profile.html#audience">2.1 Audience</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../profile/profile.html#normative-terminology">2.2 Normative terminology</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../profile/profile.html#informative-language">2.3 Informative language</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../profile/profile.html#open-issues">2.4 Open issues</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../profile.html#document-conventions">Document conventions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../profile.html#audience">Audience</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../profile.html#normative-terminology">Normative terminology</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../profile.html#informative-language">Informative language</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../profile.html#open-issues">Open issues</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="../profile/profile.html#terminology">3. Terminology</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../profile/profile.html#delivery">4. Delivery</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../profile/profile.html#files">4.1 Files</a><ul>
-<li class="toctree-l5"><a class="reference internal" href="../profile/profile.html#the-manifest">4.1.1 The manifest</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../profile.html#terminology">Terminology</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../profile.html#delivery">Delivery</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../profile.html#file">File</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../profile.html#file-naming">File naming</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../profile.html#file-format">File format</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../profile.html#gltf-structure">glTF structure</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../profile.html#the-manifest">The manifest</a></li>
 </ul>
 </li>
-<li class="toctree-l4"><a class="reference internal" href="../profile/profile.html#format">4.2 Format</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../profile/profile.html#asset-header">4.3 Asset header</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../profile.html#asset-header">Asset header</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="../profile/profile.html#coordinate-system-units-and-frame">5. Coordinate system, units and frame</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../profile/profile.html#units">5.1 Units</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../profile/profile.html#up-axis">5.2 Up axis</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../profile/profile.html#forward-axis">5.3 Forward axis</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../profile/profile.html#origin">5.4 Origin</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../profile/profile.html#scenes-and-nodes">5.5 Scenes and nodes</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../profile/profile.html#datum-specification">5.6 Datum specification</a><ul>
-<li class="toctree-l5"><a class="reference internal" href="../profile/profile.html#what-may-serve-as-a-datum">5.6.1 What may serve as a datum</a></li>
-<li class="toctree-l5"><a class="reference internal" href="../profile/profile.html#a-base-part">5.6.2 A base part</a></li>
-<li class="toctree-l5"><a class="reference internal" href="../profile/profile.html#a-component-part">5.6.3 A component part</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="../profile/profile.html#geometry">6. Geometry</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../profile/profile.html#uv-sets">6.1 UV sets</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../profile/profile.html#budgets">6.2 Budgets</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../profile/profile.html#primitives-and-submeshes">6.3 Primitives and submeshes</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="../profile/profile.html#materials">7. Materials</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../profile/profile.html#textures">8. Textures</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../profile/profile.html#transparency">9. Transparency</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../profile/profile.html#prohibited-content">10. Prohibited content</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../profile/profile.html#authoring-toolchain">11. Authoring toolchain</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../profile/profile.html#conformance">12. Conformance</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../profile/profile.html#checks-informative">12.1 Checks (Informative)</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="../profile/profile.html#open-questions-informative">13. Open questions (Informative)</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../profile/profile.html#open-the-to-do-list-for-this-draft">13.1 Open: the to-do list for this draft</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../profile/profile.html#open-future-not-blocking-this-draft">13.2 Open: Future, not blocking this draft</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="../profile/profile.html#references-informative">14. References (Informative)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../profile.html#coordinate-systems-and-units">Coordinate systems and units</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../profile.html#units">Units</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../profile.html#axes">Axes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../profile.html#forward-axis">Forward axis</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../profile.html#origin-datum-coordinate-system-location">Origin - datum coordinate system location</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../profile.html#scenes-and-nodes">Scenes and nodes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../profile.html#datum-specification">Datum specification</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../profile.html#the-datum-point">The datum point</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../profile.html#a-base-part">A base part</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../profile.html#a-component-part">A component part</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../how-to/index.html">How-to guides</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../how-to/checking-a-delivery.html">Checking a delivery</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../how-to/checking-a-delivery.html#running-the-checker">Running the checker</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../how-to/checking-a-delivery.html#reading-the-output">Reading the output</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../how-to/checking-a-delivery.html#what-a-clean-run-does-not-mean">What a clean run does not mean</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../profile.html#geometry">Geometry</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../profile.html#uv-sets">UV sets</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../profile.html#budgets">Budgets</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../profile.html#primitives">Primitives</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../how-to/exporting-from-blender.html">Exporting from Blender</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../how-to/exporting-from-blender.html#author-in-the-ros-frame-and-let-the-exporter-convert">Author in the ROS frame, and let the exporter convert</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../how-to/exporting-from-blender.html#apply-transforms-before-exporting">Apply transforms before exporting</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../how-to/exporting-from-blender.html#where-the-origin-goes-is-not-yours-to-choose">Where the origin goes is not yours to choose</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../how-to/exporting-from-blender.html#name-the-object-not-the-mesh">Name the object, not the mesh</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../how-to/exporting-from-blender.html#metalness-is-the-defect-that-keeps-recurring">Metalness is the defect that keeps recurring</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../how-to/exporting-from-blender.html#texture-format-is-decided-by-the-source-image">Texture format is decided by the source image</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../how-to/exporting-from-blender.html#transparency-is-per-material-not-per-pixel">Transparency is per material, not per pixel</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../how-to/exporting-from-blender.html#versions">Versions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../profile.html#materials">Materials</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../profile.html#textures">Textures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../profile.html#transparency">Transparency</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../profile.html#prohibited-content">Prohibited content</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../profile.html#authoring-toolchain">Authoring toolchain</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../profile.html#conformance-testing">Conformance testing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../profile.html#open-questions-informative">Open questions (Informative)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../profile.html#open-the-to-do-list-for-this-draft">Open: the to-do list for this draft</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../profile.html#open-future-not-blocking-this-draft">Open: Future, not blocking this draft</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../profile.html#references-informative">References (Informative)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../profile.html#closely-related-work-informative">Closely related work (Informative)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../workflow.html">Workflow</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../workflow.html#roles">Roles</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../workflow.html#outline">Outline</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../workflow.html#step-1-commission-integrator">Step 1: Commission [Integrator]</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../workflow.html#commission-yaml-file">Commission YAML file</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../workflow.html#step-2-author-3d-asset-modeler">Step 2: Author 3D asset [Modeler]</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../workflow.html#build-to-the-honu-asset-profile-and-export">Build to the <span class="xref myst">Honu Asset Profile</span> and export</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../workflow.html#step-3-fill-the-glb-manifest-from-the-commission-yaml-integrator">Step 3: Fill the <code class="docutils literal notranslate"><span class="pre">.glb</span></code> manifest from the commission YAML [Integrator]</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../workflow.html#step-3-verify">Step 3: Verify</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../workflow.html#valid">Valid?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../workflow.html#intended">Intended?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../workflow.html#compliant">Compliant?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../workflow.html#what-the-integrator-checks">What the integrator checks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../workflow.html#when-the-checks-run">When the checks run</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../workflow.html#who-answers-what">Who answers what</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../workflow.html#after-acceptance">After acceptance</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../workflow.html#not-settled-here">Not settled here</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../walkthroughs/index.html">Walkthroughs</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../walkthroughs/blender_mesh_coordinate_ex.html">Minimum viable workflow</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../walkthroughs/blender_mesh_coordinate_ex.html#minimum-monkey-mesh">Minimum monkey mesh</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../walkthroughs/blender_mesh_coordinate_ex.html#create-in-blender-and-export">Create in Blender and export</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../walkthroughs/blender_mesh_coordinate_ex.html#baseline">Baseline</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../walkthroughs/blender_mesh_coordinate_ex.html#the-y-up-export">The +Y Up Export</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../walkthroughs/blender_mesh_coordinate_ex.html#transforms-frames-coordinate-systems-and-spaces">Transforms, frames, coordinate systems and spaces</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../walkthroughs/blender_mesh_coordinate_ex.html#see-what-assimploader-receives">3. See what AssimpLoader receives</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../walkthroughs/blender_mesh_coordinate_ex.html#write-a-world-and-a-urdf">4. Write a world and a URDF</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../walkthroughs/blender_mesh_coordinate_ex.html#gazebo">5. Gazebo</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../walkthroughs/blender_mesh_coordinate_ex.html#rviz">6. RViz</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../walkthroughs/blender_mesh_coordinate_ex.html#what-rviz-does-to-a-gltf-file-and-how-to-undo-it">What RViz does to a glTF file, and how to undo it</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../walkthroughs/exporting-from-blender.html">Exporting from Blender</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../walkthroughs/exporting-from-blender.html#author-in-the-ros-frame-and-do-not-let-the-exporter-convert">Author in the ROS frame, and do not let the exporter convert</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../walkthroughs/exporting-from-blender.html#clear-location-and-rotation-apply-scale-before-exporting">Clear location and rotation, apply scale, before exporting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../walkthroughs/exporting-from-blender.html#where-the-origin-goes-is-not-yours-to-choose">Where the origin goes is not yours to choose</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../walkthroughs/exporting-from-blender.html#name-the-object-not-the-mesh">Name the object, not the mesh</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../walkthroughs/exporting-from-blender.html#metalness-is-the-defect-that-keeps-recurring">Metalness is the defect that keeps recurring</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../walkthroughs/exporting-from-blender.html#texture-format-is-decided-by-the-source-image">Texture format is decided by the source image</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../walkthroughs/exporting-from-blender.html#transparency-is-per-material-not-per-pixel">Transparency is per material, not per pixel</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../walkthroughs/exporting-from-blender.html#keep-the-authoring-source-outside-the-simulation-repository">Keep the authoring source, outside the simulation repository</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../walkthroughs/exporting-from-blender.html#versions">Versions</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../walkthroughs/checking-a-delivery.html">Checking a delivery</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../walkthroughs/checking-a-delivery.html#running-the-checker">Running the checker</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../walkthroughs/checking-a-delivery.html#reading-the-output">Reading the output</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../walkthroughs/checking-a-delivery.html#what-a-clean-run-does-not-mean">What a clean run does not mean</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../walkthroughs/workflow_blueboat.html">BlueBoat Walkthrough</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../walkthroughs/workflow_blueboat.html#commission">Commission</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../walkthroughs/workflow_blueboat.html#author">Author</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../walkthroughs/workflow_blueboat.html#fill-manifest">Fill manifest</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../walkthroughs/workflow_blueboat.html#verify">Verify</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../walkthroughs/workflow_blueboat.html#valid">Valid?</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../walkthroughs/workflow_blueboat.html#intended">Intended</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../walkthroughs/workflow_blueboat.html#compliant-gltf-check">Compliant - gltf-check</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="../walkthroughs/workflow_blueboat.html#gltf-probe">gltf probe</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../walkthroughs/workflow_blueboat.html#gazebo-standalone">Gazebo standalone</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../walkthroughs/workflow_blueboat.html#rviz">RVIZ</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../assessments/index.html">Assessments</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../assessments/community-exemplars.html">Community exemplars: who else ships glTF to Gazebo and RViz</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../assessments/community-exemplars.html#method">Method</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../assessments/community-exemplars.html#the-cohort">The cohort</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../assessments/community-exemplars.html#gazebosim-jetty-demo-the-closest-thing-to-an-upstream-reference">gazebosim/jetty_demo — the closest thing to an upstream reference</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../assessments/community-exemplars.html#open-rmf-rmf-site-gltf-generated-rather-than-authored">open-rmf/rmf_site — glTF generated rather than authored</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../assessments/community-exemplars.html#husarion-rosbot-ros-a-commercial-product-doing-it-per-link">husarion/rosbot_ros — a commercial product doing it per-link</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../assessments/community-exemplars.html#robotlocomotion-the-informed-dissent-on-packaging">RobotLocomotion — the informed dissent on packaging</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../assessments/community-exemplars.html#usnistgov-ariac-a-migration-caught-in-the-middle">usnistgov/ARIAC — a migration caught in the middle</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../assessments/community-exemplars.html#vanttec-vanttec-usv-the-nearest-maritime-peer-inverted">vanttec/vanttec_usv — the nearest maritime peer, inverted</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../assessments/community-exemplars.html#the-people-and-the-two-organizations-that-turned-out-not-to-be-doing-this">The people, and the two organizations that turned out not to be doing this</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../assessments/community-exemplars.html#what-this-changes-for-us">What this changes for us</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../assessments/community-exemplars.html#where-the-argument-is-being-had">Where the argument is being had</a></li>
 </ul>
 </li>
 </ul>
 </li>
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">Reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="glossary.html">Glossary</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="glossary.html#terms">Terms</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="glossary.html#assembly">assembly</a></li>
+<li class="toctree-l4"><a class="reference internal" href="glossary.html#asset">asset</a></li>
+<li class="toctree-l4"><a class="reference internal" href="glossary.html#base-part">base part</a></li>
+<li class="toctree-l4"><a class="reference internal" href="glossary.html#commission">commission</a></li>
+<li class="toctree-l4"><a class="reference internal" href="glossary.html#component-part">component part</a></li>
+<li class="toctree-l4"><a class="reference internal" href="glossary.html#consumer">consumer</a></li>
+<li class="toctree-l4"><a class="reference internal" href="glossary.html#coordinate-system">coordinate system</a></li>
+<li class="toctree-l4"><a class="reference internal" href="glossary.html#datasheet">datasheet</a></li>
+<li class="toctree-l4"><a class="reference internal" href="glossary.html#datum">datum</a></li>
+<li class="toctree-l4"><a class="reference internal" href="glossary.html#datum-coordinate-system">datum coordinate system</a></li>
+<li class="toctree-l4"><a class="reference internal" href="glossary.html#datum-point">datum point</a></li>
+<li class="toctree-l4"><a class="reference internal" href="glossary.html#delivery">delivery</a></li>
+<li class="toctree-l4"><a class="reference internal" href="glossary.html#integrator">integrator</a></li>
+<li class="toctree-l4"><a class="reference internal" href="glossary.html#manifest">manifest</a></li>
+<li class="toctree-l4"><a class="reference internal" href="glossary.html#modeler">modeler</a></li>
+<li class="toctree-l4"><a class="reference internal" href="glossary.html#origin">origin</a></li>
+<li class="toctree-l4"><a class="reference internal" href="glossary.html#part">part</a></li>
+<li class="toctree-l4"><a class="reference internal" href="glossary.html#part-coordinate-system">part coordinate system</a></li>
+<li class="toctree-l4"><a class="reference internal" href="glossary.html#submesh">submesh</a></li>
+<li class="toctree-l4"><a class="reference internal" href="glossary.html#visual-model">visual model</a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Coordinate Systems: glTF, Gazebo and ROS</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#objective">Objective</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#central-issue">Central Issue</a></li>
@@ -170,83 +271,44 @@
 <li class="toctree-l4"><a class="reference internal" href="#adopt-narrow-or-invent">Adopt, narrow, or invent</a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="#one-body-one-mesh-who-rotates-what">One body, one mesh: who rotates what</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#the-chain-and-where-a-rotation-can-be-inserted">The chain, and where a rotation can be inserted</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#gazebo-from-source">Gazebo, from source</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#rviz-from-source">RViz, from source</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#blender-s-exporter-from-source">Blender’s exporter, from source</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#the-probe-measured">The probe, measured</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#the-decision-and-what-it-costs">The decision, and what it costs</a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="#next-increment">Next increment</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#references">References</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="pipeline-review.html">Visual asset pipeline: technical review and proposed guidelines</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="pipeline-review.html#context-starting-point">Context / Starting Point</a></li>
-<li class="toctree-l3"><a class="reference internal" href="pipeline-review.html#main-issues">Main Issues</a></li>
-<li class="toctree-l3"><a class="reference internal" href="pipeline-review.html#background">0. Background</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="pipeline-review.html#sources-of-truth">0.1 Sources of truth</a></li>
-<li class="toctree-l4"><a class="reference internal" href="pipeline-review.html#how-the-audit-works">0.2 How the audit works</a></li>
+<li class="toctree-l2"><a class="reference internal" href="loader-behavior.html">Gazebo and RViz loader behavior</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="loader-behavior.html#the-consumers">The consumers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="loader-behavior.html#the-gazebo-path-step-by-step">The Gazebo path, step by step</a></li>
+<li class="toctree-l3"><a class="reference internal" href="loader-behavior.html#what-the-loader-reads-from-a-gltf-material">What the loader reads from a glTF material</a></li>
+<li class="toctree-l3"><a class="reference internal" href="loader-behavior.html#the-rviz-path">The RViz path</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="pipeline-review.html#background-gltf-and-what-our-consumers-do-with-it">1. Background: glTF and what our consumers do with it</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="pipeline-review.html#the-format">1.1 The format</a></li>
-<li class="toctree-l4"><a class="reference internal" href="pipeline-review.html#the-consumers">1.2 The consumers</a></li>
-<li class="toctree-l4"><a class="reference internal" href="pipeline-review.html#the-gazebo-path-step-by-step">1.3 The Gazebo path, step by step</a></li>
-<li class="toctree-l4"><a class="reference internal" href="pipeline-review.html#what-the-loader-reads-from-a-gltf-material">1.4 What the loader reads from a glTF material</a></li>
-<li class="toctree-l4"><a class="reference internal" href="pipeline-review.html#the-rviz-path">1.5 The RViz path</a></li>
-<li class="toctree-l4"><a class="reference internal" href="pipeline-review.html#the-pipeline-in-this-repo-and-where-forward-is">1.6 The pipeline in this repo, and where forward is</a></li>
-<li class="toctree-l4"><a class="reference internal" href="pipeline-review.html#what-must-be-considered-when-moving-this-project-to-glb">1.7 What must be considered when moving this project to GLB</a></li>
-<li class="toctree-l4"><a class="reference internal" href="pipeline-review.html#the-written-record-what-the-gazebo-project-says-about-gltf">1.8 The written record: what the Gazebo project says about glTF</a></li>
-<li class="toctree-l4"><a class="reference internal" href="pipeline-review.html#frames-and-origins-what-gltf-fixes-and-what-it-leaves-to-us">1.9 Frames and origins: what glTF fixes, and what it leaves to us</a></li>
+<li class="toctree-l2"><a class="reference internal" href="blender-export-options.html">Blender glTF Export Options</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="blender-export-options.html#directive">Directive</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="blender-export-options.html#four-things-that-decide-the-result-and-are-not-in-this-dialog">Four things that decide the result and are not in this dialog</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="pipeline-review.html#verification-tooling-and-criteria">2. Verification tooling and criteria</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="pipeline-review.html#glb-probe-what-gazebo-actually-built">2.1 glb_probe: what Gazebo actually built</a></li>
-<li class="toctree-l4"><a class="reference internal" href="pipeline-review.html#file-level-lint">2.2 File-level lint</a></li>
-<li class="toctree-l4"><a class="reference internal" href="pipeline-review.html#eyes-on-a-render">2.3 Eyes on a render</a></li>
-<li class="toctree-l4"><a class="reference internal" href="pipeline-review.html#external-viewers-are-not-a-gazebo-proxy">2.4 External viewers are not a Gazebo proxy</a></li>
-<li class="toctree-l4"><a class="reference internal" href="pipeline-review.html#acceptance-criteria-as-pass-or-fail">2.5 Acceptance criteria, as pass or fail</a></li>
-<li class="toctree-l4"><a class="reference internal" href="pipeline-review.html#the-khronos-gltf-validator">2.6 The Khronos glTF Validator</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="pipeline-review.html#audit-of-the-original-draft-spec-item-by-item">3. Audit of the original draft spec, item by item</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="pipeline-review.html#files">Files</a></li>
-<li class="toctree-l4"><a class="reference internal" href="pipeline-review.html#units-frame-origin">Units, frame, origin</a></li>
-<li class="toctree-l4"><a class="reference internal" href="pipeline-review.html#geometry">Geometry</a></li>
-<li class="toctree-l4"><a class="reference internal" href="pipeline-review.html#materials">Materials</a></li>
-<li class="toctree-l4"><a class="reference internal" href="pipeline-review.html#transparency">Transparency</a></li>
-<li class="toctree-l4"><a class="reference internal" href="pipeline-review.html#do-not-use">Do not use</a></li>
-<li class="toctree-l4"><a class="reference internal" href="pipeline-review.html#checklist-before-delivery">Checklist before delivery</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="pipeline-review.html#the-delivered-files-measured">4. The delivered files, measured</a></li>
-<li class="toctree-l3"><a class="reference internal" href="pipeline-review.html#what-the-draft-spec-does-not-cover-and-should">5. What the draft spec does not cover and should</a></li>
-<li class="toctree-l3"><a class="reference internal" href="pipeline-review.html#the-two-claude-artifacts">6. The two Claude artifacts</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="pipeline-review.html#parts-library-audit-the-12-non-chassis-parts">6.1 Parts Library Audit (the 12 non-chassis parts)</a></li>
-<li class="toctree-l4"><a class="reference internal" href="pipeline-review.html#blueboat-chassis-audit">6.2 BlueBoat Chassis Audit</a></li>
-<li class="toctree-l4"><a class="reference internal" href="pipeline-review.html#bluerov2-chassis-audit">6.3 BlueROV2 Chassis Audit</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="pipeline-review.html#proposed-guideline-pin-the-authoring-stack">7. Proposed guideline: pin the authoring stack</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="pipeline-review.html#the-proposal">7.1 The proposal</a></li>
-<li class="toctree-l4"><a class="reference internal" href="pipeline-review.html#what-actually-varies">7.2 What actually varies</a></li>
-<li class="toctree-l4"><a class="reference internal" href="pipeline-review.html#what-a-version-pin-can-and-cannot-do">7.3 What a version pin can and cannot do</a></li>
-<li class="toctree-l4"><a class="reference internal" href="pipeline-review.html#how-it-would-be-enforced">7.4 How it would be enforced</a></li>
-<li class="toctree-l4"><a class="reference internal" href="pipeline-review.html#the-stack-as-it-would-be-declared">7.5 The stack, as it would be declared</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="pipeline-review.html#reconciliation-with-the-existing-repo-guidelines">8. Reconciliation with the existing repo guidelines</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="pipeline-review.html#docs-design-parts-md-the-mesh-conventions">8.1 <code class="docutils literal notranslate"><span class="pre">docs/design/parts.md</span></code>, the mesh conventions</a></li>
-<li class="toctree-l4"><a class="reference internal" href="pipeline-review.html#docs-how-to-add-part-md-the-acceptance-steps">8.2 <code class="docutils literal notranslate"><span class="pre">docs/how-to/add-part.md</span></code>, the acceptance steps</a></li>
-<li class="toctree-l4"><a class="reference internal" href="pipeline-review.html#the-faq">8.3 The FAQ</a></li>
-<li class="toctree-l4"><a class="reference internal" href="pipeline-review.html#the-older-readme-checklist-commit-b5daead">8.4 The older README checklist, commit <code class="docutils literal notranslate"><span class="pre">b5daead</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="pipeline-review.html#the-one-contradiction-to-resolve-first">8.5 The one contradiction to resolve first</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="pipeline-review.html#further-proposed-guidelines">9. Further proposed guidelines</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="pipeline-review.html#provenance-what-accompanies-a-delivery">9.1 Provenance: what accompanies a delivery</a></li>
-<li class="toctree-l4"><a class="reference internal" href="pipeline-review.html#the-dimensional-source-of-truth">9.2 The dimensional source of truth</a></li>
-<li class="toctree-l4"><a class="reference internal" href="pipeline-review.html#names-are-an-interface-not-decoration">9.3 Names are an interface, not decoration</a></li>
-<li class="toctree-l4"><a class="reference internal" href="pipeline-review.html#redelivery">9.4 Redelivery</a></li>
-<li class="toctree-l4"><a class="reference internal" href="pipeline-review.html#retiring-the-two-collada-parts">9.5 Retiring the two COLLADA parts</a></li>
-<li class="toctree-l4"><a class="reference internal" href="pipeline-review.html#what-the-modeler-checks-and-what-we-check">9.6 What the modeler checks, and what we check</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="pipeline-review.html#decisions-the-team-has-to-make">10. Decisions the team has to make</a></li>
+<li class="toctree-l3"><a class="reference internal" href="blender-export-options.html#provenance">Provenance</a></li>
+<li class="toctree-l3"><a class="reference internal" href="blender-export-options.html#what-no-option-does">What no option does</a></li>
+<li class="toctree-l3"><a class="reference internal" href="blender-export-options.html#top-of-the-dialog">Top of the dialog</a></li>
+<li class="toctree-l3"><a class="reference internal" href="blender-export-options.html#include">Include</a></li>
+<li class="toctree-l3"><a class="reference internal" href="blender-export-options.html#transform">Transform</a></li>
+<li class="toctree-l3"><a class="reference internal" href="blender-export-options.html#data-scene-graph">Data ▸ Scene Graph</a></li>
+<li class="toctree-l3"><a class="reference internal" href="blender-export-options.html#data-mesh">Data ▸ Mesh</a></li>
+<li class="toctree-l3"><a class="reference internal" href="blender-export-options.html#data-material">Data ▸ Material</a></li>
+<li class="toctree-l3"><a class="reference internal" href="blender-export-options.html#data-shape-keys-skinning-lighting">Data ▸ Shape Keys, Skinning, Lighting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="blender-export-options.html#animation">Animation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="blender-export-options.html#compression">Compression</a></li>
+<li class="toctree-l3"><a class="reference internal" href="blender-export-options.html#what-this-enumeration-suggests-and-needs-checking">What this enumeration suggests, and needs checking</a></li>
+<li class="toctree-l3"><a class="reference internal" href="blender-export-options.html#open-rows-as-a-worklist">Open rows, as a worklist</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="pbr-and-gltf.html">PBR, and why glTF is inseparable from it</a><ul>
@@ -290,57 +352,6 @@
 </li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../evidence/index.html">Evidence</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../evidence/community-exemplars.html">Community exemplars: who else ships glTF to Gazebo and RViz</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../evidence/community-exemplars.html#method">Method</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../evidence/community-exemplars.html#the-cohort">The cohort</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../evidence/community-exemplars.html#gazebosim-jetty-demo-the-closest-thing-to-an-upstream-reference">gazebosim/jetty_demo — the closest thing to an upstream reference</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../evidence/community-exemplars.html#open-rmf-rmf-site-gltf-generated-rather-than-authored">open-rmf/rmf_site — glTF generated rather than authored</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../evidence/community-exemplars.html#husarion-rosbot-ros-a-commercial-product-doing-it-per-link">husarion/rosbot_ros — a commercial product doing it per-link</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../evidence/community-exemplars.html#robotlocomotion-the-informed-dissent-on-packaging">RobotLocomotion — the informed dissent on packaging</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../evidence/community-exemplars.html#usnistgov-ariac-a-migration-caught-in-the-middle">usnistgov/ARIAC — a migration caught in the middle</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../evidence/community-exemplars.html#vanttec-vanttec-usv-the-nearest-maritime-peer-inverted">vanttec/vanttec_usv — the nearest maritime peer, inverted</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="../evidence/community-exemplars.html#the-people-and-the-two-organizations-that-turned-out-not-to-be-doing-this">The people, and the two organizations that turned out not to be doing this</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../evidence/community-exemplars.html#what-this-changes-for-us">What this changes for us</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../evidence/community-exemplars.html#where-the-argument-is-being-had">Where the argument is being had</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="../evidence/audit-parts-library.html">Parts Library Audit</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../evidence/audit-parts-library.html#per-part">Per part</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../evidence/audit-parts-library.html#units-frame-dimensions">Units, frame, dimensions</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../evidence/audit-parts-library.html#where-the-library-is-already-clean">Where the library is already clean</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../evidence/audit-parts-library.html#systemic-defects-pipeline-not-per-part">Systemic defects (pipeline, not per part)</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../evidence/audit-parts-library.html#fixes-in-priority-order">Fixes, in priority order</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="../evidence/audit-blueboat-chassis.html">BlueBoat Chassis Audit</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../evidence/audit-blueboat-chassis.html#files">Files</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../evidence/audit-blueboat-chassis.html#units-frame-origin">Units, frame, origin</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../evidence/audit-blueboat-chassis.html#geometry">Geometry</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../evidence/audit-blueboat-chassis.html#materials">Materials</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../evidence/audit-blueboat-chassis.html#transparency">Transparency</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../evidence/audit-blueboat-chassis.html#avoid-list">Avoid list</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../evidence/audit-blueboat-chassis.html#fixes-in-priority-order">Fixes, in priority order</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="../evidence/assessment-brief.html">Assessment of glTF examples models</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="../project/index.html">Project</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../project/asset-spec-superseded.html">Visual asset spec</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../project/asset-spec-superseded.html#files">Files</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../project/asset-spec-superseded.html#units-frame-origin">Units, frame, origin</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../project/asset-spec-superseded.html#geometry">Geometry</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../project/asset-spec-superseded.html#materials">Materials</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../project/asset-spec-superseded.html#transparency">Transparency</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../project/asset-spec-superseded.html#do-not-use">Do not use</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../project/asset-spec-superseded.html#checklist-before-delivery">Checklist before delivery</a></li>
-</ul>
-</li>
-</ul>
-</li>
 </ul>
 
         </div>
@@ -349,7 +360,7 @@
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../index.html">glTF for Robot Simulation</a>
+          <a href="../index.html">Honu glTF Asset Framework</a>
       </nav>
 
       <div class="wy-nav-content">
@@ -371,7 +382,7 @@
   <section id="coordinate-systems-gltf-gazebo-and-ros">
 <h1>Coordinate Systems: glTF, Gazebo and ROS<a class="headerlink" href="#coordinate-systems-gltf-gazebo-and-ros" title="Link to this heading"></a></h1>
 <p>An incremental build up of the understanding and explanation of how these coordinate systems are used, from 3D authoring through to robotic simulation.</p>
-<p>This is the only version. An earlier draft was abandoned for building detail on assumptions that were never checked, and it lives in git history at <code class="docutils literal notranslate"><span class="pre">ab5f6a6</span></code>. Do not treat its framing as current, but four things in it are verified from source and worth carrying over rather than re-deriving: the loader mechanism with the <code class="docutils literal notranslate"><span class="pre">gz-common</span></code> and <code class="docutils literal notranslate"><span class="pre">rviz_rendering</span></code> source quoted (its §4), the probe results on hand-authored assets (§5), the three-consumer tutorial (§12), and the audit of what the project’s own documents say (§14). The probe generator and its output are still live at <code class="docutils literal notranslate"><span class="pre">probe/coords/</span></code>.</p>
+<p>This is the only version. An earlier draft was abandoned for building detail on assumptions that were never checked, and it lives in git history at <code class="docutils literal notranslate"><span class="pre">ab5f6a6</span></code> in the <code class="docutils literal notranslate"><span class="pre">maritime-workspace</span></code> repository. Do not treat its framing as current. The two things in it that were verified from source, the loader mechanism and the probe results, are now carried in <a class="reference internal" href="#one-body-one-mesh-who-rotates-what">One body, one mesh: who rotates what</a> below, re-read against the versions in the container. Two things remain only in the draft: its three-consumer tutorial (§12), which the <a class="reference internal" href="../walkthroughs/blender_mesh_coordinate_ex.html"><span class="std std-doc">walkthrough</span></a> has since replaced, and its audit of what the project’s own documents said (§14). The probe generator and its output are live at <code class="docutils literal notranslate"><span class="pre">probe/coords/</span></code>.</p>
 <section id="objective">
 <h2>Objective<a class="headerlink" href="#objective" title="Link to this heading"></a></h2>
 <p>The purpose of this document is to be a clear explanation of how coordinate systems can be conceptualized and labeled from 3D graphics (authoring 3D assets in Blender) to robotic simulation (rendering visual assets aligned with collision models in Gazebo and RViz).</p>
@@ -390,6 +401,7 @@
 <li><p><strong>[Practice]</strong> — really done that way, but no standard says so. Do not present it as a rule.</p></li>
 <li><p><strong>[Open]</strong> — we do not know yet, or it needs a measurement nobody has made.</p></li>
 <li><p><strong>[Corrected]</strong> — was asserted in the first draft or earlier in this one and is wrong. Kept visible on purpose.</p></li>
+<li><p><strong>[Measured]</strong> — observed by running the named tool at the named version, with the output kept in the repository. Neither a standard nor a source says it, and it can change when the version does.</p></li>
 </ul>
 </section>
 <section id="coordinate-conventions-and-typical-practices">
@@ -983,11 +995,11 @@ This is a sticking point - and one we’ve gotten wrong.</p></li>
 </tr>
 <tr class="row-even"><td><p><strong>asset coordinate system</strong></p></td>
 <td><p>glTF / ISO/IEC 12113 §3.5, the scene’s implicit space</p></td>
-<td><p><strong>ours, grounded in the format.</strong> No robotics standard has this concept; it exists only inside a file</p></td>
+<td><p><strong>ours, grounded in the format.</strong> No robotics standard has this concept; it exists only inside a file. Also called <em>scene space</em></p></td>
 </tr>
 <tr class="row-odd"><td><p><strong>node coordinate system</strong></p></td>
 <td><p>glTF / ISO/IEC 12113 §3.5 node</p></td>
-<td><p><strong>adopt as-is</strong>, the format’s own term</p></td>
+<td><p><strong>adopt as-is</strong>, the format’s own term. Also called <em>node space</em>. In a delivery it coincides with the asset coordinate system — see below</p></td>
 </tr>
 <tr class="row-even"><td><p><strong>sensor coordinate system</strong></p></td>
 <td><p>ISO 9787 §5.8 camera coordinate system; REP 103 <code class="docutils literal notranslate"><span class="pre">_optical</span></code></p></td>
@@ -1000,6 +1012,7 @@ This is a sticking point - and one we’ve gotten wrong.</p></li>
 </tbody>
 </table>
 <p><strong>[Open]</strong> The mount-coordinate-system narrowing is a real decision and not yet taken. Keeping ISO’s <code class="docutils literal notranslate"><span class="pre">+Z</span></code>-along-the-mating-normal rule would make every mounting face self-describing but put a second axis convention inside one model; dropping it keeps one convention but means a mount coordinate system carries no information about which way the surface faces.</p>
+<p><strong>[Firm]</strong> glTF’s node and scene model is adopted as vocabulary and <strong>narrowed</strong> as a rule. The format lets a scene list many root nodes, each carrying a transform and children, so asset and node coordinate systems are genuinely distinct and a file can hold many of the latter. Profile §5.5 permits exactly one node with no children and no transform, which collapses the two: in a delivery the node coordinate system <em>is</em> the asset coordinate system, and both are the part coordinate system. That is the point of the rule rather than a side effect — Gazebo composes node transforms and bakes them into the vertices, so any distinction between the two is destroyed at load anyway, and RViz composes a root transform in the opposite order from Gazebo, so a file that relies on the distinction lands in two different places. The two names stay in this table because they name different things in the format; a conforming file just never tells them apart.</p>
 </section>
 <section id="the-full-reconciliation">
 <h3>The full reconciliation<a class="headerlink" href="#the-full-reconciliation" title="Link to this heading"></a></h3>
@@ -1088,20 +1101,162 @@ This is a sticking point - and one we’ve gotten wrong.</p></li>
 <h3>Adopt, narrow, or invent<a class="headerlink" href="#adopt-narrow-or-invent" title="Link to this heading"></a></h3>
 <p><strong>[Firm]</strong> Summarizing what this project actually has to write down, which is much less than the first draft assumed:</p>
 <ul class="simple">
-<li><p><strong>Adopt as-is, no project text needed:</strong> handedness, length and angle units, roll/pitch/yaw naming, the world coordinate system, the vehicle coordinate system’s axes, the sensor optical coordinate system, glTF’s node and scene model. All are settled by ISO 9787, REP 103 or ISO/IEC 12113 and need only a citation.</p></li>
-<li><p><strong>Narrow:</strong> the mount coordinate system, by dropping ISO’s mating-normal axis rule (undecided, above).</p></li>
-<li><p><strong>Invent, because no standard reaches:</strong> the part coordinate system as a named concept; where an origin sits within a part’s geometry; which asset-coordinate-system axis a delivery’s forward direction occupies; and the rule joining the asset coordinate system to the part coordinate system — that is, the value of the visual pose.</p></li>
+<li><p><strong>Adopt as-is, no project text needed:</strong> handedness, length and angle units, roll/pitch/yaw naming, the world coordinate system, the vehicle coordinate system’s axes, the sensor optical coordinate system, and glTF’s node and scene <em>vocabulary</em>. All are settled by ISO 9787, REP 103 or ISO/IEC 12113 and need only a citation.</p></li>
+<li><p><strong>Narrow:</strong> the mount coordinate system, by dropping ISO’s mating-normal axis rule (undecided, above). And glTF’s node and scene <em>model</em>, to exactly one node with no transform, so that node space and scene space coincide in a delivery (the profile’s <a class="reference internal" href="../profile.html#scenes-and-nodes"><span class="std std-ref">Scenes and nodes</span></a> section, decided).</p></li>
+<li><p><strong>Invent, because no standard reaches:</strong> the part coordinate system as a named concept; how an origin is fixed within a part’s geometry, which the profile’s <a class="reference internal" href="../profile.html#origin-datum-coordinate-system-location"><span class="std std-ref">Origin</span></a> section answers by referring it to a datum specification rather than to any measured centre; and the rule joining the asset coordinate system to the part coordinate system — that is, the value of the visual pose. Which axis the forward direction occupies is no longer ours to invent: the profile’s <a class="reference internal" href="../profile.html#axes"><span class="std std-ref">Axes</span></a> section takes ISO 9787 §5.5 and REP 103 wholesale, as a stated departure from glTF.</p></li>
 <li><p><strong>[Open]</strong> That last list is short and it is exactly the list the first draft failed to isolate. The next increments should address it in that order.</p></li>
 </ul>
 </section>
 </section>
+<section id="one-body-one-mesh-who-rotates-what">
+<h2>One body, one mesh: who rotates what<a class="headerlink" href="#one-body-one-mesh-who-rotates-what" title="Link to this heading"></a></h2>
+<p>This is the first two items of the increment list below, taken together because the second cannot be stated without the first. One rigid body, one mesh, no joints; the question is how a vertex in the file reaches the link, and which of Blender, the file, Gazebo and RViz rotates it on the way. Everything here is read from source or measured with the probe, and the walkthrough <a class="reference internal" href="../walkthroughs/blender_mesh_coordinate_ex.html"><span class="std std-doc">Minimum viable workflow</span></a> is the worked example, verified on screen on 2026-09-27.</p>
+<section id="the-chain-and-where-a-rotation-can-be-inserted">
+<h3>The chain, and where a rotation can be inserted<a class="headerlink" href="#the-chain-and-where-a-rotation-can-be-inserted" title="Link to this heading"></a></h3>
+<p><strong>[Firm]</strong> For one body the chain has three coordinate systems from this document’s table: the node coordinate system, in which the file’s vertices are written; the asset coordinate system, which is the scene the node hangs in; and the part coordinate system, which is the link. A vertex reaches the link through two transforms: the node’s own, <code class="docutils literal notranslate"><span class="pre">Root</span></code>, from node to asset coordinate system, and the visual pose <code class="docutils literal notranslate"><span class="pre">Pose</span></code>, from asset to part coordinate system. In an SDF the second is <code class="docutils literal notranslate"><span class="pre">&lt;visual&gt;&lt;pose&gt;</span></code>; in a URDF it is <code class="docutils literal notranslate"><span class="pre">&lt;visual&gt;&lt;origin&gt;</span></code>.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>p_part = Pose · Root · p_node
+</pre></div>
+</div>
+<p><strong>[Firm]</strong> A rotation that takes the file’s axes onto the link’s can therefore be inserted in three places: in the file, either as vertex values or as a <code class="docutils literal notranslate"><span class="pre">Root</span></code> that the consumer composes in, which are the same thing once composed; in <code class="docutils literal notranslate"><span class="pre">Pose</span></code>, which the integrator writes; or inside the consumer, between reading the file and applying <code class="docutils literal notranslate"><span class="pre">Pose</span></code>, which nobody outside the consumer controls. The third place is where the two consumers differ, and the whole of the hazard is that they differ there.</p>
+<p><strong>[Firm]</strong> Gazebo inserts nothing. RViz inserts a +90 degree rotation about X, and it inserts it by post-multiplying the root node’s own transform, so it sits between <code class="docutils literal notranslate"><span class="pre">Root</span></code> and the vertices:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>Gazebo:  p_part = Pose · Root · p_node
+RViz:    p_part = Pose · Root · Rx(90) · p_node
+</pre></div>
+</div>
+<p>The two agree only when <code class="docutils literal notranslate"><span class="pre">Root</span></code> commutes with <code class="docutils literal notranslate"><span class="pre">Rx(90)</span></code>: when it is the identity, a pure scale, or a rotation about X alone. Any other root transform, a translation included, puts the same file in two different places. That is a statement about tree shape, not about axes, and it is the reason the profile’s <a class="reference internal" href="../profile.html#scenes-and-nodes"><span class="std std-ref">Scenes and nodes</span></a> section requires an identity root node.</p>
+</section>
+<section id="gazebo-from-source">
+<h3>Gazebo, from source<a class="headerlink" href="#gazebo-from-source" title="Link to this heading"></a></h3>
+<p><strong>[Firm]</strong> <code class="docutils literal notranslate"><span class="pre">gz-common</span></code> routes by extension and hands <code class="docutils literal notranslate"><span class="pre">gltf</span></code>, <code class="docutils literal notranslate"><span class="pre">glb</span></code> and <code class="docutils literal notranslate"><span class="pre">fbx</span></code> to its <code class="docutils literal notranslate"><span class="pre">AssimpLoader</span></code>, keeping its own hand-written loaders for <code class="docutils literal notranslate"><span class="pre">stl</span></code>, <code class="docutils literal notranslate"><span class="pre">dae</span></code> and <code class="docutils literal notranslate"><span class="pre">obj</span></code>. That loader adds no rotation anywhere. Its only handling of the root node is <a class="reference external" href="https://github.com/gazebosim/gz-common/blob/a08c258d4e566b1e1624cb85f12ab78068ab2870/graphics/src/AssimpLoader.cc#L955-L976"><code class="docutils literal notranslate"><span class="pre">UpdatedRootNodeTransform</span></code></a>, gz-common 7.3.0, the version in the drydock container:</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="c1">// Some assets apear to be rotated by 90 degrees as documented here</span>
+<span class="c1">// https://github.com/assimp/assimp/issues/849.</span>
+<span class="k">auto</span><span class="w"> </span><span class="n">transform</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">_scene</span><span class="o">-&gt;</span><span class="n">mRootNode</span><span class="o">-&gt;</span><span class="n">mTransformation</span><span class="p">;</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">_useIdentityRotation</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">  </span><span class="c1">// drop rotation, but keep scaling and position</span>
+<span class="w">  </span><span class="n">aiVector3D</span><span class="w"> </span><span class="n">rootScaling</span><span class="p">,</span><span class="w"> </span><span class="n">rootAxis</span><span class="p">,</span><span class="w"> </span><span class="n">rootPos</span><span class="p">;</span>
+<span class="w">  </span><span class="kt">float</span><span class="w"> </span><span class="n">angle</span><span class="p">;</span>
+<span class="w">  </span><span class="n">transform</span><span class="p">.</span><span class="n">Decompose</span><span class="p">(</span><span class="n">rootScaling</span><span class="p">,</span><span class="w"> </span><span class="n">rootAxis</span><span class="p">,</span><span class="w"> </span><span class="n">angle</span><span class="p">,</span><span class="w"> </span><span class="n">rootPos</span><span class="p">);</span>
+<span class="w">  </span><span class="n">transform</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">aiMatrix4x4</span><span class="p">(</span><span class="n">rootScaling</span><span class="p">,</span><span class="w"> </span><span class="n">aiQuaternion</span><span class="p">(),</span><span class="w"> </span><span class="n">rootPos</span><span class="p">);</span>
+<span class="p">}</span>
+<span class="c1">// for glTF / glb meshes, it was found that the transform is needed to</span>
+<span class="c1">// produce a result that is consistent with other engines / glTF viewers.</span>
+<span class="k">else</span>
+<span class="p">{</span>
+<span class="w">  </span><span class="n">transform</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">_scene</span><span class="o">-&gt;</span><span class="n">mRootNode</span><span class="o">-&gt;</span><span class="n">mTransformation</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>For glTF the file’s root transform is kept whole; for every other format its rotation is stripped and its translation and scale kept. The loader then composes each node’s transform onto its parent’s (<a class="reference external" href="https://github.com/gazebosim/gz-common/blob/a08c258d4e566b1e1624cb85f12ab78068ab2870/graphics/src/AssimpLoader.cc#L302">line 302</a>) and multiplies the product into every vertex (<a class="reference external" href="https://github.com/gazebosim/gz-common/blob/a08c258d4e566b1e1624cb85f12ab78068ab2870/graphics/src/AssimpLoader.cc#L766">line 766</a>), so what Gazebo holds is the file’s buffer values composed through the file’s own nodes and nothing else. Each submesh is named after the node that carries it (<a class="reference external" href="https://github.com/gazebosim/gz-common/blob/a08c258d4e566b1e1624cb85f12ab78068ab2870/graphics/src/AssimpLoader.cc#L251">line 251</a>), never after the mesh or the material.</p>
+<p><strong>[Firm]</strong> The branch that decides is <a class="reference external" href="https://github.com/gazebosim/gz-common/blob/a08c258d4e566b1e1624cb85f12ab78068ab2870/graphics/src/AssimpLoader.cc#L850-L851"><code class="docutils literal notranslate"><span class="pre">useIdentityRotation</span> <span class="pre">=</span> <span class="pre">(extension</span> <span class="pre">!=</span> <span class="pre">&quot;glb&quot;</span> <span class="pre">&amp;&amp;</span> <span class="pre">extension</span> <span class="pre">!=</span> <span class="pre">&quot;glTF&quot;)</span></code></a>, evaluated after the extension has been lowercased. <code class="docutils literal notranslate"><span class="pre">&quot;glTF&quot;</span></code> can never match, so on 7.3.0 a single-root <code class="docutils literal notranslate"><span class="pre">.gltf</span></code> loses its root rotation while a <code class="docutils literal notranslate"><span class="pre">.glb</span></code> keeps it. The literal reads <code class="docutils literal notranslate"><span class="pre">&quot;gltf&quot;</span></code> at the <a class="reference external" href="https://github.com/gazebosim/gz-common/blob/11943c7237992a2ff02c90a2e696bfd13009a55b/graphics/src/AssimpLoader.cc#L1139">branch tip</a>, released in 7.3.1. The probe below shows the bug directly.</p>
+</section>
+<section id="rviz-from-source">
+<h3>RViz, from source<a class="headerlink" href="#rviz-from-source" title="Link to this heading"></a></h3>
+<p><strong>[Firm]</strong> <code class="docutils literal notranslate"><span class="pre">rviz_rendering</span></code> has its own wrapper around the same library, and the rotation lives there: <a class="reference external" href="https://github.com/ros2/rviz/blob/baab61a68bc089217dfaa4f270276dc7a30268b1/rviz_rendering/src/rviz_rendering/mesh_loader_helpers/assimp_loader.cpp#L215-L222"><code class="docutils literal notranslate"><span class="pre">assimp_loader.cpp</span></code> lines 215 to 222</a> on the <code class="docutils literal notranslate"><span class="pre">lyrical</span></code> branch, rviz_rendering 15.2.5, the version in the container:</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">ext</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">filesystem</span><span class="o">::</span><span class="n">path</span><span class="p">(</span><span class="n">name</span><span class="p">).</span><span class="n">extension</span><span class="p">().</span><span class="n">string</span><span class="p">();</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">ext</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s">".gltf"</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="n">ext</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s">".glb"</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="n">ext</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s">".vrm"</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="c1">// Transform mesh from glTF Y-Up space to ROS Z-Up space</span>
+<span class="w">  </span><span class="c1">// by applying a 90 degree rotation about the X-axis,</span>
+<span class="w">  </span><span class="c1">// effectively going from (x, y, z) to (x, -z, y)</span>
+<span class="w">  </span><span class="n">aiMatrix4x4</span><span class="w"> </span><span class="n">transform</span><span class="p">;</span>
+<span class="w">  </span><span class="n">aiMatrix4x4</span><span class="o">::</span><span class="n">RotationX</span><span class="p">(</span><span class="k">static_cast</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span><span class="p">(</span><span class="n">AI_MATH_HALF_PI</span><span class="p">),</span><span class="w"> </span><span class="n">transform</span><span class="p">);</span>
+<span class="w">  </span><span class="n">scene</span><span class="o">-&gt;</span><span class="n">mRootNode</span><span class="o">-&gt;</span><span class="n">mTransformation</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">scene</span><span class="o">-&gt;</span><span class="n">mRootNode</span><span class="o">-&gt;</span><span class="n">mTransformation</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">transform</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>It is keyed on the extension and on nothing else; no parameter, display property or file declaration turns it off. The rotation is post-multiplied onto the root node’s own transform, and <a class="reference external" href="https://github.com/ros2/rviz/blob/baab61a68bc089217dfaa4f270276dc7a30268b1/rviz_rendering/src/rviz_rendering/mesh_loader_helpers/assimp_loader.cpp#L518-L523"><code class="docutils literal notranslate"><span class="pre">computeTransformOverSceneGraph</span></code></a> then composes parent times child down the tree and applies the product to each vertex (<a class="reference external" href="https://github.com/ros2/rviz/blob/baab61a68bc089217dfaa4f270276dc7a30268b1/rviz_rendering/src/rviz_rendering/mesh_loader_helpers/assimp_loader.cpp#L587">line 587</a>), which is the <code class="docutils literal notranslate"><span class="pre">Root</span> <span class="pre">·</span> <span class="pre">Rx(90)</span> <span class="pre">·</span> <span class="pre">p_node</span></code> above. The same file also sets <a class="reference external" href="https://github.com/ros2/rviz/blob/baab61a68bc089217dfaa4f270276dc7a30268b1/rviz_rendering/src/rviz_rendering/mesh_loader_helpers/assimp_loader.cpp#L200"><code class="docutils literal notranslate"><span class="pre">AI_CONFIG_IMPORT_COLLADA_IGNORE_UP_DIRECTION</span></code></a>, so RViz agrees with Gazebo about COLLADA and disagrees with it about glTF.</p>
+<p><strong>[Firm]</strong> The branch arrived in <a class="reference external" href="https://github.com/ros2/rviz/pull/1482">ros2/rviz #1482</a>, merged to <code class="docutils literal notranslate"><span class="pre">rolling</span></code> on 2025-06-16 and deliberately not backported. Jazzy (rviz_rendering 14.1.24) and Kilted (15.0.15) do not rotate. Lyrical is therefore the floor for a glTF part to appear upright in RViz without a correction, and on older distributions the same file needs the opposite treatment.</p>
+<p><strong>[Corrected]</strong> It is tempting to say “assimp rotates glTF”, and the filename <code class="docutils literal notranslate"><span class="pre">assimp_loader.cpp</span></code> invites it. Neither consumer’s rotation behavior is in assimp. Both link the same <code class="docutils literal notranslate"><span class="pre">libassimp.so.6</span></code>, which returns a glTF exactly as authored; each wraps it in a class it calls an assimp loader, and the difference between them is entirely what each wrapper does with the root node after the import returns.</p>
+</section>
+<section id="blender-s-exporter-from-source">
+<h3>Blender’s exporter, from source<a class="headerlink" href="#blender-s-exporter-from-source" title="Link to this heading"></a></h3>
+<p><strong>[Firm]</strong> The <code class="docutils literal notranslate"><span class="pre">+Y</span> <span class="pre">Up</span></code> option is the whole of the coordinate conversion. On, node translations, rotations and scales pass through the <code class="docutils literal notranslate"><span class="pre">swizzle_yup_*</span></code> functions and vertex positions, normals and tangents through <code class="docutils literal notranslate"><span class="pre">zup2yup</span></code>; off, Blender’s Z-up axes are written unchanged. Cited at <a class="reference external" href="https://github.com/KhronosGroup/glTF-Blender-IO/tree/093ad93ce4750dd496266806309ba75d5f755752">glTF-Blender-IO <code class="docutils literal notranslate"><span class="pre">main</span></code></a> at addon version 5.3.32, because the repository carries no tag for the 5.2.40 that produced the walkthrough’s files; the functions have not changed between the two.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># addons/io_scene_gltf2/blender/com/gltf2_blender_math.py, lines 92 to 104</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">swizzle_yup_location</span><span class="p">(</span><span class="n">loc</span><span class="p">:</span> <span class="n">Vector</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Vector</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">Vector</span><span class="p">((</span><span class="n">loc</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">loc</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="o">-</span><span class="n">loc</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">swizzle_yup_rotation</span><span class="p">(</span><span class="n">rot</span><span class="p">:</span> <span class="n">Quaternion</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Quaternion</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">Quaternion</span><span class="p">((</span><span class="n">rot</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">rot</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">rot</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="o">-</span><span class="n">rot</span><span class="p">[</span><span class="mi">2</span><span class="p">]))</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">swizzle_yup_scale</span><span class="p">(</span><span class="n">scale</span><span class="p">:</span> <span class="n">Vector</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Vector</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">Vector</span><span class="p">((</span><span class="n">scale</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">scale</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">scale</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+
+<span class="c1"># addons/io_scene_gltf2/blender/exp/primitive_extract.py, lines 112 to 115</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">zup2yup</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">array</span><span class="p">):</span>
+    <span class="c1"># x,y,z -&gt; x,z,-y</span>
+    <span class="n">array</span><span class="p">[:,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]]</span> <span class="o">=</span> <span class="n">array</span><span class="p">[:,</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">]]</span>  <span class="c1"># x,z,y</span>
+    <span class="n">array</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">*=</span> <span class="o">-</span><span class="mi">1</span>  <span class="c1"># x,z,-y</span>
+</pre></div>
+</div>
+<p>The option is declared at <a class="reference external" href="https://github.com/KhronosGroup/glTF-Blender-IO/blob/093ad93ce4750dd496266806309ba75d5f755752/addons/io_scene_gltf2/__init__.py#L687-L691"><code class="docutils literal notranslate"><span class="pre">__init__.py</span></code> line 687</a>, default <code class="docutils literal notranslate"><span class="pre">True</span></code>, and the vertex, normal and tangent swizzles are gated on it at <a class="reference external" href="https://github.com/KhronosGroup/glTF-Blender-IO/blob/093ad93ce4750dd496266806309ba75d5f755752/addons/io_scene_gltf2/blender/exp/primitive_extract.py#L1219-L1220"><code class="docutils literal notranslate"><span class="pre">primitive_extract.py</span></code> lines 1219, 1558 and 1602</a>. A part modelled in Blender to REP 103 and exported with the option on comes out with forward +X and up +Y; exported with it off, it comes out as modelled.</p>
+</section>
+<section id="the-probe-measured">
+<h3>The probe, measured<a class="headerlink" href="#the-probe-measured" title="Link to this heading"></a></h3>
+<p><strong>[Measured]</strong> <code class="docutils literal notranslate"><span class="pre">probe/coords/make_markers.py</span></code> writes the same marker in several encodings, with no exporter involved, so there is no doubt what each file contains: four box arms of different lengths and colours in the REP 103 body coordinate system, +X 1.00 m, +Y 0.50 m, +Z 0.25 m and a 0.10 m stub on −X, so a bounding box alone identifies every axis and its sign. <code class="docutils literal notranslate"><span class="pre">probe/glb_probe</span></code> loads each through <code class="docutils literal notranslate"><span class="pre">gz-common</span></code> 7.3.0 with assimp 6.0.4, exactly as <code class="docutils literal notranslate"><span class="pre">gz</span> <span class="pre">sim</span></code> does, and <code class="docutils literal notranslate"><span class="pre">probe/coords/probe_results.txt</span></code> is its output. The bounding boxes, <code class="docutils literal notranslate"><span class="pre">(X,</span> <span class="pre">Y,</span> <span class="pre">Z)</span></code> min to max:</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>File</p></th>
+<th class="head"><p>What is in it</p></th>
+<th class="head"><p>Loader bounding box</p></th>
+<th class="head"><p>Reading</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">marker_zup.glb</span></code>, <code class="docutils literal notranslate"><span class="pre">.gltf</span></code></p></td>
+<td><p>buffer in the body coordinate system, identity root</p></td>
+<td><p>(−0.10, −0.025, −0.025) → (1.00, 0.50, 0.25)</p></td>
+<td><p>raw; the body coordinate system unchanged. What <code class="docutils literal notranslate"><span class="pre">+Y</span> <span class="pre">Up</span></code> off produces</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">marker_yup.glb</span></code>, <code class="docutils literal notranslate"><span class="pre">.gltf</span></code></p></td>
+<td><p>buffer swizzled (x, z, −y), identity root</p></td>
+<td><p>(−0.10, −0.025, −0.50) → (1.00, 0.25, 0.025)</p></td>
+<td><p>raw; up on +Y, left arm on −Z. What <code class="docutils literal notranslate"><span class="pre">+Y</span> <span class="pre">Up</span></code> on produces</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">marker_rotnode.glb</span></code></p></td>
+<td><p>Z-up buffer, root <code class="docutils literal notranslate"><span class="pre">rotation</span></code> −90° about X</p></td>
+<td><p>equals <code class="docutils literal notranslate"><span class="pre">marker_yup</span></code></p></td>
+<td><p>root rotation honoured</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">marker_rotnode.gltf</span></code></p></td>
+<td><p>identical file, <code class="docutils literal notranslate"><span class="pre">.gltf</span></code> container</p></td>
+<td><p>equals <code class="docutils literal notranslate"><span class="pre">marker_zup</span></code></p></td>
+<td><p>root rotation dropped: the 7.3.0 case bug</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">marker_roottrans.glb</span></code>, <code class="docutils literal notranslate"><span class="pre">.gltf</span></code></p></td>
+<td><p>as <code class="docutils literal notranslate"><span class="pre">marker_yup</span></code>, root <code class="docutils literal notranslate"><span class="pre">translation</span></code> (0, 0.5, 0)</p></td>
+<td><p>(−0.10, 0.475, −0.50) → (1.00, 0.75, 0.025)</p></td>
+<td><p>translation composed in, along the file’s Y</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">marker_twonode.glb</span></code>, submesh <code class="docutils literal notranslate"><span class="pre">pointer</span></code></p></td>
+<td><p>child node with its own mesh, translated and rotated</p></td>
+<td><p>(−0.025, 0.475, −0.30) → (0.025, 0.525, 0.00)</p></td>
+<td><p>child transform composed and baked; submesh named after the node</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">marker_zup_declZ.dae</span></code>, <code class="docutils literal notranslate"><span class="pre">marker_zup_declY.dae</span></code></p></td>
+<td><p>identical buffers, <code class="docutils literal notranslate"><span class="pre">&lt;up_axis&gt;</span></code> Z_UP and Y_UP</p></td>
+<td><p>identical to <code class="docutils literal notranslate"><span class="pre">marker_zup</span></code></p></td>
+<td><p>the declaration is ignored</p></td>
+</tr>
+</tbody>
+</table>
+<p>Every row is what the source predicts. The <code class="docutils literal notranslate"><span class="pre">.dae</span></code> pair is why the project’s earlier COLLADA workflow needed no correction anywhere, and the <code class="docutils literal notranslate"><span class="pre">marker_rotnode</span></code> pair is the case bug made visible.</p>
+</section>
+<section id="the-decision-and-what-it-costs">
+<h3>The decision, and what it costs<a class="headerlink" href="#the-decision-and-what-it-costs" title="Link to this heading"></a></h3>
+<p><strong>[Practice]</strong> This project delivers the file in the body coordinate system: Blender’s <code class="docutils literal notranslate"><span class="pre">+Y</span> <span class="pre">Up</span></code> off, no transform on the root node, vertices already on the link axes. the profile’s <a class="reference internal" href="../profile.html#axes"><span class="std std-ref">Axes</span></a> section is the normative statement and its <a class="reference internal" href="../profile.html#scenes-and-nodes"><span class="std std-ref">Scenes and nodes</span></a> section the root-node rule. In the chain above, that puts the rotation nowhere in the file and nowhere in Gazebo’s <code class="docutils literal notranslate"><span class="pre">Pose</span></code>, which stays identity. RViz’s rotation is inside the consumer and cannot be removed, so it is undone in <code class="docutils literal notranslate"><span class="pre">Pose</span></code>, on every URDF visual that shows a glTF part:</p>
+<div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="nt">&lt;visual&gt;&lt;origin</span><span class="w"> </span><span class="na">xyz=</span><span class="s">"0 0 0"</span><span class="w"> </span><span class="na">rpy=</span><span class="s">"-1.5708 0 0"</span><span class="nt">/&gt;</span>
+</pre></div>
+</div>
+<p><strong>[Firm]</strong> That gives <code class="docutils literal notranslate"><span class="pre">Rx(−90)</span> <span class="pre">·</span> <span class="pre">Root</span> <span class="pre">·</span> <span class="pre">Rx(+90)</span> <span class="pre">·</span> <span class="pre">p_node</span></code> in RViz. With an identity root the two rolls cancel and RViz shows the vertices exactly as Gazebo does. With a root transform they do not, because the undo acts outside the root and RViz’s roll acts inside it: <code class="docutils literal notranslate"><span class="pre">examples/monkey_xform.glb</span></code> carries a 5 m translation and a 90 degree yaw on its root, and with the undo in place its centre lands at (0, 5, 0) in RViz where Gazebo puts it at (0, 0, 5). The identity-root rule is what makes the undo exact.</p>
+<p><strong>[Practice]</strong> The cost is that the file is not oriented the way the glTF specification says an asset should be. The Khronos Sample Viewer and every browser viewer assume Y-up, so they show the part on its side, and a URDF that omits the roll shows it that way in RViz. The reference viewer can therefore no longer answer whether a part is correctly oriented, only whether its materials are right. Against that, Blender, the file, Gazebo and the link agree with no conversion anywhere, and the one correction lives in one place, in the robot description, where it is visible in a diff.</p>
+<p><strong>[Open]</strong> How the RViz correction is delivered in the model repositories, given that it depends on the ROS distribution: the profile’s <a class="reference internal" href="../profile.html#axes"><span class="std std-ref">Axes</span></a> section carries the open block. Nothing in this document depends on the answer.</p>
+</section>
+</section>
 <section id="next-increment">
 <h2>Next increment<a class="headerlink" href="#next-increment" title="Link to this heading"></a></h2>
-<p>The vocabulary and the standards groundwork are now settled, and the list of things this project must decide for itself is short — see “Adopt, narrow, or invent” above. Deliberately not covered yet, in the order it should be taken up:</p>
+<p>The vocabulary and the standards groundwork are settled, and the one-body case above is now airtight: which of Blender, the file, Gazebo and RViz rotates what, read from source and measured. The list of things this project must still decide for itself is short — see “Adopt, narrow, or invent” above. Deliberately not covered yet, in the order it should be taken up:</p>
 <ol class="arabic simple">
-<li><p>One rigid body, one mesh, no joints: world, vehicle and asset coordinate systems, mesh vertices, written in the names agreed above. Get this airtight before adding anything.</p></li>
-<li><p>The transform from the asset coordinate system to the part coordinate system — the value of the visual pose — and which of glTF, Gazebo and RViz applies what. The first draft’s findings on this are sound and can be carried over from <code class="docutils literal notranslate"><span class="pre">ab5f6a6</span></code>; its framing cannot.</p></li>
-<li><p>Where the origin sits within a part, and which asset-coordinate-system axis carries forward. These are the two genuine inventions.</p></li>
+<li><p>Where the origin sits within a part, and which asset-coordinate-system axis carries forward. These are the two genuine inventions. Forward is answered by the profile’s <a class="reference internal" href="../profile.html#axes"><span class="std std-ref">Axes</span></a> section as a practice; the origin is not.</p></li>
 <li><p>A second body and a joint between them, which is where the mount-coordinate-system narrowing has to be settled.</p></li>
 <li><p>Only then: the project’s delivery rule.</p></li>
 </ol>
@@ -1121,6 +1276,10 @@ This is a sticking point - and one we’ve gotten wrong.</p></li>
 <li><p>SDFormat specification, <code class="docutils literal notranslate"><span class="pre">&lt;frame&gt;</span></code> and <code class="docutils literal notranslate"><span class="pre">&lt;joint&gt;</span></code>: http://sdformat.org/spec</p></li>
 <li><p>glTF 2.0 specification, §3.4 Coordinate System and Units, §3.5 Scenes and Nodes: https://registry.khronos.org/glTF/specs/2.0/glTF-2.0.html</p></li>
 <li><p>Blender manual, Object Origin and <em>Set Origin</em>: https://docs.blender.org/manual/en/latest/scene_layout/object/origin.html</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">gz-common</span></code> 7.3.0, <code class="docutils literal notranslate"><span class="pre">graphics/src/AssimpLoader.cc</span></code> at tag <code class="docutils literal notranslate"><span class="pre">gz-common7_7.3.0</span></code> — Gazebo’s mesh loader; root-node handling at lines 850 to 851 and 955 to 976: https://github.com/gazebosim/gz-common/blob/a08c258d4e566b1e1624cb85f12ab78068ab2870/graphics/src/AssimpLoader.cc</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">rviz_rendering</span></code> 15.2.5, <code class="docutils literal notranslate"><span class="pre">mesh_loader_helpers/assimp_loader.cpp</span></code> on branch <code class="docutils literal notranslate"><span class="pre">lyrical</span></code> — RViz’s mesh loader; the glTF rotation at lines 215 to 222: https://github.com/ros2/rviz/blob/baab61a68bc089217dfaa4f270276dc7a30268b1/rviz_rendering/src/rviz_rendering/mesh_loader_helpers/assimp_loader.cpp — introduced by https://github.com/ros2/rviz/pull/1482</p></li>
+<li><p>glTF-Blender-IO, <code class="docutils literal notranslate"><span class="pre">addons/io_scene_gltf2/</span></code> at <code class="docutils literal notranslate"><span class="pre">main</span></code> (addon 5.3.32; no tag exists for 5.2.40) — the <code class="docutils literal notranslate"><span class="pre">+Y</span> <span class="pre">Up</span></code> swizzle in <code class="docutils literal notranslate"><span class="pre">blender/com/gltf2_blender_math.py</span></code> and <code class="docutils literal notranslate"><span class="pre">blender/exp/primitive_extract.py</span></code>: https://github.com/KhronosGroup/glTF-Blender-IO/tree/093ad93ce4750dd496266806309ba75d5f755752</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">probe/coords/make_markers.py</span></code> and <code class="docutils literal notranslate"><span class="pre">probe/coords/probe_results.txt</span></code> in this repository — the marker assets and the <code class="docutils literal notranslate"><span class="pre">glb_probe</span></code> output the measured table is taken from</p></li>
 </ul>
 </section>
 </section>
@@ -1129,8 +1288,8 @@ This is a sticking point - and one we’ve gotten wrong.</p></li>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="index.html" class="btn btn-neutral float-left" title="Reference" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="pipeline-review.html" class="btn btn-neutral float-right" title="Visual asset pipeline: technical review and proposed guidelines" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="glossary.html" class="btn btn-neutral float-left" title="Glossary" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="loader-behavior.html" class="btn btn-neutral float-right" title="Gazebo and RViz loader behavior" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

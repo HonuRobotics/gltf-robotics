@@ -1,0 +1,1093 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Blender glTF Export Options &mdash; Honu glTF Asset Framework main documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/honu.css?v=44af46ee" />
+
+  
+    <link rel="shortcut icon" href="../_static/honu-robotics-favicon.svg"/>
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=a8da1a53"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="PBR, and why glTF is inseparable from it" href="pbr-and-gltf.html" />
+    <link rel="prev" title="Gazebo and RViz loader behavior" href="loader-behavior.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Honu glTF Asset Framework
+              <img src="../_static/honu-robotics-white-logo.svg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../profile.html">Profile</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../profile.html#introduction">Introduction</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../profile.html#scope">Scope</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../profile.html#document-conventions">Document conventions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../profile.html#audience">Audience</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../profile.html#normative-terminology">Normative terminology</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../profile.html#informative-language">Informative language</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../profile.html#open-issues">Open issues</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../profile.html#terminology">Terminology</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../profile.html#delivery">Delivery</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../profile.html#file">File</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../profile.html#file-naming">File naming</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../profile.html#file-format">File format</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../profile.html#gltf-structure">glTF structure</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../profile.html#the-manifest">The manifest</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../profile.html#asset-header">Asset header</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../profile.html#coordinate-systems-and-units">Coordinate systems and units</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../profile.html#units">Units</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../profile.html#axes">Axes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../profile.html#forward-axis">Forward axis</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../profile.html#origin-datum-coordinate-system-location">Origin - datum coordinate system location</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../profile.html#scenes-and-nodes">Scenes and nodes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../profile.html#datum-specification">Datum specification</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../profile.html#the-datum-point">The datum point</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../profile.html#a-base-part">A base part</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../profile.html#a-component-part">A component part</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../profile.html#geometry">Geometry</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../profile.html#uv-sets">UV sets</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../profile.html#budgets">Budgets</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../profile.html#primitives">Primitives</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../profile.html#materials">Materials</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../profile.html#textures">Textures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../profile.html#transparency">Transparency</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../profile.html#prohibited-content">Prohibited content</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../profile.html#authoring-toolchain">Authoring toolchain</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../profile.html#conformance-testing">Conformance testing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../profile.html#open-questions-informative">Open questions (Informative)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../profile.html#open-the-to-do-list-for-this-draft">Open: the to-do list for this draft</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../profile.html#open-future-not-blocking-this-draft">Open: Future, not blocking this draft</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../profile.html#references-informative">References (Informative)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../profile.html#closely-related-work-informative">Closely related work (Informative)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../workflow.html">Workflow</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../workflow.html#roles">Roles</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../workflow.html#outline">Outline</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../workflow.html#step-1-commission-integrator">Step 1: Commission [Integrator]</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../workflow.html#commission-yaml-file">Commission YAML file</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../workflow.html#step-2-author-3d-asset-modeler">Step 2: Author 3D asset [Modeler]</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../workflow.html#build-to-the-honu-asset-profile-and-export">Build to the <span class="xref myst">Honu Asset Profile</span> and export</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../workflow.html#step-3-fill-the-glb-manifest-from-the-commission-yaml-integrator">Step 3: Fill the <code class="docutils literal notranslate"><span class="pre">.glb</span></code> manifest from the commission YAML [Integrator]</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../workflow.html#step-3-verify">Step 3: Verify</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../workflow.html#valid">Valid?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../workflow.html#intended">Intended?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../workflow.html#compliant">Compliant?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../workflow.html#what-the-integrator-checks">What the integrator checks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../workflow.html#when-the-checks-run">When the checks run</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../workflow.html#who-answers-what">Who answers what</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../workflow.html#after-acceptance">After acceptance</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../workflow.html#not-settled-here">Not settled here</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../walkthroughs/index.html">Walkthroughs</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../walkthroughs/blender_mesh_coordinate_ex.html">Minimum viable workflow</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../walkthroughs/blender_mesh_coordinate_ex.html#minimum-monkey-mesh">Minimum monkey mesh</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../walkthroughs/blender_mesh_coordinate_ex.html#create-in-blender-and-export">Create in Blender and export</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../walkthroughs/blender_mesh_coordinate_ex.html#baseline">Baseline</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../walkthroughs/blender_mesh_coordinate_ex.html#the-y-up-export">The +Y Up Export</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../walkthroughs/blender_mesh_coordinate_ex.html#transforms-frames-coordinate-systems-and-spaces">Transforms, frames, coordinate systems and spaces</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../walkthroughs/blender_mesh_coordinate_ex.html#see-what-assimploader-receives">3. See what AssimpLoader receives</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../walkthroughs/blender_mesh_coordinate_ex.html#write-a-world-and-a-urdf">4. Write a world and a URDF</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../walkthroughs/blender_mesh_coordinate_ex.html#gazebo">5. Gazebo</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../walkthroughs/blender_mesh_coordinate_ex.html#rviz">6. RViz</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../walkthroughs/blender_mesh_coordinate_ex.html#what-rviz-does-to-a-gltf-file-and-how-to-undo-it">What RViz does to a glTF file, and how to undo it</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../walkthroughs/exporting-from-blender.html">Exporting from Blender</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../walkthroughs/exporting-from-blender.html#author-in-the-ros-frame-and-do-not-let-the-exporter-convert">Author in the ROS frame, and do not let the exporter convert</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../walkthroughs/exporting-from-blender.html#clear-location-and-rotation-apply-scale-before-exporting">Clear location and rotation, apply scale, before exporting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../walkthroughs/exporting-from-blender.html#where-the-origin-goes-is-not-yours-to-choose">Where the origin goes is not yours to choose</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../walkthroughs/exporting-from-blender.html#name-the-object-not-the-mesh">Name the object, not the mesh</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../walkthroughs/exporting-from-blender.html#metalness-is-the-defect-that-keeps-recurring">Metalness is the defect that keeps recurring</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../walkthroughs/exporting-from-blender.html#texture-format-is-decided-by-the-source-image">Texture format is decided by the source image</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../walkthroughs/exporting-from-blender.html#transparency-is-per-material-not-per-pixel">Transparency is per material, not per pixel</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../walkthroughs/exporting-from-blender.html#keep-the-authoring-source-outside-the-simulation-repository">Keep the authoring source, outside the simulation repository</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../walkthroughs/exporting-from-blender.html#versions">Versions</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../walkthroughs/checking-a-delivery.html">Checking a delivery</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../walkthroughs/checking-a-delivery.html#running-the-checker">Running the checker</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../walkthroughs/checking-a-delivery.html#reading-the-output">Reading the output</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../walkthroughs/checking-a-delivery.html#what-a-clean-run-does-not-mean">What a clean run does not mean</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../walkthroughs/workflow_blueboat.html">BlueBoat Walkthrough</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../walkthroughs/workflow_blueboat.html#commission">Commission</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../walkthroughs/workflow_blueboat.html#author">Author</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../walkthroughs/workflow_blueboat.html#fill-manifest">Fill manifest</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../walkthroughs/workflow_blueboat.html#verify">Verify</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../walkthroughs/workflow_blueboat.html#valid">Valid?</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../walkthroughs/workflow_blueboat.html#intended">Intended</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../walkthroughs/workflow_blueboat.html#compliant-gltf-check">Compliant - gltf-check</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="../walkthroughs/workflow_blueboat.html#gltf-probe">gltf probe</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../walkthroughs/workflow_blueboat.html#gazebo-standalone">Gazebo standalone</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../walkthroughs/workflow_blueboat.html#rviz">RVIZ</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../assessments/index.html">Assessments</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../assessments/community-exemplars.html">Community exemplars: who else ships glTF to Gazebo and RViz</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../assessments/community-exemplars.html#method">Method</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../assessments/community-exemplars.html#the-cohort">The cohort</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../assessments/community-exemplars.html#gazebosim-jetty-demo-the-closest-thing-to-an-upstream-reference">gazebosim/jetty_demo — the closest thing to an upstream reference</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../assessments/community-exemplars.html#open-rmf-rmf-site-gltf-generated-rather-than-authored">open-rmf/rmf_site — glTF generated rather than authored</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../assessments/community-exemplars.html#husarion-rosbot-ros-a-commercial-product-doing-it-per-link">husarion/rosbot_ros — a commercial product doing it per-link</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../assessments/community-exemplars.html#robotlocomotion-the-informed-dissent-on-packaging">RobotLocomotion — the informed dissent on packaging</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../assessments/community-exemplars.html#usnistgov-ariac-a-migration-caught-in-the-middle">usnistgov/ARIAC — a migration caught in the middle</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../assessments/community-exemplars.html#vanttec-vanttec-usv-the-nearest-maritime-peer-inverted">vanttec/vanttec_usv — the nearest maritime peer, inverted</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../assessments/community-exemplars.html#the-people-and-the-two-organizations-that-turned-out-not-to-be-doing-this">The people, and the two organizations that turned out not to be doing this</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../assessments/community-exemplars.html#what-this-changes-for-us">What this changes for us</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../assessments/community-exemplars.html#where-the-argument-is-being-had">Where the argument is being had</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="glossary.html">Glossary</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="glossary.html#terms">Terms</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="glossary.html#assembly">assembly</a></li>
+<li class="toctree-l4"><a class="reference internal" href="glossary.html#asset">asset</a></li>
+<li class="toctree-l4"><a class="reference internal" href="glossary.html#base-part">base part</a></li>
+<li class="toctree-l4"><a class="reference internal" href="glossary.html#commission">commission</a></li>
+<li class="toctree-l4"><a class="reference internal" href="glossary.html#component-part">component part</a></li>
+<li class="toctree-l4"><a class="reference internal" href="glossary.html#consumer">consumer</a></li>
+<li class="toctree-l4"><a class="reference internal" href="glossary.html#coordinate-system">coordinate system</a></li>
+<li class="toctree-l4"><a class="reference internal" href="glossary.html#datasheet">datasheet</a></li>
+<li class="toctree-l4"><a class="reference internal" href="glossary.html#datum">datum</a></li>
+<li class="toctree-l4"><a class="reference internal" href="glossary.html#datum-coordinate-system">datum coordinate system</a></li>
+<li class="toctree-l4"><a class="reference internal" href="glossary.html#datum-point">datum point</a></li>
+<li class="toctree-l4"><a class="reference internal" href="glossary.html#delivery">delivery</a></li>
+<li class="toctree-l4"><a class="reference internal" href="glossary.html#integrator">integrator</a></li>
+<li class="toctree-l4"><a class="reference internal" href="glossary.html#manifest">manifest</a></li>
+<li class="toctree-l4"><a class="reference internal" href="glossary.html#modeler">modeler</a></li>
+<li class="toctree-l4"><a class="reference internal" href="glossary.html#origin">origin</a></li>
+<li class="toctree-l4"><a class="reference internal" href="glossary.html#part">part</a></li>
+<li class="toctree-l4"><a class="reference internal" href="glossary.html#part-coordinate-system">part coordinate system</a></li>
+<li class="toctree-l4"><a class="reference internal" href="glossary.html#submesh">submesh</a></li>
+<li class="toctree-l4"><a class="reference internal" href="glossary.html#visual-model">visual model</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="coordinate-systems.html">Coordinate Systems: glTF, Gazebo and ROS</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="coordinate-systems.html#objective">Objective</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="coordinate-systems.html#central-issue">Central Issue</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="coordinate-systems.html#how-claims-in-this-document-are-marked">How claims in this document are marked</a></li>
+<li class="toctree-l3"><a class="reference internal" href="coordinate-systems.html#coordinate-conventions-and-typical-practices">Coordinate Conventions and Typical Practices</a></li>
+<li class="toctree-l3"><a class="reference internal" href="coordinate-systems.html#vocabulary-nomenclature-glossary">Vocabulary / Nomenclature / Glossary</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="coordinate-systems.html#our-formal-default">Our formal default</a></li>
+<li class="toctree-l4"><a class="reference internal" href="coordinate-systems.html#terms-by-stage-of-the-flow">Terms by stage of the flow</a></li>
+<li class="toctree-l4"><a class="reference internal" href="coordinate-systems.html#coordinate-system-origin-and-reference-point">Coordinate system, origin, and reference point</a></li>
+<li class="toctree-l4"><a class="reference internal" href="coordinate-systems.html#the-o-x-y-z-notation">The <code class="docutils literal notranslate"><span class="pre">O</span> <span class="pre">-</span> <span class="pre">X</span> <span class="pre">-</span> <span class="pre">Y</span> <span class="pre">-</span> <span class="pre">Z</span></code> notation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="coordinate-systems.html#specifying-a-coordinate-system-datums-and-what-referenced-to-means">Specifying a coordinate system: datums and what “referenced to” means</a></li>
+<li class="toctree-l4"><a class="reference internal" href="coordinate-systems.html#assumptions">Assumptions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="coordinate-systems.html#standards-summary">Standards Summary</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="coordinate-systems.html#iso-9787-2013">ISO 9787:2013</a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="coordinate-systems.html#robotics">Robotics</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="coordinate-systems.html#categorizing-links-by-their-place-in-the-tree">Categorizing links by their place in the tree</a></li>
+<li class="toctree-l5"><a class="reference internal" href="coordinate-systems.html#manipulation-centric-robots-with-static-base">Manipulation-centric (robots with static base)</a></li>
+<li class="toctree-l5"><a class="reference internal" href="coordinate-systems.html#mobile-centric">Mobile-centric</a></li>
+<li class="toctree-l5"><a class="reference internal" href="coordinate-systems.html#other-conventions-worth-knowing">Other conventions worth knowing</a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="coordinate-systems.html#d-graphics">3D Graphics</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="coordinate-systems.html#what-survives-into-gltf-and-what-does-not">What survives into glTF, and what does not</a></li>
+<li class="toctree-l5"><a class="reference internal" href="coordinate-systems.html#standards-for-3d-assets">Standards for 3D assets</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="coordinate-systems.html#reconciling-the-standards">Reconciling the standards</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="coordinate-systems.html#where-they-agree-and-it-is-most-of-it">Where they agree, and it is most of it</a></li>
+<li class="toctree-l4"><a class="reference internal" href="coordinate-systems.html#the-disagreement-is-one-cyclic-relabeling">The disagreement is one cyclic relabeling</a></li>
+<li class="toctree-l4"><a class="reference internal" href="coordinate-systems.html#our-coordinate-system-names">Our coordinate system names</a></li>
+<li class="toctree-l4"><a class="reference internal" href="coordinate-systems.html#the-full-reconciliation">The full reconciliation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="coordinate-systems.html#adopt-narrow-or-invent">Adopt, narrow, or invent</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="coordinate-systems.html#one-body-one-mesh-who-rotates-what">One body, one mesh: who rotates what</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="coordinate-systems.html#the-chain-and-where-a-rotation-can-be-inserted">The chain, and where a rotation can be inserted</a></li>
+<li class="toctree-l4"><a class="reference internal" href="coordinate-systems.html#gazebo-from-source">Gazebo, from source</a></li>
+<li class="toctree-l4"><a class="reference internal" href="coordinate-systems.html#rviz-from-source">RViz, from source</a></li>
+<li class="toctree-l4"><a class="reference internal" href="coordinate-systems.html#blender-s-exporter-from-source">Blender’s exporter, from source</a></li>
+<li class="toctree-l4"><a class="reference internal" href="coordinate-systems.html#the-probe-measured">The probe, measured</a></li>
+<li class="toctree-l4"><a class="reference internal" href="coordinate-systems.html#the-decision-and-what-it-costs">The decision, and what it costs</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="coordinate-systems.html#next-increment">Next increment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="coordinate-systems.html#references">References</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="loader-behavior.html">Gazebo and RViz loader behavior</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="loader-behavior.html#the-consumers">The consumers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="loader-behavior.html#the-gazebo-path-step-by-step">The Gazebo path, step by step</a></li>
+<li class="toctree-l3"><a class="reference internal" href="loader-behavior.html#what-the-loader-reads-from-a-gltf-material">What the loader reads from a glTF material</a></li>
+<li class="toctree-l3"><a class="reference internal" href="loader-behavior.html#the-rviz-path">The RViz path</a></li>
+</ul>
+</li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Blender glTF Export Options</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#directive">Directive</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#four-things-that-decide-the-result-and-are-not-in-this-dialog">Four things that decide the result and are not in this dialog</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#provenance">Provenance</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#what-no-option-does">What no option does</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#top-of-the-dialog">Top of the dialog</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#include">Include</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#transform">Transform</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#data-scene-graph">Data ▸ Scene Graph</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#data-mesh">Data ▸ Mesh</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#data-material">Data ▸ Material</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#data-shape-keys-skinning-lighting">Data ▸ Shape Keys, Skinning, Lighting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#animation">Animation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#compression">Compression</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#what-this-enumeration-suggests-and-needs-checking">What this enumeration suggests, and needs checking</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#open-rows-as-a-worklist">Open rows, as a worklist</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pbr-and-gltf.html">PBR, and why glTF is inseparable from it</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pbr-and-gltf.html#the-shift-in-one-sentence">The shift in one sentence</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pbr-and-gltf.html#what-we-had-before-collada-plus-an-image">What we had before: Collada plus an image</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pbr-and-gltf.html#what-pbr-replaces-it-with">What PBR replaces it with</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pbr-and-gltf.html#the-four-terms-in-that-table-reference">The four terms in that table (reference)</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pbr-and-gltf.html#the-differences-that-actually-bite">The differences that actually bite</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pbr-and-gltf.html#why-gltf-and-pbr-cannot-be-separated">Why glTF and PBR cannot be separated</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pbr-and-gltf.html#where-to-go-next">Where to go next</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="gltf-background-notes.html">glTF Background</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="gltf-background-notes.html#references">References</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="gltf-background-notes.html#khronos-org">Khronos.org</a></li>
+<li class="toctree-l4"><a class="reference internal" href="gltf-background-notes.html#gltf-2-0-specification">glTF 2.0 Specification</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="gltf-background-notes.html#https-github-com-khronosgroup-gltf-tutorials">https://github.com/KhronosGroup/glTF-Tutorials</a></li>
+<li class="toctree-l5"><a class="reference internal" href="gltf-background-notes.html#gltf-quickstart">glTF Quickstart</a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="gltf-background-notes.html#video-discussing-vulkan-neural-rendering-slang-ai-more-neil-trevett-khronos-group-interview">Video: Discussing Vulkan, Neural Rendering, SLANG, AI &amp; More - Neil Trevett &amp; Khronos Group Interview</a></li>
+<li class="toctree-l4"><a class="reference internal" href="gltf-background-notes.html#gltf-2-0-quickstart-and-tools">glTF 2.0 Quickstart and tools</a></li>
+<li class="toctree-l4"><a class="reference internal" href="gltf-background-notes.html#openusd-conventions-for-simulation-asset-interoperability-in-open-source-robotics">OpenUSD Conventions for Simulation Asset Interoperability in Open Source Robotics</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="gltf-background-notes.html#closely-related-work-and-examples">Closely Related Work and Examples</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="gltf-background-notes.html#community-standards-documents-discussion-etc">Community standards, documents, discussion, etc.</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="gltf-background-notes.html#gazebo-community-and-developers">Gazebo community and developers</a></li>
+<li class="toctree-l5"><a class="reference internal" href="gltf-background-notes.html#examples">Examples</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="gltf-background-notes.html#fuel">Fuel</a></li>
+<li class="toctree-l6"><a class="reference internal" href="gltf-background-notes.html#repos">Repos</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Honu glTF Asset Framework</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Reference</a></li>
+      <li class="breadcrumb-item active">Blender glTF Export Options</li>
+      <li class="wy-breadcrumbs-aside">
+              <a href="https://github.com/HonuRobotics/gltf-robotics/blob/main/docs/reference/blender-export-options.md" class="fa fa-github"> Edit on GitHub</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="blender-gltf-export-options">
+<h1>Blender glTF Export Options<a class="headerlink" href="#blender-gltf-export-options" title="Link to this heading"></a></h1>
+<p>Every option the Blender glTF exporter offers, with its default. The dialog has 110 properties and no guide we have written names more than a handful, so the settings that matter are collected here first and the full enumeration follows as backing.</p>
+<section id="directive">
+<h2>Directive<a class="headerlink" href="#directive" title="Link to this heading"></a></h2>
+<p>Thirteen options out of 110. Everything not named below stays at its Blender default.</p>
+<p>Confirm these. They are already Blender’s defaults, so the work is checking rather than changing:</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>UI label</p></th>
+<th class="head"><p>Identifier</p></th>
+<th class="head"><p>Value</p></th>
+<th class="head"><p>Why</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Format</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">export_format</span></code></p></td>
+<td><p>GLB</p></td>
+<td><p>the profile’s <a class="reference internal" href="../profile.html#file-format"><span class="std std-ref">File format</span></a> section prohibits <code class="docutils literal notranslate"><span class="pre">.gltf</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>At Collection Center</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">at_collection_center</span></code></p></td>
+<td><p>False</p></td>
+<td><p>it relocates the origin, which the profile’s <a class="reference internal" href="../profile.html#origin-datum-coordinate-system-location"><span class="std std-ref">Origin</span></a> and <a class="reference internal" href="../profile.html#datum-specification"><span class="std std-ref">Datum specification</span></a> sections govern</p></td>
+</tr>
+<tr class="row-even"><td><p>UVs</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">export_texcoords</span></code></p></td>
+<td><p>True</p></td>
+<td><p>the profile’s <a class="reference internal" href="../profile.html#geometry"><span class="std std-ref">Geometry</span></a> section requires <code class="docutils literal notranslate"><span class="pre">TEXCOORD_0</span></code> on every primitive</p></td>
+</tr>
+<tr class="row-odd"><td><p>Normals</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">export_normals</span></code></p></td>
+<td><p>True</p></td>
+<td><p>the profile’s <a class="reference internal" href="../profile.html#geometry"><span class="std std-ref">Geometry</span></a> section requires <code class="docutils literal notranslate"><span class="pre">NORMAL</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>Materials</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">export_materials</span></code></p></td>
+<td><p>EXPORT</p></td>
+<td><p>the profile’s <a class="reference internal" href="../profile.html#materials"><span class="std std-ref">Materials</span></a> section</p></td>
+</tr>
+<tr class="row-odd"><td><p>Cameras</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">export_cameras</span></code></p></td>
+<td><p>False</p></td>
+<td><p>the profile’s <a class="reference internal" href="../profile.html#prohibited-content"><span class="std std-ref">Prohibited content</span></a> section prohibits <code class="docutils literal notranslate"><span class="pre">cameras</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>Punctual Lights</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">export_lights</span></code></p></td>
+<td><p>False</p></td>
+<td><p>the profile’s <a class="reference internal" href="../profile.html#prohibited-content"><span class="std std-ref">Prohibited content</span></a> section prohibits <code class="docutils literal notranslate"><span class="pre">KHR_lights_punctual</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>Draco</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">export_draco_mesh_compression_enable</span></code></p></td>
+<td><p>False</p></td>
+<td><p>the profile’s <a class="reference internal" href="../profile.html#prohibited-content"><span class="std std-ref">Prohibited content</span></a> section prohibits <code class="docutils literal notranslate"><span class="pre">KHR_draco_mesh_compression</span></code></p></td>
+</tr>
+</tbody>
+</table>
+<p>Change these. They are the only five that differ from the default:</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>UI label</p></th>
+<th class="head"><p>Identifier</p></th>
+<th class="head"><p>Default</p></th>
+<th class="head"><p>Set to</p></th>
+<th class="head"><p>Why</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>+Y Up</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">export_yup</span></code></p></td>
+<td><p>True</p></td>
+<td><p>False</p></td>
+<td><p>the profile’s <a class="reference internal" href="../profile.html#axes"><span class="std std-ref">Axes</span></a> section requires the file Z-up, in the body coordinate system; it is the one axis conversion the workflow does not want</p></td>
+</tr>
+<tr class="row-odd"><td><p>Limit to ▸ Selected Objects</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">use_selection</span></code></p></td>
+<td><p>False</p></td>
+<td><p>True</p></td>
+<td><p>one part per delivery — the profile’s <a class="reference internal" href="../profile.html#file"><span class="std std-ref">File</span></a> section</p></td>
+</tr>
+<tr class="row-even"><td><p>Animation</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">export_animations</span></code></p></td>
+<td><p>True</p></td>
+<td><p>False</p></td>
+<td><p>the profile’s <a class="reference internal" href="../profile.html#prohibited-content"><span class="std std-ref">Prohibited content</span></a> section prohibits <code class="docutils literal notranslate"><span class="pre">animations</span></code>, and no scene should rely on having no actions</p></td>
+</tr>
+<tr class="row-odd"><td><p>Remember Export Settings</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">will_save_settings</span></code></p></td>
+<td><p>False</p></td>
+<td><p>True</p></td>
+<td><p>the <code class="docutils literal notranslate"><span class="pre">.blend</span></code> then carries the settings it was exported with, so the delivery can be reproduced from its source</p></td>
+</tr>
+<tr class="row-even"><td><p>Copyright</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">export_copyright</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">''</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">Copyright</span> <span class="pre">Honu</span> <span class="pre">Robotics</span></code></p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+<p>Four decide where the geometry lands: <code class="docutils literal notranslate"><span class="pre">export_format</span></code>, <code class="docutils literal notranslate"><span class="pre">export_yup</span></code>, <code class="docutils literal notranslate"><span class="pre">at_collection_center</span></code> and <code class="docutils literal notranslate"><span class="pre">use_selection</span></code>. The rest is payload, prohibition or provenance.</p>
+<p>Two are not settled, and the dialog default is what we use until they are: <code class="docutils literal notranslate"><span class="pre">export_apply</span></code> (Apply Modifiers) and <code class="docutils literal notranslate"><span class="pre">export_image_format</span></code> (<code class="docutils literal notranslate"><span class="pre">AUTO</span></code>, which is necessary and not sufficient — see the Data ▸ Material panel below).</p>
+<section id="four-things-that-decide-the-result-and-are-not-in-this-dialog">
+<h3>Four things that decide the result and are not in this dialog<a class="headerlink" href="#four-things-that-decide-the-result-and-are-not-in-this-dialog" title="Link to this heading"></a></h3>
+<p>No export option touches any of these. They are done in the scene, before the dialog opens.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>What</p></th>
+<th class="head"><p>Where</p></th>
+<th class="head"><p>Why</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Clear location and rotation, apply scale</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">Object</span> <span class="pre">▸</span> <span class="pre">Clear</span></code> and <code class="docutils literal notranslate"><span class="pre">Object</span> <span class="pre">▸</span> <span class="pre">Apply</span> <span class="pre">▸</span> <span class="pre">Scale</span></code></p></td>
+<td><p>the profile’s <a class="reference internal" href="../profile.html#scenes-and-nodes"><span class="std std-ref">Scenes and nodes</span></a> section — the node must carry no transform at all. Apply is wrong for location and rotation: it moves the origin off the datum</p></td>
+</tr>
+<tr class="row-odd"><td><p>Scene unit scale 1.0, object scale applied</p></td>
+<td><p>Scene properties</p></td>
+<td><p>the profile’s <a class="reference internal" href="../profile.html#units"><span class="std std-ref">Units</span></a> section — a file at the wrong scale is silently wrong</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">metallicFactor</span></code></p></td>
+<td><p>the material’s Principled BSDF</p></td>
+<td><p>the profile’s <a class="reference internal" href="../profile.html#materials"><span class="std std-ref">Materials</span></a> section — the defect that recurs most in deliveries</p></td>
+</tr>
+<tr class="row-odd"><td><p>The object’s name</p></td>
+<td><p>the object, not the mesh datablock</p></td>
+<td><p>the profile’s <a class="reference internal" href="../profile.html#scenes-and-nodes"><span class="std std-ref">Scenes and nodes</span></a> section — the only name either consumer reads</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="provenance">
+<h2>Provenance<a class="headerlink" href="#provenance" title="Link to this heading"></a></h2>
+<p>Read out of the operator by introspection, not from documentation:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>blender<span class="w"> </span>--background<span class="w"> </span>--factory-startup<span class="w"> </span>--python<span class="w"> </span>-<span class="w"> </span><span class="s">&lt;&lt;'EOF'</span>
+<span class="s">import bpy</span>
+<span class="s">for p in bpy.ops.export_scene.gltf.get_rna_type().properties:</span>
+<span class="s">    print(p.identifier, p.type, getattr(p, "default", None))</span>
+<span class="s">EOF</span>
+</pre></div>
+</div>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p></p></th>
+<th class="head"><p></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Blender</p></td>
+<td><p>5.2.2 LTS (hash <code class="docutils literal notranslate"><span class="pre">d13f752e3b9c</span></code>, built 2026-09-15)</p></td>
+</tr>
+<tr class="row-odd"><td><p>Add-on</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">io_scene_gltf2</span></code> 5.2.40</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">asset.generator</span></code> written</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">Khronos</span> <span class="pre">glTF</span> <span class="pre">Blender</span> <span class="pre">I/O</span> <span class="pre">v5.2.40</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>Properties</p></td>
+<td><p>110</p></td>
+</tr>
+</tbody>
+</table>
+<p>Every current delivery reports <code class="docutils literal notranslate"><span class="pre">Khronos</span> <span class="pre">glTF</span> <span class="pre">Blender</span> <span class="pre">I/O</span> <span class="pre">v5.1.20</span></code>, which is Blender 5.1. This page is one minor version ahead of the deliveries. The profile’s <a class="reference internal" href="../profile.html#authoring-toolchain"><span class="std std-ref">Authoring toolchain</span></a> section proposes pinning 5.1 and is Open; nothing here decides it.</p>
+</section>
+<section id="what-no-option-does">
+<h2>What no option does<a class="headerlink" href="#what-no-option-does" title="Link to this heading"></a></h2>
+<p>There is no export option that applies object transforms. <code class="docutils literal notranslate"><span class="pre">export_apply</span></code> is Apply <strong>Modifiers</strong> — it evaluates the modifier stack, and it has nothing to do with an object’s location, rotation or scale.</p>
+<p>The profile’s <a class="reference internal" href="../profile.html#scenes-and-nodes"><span class="std std-ref">Scenes and nodes</span></a> section requires the node to carry no <code class="docutils literal notranslate"><span class="pre">translation</span></code>, <code class="docutils literal notranslate"><span class="pre">rotation</span></code>, <code class="docutils literal notranslate"><span class="pre">scale</span></code> or <code class="docutils literal notranslate"><span class="pre">matrix</span></code>, and that is achieved in the scene before the export dialog is ever opened. An object left with a transform exports as a node carrying it, no matter how the dialog is set.</p>
+<p>The operation is not <code class="docutils literal notranslate"><span class="pre">Object</span> <span class="pre">▸</span> <span class="pre">Apply</span> <span class="pre">▸</span> <span class="pre">All</span> <span class="pre">Transforms</span></code>, which is the one a reader expects. Applying a location or a rotation holds the geometry still in the world and moves the origin relative to the part, destroying the datum that the profile’s <a class="reference internal" href="../profile.html#origin-datum-coordinate-system-location"><span class="std std-ref">Origin</span></a> section requires; clearing them moves the geometry with the object and preserves it. Scale is the exception and must be applied, because clearing it changes the part’s size. Measured on 5.2.2 with an origin set 1 m off the geometry: applying moved it 5.42 m relative to the part, clearing moved it not at all.</p>
+</section>
+<section id="top-of-the-dialog">
+<h2>Top of the dialog<a class="headerlink" href="#top-of-the-dialog" title="Link to this heading"></a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>UI label</p></th>
+<th class="head"><p>Identifier</p></th>
+<th class="head"><p>Default</p></th>
+<th class="head"><p>Ours</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Format</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">export_format</span></code></p></td>
+<td><p>GLB</p></td>
+<td><p>required GLB — the profile’s <a class="reference internal" href="../profile.html#file-format"><span class="std std-ref">File format</span></a> section</p></td>
+</tr>
+<tr class="row-odd"><td><p>Copyright</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">export_copyright</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">''</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">Copyright</span> <span class="pre">Honu</span> <span class="pre">Robotics</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>Remember Export Settings</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">will_save_settings</span></code></p></td>
+<td><p>False</p></td>
+<td><p>True — the <code class="docutils literal notranslate"><span class="pre">.blend</span></code> then carries the settings it was exported with</p></td>
+</tr>
+<tr class="row-odd"><td><p>File path</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">filepath</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">''</span></code></p></td>
+<td><p>naming is governed by the profile’s <a class="reference internal" href="../profile.html#file"><span class="std std-ref">File</span></a> section: <code class="docutils literal notranslate"><span class="pre">&lt;part&gt;.visual.glb</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>Check Existing</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">check_existing</span></code></p></td>
+<td><p>True</p></td>
+<td><p>default</p></td>
+</tr>
+<tr class="row-odd"><td><p>Filter</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">filter_glob</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">'*.glb'</span></code></p></td>
+<td><p>default</p></td>
+</tr>
+<tr class="row-even"><td><p>Caller id</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">gltf_export_id</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">''</span></code></p></td>
+<td><p>default</p></td>
+</tr>
+<tr class="row-odd"><td><p>Log Level</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">export_loglevel</span></code></p></td>
+<td><p>−1</p></td>
+<td><p>default</p></td>
+</tr>
+<tr class="row-even"><td><p>Settings category</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">ui_tab</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">'GENERAL'</span></code></p></td>
+<td><p>UI only</p></td>
+</tr>
+</tbody>
+</table>
+<p><code class="docutils literal notranslate"><span class="pre">export_format</span></code>’s enum items are built dynamically, so headless introspection returns an empty list and a warning. The default is binary, which <code class="docutils literal notranslate"><span class="pre">filter_glob</span></code> confirms.</p>
+<p><code class="docutils literal notranslate"><span class="pre">will_save_settings</span></code> stores the export settings inside the <code class="docutils literal notranslate"><span class="pre">.blend</span></code>, so the source file records how it was exported and a re-export reproduces the delivery rather than approximating it. That is a partial answer to the shipped-preset proposal in the profile’s <a class="reference internal" href="../profile.html#authoring-toolchain"><span class="std std-ref">Authoring toolchain</span></a> section: it does not distribute a preset, but it does make each source file self-describing, which is the part that matters when the modeler is outside our infrastructure. What it does not do is put the settings in the delivered <code class="docutils literal notranslate"><span class="pre">.glb</span></code> — <code class="docutils literal notranslate"><span class="pre">asset.generator</span></code> records the tool and never the settings, which is why the profile’s <a class="reference internal" href="../profile.html#authoring-toolchain"><span class="std std-ref">Authoring toolchain</span></a> section calls a version pin necessary and not sufficient.</p>
+<p><code class="docutils literal notranslate"><span class="pre">export_copyright</span></code> writes <code class="docutils literal notranslate"><span class="pre">asset.copyright</span></code>, one of the few places a delivered file can carry provenance without an extension.</p>
+</section>
+<section id="include">
+<h2>Include<a class="headerlink" href="#include" title="Link to this heading"></a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>UI label</p></th>
+<th class="head"><p>Identifier</p></th>
+<th class="head"><p>Default</p></th>
+<th class="head"><p>Ours</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Limit to ▸ Selected Objects</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">use_selection</span></code></p></td>
+<td><p>False</p></td>
+<td><p>True — the profile’s <a class="reference internal" href="../profile.html#file"><span class="std std-ref">File</span></a> section is one part per delivery</p></td>
+</tr>
+<tr class="row-odd"><td><p>Limit to ▸ Visible Objects</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">use_visible</span></code></p></td>
+<td><p>False</p></td>
+<td><p>default</p></td>
+</tr>
+<tr class="row-even"><td><p>Limit to ▸ Renderable Objects</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">use_renderable</span></code></p></td>
+<td><p>False</p></td>
+<td><p>default</p></td>
+</tr>
+<tr class="row-odd"><td><p>Limit to ▸ Active Collection</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">use_active_collection</span></code></p></td>
+<td><p>False</p></td>
+<td><p>default</p></td>
+</tr>
+<tr class="row-even"><td><p>… with Nested Collections</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">use_active_collection_with_nested</span></code></p></td>
+<td><p>True</p></td>
+<td><p>default</p></td>
+</tr>
+<tr class="row-odd"><td><p>Limit to ▸ Active Scene</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">use_active_scene</span></code></p></td>
+<td><p>False</p></td>
+<td><p>open — the profile’s <a class="reference internal" href="../profile.html#scenes-and-nodes"><span class="std std-ref">Scenes and nodes</span></a> section requires exactly one scene, and six deliveries carried leftover empty ones</p></td>
+</tr>
+<tr class="row-even"><td><p>Collection by name</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">collection</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">''</span></code></p></td>
+<td><p>default</p></td>
+</tr>
+<tr class="row-odd"><td><p>At Collection Center</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">at_collection_center</span></code></p></td>
+<td><p>False</p></td>
+<td><p>required False — it would move the origin, which the profile’s <a class="reference internal" href="../profile.html#origin-datum-coordinate-system-location"><span class="std std-ref">Origin</span></a> and <a class="reference internal" href="../profile.html#datum-specification"><span class="std std-ref">Datum specification</span></a> sections govern</p></td>
+</tr>
+<tr class="row-even"><td><p>Data ▸ Custom Properties</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">export_extras</span></code></p></td>
+<td><p>False</p></td>
+<td><p>open — the archive-the-source question in the profile’s <a class="reference internal" href="../profile.html#the-manifest"><span class="std std-ref">manifest</span></a> section</p></td>
+</tr>
+<tr class="row-odd"><td><p>Data ▸ Cameras</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">export_cameras</span></code></p></td>
+<td><p>False</p></td>
+<td><p>required False — the profile’s <a class="reference internal" href="../profile.html#prohibited-content"><span class="std std-ref">Prohibited content</span></a> section prohibits <code class="docutils literal notranslate"><span class="pre">cameras</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>Data ▸ Punctual Lights</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">export_lights</span></code></p></td>
+<td><p>False</p></td>
+<td><p>required False — the profile’s <a class="reference internal" href="../profile.html#prohibited-content"><span class="std std-ref">Prohibited content</span></a> section prohibits <code class="docutils literal notranslate"><span class="pre">KHR_lights_punctual</span></code></p></td>
+</tr>
+</tbody>
+</table>
+<p><code class="docutils literal notranslate"><span class="pre">use_selection</span></code> is prescribed True rather than left at the default. The profile’s <a class="reference internal" href="../profile.html#file"><span class="std std-ref">File</span></a> section is one part per delivery, and an export that takes whatever happens to be in the scene is the mechanism by which leftover objects and empty scenes reach a delivery. Requiring a selection makes the modeler state what the part is. The profile’s <a class="reference internal" href="../profile.html#scenes-and-nodes"><span class="std std-ref">Scenes and nodes</span></a> section now requires exactly one node with no children, so a delivery cannot legitimately hold more than one object and this will not relax.</p>
+<p><code class="docutils literal notranslate"><span class="pre">at_collection_center</span></code> deserves attention. It is off by default and nothing in our guides mentions it, but switching it on relocates the origin of the exported result, which is the one thing the origin rules exist to control.</p>
+</section>
+<section id="transform">
+<h2>Transform<a class="headerlink" href="#transform" title="Link to this heading"></a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>UI label</p></th>
+<th class="head"><p>Identifier</p></th>
+<th class="head"><p>Default</p></th>
+<th class="head"><p>Ours</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>+Y Up</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">export_yup</span></code></p></td>
+<td><p>True</p></td>
+<td><p>required False — the profile’s <a class="reference internal" href="../profile.html#axes"><span class="std std-ref">Axes</span></a> section</p></td>
+</tr>
+</tbody>
+</table>
+<p>One option, and it is the whole of the coordinate conversion. Off, Blender’s Z-up axes pass through unchanged, which is the body coordinate system the profile’s <a class="reference internal" href="../profile.html#axes"><span class="std std-ref">Axes</span></a> section requires: the file is right in Gazebo with an identity visual pose, and the URDF visual carries <code class="docutils literal notranslate"><span class="pre">rpy=&quot;-1.5708</span> <span class="pre">0</span> <span class="pre">0&quot;</span></code> to undo the rotation RViz applies on load. On, it converts <code class="docutils literal notranslate"><span class="pre">(x,</span> <span class="pre">y,</span> <span class="pre">z)</span></code> to <code class="docutils literal notranslate"><span class="pre">(x,</span> <span class="pre">z,</span> <span class="pre">−y)</span></code> for vertices, normals and node TRS, producing the Y-up file the glTF specification describes, which Gazebo then shows lying on its side. The <a class="reference internal" href="coordinate-systems.html#one-body-one-mesh-who-rotates-what"><span class="std std-ref">coordinate-systems reference</span></a> has the derivation.</p>
+<p>Note what no check can do about it: <code class="docutils literal notranslate"><span class="pre">gltf-check</span></code> has no rule implementing the profile’s <a class="reference internal" href="../profile.html#axes"><span class="std std-ref">Axes</span></a> section’s Z-up MUST, because nothing in a file says which way its author meant up. This setting is verifiable only by rendering, or by the summary tool’s extents against a known dimension.</p>
+</section>
+<section id="data-scene-graph">
+<h2>Data ▸ Scene Graph<a class="headerlink" href="#data-scene-graph" title="Link to this heading"></a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>UI label</p></th>
+<th class="head"><p>Identifier</p></th>
+<th class="head"><p>Default</p></th>
+<th class="head"><p>Ours</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Flatten Object Hierarchy</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">export_hierarchy_flatten_objs</span></code></p></td>
+<td><p>False</p></td>
+<td><p>moot — the profile’s <a class="reference internal" href="../profile.html#scenes-and-nodes"><span class="std std-ref">Scenes and nodes</span></a> section permits exactly one node with no children, so there is no hierarchy to flatten</p></td>
+</tr>
+<tr class="row-odd"><td><p>Flatten Bone Hierarchy</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">export_hierarchy_flatten_bones</span></code></p></td>
+<td><p>False</p></td>
+<td><p>default — no armatures</p></td>
+</tr>
+<tr class="row-even"><td><p>Full Collection Hierarchy</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">export_hierarchy_full_collections</span></code></p></td>
+<td><p>False</p></td>
+<td><p>required False — it adds intermediate nodes</p></td>
+</tr>
+<tr class="row-odd"><td><p>Remove Armature Object</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">export_armature_object_remove</span></code></p></td>
+<td><p>False</p></td>
+<td><p>default — no armatures</p></td>
+</tr>
+<tr class="row-even"><td><p>GPU Instances</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">export_gpu_instances</span></code></p></td>
+<td><p>False</p></td>
+<td><p>required False — <code class="docutils literal notranslate"><span class="pre">EXT_mesh_gpu_instancing</span></code>, and the profile’s <a class="reference internal" href="../profile.html#prohibited-content"><span class="std std-ref">Prohibited content</span></a> section fails any <code class="docutils literal notranslate"><span class="pre">extensionsRequired</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="data-mesh">
+<h2>Data ▸ Mesh<a class="headerlink" href="#data-mesh" title="Link to this heading"></a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>UI label</p></th>
+<th class="head"><p>Identifier</p></th>
+<th class="head"><p>Default</p></th>
+<th class="head"><p>Ours</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Apply Modifiers</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">export_apply</span></code></p></td>
+<td><p>False</p></td>
+<td><p>open — see the note below</p></td>
+</tr>
+<tr class="row-odd"><td><p>UVs</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">export_texcoords</span></code></p></td>
+<td><p>True</p></td>
+<td><p>required True — the profile’s <a class="reference internal" href="../profile.html#geometry"><span class="std std-ref">Geometry</span></a> section requires <code class="docutils literal notranslate"><span class="pre">TEXCOORD_0</span></code> on every primitive</p></td>
+</tr>
+<tr class="row-even"><td><p>Normals</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">export_normals</span></code></p></td>
+<td><p>True</p></td>
+<td><p>required True — the profile’s <a class="reference internal" href="../profile.html#geometry"><span class="std std-ref">Geometry</span></a> section requires <code class="docutils literal notranslate"><span class="pre">NORMAL</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>Tangents</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">export_tangents</span></code></p></td>
+<td><p>False</p></td>
+<td><p>default False — neither consumer needs them</p></td>
+</tr>
+<tr class="row-even"><td><p>Vertex Colors</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">export_vertex_color</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">'MATERIAL'</span></code></p></td>
+<td><p>open</p></td>
+</tr>
+<tr class="row-odd"><td><p>… name</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">export_vertex_color_name</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">'Color'</span></code></p></td>
+<td><p>default</p></td>
+</tr>
+<tr class="row-even"><td><p>… export all</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">export_all_vertex_colors</span></code></p></td>
+<td><p>True</p></td>
+<td><p>open — its own description says a fake <code class="docutils literal notranslate"><span class="pre">COLOR_0</span></code> may be created; see below</p></td>
+</tr>
+<tr class="row-odd"><td><p>… active when no material</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">export_active_vertex_color_when_no_material</span></code></p></td>
+<td><p>True</p></td>
+<td><p>open</p></td>
+</tr>
+<tr class="row-even"><td><p>Attributes</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">export_attributes</span></code></p></td>
+<td><p>False</p></td>
+<td><p>required False — underscore-prefixed custom attributes are not in the profile</p></td>
+</tr>
+<tr class="row-odd"><td><p>Loose Edges</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">use_mesh_edges</span></code></p></td>
+<td><p>False</p></td>
+<td><p>required False — the profile’s <a class="reference internal" href="../profile.html#geometry"><span class="std std-ref">Geometry</span></a> section requires triangles</p></td>
+</tr>
+<tr class="row-even"><td><p>Loose Points</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">use_mesh_vertices</span></code></p></td>
+<td><p>False</p></td>
+<td><p>required False — same</p></td>
+</tr>
+<tr class="row-odd"><td><p>Shared Accessors</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">export_shared_accessors</span></code></p></td>
+<td><p>False</p></td>
+<td><p>open — it changes accessor layout, which <code class="docutils literal notranslate"><span class="pre">glb_probe</span></code> reads</p></td>
+</tr>
+<tr class="row-even"><td><p>Geometry Nodes Instances</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">export_gn_mesh</span></code></p></td>
+<td><p>False</p></td>
+<td><p>open</p></td>
+</tr>
+</tbody>
+</table>
+<p>Two rows to settle by experiment.</p>
+<p><code class="docutils literal notranslate"><span class="pre">export_apply</span></code> is genuinely open. Leaving it off delivers the base mesh and ignores the modifier stack, which silently drops a bevel or a subdivision the modeler intended. Turning it on bakes modifiers and, per its own warning, prevents exporting shape keys — which we do not want anyway. The profile says nothing about modifiers.</p>
+<p><code class="docutils literal notranslate"><span class="pre">export_all_vertex_colors</span></code> defaults True and its description warns that “if no Vertex Color is used in the mesh materials, a fake <code class="docutils literal notranslate"><span class="pre">COLOR_0</span></code> will be created”. A plain cube with no material exports with <code class="docutils literal notranslate"><span class="pre">POSITION</span></code>, <code class="docutils literal notranslate"><span class="pre">NORMAL</span></code> and <code class="docutils literal notranslate"><span class="pre">TEXCOORD_0</span></code> only, so the fake attribute does not appear in the simplest case. The condition that triggers it is not yet established.</p>
+<p>Also worth recording: <code class="docutils literal notranslate"><span class="pre">export_texcoords</span></code> defaults True, and Blender’s primitives carry a <code class="docutils literal notranslate"><span class="pre">UVMap</span></code>, so a normal Blender export satisfies the profile’s <a class="reference internal" href="../profile.html#geometry"><span class="std std-ref">Geometry</span></a> section’s <code class="docutils literal notranslate"><span class="pre">TEXCOORD_0</span></code> requirement without anyone thinking about it. Hand-authored files do not — <code class="docutils literal notranslate"><span class="pre">probe/coords/marker_yup.glb</span></code> fails rule 6 for exactly this reason.</p>
+</section>
+<section id="data-material">
+<h2>Data ▸ Material<a class="headerlink" href="#data-material" title="Link to this heading"></a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>UI label</p></th>
+<th class="head"><p>Identifier</p></th>
+<th class="head"><p>Default</p></th>
+<th class="head"><p>Ours</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Materials</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">export_materials</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">'EXPORT'</span></code></p></td>
+<td><p>required EXPORT — the profile’s <a class="reference internal" href="../profile.html#materials"><span class="std std-ref">Materials</span></a> section</p></td>
+</tr>
+<tr class="row-odd"><td><p>Images</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">export_image_format</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">'AUTO'</span></code></p></td>
+<td><p>open — see below</p></td>
+</tr>
+<tr class="row-even"><td><p>Image quality</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">export_image_quality</span></code></p></td>
+<td><p>75</p></td>
+<td><p>open</p></td>
+</tr>
+<tr class="row-odd"><td><p>JPEG quality</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">export_jpeg_quality</span></code></p></td>
+<td><p>75</p></td>
+<td><p>open</p></td>
+</tr>
+<tr class="row-even"><td><p>Create WebP</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">export_image_add_webp</span></code></p></td>
+<td><p>False</p></td>
+<td><p>required False — not in the profile</p></td>
+</tr>
+<tr class="row-odd"><td><p>WebP fallback</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">export_image_webp_fallback</span></code></p></td>
+<td><p>False</p></td>
+<td><p>required False</p></td>
+</tr>
+<tr class="row-even"><td><p>Keep original textures</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">export_keep_originals</span></code></p></td>
+<td><p>False</p></td>
+<td><p>required False — its own warning says only one texture survives</p></td>
+</tr>
+<tr class="row-odd"><td><p>Texture folder</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">export_texture_dir</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">''</span></code></p></td>
+<td><p>n/a for GLB</p></td>
+</tr>
+<tr class="row-even"><td><p>Unused Images</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">export_unused_images</span></code></p></td>
+<td><p>False</p></td>
+<td><p>required False</p></td>
+</tr>
+<tr class="row-odd"><td><p>Unused Textures</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">export_unused_textures</span></code></p></td>
+<td><p>False</p></td>
+<td><p>required False — its description says it needs a non-standard extension</p></td>
+</tr>
+<tr class="row-even"><td><p>Original PBR Specular</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">export_original_specular</span></code></p></td>
+<td><p>False</p></td>
+<td><p>default</p></td>
+</tr>
+</tbody>
+</table>
+<p><code class="docutils literal notranslate"><span class="pre">export_image_format</span></code> is where the profile and the dialog do not line up. The profile’s <a class="reference internal" href="../profile.html#textures"><span class="std std-ref">Textures</span></a> section requires PNG for normal, metallic, roughness and packed ORM maps and for anything carrying alpha. <code class="docutils literal notranslate"><span class="pre">AUTO</span></code> writes JPEG when the source image is JPEG, so the setting alone cannot deliver that — the fix is at the texture source, as the export guide says. Forcing <code class="docutils literal notranslate"><span class="pre">JPEG</span></code> is wrong for the linear slots, and <code class="docutils literal notranslate"><span class="pre">NONE</span></code> drops images entirely. So <code class="docutils literal notranslate"><span class="pre">AUTO</span></code> is correct and insufficient at the same time, which is worth stating rather than recording a tick.</p>
+<p>Nothing in this panel controls <code class="docutils literal notranslate"><span class="pre">metallicFactor</span></code>. That is a material property in the scene, and it is the defect that recurs most in deliveries.</p>
+</section>
+<section id="data-shape-keys-skinning-lighting">
+<h2>Data ▸ Shape Keys, Skinning, Lighting<a class="headerlink" href="#data-shape-keys-skinning-lighting" title="Link to this heading"></a></h2>
+<p>A static part has no shape keys, no armature and no lights, so all twelve options in these three panels stay at their defaults and none can affect the result.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>UI label</p></th>
+<th class="head"><p>Identifier</p></th>
+<th class="head"><p>Default</p></th>
+<th class="head"><p>Ours</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Shape Keys</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">export_morph</span></code></p></td>
+<td><p>True</p></td>
+<td><p>default — nothing to export</p></td>
+</tr>
+<tr class="row-odd"><td><p>Skinning</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">export_skins</span></code></p></td>
+<td><p>True</p></td>
+<td><p>default — the profile’s <a class="reference internal" href="../profile.html#prohibited-content"><span class="std std-ref">Prohibited content</span></a> section prohibits <code class="docutils literal notranslate"><span class="pre">skins</span></code>, but none exist without an armature</p></td>
+</tr>
+<tr class="row-even"><td><p>Lighting Mode</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">export_import_convert_lighting_mode</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">'SPEC'</span></code></p></td>
+<td><p>default — applies to lights, which we do not export</p></td>
+</tr>
+</tbody>
+</table>
+<p>The nine remaining options are sub-settings of those three and are not enumerated here.</p>
+</section>
+<section id="animation">
+<h2>Animation<a class="headerlink" href="#animation" title="Link to this heading"></a></h2>
+<p>There should be no animations. Change <code class="docutils literal notranslate"><span class="pre">export_animations</span></code> to False. Leaving it True is usually harmless because there are no animations to export, but better to be sure.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>UI label</p></th>
+<th class="head"><p>Identifier</p></th>
+<th class="head"><p>Default</p></th>
+<th class="head"><p>Ours</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Animation</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">export_animations</span></code></p></td>
+<td><p>True</p></td>
+<td><p>False — the profile’s <a class="reference internal" href="../profile.html#prohibited-content"><span class="std std-ref">Prohibited content</span></a> section prohibits <code class="docutils literal notranslate"><span class="pre">animations</span></code></p></td>
+</tr>
+</tbody>
+</table>
+<p>With <code class="docutils literal notranslate"><span class="pre">export_animations</span></code> off, the other 25 options in this group have no effect and are not enumerated here.</p>
+</section>
+<section id="compression">
+<h2>Compression<a class="headerlink" href="#compression" title="Link to this heading"></a></h2>
+<p>All of it is prohibited by the profile’s <a class="reference internal" href="../profile.html#prohibited-content"><span class="std std-ref">Prohibited content</span></a> section, one way or another, and all of it is off by default.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>UI label</p></th>
+<th class="head"><p>Identifier</p></th>
+<th class="head"><p>Default</p></th>
+<th class="head"><p>Ours</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Draco</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">export_draco_mesh_compression_enable</span></code></p></td>
+<td><p>False</p></td>
+<td><p>required False — the profile’s <a class="reference internal" href="../profile.html#prohibited-content"><span class="std std-ref">Prohibited content</span></a> section prohibits <code class="docutils literal notranslate"><span class="pre">KHR_draco_mesh_compression</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>Meshopt</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">export_meshopt_compression_enable</span></code></p></td>
+<td><p>False</p></td>
+<td><p>required False — it lands in <code class="docutils literal notranslate"><span class="pre">extensionsRequired</span></code>, which the profile’s <a class="reference internal" href="../profile.html#prohibited-content"><span class="std std-ref">Prohibited content</span></a> section fails outright</p></td>
+</tr>
+<tr class="row-even"><td><p>gltfpack</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">export_use_gltfpack</span></code></p></td>
+<td><p>False</p></td>
+<td><p>required False — it converts textures to KTX2/BasisU, which is <code class="docutils literal notranslate"><span class="pre">KHR_texture_basisu</span></code>, prohibited</p></td>
+</tr>
+</tbody>
+</table>
+<p>The 19 quantization and quality sub-settings of those three are not enumerated here.</p>
+<p>Draco is absent from this Blender install regardless: <code class="docutils literal notranslate"><span class="pre">libextern_draco.so</span></code> is not present, and the exporter says so at load. So the prohibition is currently enforced by the build as well as by the rule.</p>
+</section>
+<section id="what-this-enumeration-suggests-and-needs-checking">
+<h2>What this enumeration suggests, and needs checking<a class="headerlink" href="#what-this-enumeration-suggests-and-needs-checking" title="Link to this heading"></a></h2>
+<p>A reading worth testing rather than adopting. Of the 110 options, four are changed from the default and nine are confirmed at it. Two of the four changes are provenance rather than geometry (<code class="docutils literal notranslate"><span class="pre">will_save_settings</span></code>, <code class="docutils literal notranslate"><span class="pre">export_copyright</span></code>) and one is belt and braces (<code class="docutils literal notranslate"><span class="pre">export_animations</span></code>, which produces nothing either way on a scene with no actions). That leaves <code class="docutils literal notranslate"><span class="pre">use_selection</span></code> as the only change that alters what a clean scene exports.</p>
+<p>If that holds, then the defects in delivered files do not come from the export dialog. They come from the scene: transforms not applied, <code class="docutils literal notranslate"><span class="pre">metallicFactor</span></code> left to a node graph the exporter cannot read, <code class="docutils literal notranslate"><span class="pre">Cube.001</span></code> names, leftover empty scenes, JPEG source textures, <code class="docutils literal notranslate"><span class="pre">BLEND</span></code> on an opaque hull. None of those is a checkbox in this dialog, which is why the four items under <a class="reference internal" href="#four-things-that-decide-the-result-and-are-not-in-this-dialog">Four things that decide the result and are not in this dialog</a> carry more weight than the thirteen that are.</p>
+<p>That sits awkwardly against the opening line of our <a class="reference internal" href="../walkthroughs/exporting-from-blender.html"><span class="std std-doc">export guide</span></a>, which says most defects “are export defaults rather than modelling mistakes”. Both can be true if “defaults” is read broadly enough to include Blender’s material and naming defaults, and the guide’s own examples are mostly of that kind. Worth resolving in wording once the rows below are settled.</p>
+</section>
+<section id="open-rows-as-a-worklist">
+<h2>Open rows, as a worklist<a class="headerlink" href="#open-rows-as-a-worklist" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">export_apply</span></code> — do we want modifiers baked, and does the answer differ for a delivery versus a working file?</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">export_image_format</span></code> — the wording that makes clear <code class="docutils literal notranslate"><span class="pre">AUTO</span></code> is necessary and not sufficient.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">export_all_vertex_colors</span></code> and the rest of the vertex-colour group — what actually triggers the fake <code class="docutils literal notranslate"><span class="pre">COLOR_0</span></code>, and does any rule care?</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">export_extras</span></code> — a candidate for the manifest question in the profile’s <a class="reference internal" href="../profile.html#the-manifest"><span class="std std-ref">manifest</span></a> section.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">use_active_scene</span></code> — whether it, rather than <code class="docutils literal notranslate"><span class="pre">use_selection</span></code> alone, is how “exactly one scene” in the profile’s <a class="reference internal" href="../profile.html#scenes-and-nodes"><span class="std std-ref">Scenes and nodes</span></a> section gets enforced at export time.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">export_shared_accessors</span></code> — whether it changes what <code class="docutils literal notranslate"><span class="pre">glb_probe</span></code> reports.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">export_current_frame</span></code> — whether a static part is safe on the default.</p></li>
+</ul>
+<p>Settled by this review and no longer open: <code class="docutils literal notranslate"><span class="pre">use_selection</span></code> (True), <code class="docutils literal notranslate"><span class="pre">will_save_settings</span></code> (True), <code class="docutils literal notranslate"><span class="pre">export_copyright</span></code> (<code class="docutils literal notranslate"><span class="pre">Copyright</span> <span class="pre">Honu</span> <span class="pre">Robotics</span></code>), <code class="docutils literal notranslate"><span class="pre">export_animations</span></code> (False).</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="loader-behavior.html" class="btn btn-neutral float-left" title="Gazebo and RViz loader behavior" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="pbr-and-gltf.html" class="btn btn-neutral float-right" title="PBR, and why glTF is inseparable from it" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright Honu Robotics.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    <span class="fa fa-book"> Other Versions</span>
+    v: main
+    <span class="fa fa-caret-down"></span>
+  </span>
+  <div class="rst-other-versions">
+    <dl id="honu-version-list">
+      <dt>Distributions</dt>
+      <dd><a href="/gltf-robotics/main/" data-version="main">Main</a></dd>
+    </dl>
+  </div>
+</div>
+<script>
+  (function () {
+    var current = "main";
+    var base = "/gltf-robotics/";
+
+    /* Keep the reader on the same page when switching versions; the
+       version root href stays as the fallback for pages a version lacks. */
+    function wire() {
+      document.querySelectorAll('.rst-other-versions a[data-version]').forEach(function (a) {
+        var target = a.getAttribute('data-version');
+        var path = window.location.pathname;
+        if (target !== current && path.indexOf('/' + current + '/') !== -1) {
+          a.href = path.replace('/' + current + '/', '/' + target + '/');
+        }
+      });
+    }
+
+    if (!window.fetch) { wire(); return; }
+
+    /* The deploy tool maintains versions.json at the site root; reading it
+       at runtime lets builds published before a new distribution existed
+       still offer it in the flyout. Offline or local preview builds fall
+       back to the build time list rendered above. */
+    fetch(base + 'versions.json', {cache: 'no-cache'}).then(function (response) {
+      if (!response.ok) { throw new Error(response.status); }
+      return response.json();
+    }).then(function (entries) {
+      var list = document.getElementById('honu-version-list');
+      if (!list || !entries.length) { return; }
+      list.querySelectorAll('dd').forEach(function (dd) { dd.remove(); });
+      entries.forEach(function (entry) {
+        var a = document.createElement('a');
+        a.href = entry.url;
+        a.setAttribute('data-version', entry.name);
+        a.textContent = entry.name.charAt(0).toUpperCase() + entry.name.slice(1);
+        var dd = document.createElement('dd');
+        dd.appendChild(a);
+        list.appendChild(dd);
+      });
+    }).catch(function () {}).finally(wire);
+  })();
+</script><script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

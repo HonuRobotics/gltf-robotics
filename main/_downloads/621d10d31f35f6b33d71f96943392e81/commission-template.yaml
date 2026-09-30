@@ -1,0 +1,70 @@
+# Commission template
+#
+# One commission covers one vehicle or one batch of parts. The integrator fills
+# it in before modeling starts (workflow step 1). The modeler reads it, and
+# after exporting each part runs
+#
+#     gltf-manifest commission.yaml <part>.visual.glb
+#
+# which copies that part's block into the file's manifest. Keys are plain
+# names. `gltf-manifest --keys` lists what each one writes.
+#
+# The values below are examples. Replace all of them.
+
+commission: example_vehicle
+
+# --- Stated once, applied to every part unless a part block says otherwise ---
+
+creator: Honu Robotics
+rights: "Copyright 2026 Honu Robotics. Licensed under the Apache License, Version 2.0."
+
+# Where the authoring files (.blend, CAD) are archived. Leave out if they are not.
+authoringSource: "https://example.com/archive/example_vehicle/"
+
+# For the modeler to read. Not written to any file.
+sources:
+  - "https://example.com/example_vehicle/datasheet.pdf"
+toolchain:
+  blender: "5.2.2 LTS"
+  exporter: "io_scene_gltf2 5.2.40"
+
+# --- One block per part, keyed by the part name (lowercase snake_case) ---
+
+parts:
+
+  example_hull:
+    # Written to the file's manifest.
+    partRole: base                      # exactly one base part per vehicle
+    datumPoint: "intersection of the keel line and the transom, on the centerline"
+    datumTarget: "scribed mark on the transom"          # optional
+    source: "vendor STEP file, revision C"
+    dimensionSource: "https://example.com/example_vehicle/datasheet.pdf"
+    nominalDimension: "length overall 1.20 m"
+    dimensionTolerance: 0.005           # meters
+
+    # For the modeler to read. Not written to the file.
+    referenceImages:
+      - "hull_port.jpg: port side, shows the chine line and the hatch outline"
+    forwardFeature: "the bow; +X points from the transom to the bow"
+    visualRequirement: "viewed from 2 m and beyond; the hatch outline and the rub rail must be recognizable, fasteners may be left out"
+    materials: "hull: non-metal, gloss white gelcoat. Rub rail: non-metal, black rubber"
+    openings: "none"
+    priorities: "1. overall shape and proportions. 2. color. 3. hatch detail"
+    notes: ""
+
+  example_thruster:
+    partRole: component
+    datumPoint: "center of the mounting face, on the bore axis"
+    source: "vendor STEP file"
+    dimensionSource: "https://example.com/example_thruster/datasheet.pdf"
+    nominalDimension: "length overall 0.11 m"
+    dimensionTolerance: 0.002
+
+    referenceImages:
+      - "thruster_side.jpg: side view, shows the nozzle and the mounting bracket"
+    forwardFeature: "the direction of thrust in forward operation"
+    visualRequirement: "viewed from 1 m and beyond; nozzle and propeller must be recognizable"
+    materials: "body: non-metal, matte black plastic. Propeller: non-metal, matte black plastic"
+    openings: "nozzle is open at both ends"
+    priorities: "1. nozzle shape. 2. propeller visible inside the nozzle"
+    notes: ""

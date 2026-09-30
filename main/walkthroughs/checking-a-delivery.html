@@ -1,0 +1,525 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Checking a delivery &mdash; Honu glTF Asset Framework main documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/honu.css?v=44af46ee" />
+
+  
+    <link rel="shortcut icon" href="../_static/honu-robotics-favicon.svg"/>
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=a8da1a53"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="BlueBoat Walkthrough" href="workflow_blueboat.html" />
+    <link rel="prev" title="Exporting from Blender" href="exporting-from-blender.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Honu glTF Asset Framework
+              <img src="../_static/honu-robotics-white-logo.svg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../profile.html">Profile</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../profile.html#introduction">Introduction</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../profile.html#scope">Scope</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../profile.html#document-conventions">Document conventions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../profile.html#audience">Audience</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../profile.html#normative-terminology">Normative terminology</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../profile.html#informative-language">Informative language</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../profile.html#open-issues">Open issues</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../profile.html#terminology">Terminology</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../profile.html#delivery">Delivery</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../profile.html#file">File</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../profile.html#file-naming">File naming</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../profile.html#file-format">File format</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../profile.html#gltf-structure">glTF structure</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../profile.html#the-manifest">The manifest</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../profile.html#asset-header">Asset header</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../profile.html#coordinate-systems-and-units">Coordinate systems and units</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../profile.html#units">Units</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../profile.html#axes">Axes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../profile.html#forward-axis">Forward axis</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../profile.html#origin-datum-coordinate-system-location">Origin - datum coordinate system location</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../profile.html#scenes-and-nodes">Scenes and nodes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../profile.html#datum-specification">Datum specification</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../profile.html#the-datum-point">The datum point</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../profile.html#a-base-part">A base part</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../profile.html#a-component-part">A component part</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../profile.html#geometry">Geometry</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../profile.html#uv-sets">UV sets</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../profile.html#budgets">Budgets</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../profile.html#primitives">Primitives</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../profile.html#materials">Materials</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../profile.html#textures">Textures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../profile.html#transparency">Transparency</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../profile.html#prohibited-content">Prohibited content</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../profile.html#authoring-toolchain">Authoring toolchain</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../profile.html#conformance-testing">Conformance testing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../profile.html#open-questions-informative">Open questions (Informative)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../profile.html#open-the-to-do-list-for-this-draft">Open: the to-do list for this draft</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../profile.html#open-future-not-blocking-this-draft">Open: Future, not blocking this draft</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../profile.html#references-informative">References (Informative)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../profile.html#closely-related-work-informative">Closely related work (Informative)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../workflow.html">Workflow</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../workflow.html#roles">Roles</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../workflow.html#outline">Outline</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../workflow.html#step-1-commission-integrator">Step 1: Commission [Integrator]</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../workflow.html#commission-yaml-file">Commission YAML file</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../workflow.html#step-2-author-3d-asset-modeler">Step 2: Author 3D asset [Modeler]</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../workflow.html#build-to-the-honu-asset-profile-and-export">Build to the <span class="xref myst">Honu Asset Profile</span> and export</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../workflow.html#step-3-fill-the-glb-manifest-from-the-commission-yaml-integrator">Step 3: Fill the <code class="docutils literal notranslate"><span class="pre">.glb</span></code> manifest from the commission YAML [Integrator]</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../workflow.html#step-3-verify">Step 3: Verify</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../workflow.html#valid">Valid?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../workflow.html#intended">Intended?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../workflow.html#compliant">Compliant?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../workflow.html#what-the-integrator-checks">What the integrator checks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../workflow.html#when-the-checks-run">When the checks run</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../workflow.html#who-answers-what">Who answers what</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../workflow.html#after-acceptance">After acceptance</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../workflow.html#not-settled-here">Not settled here</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Walkthroughs</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="blender_mesh_coordinate_ex.html">Minimum viable workflow</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="blender_mesh_coordinate_ex.html#minimum-monkey-mesh">Minimum monkey mesh</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="blender_mesh_coordinate_ex.html#create-in-blender-and-export">Create in Blender and export</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="blender_mesh_coordinate_ex.html#baseline">Baseline</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="blender_mesh_coordinate_ex.html#the-y-up-export">The +Y Up Export</a></li>
+<li class="toctree-l4"><a class="reference internal" href="blender_mesh_coordinate_ex.html#transforms-frames-coordinate-systems-and-spaces">Transforms, frames, coordinate systems and spaces</a></li>
+<li class="toctree-l4"><a class="reference internal" href="blender_mesh_coordinate_ex.html#see-what-assimploader-receives">3. See what AssimpLoader receives</a></li>
+<li class="toctree-l4"><a class="reference internal" href="blender_mesh_coordinate_ex.html#write-a-world-and-a-urdf">4. Write a world and a URDF</a></li>
+<li class="toctree-l4"><a class="reference internal" href="blender_mesh_coordinate_ex.html#gazebo">5. Gazebo</a></li>
+<li class="toctree-l4"><a class="reference internal" href="blender_mesh_coordinate_ex.html#rviz">6. RViz</a></li>
+<li class="toctree-l4"><a class="reference internal" href="blender_mesh_coordinate_ex.html#what-rviz-does-to-a-gltf-file-and-how-to-undo-it">What RViz does to a glTF file, and how to undo it</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="exporting-from-blender.html">Exporting from Blender</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="exporting-from-blender.html#author-in-the-ros-frame-and-do-not-let-the-exporter-convert">Author in the ROS frame, and do not let the exporter convert</a></li>
+<li class="toctree-l3"><a class="reference internal" href="exporting-from-blender.html#clear-location-and-rotation-apply-scale-before-exporting">Clear location and rotation, apply scale, before exporting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="exporting-from-blender.html#where-the-origin-goes-is-not-yours-to-choose">Where the origin goes is not yours to choose</a></li>
+<li class="toctree-l3"><a class="reference internal" href="exporting-from-blender.html#name-the-object-not-the-mesh">Name the object, not the mesh</a></li>
+<li class="toctree-l3"><a class="reference internal" href="exporting-from-blender.html#metalness-is-the-defect-that-keeps-recurring">Metalness is the defect that keeps recurring</a></li>
+<li class="toctree-l3"><a class="reference internal" href="exporting-from-blender.html#texture-format-is-decided-by-the-source-image">Texture format is decided by the source image</a></li>
+<li class="toctree-l3"><a class="reference internal" href="exporting-from-blender.html#transparency-is-per-material-not-per-pixel">Transparency is per material, not per pixel</a></li>
+<li class="toctree-l3"><a class="reference internal" href="exporting-from-blender.html#keep-the-authoring-source-outside-the-simulation-repository">Keep the authoring source, outside the simulation repository</a></li>
+<li class="toctree-l3"><a class="reference internal" href="exporting-from-blender.html#versions">Versions</a></li>
+</ul>
+</li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Checking a delivery</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#running-the-checker">Running the checker</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#reading-the-output">Reading the output</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#what-a-clean-run-does-not-mean">What a clean run does not mean</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="workflow_blueboat.html">BlueBoat Walkthrough</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="workflow_blueboat.html#commission">Commission</a></li>
+<li class="toctree-l3"><a class="reference internal" href="workflow_blueboat.html#author">Author</a></li>
+<li class="toctree-l3"><a class="reference internal" href="workflow_blueboat.html#fill-manifest">Fill manifest</a></li>
+<li class="toctree-l3"><a class="reference internal" href="workflow_blueboat.html#verify">Verify</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="workflow_blueboat.html#valid">Valid?</a></li>
+<li class="toctree-l4"><a class="reference internal" href="workflow_blueboat.html#intended">Intended</a></li>
+<li class="toctree-l4"><a class="reference internal" href="workflow_blueboat.html#compliant-gltf-check">Compliant - gltf-check</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="workflow_blueboat.html#gltf-probe">gltf probe</a></li>
+<li class="toctree-l5"><a class="reference internal" href="workflow_blueboat.html#gazebo-standalone">Gazebo standalone</a></li>
+<li class="toctree-l5"><a class="reference internal" href="workflow_blueboat.html#rviz">RVIZ</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../assessments/index.html">Assessments</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../assessments/community-exemplars.html">Community exemplars: who else ships glTF to Gazebo and RViz</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../assessments/community-exemplars.html#method">Method</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../assessments/community-exemplars.html#the-cohort">The cohort</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../assessments/community-exemplars.html#gazebosim-jetty-demo-the-closest-thing-to-an-upstream-reference">gazebosim/jetty_demo — the closest thing to an upstream reference</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../assessments/community-exemplars.html#open-rmf-rmf-site-gltf-generated-rather-than-authored">open-rmf/rmf_site — glTF generated rather than authored</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../assessments/community-exemplars.html#husarion-rosbot-ros-a-commercial-product-doing-it-per-link">husarion/rosbot_ros — a commercial product doing it per-link</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../assessments/community-exemplars.html#robotlocomotion-the-informed-dissent-on-packaging">RobotLocomotion — the informed dissent on packaging</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../assessments/community-exemplars.html#usnistgov-ariac-a-migration-caught-in-the-middle">usnistgov/ARIAC — a migration caught in the middle</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../assessments/community-exemplars.html#vanttec-vanttec-usv-the-nearest-maritime-peer-inverted">vanttec/vanttec_usv — the nearest maritime peer, inverted</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../assessments/community-exemplars.html#the-people-and-the-two-organizations-that-turned-out-not-to-be-doing-this">The people, and the two organizations that turned out not to be doing this</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../assessments/community-exemplars.html#what-this-changes-for-us">What this changes for us</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../assessments/community-exemplars.html#where-the-argument-is-being-had">Where the argument is being had</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/index.html">Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../reference/glossary.html">Glossary</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../reference/glossary.html#terms">Terms</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../reference/glossary.html#assembly">assembly</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/glossary.html#asset">asset</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/glossary.html#base-part">base part</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/glossary.html#commission">commission</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/glossary.html#component-part">component part</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/glossary.html#consumer">consumer</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/glossary.html#coordinate-system">coordinate system</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/glossary.html#datasheet">datasheet</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/glossary.html#datum">datum</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/glossary.html#datum-coordinate-system">datum coordinate system</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/glossary.html#datum-point">datum point</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/glossary.html#delivery">delivery</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/glossary.html#integrator">integrator</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/glossary.html#manifest">manifest</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/glossary.html#modeler">modeler</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/glossary.html#origin">origin</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/glossary.html#part">part</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/glossary.html#part-coordinate-system">part coordinate system</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/glossary.html#submesh">submesh</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/glossary.html#visual-model">visual model</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/coordinate-systems.html">Coordinate Systems: glTF, Gazebo and ROS</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../reference/coordinate-systems.html#objective">Objective</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../reference/coordinate-systems.html#central-issue">Central Issue</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/coordinate-systems.html#how-claims-in-this-document-are-marked">How claims in this document are marked</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/coordinate-systems.html#coordinate-conventions-and-typical-practices">Coordinate Conventions and Typical Practices</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/coordinate-systems.html#vocabulary-nomenclature-glossary">Vocabulary / Nomenclature / Glossary</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../reference/coordinate-systems.html#our-formal-default">Our formal default</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/coordinate-systems.html#terms-by-stage-of-the-flow">Terms by stage of the flow</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/coordinate-systems.html#coordinate-system-origin-and-reference-point">Coordinate system, origin, and reference point</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/coordinate-systems.html#the-o-x-y-z-notation">The <code class="docutils literal notranslate"><span class="pre">O</span> <span class="pre">-</span> <span class="pre">X</span> <span class="pre">-</span> <span class="pre">Y</span> <span class="pre">-</span> <span class="pre">Z</span></code> notation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/coordinate-systems.html#specifying-a-coordinate-system-datums-and-what-referenced-to-means">Specifying a coordinate system: datums and what “referenced to” means</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/coordinate-systems.html#assumptions">Assumptions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/coordinate-systems.html#standards-summary">Standards Summary</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="../reference/coordinate-systems.html#iso-9787-2013">ISO 9787:2013</a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/coordinate-systems.html#robotics">Robotics</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="../reference/coordinate-systems.html#categorizing-links-by-their-place-in-the-tree">Categorizing links by their place in the tree</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../reference/coordinate-systems.html#manipulation-centric-robots-with-static-base">Manipulation-centric (robots with static base)</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../reference/coordinate-systems.html#mobile-centric">Mobile-centric</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../reference/coordinate-systems.html#other-conventions-worth-knowing">Other conventions worth knowing</a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/coordinate-systems.html#d-graphics">3D Graphics</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="../reference/coordinate-systems.html#what-survives-into-gltf-and-what-does-not">What survives into glTF, and what does not</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../reference/coordinate-systems.html#standards-for-3d-assets">Standards for 3D assets</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/coordinate-systems.html#reconciling-the-standards">Reconciling the standards</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../reference/coordinate-systems.html#where-they-agree-and-it-is-most-of-it">Where they agree, and it is most of it</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/coordinate-systems.html#the-disagreement-is-one-cyclic-relabeling">The disagreement is one cyclic relabeling</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/coordinate-systems.html#our-coordinate-system-names">Our coordinate system names</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/coordinate-systems.html#the-full-reconciliation">The full reconciliation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/coordinate-systems.html#adopt-narrow-or-invent">Adopt, narrow, or invent</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/coordinate-systems.html#one-body-one-mesh-who-rotates-what">One body, one mesh: who rotates what</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../reference/coordinate-systems.html#the-chain-and-where-a-rotation-can-be-inserted">The chain, and where a rotation can be inserted</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/coordinate-systems.html#gazebo-from-source">Gazebo, from source</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/coordinate-systems.html#rviz-from-source">RViz, from source</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/coordinate-systems.html#blender-s-exporter-from-source">Blender’s exporter, from source</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/coordinate-systems.html#the-probe-measured">The probe, measured</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/coordinate-systems.html#the-decision-and-what-it-costs">The decision, and what it costs</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/coordinate-systems.html#next-increment">Next increment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/coordinate-systems.html#references">References</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/loader-behavior.html">Gazebo and RViz loader behavior</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../reference/loader-behavior.html#the-consumers">The consumers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/loader-behavior.html#the-gazebo-path-step-by-step">The Gazebo path, step by step</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/loader-behavior.html#what-the-loader-reads-from-a-gltf-material">What the loader reads from a glTF material</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/loader-behavior.html#the-rviz-path">The RViz path</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/blender-export-options.html">Blender glTF Export Options</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../reference/blender-export-options.html#directive">Directive</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../reference/blender-export-options.html#four-things-that-decide-the-result-and-are-not-in-this-dialog">Four things that decide the result and are not in this dialog</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/blender-export-options.html#provenance">Provenance</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/blender-export-options.html#what-no-option-does">What no option does</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/blender-export-options.html#top-of-the-dialog">Top of the dialog</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/blender-export-options.html#include">Include</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/blender-export-options.html#transform">Transform</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/blender-export-options.html#data-scene-graph">Data ▸ Scene Graph</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/blender-export-options.html#data-mesh">Data ▸ Mesh</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/blender-export-options.html#data-material">Data ▸ Material</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/blender-export-options.html#data-shape-keys-skinning-lighting">Data ▸ Shape Keys, Skinning, Lighting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/blender-export-options.html#animation">Animation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/blender-export-options.html#compression">Compression</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/blender-export-options.html#what-this-enumeration-suggests-and-needs-checking">What this enumeration suggests, and needs checking</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/blender-export-options.html#open-rows-as-a-worklist">Open rows, as a worklist</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/pbr-and-gltf.html">PBR, and why glTF is inseparable from it</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../reference/pbr-and-gltf.html#the-shift-in-one-sentence">The shift in one sentence</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/pbr-and-gltf.html#what-we-had-before-collada-plus-an-image">What we had before: Collada plus an image</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/pbr-and-gltf.html#what-pbr-replaces-it-with">What PBR replaces it with</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../reference/pbr-and-gltf.html#the-four-terms-in-that-table-reference">The four terms in that table (reference)</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/pbr-and-gltf.html#the-differences-that-actually-bite">The differences that actually bite</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/pbr-and-gltf.html#why-gltf-and-pbr-cannot-be-separated">Why glTF and PBR cannot be separated</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/pbr-and-gltf.html#where-to-go-next">Where to go next</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/gltf-background-notes.html">glTF Background</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../reference/gltf-background-notes.html#references">References</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../reference/gltf-background-notes.html#khronos-org">Khronos.org</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/gltf-background-notes.html#gltf-2-0-specification">glTF 2.0 Specification</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="../reference/gltf-background-notes.html#https-github-com-khronosgroup-gltf-tutorials">https://github.com/KhronosGroup/glTF-Tutorials</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../reference/gltf-background-notes.html#gltf-quickstart">glTF Quickstart</a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/gltf-background-notes.html#video-discussing-vulkan-neural-rendering-slang-ai-more-neil-trevett-khronos-group-interview">Video: Discussing Vulkan, Neural Rendering, SLANG, AI &amp; More - Neil Trevett &amp; Khronos Group Interview</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/gltf-background-notes.html#gltf-2-0-quickstart-and-tools">glTF 2.0 Quickstart and tools</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/gltf-background-notes.html#openusd-conventions-for-simulation-asset-interoperability-in-open-source-robotics">OpenUSD Conventions for Simulation Asset Interoperability in Open Source Robotics</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/gltf-background-notes.html#closely-related-work-and-examples">Closely Related Work and Examples</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../reference/gltf-background-notes.html#community-standards-documents-discussion-etc">Community standards, documents, discussion, etc.</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="../reference/gltf-background-notes.html#gazebo-community-and-developers">Gazebo community and developers</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../reference/gltf-background-notes.html#examples">Examples</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="../reference/gltf-background-notes.html#fuel">Fuel</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../reference/gltf-background-notes.html#repos">Repos</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Honu glTF Asset Framework</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Walkthroughs</a></li>
+      <li class="breadcrumb-item active">Checking a delivery</li>
+      <li class="wy-breadcrumbs-aside">
+              <a href="https://github.com/HonuRobotics/gltf-robotics/blob/main/docs/walkthroughs/checking-a-delivery.md" class="fa fa-github"> Edit on GitHub</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="checking-a-delivery">
+<h1>Checking a delivery<a class="headerlink" href="#checking-a-delivery" title="Link to this heading"></a></h1>
+<p>Four questions decide whether a delivery is good, they fail independently, and no single tool answers more than one of them. The profile’s <a class="reference internal" href="../profile.html#conformance-testing"><span class="std std-ref">Conformance testing</span></a> section states them; this page says what to actually run.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p></p></th>
+<th class="head"><p>Question</p></th>
+<th class="head"><p>How</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Valid</p></td>
+<td><p>Is it legal glTF?</p></td>
+<td><p>The <a class="reference external" href="https://github.khronos.org/glTF-Validator/">Khronos glTF Validator</a>. Zero errors required.</p></td>
+</tr>
+<tr class="row-odd"><td><p>Intended</p></td>
+<td><p>Does it look like what the modeler meant?</p></td>
+<td><p>The <a class="reference external" href="https://github.khronos.org/glTF-Sample-Viewer-Release/">Khronos Sample Viewer</a>, by a person. It runs the validator inline, so one drag and drop answers this and the row above together. <strong>It cannot answer orientation</strong> — see below.</p></td>
+</tr>
+<tr class="row-even"><td><p>Compliant</p></td>
+<td><p>Does it satisfy the profile?</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">gltf-check</span></code>.</p></td>
+</tr>
+<tr class="row-odd"><td><p>Usable</p></td>
+<td><p>Does it render in Gazebo and load in RViz?</p></td>
+<td><p>Open it. For what the loader built rather than what it looks like, <code class="docutils literal notranslate"><span class="pre">probe/glb_probe</span></code>.</p></td>
+</tr>
+</tbody>
+</table>
+<p>Passing in Gazebo is necessary and never sufficient: Gazebo ignores several things a file can get wrong, so a defect can be invisible there and fatal elsewhere. The clearest case is a material carrying a normal map and no base colour, which renders in Gazebo and terminates RViz.</p>
+<p>Blender’s viewport answers none of these. It shows Blender’s materials, not the exported file, and the export is a translation in which metallic factor, image format, alpha mode and tangents can all change.</p>
+<p>The reference viewer cannot answer orientation either, and this is a deliberate cost rather than a gap. The profile’s <a class="reference internal" href="../profile.html#axes"><span class="std std-ref">Axes</span></a> section delivers files +X forward and +Z up, following ISO 9787 and REP 103, where glTF’s own convention is Y-up. Every third-party viewer assumes glTF’s, so every conforming part appears rotated ninety degrees in the Sample Viewer and in any browser viewer. Read those views for materials, textures, transparency and validity, and ignore the pose. Orientation is settled by the manifest declaration that <code class="docutils literal notranslate"><span class="pre">gltf-check</span></code> verifies, and by opening the part in Gazebo.</p>
+<section id="running-the-checker">
+<h2>Running the checker<a class="headerlink" href="#running-the-checker" title="Link to this heading"></a></h2>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>git+https://github.com/HonuRobotics/gltf-robotics
+gltf-check<span class="w"> </span>path/to/part.visual.glb
+</pre></div>
+</div>
+<p>It parses the file rather than rendering it, so it needs no Gazebo, no GPU and no ROS. Point it at several files at once. The output is a checklist in profile order — one block per section stating what was tested, then the verdict — and it lists the checks that passed as well, since a report of problems alone cannot tell you whether the thing you cared about was examined. Add <code class="docutils literal notranslate"><span class="pre">-q</span></code> to drop the sections with nothing to report, <code class="docutils literal notranslate"><span class="pre">-v</span></code> to see the explanatory detail on passing checks too, <code class="docutils literal notranslate"><span class="pre">--json</span></code> for machine-readable output, and <code class="docutils literal notranslate"><span class="pre">--strict</span></code> to treat SHOULD violations as failures.</p>
+<p><code class="docutils literal notranslate"><span class="pre">gltf-summary</span></code> answers a different question: not whether a file conforms, but what is in it. Structure, geometry, materials, and where the origin sits inside the bounding box — the last of which no viewer shows you. It reaches no verdicts, so it is the tool for an unfamiliar file or for confirming that a correct one really is correct. <code class="docutils literal notranslate"><span class="pre">--explain</span></code> appends a glossary of the output.</p>
+</section>
+<section id="reading-the-output">
+<h2>Reading the output<a class="headerlink" href="#reading-the-output" title="Link to this heading"></a></h2>
+<p>Every run opens with a legend, then one block per profile section: the section name, what the rule tests, a mark, a one-line finding, and for anything but a pass the reason behind it. The marks are five words, used identically beside each finding and in the closing tally.</p>
+<p><code class="docutils literal notranslate"><span class="pre">PASS</span></code> is a rule satisfied. Listed rather than hidden, because the question “was that examined?” needs an answer as much as “did it fail?”.</p>
+<p><code class="docutils literal notranslate"><span class="pre">FAIL</span></code> is a MUST in the profile. The delivery is not compliant. Each one names the section that justifies it, so a disagreement is a disagreement with a specific rule and its stated reason, not with the tool.</p>
+<p><code class="docutils literal notranslate"><span class="pre">WARN</span></code> is a SHOULD, or a MUST the tool cannot fully settle. The second kind is worth understanding rather than skimming: reading a file cannot decide everything. A material that leaves <code class="docutils literal notranslate"><span class="pre">metallicFactor</span></code> unset but carries a metallic-roughness texture is the standing example — the texture’s blue channel multiplies against the factor, so a black channel would still give a non-metal, and only the decoded texels say which it is. Do not read that warning as “probably fine”. A solid white metallic channel is the usual export, and every map measured in this project’s own library had B = 255.</p>
+<p><code class="docutils literal notranslate"><span class="pre">OPEN</span></code> is a rule the profile has not decided, or one nothing in the file can answer. The profile’s <a class="reference internal" href="../profile.html#open-issues"><span class="std std-ref">Open issues</span></a> section is explicit that a delivery cannot fail to conform on a point marked Open, so these never fail a run: they are something to discuss, not something to fix. Scale is here when the manifest cites no dimension: glTF says meters and nothing in the file confirms it. When the manifest does cite one, the Units rule compares it with the file’s extent and passes or fails. Forward axis is here too, since no glTF file records one. The protocol for answering those by eye is in <a class="reference external" href="https://github.com/HonuRobotics/gltf-robotics/tree/main/probe"><code class="docutils literal notranslate"><span class="pre">probe/</span></code></a>.</p>
+<p><code class="docutils literal notranslate"><span class="pre">SKIP</span></code> is a rule with nothing to examine — the texture rules on a file with no images, the datum rule on a file that declares no part role.</p>
+<p>The last two lines are the tally and the verdict. The verdict says <em>compliant</em> rather than <em>conforms</em> on purpose: compliant is the profile’s <a class="reference internal" href="../profile.html#conformance-testing"><span class="std std-ref">Conformance testing</span></a> section’s third question, every MUST satisfied, and it is the only one of the four this tool answers. A file with only <code class="docutils literal notranslate"><span class="pre">WARN</span></code> findings is therefore compliant, with things to review before delivering; <code class="docutils literal notranslate"><span class="pre">--strict</span></code> counts them as failures instead. The exit code and the <code class="docutils literal notranslate"><span class="pre">--json</span></code> output follow the same rule as the text, so a script and a reader never disagree about a file.</p>
+</section>
+<section id="what-a-clean-run-does-not-mean">
+<h2>What a clean run does not mean<a class="headerlink" href="#what-a-clean-run-does-not-mean" title="Link to this heading"></a></h2>
+<p>A clean run is one of the four answers above, not the answer. It says the file satisfies the rules that can be decided by reading it. It says nothing about whether the part looks right, whether it is the correct size, which way it faces, or what Gazebo’s loader will build from it.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="exporting-from-blender.html" class="btn btn-neutral float-left" title="Exporting from Blender" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="workflow_blueboat.html" class="btn btn-neutral float-right" title="BlueBoat Walkthrough" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright Honu Robotics.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    <span class="fa fa-book"> Other Versions</span>
+    v: main
+    <span class="fa fa-caret-down"></span>
+  </span>
+  <div class="rst-other-versions">
+    <dl id="honu-version-list">
+      <dt>Distributions</dt>
+      <dd><a href="/gltf-robotics/main/" data-version="main">Main</a></dd>
+    </dl>
+  </div>
+</div>
+<script>
+  (function () {
+    var current = "main";
+    var base = "/gltf-robotics/";
+
+    /* Keep the reader on the same page when switching versions; the
+       version root href stays as the fallback for pages a version lacks. */
+    function wire() {
+      document.querySelectorAll('.rst-other-versions a[data-version]').forEach(function (a) {
+        var target = a.getAttribute('data-version');
+        var path = window.location.pathname;
+        if (target !== current && path.indexOf('/' + current + '/') !== -1) {
+          a.href = path.replace('/' + current + '/', '/' + target + '/');
+        }
+      });
+    }
+
+    if (!window.fetch) { wire(); return; }
+
+    /* The deploy tool maintains versions.json at the site root; reading it
+       at runtime lets builds published before a new distribution existed
+       still offer it in the flyout. Offline or local preview builds fall
+       back to the build time list rendered above. */
+    fetch(base + 'versions.json', {cache: 'no-cache'}).then(function (response) {
+      if (!response.ok) { throw new Error(response.status); }
+      return response.json();
+    }).then(function (entries) {
+      var list = document.getElementById('honu-version-list');
+      if (!list || !entries.length) { return; }
+      list.querySelectorAll('dd').forEach(function (dd) { dd.remove(); });
+      entries.forEach(function (entry) {
+        var a = document.createElement('a');
+        a.href = entry.url;
+        a.setAttribute('data-version', entry.name);
+        a.textContent = entry.name.charAt(0).toUpperCase() + entry.name.slice(1);
+        var dd = document.createElement('dd');
+        dd.appendChild(a);
+        list.appendChild(dd);
+      });
+    }).catch(function () {}).finally(wire);
+  })();
+</script><script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

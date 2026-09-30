@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Honu Robotics’ glTF asset framework &mdash; Honu glTF Asset Framework main documentation</title>
+  <title>Honu glTF Asset Workflow &mdash; Honu glTF Asset Framework main documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="_static/honu.css?v=44af46ee" />
@@ -21,7 +21,8 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Honu glTF Asset Profile" href="profile.html" /> 
+    <link rel="next" title="Walkthroughs" href="walkthroughs/index.html" />
+    <link rel="prev" title="Honu glTF Asset Profile" href="profile.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -32,7 +33,7 @@
 
           
           
-          <a href="#" class="icon icon-home">
+          <a href="index.html" class="icon icon-home">
             Honu glTF Asset Framework
               <img src="_static/honu-robotics-white-logo.svg" class="logo" alt="Logo"/>
           </a>
@@ -44,7 +45,7 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <ul>
+              <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="profile.html">Profile</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="profile.html#introduction">Introduction</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="profile.html#scope">Scope</a></li>
@@ -104,29 +105,29 @@
 <li class="toctree-l2"><a class="reference internal" href="profile.html#closely-related-work-informative">Closely related work (Informative)</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="workflow.html">Workflow</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="workflow.html#roles">Roles</a></li>
-<li class="toctree-l2"><a class="reference internal" href="workflow.html#outline">Outline</a></li>
-<li class="toctree-l2"><a class="reference internal" href="workflow.html#step-1-commission-integrator">Step 1: Commission [Integrator]</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="workflow.html#commission-yaml-file">Commission YAML file</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Workflow</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#roles">Roles</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#outline">Outline</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#step-1-commission-integrator">Step 1: Commission [Integrator]</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#commission-yaml-file">Commission YAML file</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="workflow.html#step-2-author-3d-asset-modeler">Step 2: Author 3D asset [Modeler]</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="workflow.html#build-to-the-honu-asset-profile-and-export">Build to the <span class="xref myst">Honu Asset Profile</span> and export</a></li>
-<li class="toctree-l3"><a class="reference internal" href="workflow.html#step-3-fill-the-glb-manifest-from-the-commission-yaml-integrator">Step 3: Fill the <code class="docutils literal notranslate"><span class="pre">.glb</span></code> manifest from the commission YAML [Integrator]</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#step-2-author-3d-asset-modeler">Step 2: Author 3D asset [Modeler]</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#build-to-the-honu-asset-profile-and-export">Build to the <span class="xref myst">Honu Asset Profile</span> and export</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#step-3-fill-the-glb-manifest-from-the-commission-yaml-integrator">Step 3: Fill the <code class="docutils literal notranslate"><span class="pre">.glb</span></code> manifest from the commission YAML [Integrator]</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="workflow.html#step-3-verify">Step 3: Verify</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="workflow.html#valid">Valid?</a></li>
-<li class="toctree-l3"><a class="reference internal" href="workflow.html#intended">Intended?</a></li>
-<li class="toctree-l3"><a class="reference internal" href="workflow.html#compliant">Compliant?</a></li>
-<li class="toctree-l3"><a class="reference internal" href="workflow.html#what-the-integrator-checks">What the integrator checks</a></li>
-<li class="toctree-l3"><a class="reference internal" href="workflow.html#when-the-checks-run">When the checks run</a></li>
-<li class="toctree-l3"><a class="reference internal" href="workflow.html#who-answers-what">Who answers what</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#step-3-verify">Step 3: Verify</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#valid">Valid?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#intended">Intended?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#compliant">Compliant?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#what-the-integrator-checks">What the integrator checks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#when-the-checks-run">When the checks run</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#who-answers-what">Who answers what</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="workflow.html#after-acceptance">After acceptance</a></li>
-<li class="toctree-l2"><a class="reference internal" href="workflow.html#not-settled-here">Not settled here</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#after-acceptance">After acceptance</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#not-settled-here">Not settled here</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="walkthroughs/index.html">Walkthroughs</a><ul>
@@ -359,17 +360,17 @@
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="#">Honu glTF Asset Framework</a>
+          <a href="index.html">Honu glTF Asset Framework</a>
       </nav>
 
       <div class="wy-nav-content">
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="#" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active">Honu Robotics’ glTF asset framework</li>
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Honu glTF Asset Workflow</li>
       <li class="wy-breadcrumbs-aside">
-              <a href="https://github.com/HonuRobotics/gltf-robotics/blob/main/docs/index.md" class="fa fa-github"> Edit on GitHub</a>
+              <a href="https://github.com/HonuRobotics/gltf-robotics/blob/main/docs/workflow.md" class="fa fa-github"> Edit on GitHub</a>
       </li>
   </ul>
   <hr/>
@@ -377,39 +378,171 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="honu-robotics-gltf-asset-framework">
-<h1>Honu Robotics’ glTF asset framework<a class="headerlink" href="#honu-robotics-gltf-asset-framework" title="Link to this heading"></a></h1>
-<p>Honu Robotics’ glTF asset framework for Gazebo and RViz. This is a beta release: two documents are ready for review, and the rest of the site is planned work still in development.</p>
-<section id="ready-for-beta-review">
-<h2>Ready for beta review<a class="headerlink" href="#ready-for-beta-review" title="Link to this heading"></a></h2>
+  <section id="honu-gltf-asset-workflow">
+<h1>Honu glTF Asset Workflow<a class="headerlink" href="#honu-gltf-asset-workflow" title="Link to this heading"></a></h1>
+<p>The <a class="reference internal" href="profile.html"><span class="std std-doc">profile</span></a> states what a delivered visual model must be. This document states the process that produces one for each part and takes it through conformance testing.</p>
+<p>The process begins with a commission, a vehicle or a batch of parts to be modeled, and ends when each delivered part passes the profile’s <a class="reference internal" href="profile.html#conformance-testing"><span class="std std-ref">conformance testing</span></a> and the integrator accepts it. What it produces is individual parts with the correct properties.</p>
+<p>Turning accepted parts into a working simulation model is downstream work and out of scope here: declaring joints and actuators, adding sensors and plugins, buoyancy, the part macro and the RViz correction.</p>
+<section id="roles">
+<h2>Roles<a class="headerlink" href="#roles" title="Link to this heading"></a></h2>
+<p>The two parties are the modeler, who authors and delivers the visual model, and the integrator, who commissions it, checks it and integrates it as a robot component.</p>
+<p>These and the other terms this document uses, among them part, delivery, commission and datasheet, are defined in the project <a class="reference internal" href="reference/glossary.html"><span class="std std-doc">glossary</span></a>.</p>
+</section>
+<section id="outline">
+<h2>Outline<a class="headerlink" href="#outline" title="Link to this heading"></a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Step</p></th>
+<th class="head"><p>Owner</p></th>
+<th class="head"><p>Input</p></th>
+<th class="head"><p>Output</p></th>
+<th class="head"><p>Gate to the next step</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>1. Commission</p></td>
+<td><p>Integrator</p></td>
+<td><p>Reference material, datasheets, the vehicle’s datum decision</p></td>
+<td><p>One commission per vehicle or batch of parts, one block per part</p></td>
+<td><p>Every block complete and agreed with the modeler</p></td>
+</tr>
+<tr class="row-odd"><td><p>2. Model</p></td>
+<td><p>Modeler</p></td>
+<td><p>The commission and the profile</p></td>
+<td><p>One <code class="docutils literal notranslate"><span class="pre">&lt;part&gt;.visual.glb</span></code> per part, manifest filled from the commission</p></td>
+<td><p>The modeler’s own checks pass</p></td>
+</tr>
+<tr class="row-even"><td><p>3. Verify</p></td>
+<td><p>Modeler, then integrator</p></td>
+<td><p>The delivery and the commission</p></td>
+<td><p>Acceptance, or a request for modification</p></td>
+<td><p>All checks pass</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="step-1-commission-integrator">
+<h2>Step 1: Commission [Integrator]<a class="headerlink" href="#step-1-commission-integrator" title="Link to this heading"></a></h2>
+<p>The integrator writes the commission before any modeling starts. It is the written statement of intent and is what the visual acceptance checks are judged against. Compliance with intent can only be verified when both parties share a clear understanding of the intent and of the design decisions behind it.</p>
+<section id="commission-yaml-file">
+<h3>Commission YAML file<a class="headerlink" href="#commission-yaml-file" title="Link to this heading"></a></h3>
+<p>The commission is a YAML file, see <a class="reference download internal" download="" href="_downloads/621d10d31f35f6b33d71f96943392e81/commission-template.yaml"><span class="xref download myst">commission template</span></a>, which shows every field with an example. This meta data will be written into the <code class="docutils literal notranslate"><span class="pre">.glb</span></code> file later in the process.</p>
+<p>Half of the fields are the manifest wich will be written into the <code class="docutils literal notranslate"><span class="pre">.glb</span></code> file later in the process.  The other half are notes and links for the modeler.</p>
+<p>If any modifications are needed to keep the commission YAML file in alignment with the modeling deliverable, the written YAML file should be updated.  At delivery, the YAML commission and part geometry should agree.</p>
+</section>
+</section>
+<section id="step-2-author-3d-asset-modeler">
+<h2>Step 2: Author 3D asset [Modeler]<a class="headerlink" href="#step-2-author-3d-asset-modeler" title="Link to this heading"></a></h2>
+<section id="build-to-the-honu-asset-profile-and-export">
+<h3>Build to the <a class="reference internal" href="profile.html"><span class="std std-doc">Honu Asset Profile</span></a> and export<a class="headerlink" href="#build-to-the-honu-asset-profile-and-export" title="Link to this heading"></a></h3>
+<p>The profile inlcudes the rules the model is built to.</p>
+<p>The <a class="reference internal" href="walkthroughs/exporting-from-blender.html"><span class="std std-doc">Blender export guide</span></a> is the tool-specific practice for meeting them.</p>
+</section>
+<section id="step-3-fill-the-glb-manifest-from-the-commission-yaml-integrator">
+<h3>Step 3: Fill the <code class="docutils literal notranslate"><span class="pre">.glb</span></code> manifest from the commission YAML [Integrator]<a class="headerlink" href="#step-3-fill-the-glb-manifest-from-the-commission-yaml-integrator" title="Link to this heading"></a></h3>
+<p>After export, one command writes <a class="reference internal" href="profile.html#the-manifest"><span class="std std-ref">the manifest</span></a> into the file:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>gltf-manifest<span class="w"> </span>commission.yaml<span class="w"> </span>&lt;part&gt;.visual.glb
+</pre></div>
+</div>
+<p>It finds the part’s block in the commission by the file’s name and copies the values in. It fills in the forward and up axes as <code class="docutils literal notranslate"><span class="pre">+X</span></code> and <code class="docutils literal notranslate"><span class="pre">+Z</span></code>, and the delivery date as today. Only the file’s metadata changes; the geometry and textures are copied through untouched.</p>
+<p>The command refuses a key it does not know, so a misspelled key is caught here. If the commission changes after delivery, the integrator reruns the command; no re-export is needed.</p>
+</section>
+</section>
+<section id="step-3-verify">
+<h2>Step 3: Verify<a class="headerlink" href="#step-3-verify" title="Link to this heading"></a></h2>
+<p>The profile’s <a class="reference internal" href="profile.html#conformance-testing"><span class="std std-ref">Conformance testing</span></a> section asks four questions of a delivery</p>
+<ol class="arabic simple">
+<li><p>Valid? <code class="docutils literal notranslate"><span class="pre">gltf_validator</span></code> CLI tool</p></li>
+<li><p>Intended? <a class="reference external" href="https://github.khronos.org/glTF-Sample-Viewer-Release/">Khronos Sample Viewer</a>  browser render</p></li>
+<li><p>Compliant? <code class="docutils literal notranslate"><span class="pre">gltf-check</span></code> evaluates the <code class="docutils literal notranslate"><span class="pre">.glb</span></code> file against the [./profile.md]</p></li>
+<li><p>Usable?</p></li>
+</ol>
+<section id="valid">
+<h3>Valid?<a class="headerlink" href="#valid" title="Link to this heading"></a></h3>
+<p>The Khronos glTF Validator answers whether the file is legal glTF. It is a single binary from the <a class="reference external" href="https://github.com/KhronosGroup/glTF-Validator/releases">glTF-Validator releases</a>. The delivery passes with zero errors. Warnings and infos are read and explained: a warning that a normal-mapped primitive has no tangents is expected, because neither consumer reads them (<a class="reference internal" href="profile.html#geometry"><span class="std std-ref">Geometry</span></a>).</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>gltf_validator<span class="w"> </span>-o<span class="w"> </span>-a<span class="w"> </span>&lt;part&gt;.visual.glb
+</pre></div>
+</div>
+</section>
+<section id="intended">
+<h3>Intended?<a class="headerlink" href="#intended" title="Link to this heading"></a></h3>
+<p>The <a class="reference external" href="https://github.khronos.org/glTF-Sample-Viewer-Release/">Khronos Sample Viewer</a> answers whether the file looks as intended, judged by a person against the commission’s images and material notes. The viewer assumes glTF’s Y-up convention, so the default view is Y-up, X-right, Z-towards viewer.  Qualitative comparision between physcial robot and 3D asset materials, textures, etc.</p>
+</section>
+<section id="compliant">
+<h3>Compliant?<a class="headerlink" href="#compliant" title="Link to this heading"></a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">gltf-check</span></code> answers whether the file satisfies the profile and passes when thereare no failures, every warning is understood. It covers the container and header, extensions, scene and node structure, primitive attributes, materials, image format and size, transparency and the manifest. How to read its output is in the <a class="reference internal" href="walkthroughs/checking-a-delivery.html"><span class="std std-doc">checking walkthrough</span></a>.</p>
+<p><code class="docutils literal notranslate"><span class="pre">gltf-summary</span></code> shows where the origin sits, and the origin line has to agree with the datum specification. An origin on a mounting face reads 0.00 or 1.00 on that axis; 0.50 on all three axes is the bounding-box midpoint and almost always means the origin was inherited and not specified.</p>
+<p>The modeler delivers with a note that these four were done. The integrator does not repeat the first two.</p>
+</section>
+<section id="what-the-integrator-checks">
+<h3>What the integrator checks<a class="headerlink" href="#what-the-integrator-checks" title="Link to this heading"></a></h3>
 <ul class="simple">
-<li><p><a class="reference internal" href="profile.html"><span class="std std-doc">Honu glTF Asset Profile</span></a>. Normative rules for 3D visual robotic assets, narrowing, extending and clarifying glTF 2.0 for robotics and aligned to ISO and ROS REP conventions.</p></li>
-<li><p><a class="reference internal" href="workflow.html"><span class="std std-doc">Honu glTF Asset Workflow</span></a>. The step-by-step process of asset commissioning, authoring and conformance testing, and who does what.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">gltf-check</span></code> again, with the output kept with the review.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">glb_probe</span></code> loads the file through the installed <code class="docutils literal notranslate"><span class="pre">gz-common</span></code>, exactly as Gazebo does, and prints the submeshes and materials the loader built. It is built and run inside drydock; the command is in the <a class="reference external" href="https://github.com/HonuRobotics/gltf-robotics/tree/main/probe">probe README</a>. The delivery passes when the output has no <code class="docutils literal notranslate"><span class="pre">[error]</span></code> lines, every submesh has a material, and the submesh name equals the part name.  It does not render, so it settles what a material is and not how it looks.</p></li>
+<li><p>Gazebo, standalone parts.   This step identifies Gazebo rendering issues that may or may not be consistent with glTF 2.0, e.g.,  white-metal patches mean a primitive with no material, a dark hull means metalness was left at its default. Other viewers do not predict any of this, because they honor <code class="docutils literal notranslate"><span class="pre">BLEND</span></code>, <code class="docutils literal notranslate"><span class="pre">doubleSided</span></code> and extensions that Gazebo ignores.</p>
+<ul>
+<li><p>Origin and orientation by eye against the datum specification, naming what the origin sits on in the part’s own terms.</p></li>
+<li><p>The commission’s visual requirement and priorities.</p></li>
+</ul>
+</li>
+<li><p>RViz with the URDF: the part renders, is upright and RViz stays up. Passing in Gazebo is necessary and never sufficient; a normal map with no base color renders in Gazebo and terminates RViz.</p></li>
 </ul>
 </section>
-<section id="in-development-not-ready-for-review">
-<h2>In development, not ready for review<a class="headerlink" href="#in-development-not-ready-for-review" title="Link to this heading"></a></h2>
-<p>These items are work in progress</p>
-<p>Supporting documentation:</p>
+<section id="when-the-checks-run">
+<h3>When the checks run<a class="headerlink" href="#when-the-checks-run" title="Link to this heading"></a></h3>
+<p>The checks run when a delivery is reviewed.  These  are not CI tests: once a part is merged it has already been checked, and rerunning every check on every commit would slow every unrelated change.</p>
+</section>
+<section id="who-answers-what">
+<h3>Who answers what<a class="headerlink" href="#who-answers-what" title="Link to this heading"></a></h3>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Question</p></th>
+<th class="head"><p>Asked by</p></th>
+<th class="head"><p>Tool</p></th>
+<th class="head"><p>Passes when</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Valid</p></td>
+<td><p>Modeler</p></td>
+<td><p>Khronos Validator</p></td>
+<td><p>Zero errors</p></td>
+</tr>
+<tr class="row-odd"><td><p>Intended</p></td>
+<td><p>Modeler</p></td>
+<td><p>Sample Viewer, against the commission</p></td>
+<td><p>Signed off by the modeler, pose ignored</p></td>
+</tr>
+<tr class="row-even"><td><p>Compliant</p></td>
+<td><p>Modeler, then integrator</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">gltf-check</span></code></p></td>
+<td><p>No failures, warnings reviewed, open items discussed</p></td>
+</tr>
+<tr class="row-odd"><td><p>Usable</p></td>
+<td><p>Integrator</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">glb_probe</span></code>, Gazebo, RViz</p></td>
+<td><p>Loads, renders upright, RViz stays up</p></td>
+</tr>
+<tr class="row-even"><td><p>Matches the commission</p></td>
+<td><p>Integrator</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">gltf-check</span></code>, <code class="docutils literal notranslate"><span class="pre">gltf-summary</span></code>, datasheet, eyes</p></td>
+<td><p>Within tolerance, datum recognized, priorities met</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="after-acceptance">
+<h2>After acceptance<a class="headerlink" href="#after-acceptance" title="Link to this heading"></a></h2>
+<p>Out of scope here. The consuming project owns everything downstream of an accepted part: placement, the part macro, the RViz correction, joints and actuators, sensors, plugins and buoyancy.</p>
+</section>
+<section id="not-settled-here">
+<h2>Not settled here<a class="headerlink" href="#not-settled-here" title="Link to this heading"></a></h2>
 <ul class="simple">
-<li><p><a class="reference internal" href="walkthroughs/index.html"><span class="std std-doc">Walkthroughs</span></a>. Complete step-by-step examples and how-tos: one mesh from Blender to Gazebo and RViz, exporting from Blender, and checking a delivery.</p></li>
-<li><p><a class="reference internal" href="assessments/index.html"><span class="std std-doc">Assessments</span></a>. Measurements of what glTF assets published by other projects contain. They show what is in the field and are not a basis for the profile’s rules. Audits of our own deliveries are planned.</p></li>
-<li><p><a class="reference internal" href="reference/index.html"><span class="std std-doc">Reference</span></a>. The project glossary, coordinate systems, Blender’s glTF export options, PBR materials and notes on glTF itself.  These are notes and artifacts from working through issues and conventions.</p></li>
+<li><p>Visual requirement tiers have no numbers until the profile’s <a class="reference internal" href="profile.html#budgets"><span class="std std-ref">Budgets</span></a> section closes.</p></li>
+<li><p>A component part’s datum is a SHOULD (<a class="reference internal" href="profile.html#a-component-part"><span class="std std-ref">component part</span></a>), so a component block may leave it out; this document does not decide whether it should.  The <strong>component</strong> profile is still a work in progress.</p></li>
+<li><p>Whether the modeler delivers anything besides the visual model, such as collision geometry or a <code class="docutils literal notranslate"><span class="pre">model.sdf</span></code>. The profile covers the visual model only (<a class="reference internal" href="profile.html#scope"><span class="std std-ref">Scope</span></a>), so today that is whatever the commission asks for.  Yes - we’ll sort that out later.</p></li>
 </ul>
-<p>Tools and utilities, with their source code in the repository:</p>
-<ul class="simple">
-<li><p><a class="reference external" href="https://github.com/HonuRobotics/gltf-robotics/tree/main/src/gltf_robotics">Command-line tools</a>. <code class="docutils literal notranslate"><span class="pre">gltf-check</span></code> tests a file against the profile’s rules, <code class="docutils literal notranslate"><span class="pre">gltf-manifest</span></code> writes a part’s manifest into its file from the commission, <code class="docutils literal notranslate"><span class="pre">gltf-summary</span></code> describes what a file contains, and <code class="docutils literal notranslate"><span class="pre">gltf-assess</span></code> measures a list of assets published elsewhere.</p></li>
-<li><p><a class="reference external" href="https://github.com/HonuRobotics/gltf-robotics/tree/main/probe">Probes</a>. <code class="docutils literal notranslate"><span class="pre">glb_probe</span></code> loads a file through Gazebo’s own loader and reports what was built, and a marker generator writes test assets for coordinate-system questions.</p></li>
-<li><p><a class="reference external" href="https://github.com/HonuRobotics/gltf-robotics/tree/main/figures">Figures</a>. The drawing kit and scene scripts that generate the coordinate-system illustrations.</p></li>
-</ul>
-<p>Models:</p>
-<ul class="simple">
-<li><p><a class="reference external" href="https://github.com/HonuRobotics/gltf-robotics/tree/main/examples">Examples</a>. The files behind the walkthroughs.</p></li>
-<li><p><a class="reference external" href="https://github.com/HonuRobotics/gltf-robotics/tree/main/exemplar">Exemplar</a>. Planned as a reference model that satisfies the profile. At present it holds only a minimal glTF file used to explain the file structure.</p></li>
-<li><p><a class="reference external" href="https://github.com/HonuRobotics/gltf-robotics/tree/main/demo">Demo</a>. A Blender script that builds an axis-marker scene in the robotics coordinate convention.</p></li>
-</ul>
-<div class="toctree-wrapper compound">
-</div>
 </section>
 </section>
 
@@ -417,7 +550,8 @@
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="profile.html" class="btn btn-neutral float-right" title="Honu glTF Asset Profile" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="profile.html" class="btn btn-neutral float-left" title="Honu glTF Asset Profile" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="walkthroughs/index.html" class="btn btn-neutral float-right" title="Walkthroughs" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

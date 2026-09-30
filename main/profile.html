@@ -1,0 +1,1067 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Honu glTF Asset Profile &mdash; Honu glTF Asset Framework main documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="_static/honu.css?v=44af46ee" />
+
+  
+    <link rel="shortcut icon" href="_static/honu-robotics-favicon.svg"/>
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=a8da1a53"></script>
+      <script src="_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Honu glTF Asset Workflow" href="workflow.html" />
+    <link rel="prev" title="Honu Robotics’ glTF asset framework" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Honu glTF Asset Framework
+              <img src="_static/honu-robotics-white-logo.svg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Profile</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#introduction">Introduction</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#scope">Scope</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#document-conventions">Document conventions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#audience">Audience</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#normative-terminology">Normative terminology</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#informative-language">Informative language</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#open-issues">Open issues</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#terminology">Terminology</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#delivery">Delivery</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#file">File</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#file-naming">File naming</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#file-format">File format</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#gltf-structure">glTF structure</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#the-manifest">The manifest</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#asset-header">Asset header</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#coordinate-systems-and-units">Coordinate systems and units</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#units">Units</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#axes">Axes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#forward-axis">Forward axis</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#origin-datum-coordinate-system-location">Origin - datum coordinate system location</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#scenes-and-nodes">Scenes and nodes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#datum-specification">Datum specification</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#the-datum-point">The datum point</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#a-base-part">A base part</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#a-component-part">A component part</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#geometry">Geometry</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#uv-sets">UV sets</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#budgets">Budgets</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#primitives">Primitives</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#materials">Materials</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#textures">Textures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#transparency">Transparency</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#prohibited-content">Prohibited content</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#authoring-toolchain">Authoring toolchain</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#conformance-testing">Conformance testing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#open-questions-informative">Open questions (Informative)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#open-the-to-do-list-for-this-draft">Open: the to-do list for this draft</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#open-future-not-blocking-this-draft">Open: Future, not blocking this draft</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#references-informative">References (Informative)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#closely-related-work-informative">Closely related work (Informative)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="workflow.html">Workflow</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="workflow.html#roles">Roles</a></li>
+<li class="toctree-l2"><a class="reference internal" href="workflow.html#outline">Outline</a></li>
+<li class="toctree-l2"><a class="reference internal" href="workflow.html#step-1-commission-integrator">Step 1: Commission [Integrator]</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="workflow.html#commission-yaml-file">Commission YAML file</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="workflow.html#step-2-author-3d-asset-modeler">Step 2: Author 3D asset [Modeler]</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="workflow.html#build-to-the-honu-asset-profile-and-export">Build to the <span class="xref myst">Honu Asset Profile</span> and export</a></li>
+<li class="toctree-l3"><a class="reference internal" href="workflow.html#step-3-fill-the-glb-manifest-from-the-commission-yaml-integrator">Step 3: Fill the <code class="docutils literal notranslate"><span class="pre">.glb</span></code> manifest from the commission YAML [Integrator]</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="workflow.html#step-3-verify">Step 3: Verify</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="workflow.html#valid">Valid?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="workflow.html#intended">Intended?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="workflow.html#compliant">Compliant?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="workflow.html#what-the-integrator-checks">What the integrator checks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="workflow.html#when-the-checks-run">When the checks run</a></li>
+<li class="toctree-l3"><a class="reference internal" href="workflow.html#who-answers-what">Who answers what</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="workflow.html#after-acceptance">After acceptance</a></li>
+<li class="toctree-l2"><a class="reference internal" href="workflow.html#not-settled-here">Not settled here</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="walkthroughs/index.html">Walkthroughs</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="walkthroughs/blender_mesh_coordinate_ex.html">Minimum viable workflow</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="walkthroughs/blender_mesh_coordinate_ex.html#minimum-monkey-mesh">Minimum monkey mesh</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="walkthroughs/blender_mesh_coordinate_ex.html#create-in-blender-and-export">Create in Blender and export</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="walkthroughs/blender_mesh_coordinate_ex.html#baseline">Baseline</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="walkthroughs/blender_mesh_coordinate_ex.html#the-y-up-export">The +Y Up Export</a></li>
+<li class="toctree-l4"><a class="reference internal" href="walkthroughs/blender_mesh_coordinate_ex.html#transforms-frames-coordinate-systems-and-spaces">Transforms, frames, coordinate systems and spaces</a></li>
+<li class="toctree-l4"><a class="reference internal" href="walkthroughs/blender_mesh_coordinate_ex.html#see-what-assimploader-receives">3. See what AssimpLoader receives</a></li>
+<li class="toctree-l4"><a class="reference internal" href="walkthroughs/blender_mesh_coordinate_ex.html#write-a-world-and-a-urdf">4. Write a world and a URDF</a></li>
+<li class="toctree-l4"><a class="reference internal" href="walkthroughs/blender_mesh_coordinate_ex.html#gazebo">5. Gazebo</a></li>
+<li class="toctree-l4"><a class="reference internal" href="walkthroughs/blender_mesh_coordinate_ex.html#rviz">6. RViz</a></li>
+<li class="toctree-l4"><a class="reference internal" href="walkthroughs/blender_mesh_coordinate_ex.html#what-rviz-does-to-a-gltf-file-and-how-to-undo-it">What RViz does to a glTF file, and how to undo it</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="walkthroughs/exporting-from-blender.html">Exporting from Blender</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="walkthroughs/exporting-from-blender.html#author-in-the-ros-frame-and-do-not-let-the-exporter-convert">Author in the ROS frame, and do not let the exporter convert</a></li>
+<li class="toctree-l3"><a class="reference internal" href="walkthroughs/exporting-from-blender.html#clear-location-and-rotation-apply-scale-before-exporting">Clear location and rotation, apply scale, before exporting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="walkthroughs/exporting-from-blender.html#where-the-origin-goes-is-not-yours-to-choose">Where the origin goes is not yours to choose</a></li>
+<li class="toctree-l3"><a class="reference internal" href="walkthroughs/exporting-from-blender.html#name-the-object-not-the-mesh">Name the object, not the mesh</a></li>
+<li class="toctree-l3"><a class="reference internal" href="walkthroughs/exporting-from-blender.html#metalness-is-the-defect-that-keeps-recurring">Metalness is the defect that keeps recurring</a></li>
+<li class="toctree-l3"><a class="reference internal" href="walkthroughs/exporting-from-blender.html#texture-format-is-decided-by-the-source-image">Texture format is decided by the source image</a></li>
+<li class="toctree-l3"><a class="reference internal" href="walkthroughs/exporting-from-blender.html#transparency-is-per-material-not-per-pixel">Transparency is per material, not per pixel</a></li>
+<li class="toctree-l3"><a class="reference internal" href="walkthroughs/exporting-from-blender.html#keep-the-authoring-source-outside-the-simulation-repository">Keep the authoring source, outside the simulation repository</a></li>
+<li class="toctree-l3"><a class="reference internal" href="walkthroughs/exporting-from-blender.html#versions">Versions</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="walkthroughs/checking-a-delivery.html">Checking a delivery</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="walkthroughs/checking-a-delivery.html#running-the-checker">Running the checker</a></li>
+<li class="toctree-l3"><a class="reference internal" href="walkthroughs/checking-a-delivery.html#reading-the-output">Reading the output</a></li>
+<li class="toctree-l3"><a class="reference internal" href="walkthroughs/checking-a-delivery.html#what-a-clean-run-does-not-mean">What a clean run does not mean</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="walkthroughs/workflow_blueboat.html">BlueBoat Walkthrough</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="walkthroughs/workflow_blueboat.html#commission">Commission</a></li>
+<li class="toctree-l3"><a class="reference internal" href="walkthroughs/workflow_blueboat.html#author">Author</a></li>
+<li class="toctree-l3"><a class="reference internal" href="walkthroughs/workflow_blueboat.html#fill-manifest">Fill manifest</a></li>
+<li class="toctree-l3"><a class="reference internal" href="walkthroughs/workflow_blueboat.html#verify">Verify</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="walkthroughs/workflow_blueboat.html#valid">Valid?</a></li>
+<li class="toctree-l4"><a class="reference internal" href="walkthroughs/workflow_blueboat.html#intended">Intended</a></li>
+<li class="toctree-l4"><a class="reference internal" href="walkthroughs/workflow_blueboat.html#compliant-gltf-check">Compliant - gltf-check</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="walkthroughs/workflow_blueboat.html#gltf-probe">gltf probe</a></li>
+<li class="toctree-l5"><a class="reference internal" href="walkthroughs/workflow_blueboat.html#gazebo-standalone">Gazebo standalone</a></li>
+<li class="toctree-l5"><a class="reference internal" href="walkthroughs/workflow_blueboat.html#rviz">RVIZ</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="assessments/index.html">Assessments</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="assessments/community-exemplars.html">Community exemplars: who else ships glTF to Gazebo and RViz</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="assessments/community-exemplars.html#method">Method</a></li>
+<li class="toctree-l3"><a class="reference internal" href="assessments/community-exemplars.html#the-cohort">The cohort</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="assessments/community-exemplars.html#gazebosim-jetty-demo-the-closest-thing-to-an-upstream-reference">gazebosim/jetty_demo — the closest thing to an upstream reference</a></li>
+<li class="toctree-l4"><a class="reference internal" href="assessments/community-exemplars.html#open-rmf-rmf-site-gltf-generated-rather-than-authored">open-rmf/rmf_site — glTF generated rather than authored</a></li>
+<li class="toctree-l4"><a class="reference internal" href="assessments/community-exemplars.html#husarion-rosbot-ros-a-commercial-product-doing-it-per-link">husarion/rosbot_ros — a commercial product doing it per-link</a></li>
+<li class="toctree-l4"><a class="reference internal" href="assessments/community-exemplars.html#robotlocomotion-the-informed-dissent-on-packaging">RobotLocomotion — the informed dissent on packaging</a></li>
+<li class="toctree-l4"><a class="reference internal" href="assessments/community-exemplars.html#usnistgov-ariac-a-migration-caught-in-the-middle">usnistgov/ARIAC — a migration caught in the middle</a></li>
+<li class="toctree-l4"><a class="reference internal" href="assessments/community-exemplars.html#vanttec-vanttec-usv-the-nearest-maritime-peer-inverted">vanttec/vanttec_usv — the nearest maritime peer, inverted</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="assessments/community-exemplars.html#the-people-and-the-two-organizations-that-turned-out-not-to-be-doing-this">The people, and the two organizations that turned out not to be doing this</a></li>
+<li class="toctree-l3"><a class="reference internal" href="assessments/community-exemplars.html#what-this-changes-for-us">What this changes for us</a></li>
+<li class="toctree-l3"><a class="reference internal" href="assessments/community-exemplars.html#where-the-argument-is-being-had">Where the argument is being had</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="reference/index.html">Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="reference/glossary.html">Glossary</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="reference/glossary.html#terms">Terms</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="reference/glossary.html#assembly">assembly</a></li>
+<li class="toctree-l4"><a class="reference internal" href="reference/glossary.html#asset">asset</a></li>
+<li class="toctree-l4"><a class="reference internal" href="reference/glossary.html#base-part">base part</a></li>
+<li class="toctree-l4"><a class="reference internal" href="reference/glossary.html#commission">commission</a></li>
+<li class="toctree-l4"><a class="reference internal" href="reference/glossary.html#component-part">component part</a></li>
+<li class="toctree-l4"><a class="reference internal" href="reference/glossary.html#consumer">consumer</a></li>
+<li class="toctree-l4"><a class="reference internal" href="reference/glossary.html#coordinate-system">coordinate system</a></li>
+<li class="toctree-l4"><a class="reference internal" href="reference/glossary.html#datasheet">datasheet</a></li>
+<li class="toctree-l4"><a class="reference internal" href="reference/glossary.html#datum">datum</a></li>
+<li class="toctree-l4"><a class="reference internal" href="reference/glossary.html#datum-coordinate-system">datum coordinate system</a></li>
+<li class="toctree-l4"><a class="reference internal" href="reference/glossary.html#datum-point">datum point</a></li>
+<li class="toctree-l4"><a class="reference internal" href="reference/glossary.html#delivery">delivery</a></li>
+<li class="toctree-l4"><a class="reference internal" href="reference/glossary.html#integrator">integrator</a></li>
+<li class="toctree-l4"><a class="reference internal" href="reference/glossary.html#manifest">manifest</a></li>
+<li class="toctree-l4"><a class="reference internal" href="reference/glossary.html#modeler">modeler</a></li>
+<li class="toctree-l4"><a class="reference internal" href="reference/glossary.html#origin">origin</a></li>
+<li class="toctree-l4"><a class="reference internal" href="reference/glossary.html#part">part</a></li>
+<li class="toctree-l4"><a class="reference internal" href="reference/glossary.html#part-coordinate-system">part coordinate system</a></li>
+<li class="toctree-l4"><a class="reference internal" href="reference/glossary.html#submesh">submesh</a></li>
+<li class="toctree-l4"><a class="reference internal" href="reference/glossary.html#visual-model">visual model</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="reference/coordinate-systems.html">Coordinate Systems: glTF, Gazebo and ROS</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="reference/coordinate-systems.html#objective">Objective</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="reference/coordinate-systems.html#central-issue">Central Issue</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="reference/coordinate-systems.html#how-claims-in-this-document-are-marked">How claims in this document are marked</a></li>
+<li class="toctree-l3"><a class="reference internal" href="reference/coordinate-systems.html#coordinate-conventions-and-typical-practices">Coordinate Conventions and Typical Practices</a></li>
+<li class="toctree-l3"><a class="reference internal" href="reference/coordinate-systems.html#vocabulary-nomenclature-glossary">Vocabulary / Nomenclature / Glossary</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="reference/coordinate-systems.html#our-formal-default">Our formal default</a></li>
+<li class="toctree-l4"><a class="reference internal" href="reference/coordinate-systems.html#terms-by-stage-of-the-flow">Terms by stage of the flow</a></li>
+<li class="toctree-l4"><a class="reference internal" href="reference/coordinate-systems.html#coordinate-system-origin-and-reference-point">Coordinate system, origin, and reference point</a></li>
+<li class="toctree-l4"><a class="reference internal" href="reference/coordinate-systems.html#the-o-x-y-z-notation">The <code class="docutils literal notranslate"><span class="pre">O</span> <span class="pre">-</span> <span class="pre">X</span> <span class="pre">-</span> <span class="pre">Y</span> <span class="pre">-</span> <span class="pre">Z</span></code> notation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="reference/coordinate-systems.html#specifying-a-coordinate-system-datums-and-what-referenced-to-means">Specifying a coordinate system: datums and what “referenced to” means</a></li>
+<li class="toctree-l4"><a class="reference internal" href="reference/coordinate-systems.html#assumptions">Assumptions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="reference/coordinate-systems.html#standards-summary">Standards Summary</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="reference/coordinate-systems.html#iso-9787-2013">ISO 9787:2013</a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="reference/coordinate-systems.html#robotics">Robotics</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="reference/coordinate-systems.html#categorizing-links-by-their-place-in-the-tree">Categorizing links by their place in the tree</a></li>
+<li class="toctree-l5"><a class="reference internal" href="reference/coordinate-systems.html#manipulation-centric-robots-with-static-base">Manipulation-centric (robots with static base)</a></li>
+<li class="toctree-l5"><a class="reference internal" href="reference/coordinate-systems.html#mobile-centric">Mobile-centric</a></li>
+<li class="toctree-l5"><a class="reference internal" href="reference/coordinate-systems.html#other-conventions-worth-knowing">Other conventions worth knowing</a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="reference/coordinate-systems.html#d-graphics">3D Graphics</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="reference/coordinate-systems.html#what-survives-into-gltf-and-what-does-not">What survives into glTF, and what does not</a></li>
+<li class="toctree-l5"><a class="reference internal" href="reference/coordinate-systems.html#standards-for-3d-assets">Standards for 3D assets</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="reference/coordinate-systems.html#reconciling-the-standards">Reconciling the standards</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="reference/coordinate-systems.html#where-they-agree-and-it-is-most-of-it">Where they agree, and it is most of it</a></li>
+<li class="toctree-l4"><a class="reference internal" href="reference/coordinate-systems.html#the-disagreement-is-one-cyclic-relabeling">The disagreement is one cyclic relabeling</a></li>
+<li class="toctree-l4"><a class="reference internal" href="reference/coordinate-systems.html#our-coordinate-system-names">Our coordinate system names</a></li>
+<li class="toctree-l4"><a class="reference internal" href="reference/coordinate-systems.html#the-full-reconciliation">The full reconciliation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="reference/coordinate-systems.html#adopt-narrow-or-invent">Adopt, narrow, or invent</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="reference/coordinate-systems.html#one-body-one-mesh-who-rotates-what">One body, one mesh: who rotates what</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="reference/coordinate-systems.html#the-chain-and-where-a-rotation-can-be-inserted">The chain, and where a rotation can be inserted</a></li>
+<li class="toctree-l4"><a class="reference internal" href="reference/coordinate-systems.html#gazebo-from-source">Gazebo, from source</a></li>
+<li class="toctree-l4"><a class="reference internal" href="reference/coordinate-systems.html#rviz-from-source">RViz, from source</a></li>
+<li class="toctree-l4"><a class="reference internal" href="reference/coordinate-systems.html#blender-s-exporter-from-source">Blender’s exporter, from source</a></li>
+<li class="toctree-l4"><a class="reference internal" href="reference/coordinate-systems.html#the-probe-measured">The probe, measured</a></li>
+<li class="toctree-l4"><a class="reference internal" href="reference/coordinate-systems.html#the-decision-and-what-it-costs">The decision, and what it costs</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="reference/coordinate-systems.html#next-increment">Next increment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="reference/coordinate-systems.html#references">References</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="reference/loader-behavior.html">Gazebo and RViz loader behavior</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="reference/loader-behavior.html#the-consumers">The consumers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="reference/loader-behavior.html#the-gazebo-path-step-by-step">The Gazebo path, step by step</a></li>
+<li class="toctree-l3"><a class="reference internal" href="reference/loader-behavior.html#what-the-loader-reads-from-a-gltf-material">What the loader reads from a glTF material</a></li>
+<li class="toctree-l3"><a class="reference internal" href="reference/loader-behavior.html#the-rviz-path">The RViz path</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="reference/blender-export-options.html">Blender glTF Export Options</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="reference/blender-export-options.html#directive">Directive</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="reference/blender-export-options.html#four-things-that-decide-the-result-and-are-not-in-this-dialog">Four things that decide the result and are not in this dialog</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="reference/blender-export-options.html#provenance">Provenance</a></li>
+<li class="toctree-l3"><a class="reference internal" href="reference/blender-export-options.html#what-no-option-does">What no option does</a></li>
+<li class="toctree-l3"><a class="reference internal" href="reference/blender-export-options.html#top-of-the-dialog">Top of the dialog</a></li>
+<li class="toctree-l3"><a class="reference internal" href="reference/blender-export-options.html#include">Include</a></li>
+<li class="toctree-l3"><a class="reference internal" href="reference/blender-export-options.html#transform">Transform</a></li>
+<li class="toctree-l3"><a class="reference internal" href="reference/blender-export-options.html#data-scene-graph">Data ▸ Scene Graph</a></li>
+<li class="toctree-l3"><a class="reference internal" href="reference/blender-export-options.html#data-mesh">Data ▸ Mesh</a></li>
+<li class="toctree-l3"><a class="reference internal" href="reference/blender-export-options.html#data-material">Data ▸ Material</a></li>
+<li class="toctree-l3"><a class="reference internal" href="reference/blender-export-options.html#data-shape-keys-skinning-lighting">Data ▸ Shape Keys, Skinning, Lighting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="reference/blender-export-options.html#animation">Animation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="reference/blender-export-options.html#compression">Compression</a></li>
+<li class="toctree-l3"><a class="reference internal" href="reference/blender-export-options.html#what-this-enumeration-suggests-and-needs-checking">What this enumeration suggests, and needs checking</a></li>
+<li class="toctree-l3"><a class="reference internal" href="reference/blender-export-options.html#open-rows-as-a-worklist">Open rows, as a worklist</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="reference/pbr-and-gltf.html">PBR, and why glTF is inseparable from it</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="reference/pbr-and-gltf.html#the-shift-in-one-sentence">The shift in one sentence</a></li>
+<li class="toctree-l3"><a class="reference internal" href="reference/pbr-and-gltf.html#what-we-had-before-collada-plus-an-image">What we had before: Collada plus an image</a></li>
+<li class="toctree-l3"><a class="reference internal" href="reference/pbr-and-gltf.html#what-pbr-replaces-it-with">What PBR replaces it with</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="reference/pbr-and-gltf.html#the-four-terms-in-that-table-reference">The four terms in that table (reference)</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="reference/pbr-and-gltf.html#the-differences-that-actually-bite">The differences that actually bite</a></li>
+<li class="toctree-l3"><a class="reference internal" href="reference/pbr-and-gltf.html#why-gltf-and-pbr-cannot-be-separated">Why glTF and PBR cannot be separated</a></li>
+<li class="toctree-l3"><a class="reference internal" href="reference/pbr-and-gltf.html#where-to-go-next">Where to go next</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="reference/gltf-background-notes.html">glTF Background</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="reference/gltf-background-notes.html#references">References</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="reference/gltf-background-notes.html#khronos-org">Khronos.org</a></li>
+<li class="toctree-l4"><a class="reference internal" href="reference/gltf-background-notes.html#gltf-2-0-specification">glTF 2.0 Specification</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="reference/gltf-background-notes.html#https-github-com-khronosgroup-gltf-tutorials">https://github.com/KhronosGroup/glTF-Tutorials</a></li>
+<li class="toctree-l5"><a class="reference internal" href="reference/gltf-background-notes.html#gltf-quickstart">glTF Quickstart</a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="reference/gltf-background-notes.html#video-discussing-vulkan-neural-rendering-slang-ai-more-neil-trevett-khronos-group-interview">Video: Discussing Vulkan, Neural Rendering, SLANG, AI &amp; More - Neil Trevett &amp; Khronos Group Interview</a></li>
+<li class="toctree-l4"><a class="reference internal" href="reference/gltf-background-notes.html#gltf-2-0-quickstart-and-tools">glTF 2.0 Quickstart and tools</a></li>
+<li class="toctree-l4"><a class="reference internal" href="reference/gltf-background-notes.html#openusd-conventions-for-simulation-asset-interoperability-in-open-source-robotics">OpenUSD Conventions for Simulation Asset Interoperability in Open Source Robotics</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="reference/gltf-background-notes.html#closely-related-work-and-examples">Closely Related Work and Examples</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="reference/gltf-background-notes.html#community-standards-documents-discussion-etc">Community standards, documents, discussion, etc.</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="reference/gltf-background-notes.html#gazebo-community-and-developers">Gazebo community and developers</a></li>
+<li class="toctree-l5"><a class="reference internal" href="reference/gltf-background-notes.html#examples">Examples</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="reference/gltf-background-notes.html#fuel">Fuel</a></li>
+<li class="toctree-l6"><a class="reference internal" href="reference/gltf-background-notes.html#repos">Repos</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Honu glTF Asset Framework</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Honu glTF Asset Profile</li>
+      <li class="wy-breadcrumbs-aside">
+              <a href="https://github.com/HonuRobotics/gltf-robotics/blob/main/docs/profile.md" class="fa fa-github"> Edit on GitHub</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="honu-gltf-asset-profile">
+<h1>Honu glTF Asset Profile<a class="headerlink" href="#honu-gltf-asset-profile" title="Link to this heading"></a></h1>
+<p>This “profile” is based on the glTF 2.0 specification and interprets and constrains the specification for use in 3D asset authoring for robotic simulation.  This document, in combination with the companion <a class="reference internal" href="workflow.html"><span class="std std-doc">workflow</span></a>, constitute actionable guidance for authoring and integrating robot 3D visual models.</p>
+<section id="introduction">
+<h2>Introduction<a class="headerlink" href="#introduction" title="Link to this heading"></a></h2>
+<section id="scope">
+<h3>Scope<a class="headerlink" href="#scope" title="Link to this heading"></a></h3>
+<p>This profile constrains the visual models authored for robotics simulation, currently mobile robots and specifically maritime robots. The aspiration is to generalize this, but at the current time we are prototyping the profile and workflow for this project and set of models.</p>
+<p>This profile builds upon <a class="reference external" href="https://registry.khronos.org/glTF/specs/2.0/glTF-2.0.html">glTF 2.0</a> to make it actionable for 3D visual model integration in Gazebo for robotics. Every rule here does one of three things:</p>
+<ul class="simple">
+<li><p><strong>Narrowing.</strong> This profile focuses and narrows the standard’s affordances for the specific needs of robotics simulation, to make it actionable in the context of developing 3D visual robotic assets. A file can be glTF-compliant and still be unusable in a robotics simulator.</p></li>
+<li><p><strong>Adding.</strong> Requiring something the standard does not, to satisfy the constraints of the robotics simulation and visualization consumers of the assets (e.g., Gazebo, RViz). This is required because some consumers implement only part of glTF, so a glTF-compliant asset is not guaranteed to be importable. Added constraints name the downstream consumer that motivates them.</p></li>
+<li><p><strong>Departing.</strong> Differing from what the standard says, which is done rarely and never silently. The <a class="reference internal" href="#axes">Axes</a> section is the one departure: the delivered file is expressed +X forward, +Y left, +Z up, following ISO 9787 and REP 103 rather than glTF’s Y-up and +Z-forward convention, because every other stage of this pipeline uses the robotics convention and holding to glTF’s would put a conversion in the middle of it.</p></li>
+</ul>
+<p>This profile is only about the visual 3D asset model and does not cover Collision geometry, inertia properties, joints, etc.</p>
+</section>
+</section>
+<section id="document-conventions">
+<h2>Document conventions<a class="headerlink" href="#document-conventions" title="Link to this heading"></a></h2>
+<section id="audience">
+<h3>Audience<a class="headerlink" href="#audience" title="Link to this heading"></a></h3>
+<p>This profile addresses two parties:</p>
+<ul class="simple">
+<li><p><strong>the modeler</strong>, who authors and delivers a 3D visual asset</p></li>
+<li><p><strong>the integrator</strong>, who integrates the asset as a functional robot component</p></li>
+</ul>
+</section>
+<section id="normative-terminology">
+<h3>Normative terminology<a class="headerlink" href="#normative-terminology" title="Link to this heading"></a></h3>
+<p>The key words MUST, MUST NOT, REQUIRED, SHALL, SHALL NOT, SHOULD, SHOULD NOT, RECOMMENDED, MAY and OPTIONAL are to be interpreted as described in <a class="reference external" href="https://www.rfc-editor.org/info/bcp14">BCP 14</a>, and only when they appear in capitals.</p>
+</section>
+<section id="informative-language">
+<h3>Informative language<a class="headerlink" href="#informative-language" title="Link to this heading"></a></h3>
+<p>Some text is purely informative, giving background or explaining why a guideline or rule exists.  All Notes, Implementation Notes and Examples are informative. Everything not so marked is normative.</p>
+</section>
+<section id="open-issues">
+<h3>Open issues<a class="headerlink" href="#open-issues" title="Link to this heading"></a></h3>
+<p>Two kinds of text blocks mark open issues:</p>
+<blockquote>
+<div><p><strong>Open.</strong> An open question that needs to be answered prior to first release.</p>
+</div></blockquote>
+<blockquote>
+<div><p><strong>Open: Future.</strong> An open question that is TBD.  These issues are included for tracking purposes</p>
+</div></blockquote>
+</section>
+</section>
+<section id="terminology">
+<h2>Terminology<a class="headerlink" href="#terminology" title="Link to this heading"></a></h2>
+<p>The terms this profile uses are defined in the project <a class="reference internal" href="reference/glossary.html"><span class="std std-doc">glossary</span></a>. Those definitions govern within this profile and supersede any other meaning the terms may carry elsewhere. Terms drawn from glTF keep their glTF meaning and are not redefined.</p>
+</section>
+<section id="delivery">
+<h2>Delivery<a class="headerlink" href="#delivery" title="Link to this heading"></a></h2>
+<p>A delivery is a single <code class="docutils literal notranslate"><span class="pre">.glb</span></code> file carrying a single part. Everything in this section follows from that sentence.</p>
+<section id="file">
+<h3>File<a class="headerlink" href="#file" title="Link to this heading"></a></h3>
+<p>A delivery MUST consist of exactly one file, and that file MUST describe exactly one part. A compound object (a whole vehicle, or several parts carried as separate nodes in one file) MUST NOT be delivered.</p>
+<blockquote>
+<div><p><strong>Open: Future.</strong> Whether a compound delivery is worth supporting later. The rule above is the minimal form and could be extended.</p>
+</div></blockquote>
+<section id="file-naming">
+<h4>File naming<a class="headerlink" href="#file-naming" title="Link to this heading"></a></h4>
+<p>A delivery SHOULD be named <code class="docutils literal notranslate"><span class="pre">&lt;part&gt;.visual.glb</span></code>, where <code class="docutils literal notranslate"><span class="pre">&lt;part&gt;</span></code> is the part name.</p>
+<p>The part name MUST be lowercase snake_case: lowercase letters, digits and underscores, beginning with a letter. It MUST NOT contain spaces.</p>
+</section>
+<section id="file-format">
+<h4>File format<a class="headerlink" href="#file-format" title="Link to this heading"></a></h4>
+<p>The visual model MUST be glTF 2.0 in the binary container, <code class="docutils literal notranslate"><span class="pre">.glb</span></code>, and that file MUST be self-contained: no external <code class="docutils literal notranslate"><span class="pre">.bin</span></code>, no external images, nothing to resolve at load time.</p>
+<p>The file MUST validate against the Khronos glTF Validator with zero errors. Validator warnings and infos MUST be reviewed but do not by themselves fail a delivery.</p>
+<p><strong>Implementation Note.</strong> Why the binary container:</p>
+<ul class="simple">
+<li><p>gz-common 7.3.0 drops the glTF root rotation for a <code class="docutils literal notranslate"><span class="pre">.gltf</span></code> file and keeps it for a <code class="docutils literal notranslate"><span class="pre">.glb</span></code>, because it compares an already-lowercased extension against the literal <code class="docutils literal notranslate"><span class="pre">&quot;glTF&quot;</span></code>. A <code class="docutils literal notranslate"><span class="pre">.gltf</span></code> delivery would load into Gazebo mis-oriented and report nothing.</p></li>
+<li><p>Gazebo decodes every external texture when the mesh loads, not when a texture is first needed. A <code class="docutils literal notranslate"><span class="pre">.gltf</span></code> delivery with eight maps therefore pays eight image decodes at load time even for a part that is off screen, and the cost is paid again for every model that references the file.</p></li>
+<li><p>One artifact cannot arrive incomplete. A directory of six files can.</p></li>
+</ul>
+<blockquote>
+<div><p><strong>Open: Future.</strong> Whether a delivery stays a single self-contained binary file. Today it is: one <code class="docutils literal notranslate"><span class="pre">.glb</span></code>, textures embedded, nothing to resolve at load time and nothing that can arrive incomplete. That is the KISS form and it governs. This one block tracks every way of going beyond it:</p>
+<ul class="simple">
+<li><p>permitting <code class="docutils literal notranslate"><span class="pre">.gltf</span></code> with a side <code class="docutils literal notranslate"><span class="pre">.bin</span></code>, which would reach Drake, the one consumer that cannot read <code class="docutils literal notranslate"><span class="pre">.glb</span></code> at all (<a class="reference internal" href="#closely-related-work-informative">Closely related work</a>)</p></li>
+<li><p>permitting external texture files, which version independently in git so re-authoring one map does not rewrite the geometry, and which a consumer can load lazily</p></li>
+<li><p>either of the above once the two defects behind the current rule are fixed upstream: the gz-common extension-comparison bug, and Gazebo’s eager texture decoding</p></li>
+</ul>
+</div></blockquote>
+</section>
+<section id="gltf-structure">
+<h4>glTF structure<a class="headerlink" href="#gltf-structure" title="Link to this heading"></a></h4>
+<p>Each rule is stated normatively where it belongs and repeated here only as a list:</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p></p></th>
+<th class="head"><p>Rule</p></th>
+<th class="head"><p>Stated in</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>One part</p></td>
+<td><p>the file describes exactly one part</p></td>
+<td><p><a class="reference internal" href="#file">File</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>One scene</p></td>
+<td><p>exactly one scene, listing only the node</p></td>
+<td><p><a class="reference internal" href="#scenes-and-nodes">Scenes and nodes</a></p></td>
+</tr>
+<tr class="row-even"><td><p>One node</p></td>
+<td><p>exactly one node, no children</p></td>
+<td><p><a class="reference internal" href="#scenes-and-nodes">Scenes and nodes</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>No transform</p></td>
+<td><p>that node carries no <code class="docutils literal notranslate"><span class="pre">translation</span></code>, <code class="docutils literal notranslate"><span class="pre">rotation</span></code>, <code class="docutils literal notranslate"><span class="pre">scale</span></code> or <code class="docutils literal notranslate"><span class="pre">matrix</span></code></p></td>
+<td><p><a class="reference internal" href="#scenes-and-nodes">Scenes and nodes</a></p></td>
+</tr>
+<tr class="row-even"><td><p>One coordinate system</p></td>
+<td><p>; Blender (global, local); glTF (scene space, node space) and the origin coordinate system and the datum coordinate system all  coincide</p></td>
+<td><p><a class="reference internal" href="reference/glossary.html#datum-coordinate-system"><span class="std std-ref">Glossary</span></a>, <a class="reference internal" href="#origin-datum-coordinate-system-location">Origin</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>One mesh</p></td>
+<td><p>one and only one mesh on that node</p></td>
+<td><p><a class="reference internal" href="#primitives">Primitives</a></p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Implementation Note.</strong> The rules above ensure that a delivered file is a single part in a single coordinate system, with nothing in its structure that a consumer could compose differently or lose. Everything that would express placement or hierarchy belongs in the robot description, not in the glTF geometry.</p>
+</section>
+<section id="the-manifest">
+<h4>The manifest<a class="headerlink" href="#the-manifest" title="Link to this heading"></a></h4>
+<p>A delivery MUST carry a manifest.</p>
+<p>The manifest MUST be expressed as <a class="reference external" href="https://github.com/KhronosGroup/glTF/tree/main/extensions/2.0/Khronos/KHR_xmp_json_ld"><code class="docutils literal notranslate"><span class="pre">KHR_xmp_json_ld</span></code></a> metadata attached to the glTF <code class="docutils literal notranslate"><span class="pre">asset</span></code> object.  This is a ratified Khronos extension to read and write metadata. That extension is listed in <code class="docutils literal notranslate"><span class="pre">extensionsUsed</span></code> and MUST NOT appear in <code class="docutils literal notranslate"><span class="pre">extensionsRequired</span></code>. Metadata has no effect on appearance, so a consumer that ignores it is behaving correctly.</p>
+<p>Three properties are the required minimum:</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Property</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>What it records</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">gltfrp:partRole</span></code></p></td>
+<td><p>Choice: <code class="docutils literal notranslate"><span class="pre">base</span></code>, <code class="docutils literal notranslate"><span class="pre">component</span></code></p></td>
+<td><p>Whether this part establishes a vehicle’s reference coordinate system, or attaches to one. The <a class="reference internal" href="#datum-specification">Datum specification</a> section imposes more on a <code class="docutils literal notranslate"><span class="pre">base</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">gltfrp:forward</span></code></p></td>
+<td><p>Choice from the six signed axes</p></td>
+<td><p>Which axis of the delivered file the part’s forward direction lies along. MUST be <code class="docutils literal notranslate"><span class="pre">+X</span></code> (<a class="reference internal" href="#axes">Axes</a>)</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">gltfrp:up</span></code></p></td>
+<td><p>Choice from the six signed axes</p></td>
+<td><p>Which axis is up. MUST be <code class="docutils literal notranslate"><span class="pre">+Z</span></code> (<a class="reference internal" href="#axes">Axes</a>)</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Implementation Note.</strong> <code class="docutils literal notranslate"><span class="pre">gltfrp:forward</span></code> and <code class="docutils literal notranslate"><span class="pre">gltfrp:up</span></code> restate what the <a class="reference internal" href="#axes">Axes</a> section already requires. The declaration is an attestation: the modeler states which way the part was built, and <code class="docutils literal notranslate"><span class="pre">gltf-check</span></code> fails a delivery whose attestation contradicts the <a class="reference internal" href="#axes">Axes</a> section. It converts part of the convention that could only be checked manually, by eye, into an algoritmic test that (partially) covers the requirement.</p>
+<p>Two properties record the datum (<a class="reference internal" href="#datum-specification">Datum specification</a>):</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Property</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>What it records</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">gltfrp:datumPoint</span></code></p></td>
+<td><p>Text</p></td>
+<td><p>REQUIRED for a <code class="docutils literal notranslate"><span class="pre">base</span></code> part; a <code class="docutils literal notranslate"><span class="pre">component</span></code> part SHOULD carry it. The point, named as a feature of this part</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">gltfrp:datumTarget</span></code></p></td>
+<td><p>Text</p></td>
+<td><p>OPTIONAL. The physical realization, in the sense of ISO 5459</p></td>
+</tr>
+</tbody>
+</table>
+<p>The remaining properties SHOULD be carried:</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Property</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>What it records</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dc:source</span></code></p></td>
+<td><p>Text or URI</p></td>
+<td><p>Where the geometry came from: the CAD file, the scan, the vendor model</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dc:creator</span></code></p></td>
+<td><p>Agent Name</p></td>
+<td><p>Who authored it</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dc:date</span></code></p></td>
+<td><p>Date</p></td>
+<td><p>When it was delivered</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dc:rights</span></code></p></td>
+<td><p>Text</p></td>
+<td><p>Licensing, and for purchased textures the redistribution terms</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dc:relation</span></code></p></td>
+<td><p>URI</p></td>
+<td><p>The published source the part’s dimensions are cited from</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">xmpMM:DerivedFrom</span></code></p></td>
+<td><p>ResourceRef</p></td>
+<td><p>The authoring source (e.g., blend file), where one is archived</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">gltfrp:nominalDimension</span></code></p></td>
+<td><p>Text</p></td>
+<td><p>The cited figure itself, as a quantity with its dimension named and its unit (<code class="docutils literal notranslate"><span class="pre">m</span></code>, <code class="docutils literal notranslate"><span class="pre">cm</span></code> or <code class="docutils literal notranslate"><span class="pre">mm</span></code>), for example “length overall 1.146 m”</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">gltfrp:dimensionTolerance</span></code></p></td>
+<td><p>Real</p></td>
+<td><p>Meters. The band the measured extent is held to</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Note.</strong> This needs to be evaluated as we prototype the workflow.  This could be overkill.</p>
+<p><strong>Implementation Note.</strong> What the <code class="docutils literal notranslate"><span class="pre">gltfrp</span></code> prefix is, and why it looks odd.</p>
+<p>A manifest mixes properties from several vocabularies: <code class="docutils literal notranslate"><span class="pre">dc:creator</span></code> comes from Dublin Core, <code class="docutils literal notranslate"><span class="pre">xmp:CreatorTool</span></code> from Adobe’s XMP schema, and <code class="docutils literal notranslate"><span class="pre">gltfrp:partRole</span></code> from this profile. A namespace is what keeps them from colliding. Dublin Core’s <code class="docutils literal notranslate"><span class="pre">dc:source</span></code> and some future robotics <code class="docutils literal notranslate"><span class="pre">source</span></code> can coexist because the prefix says which vocabulary each belongs to. The prefix itself is a local shorthand; what identifies the vocabulary is the URL it expands to, declared once in the packet’s <code class="docutils literal notranslate"><span class="pre">&#64;context</span></code>.</p>
+<p>The URL is an identifier, not an address. Nothing fetches it, at load time or ever, and a consumer with no network reads the manifest normally. It is a URL only because that is how XML and JSON-LD guarantee a name is unique without anyone maintaining a registry: whoever controls the domain controls every name under it, so no two vocabularies can accidentally claim the same one. That it also happens to resolve to this profile’s documentation is a convenience for a human reading a file, not part of the mechanism.</p>
+<p>Two details in the URL are deliberate. It carries <code class="docutils literal notranslate"><span class="pre">/1.0/</span></code> so that a later, incompatible set of properties can be given <code class="docutils literal notranslate"><span class="pre">/2.0/</span></code> and the two can coexist in one corpus without a file having to say which it meant. And it is named for the profile rather than for Honu Robotics, so that if this profile is ever adopted or maintained elsewhere the namespace does not have to move. Moving it would invalidate the vocabulary every already-delivered file declares.</p>
+</section>
+</section>
+<section id="asset-header">
+<h3>Asset header<a class="headerlink" href="#asset-header" title="Link to this heading"></a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">asset.version</span></code> MUST be <code class="docutils literal notranslate"><span class="pre">&quot;2.0&quot;</span></code>.</p>
+<p><code class="docutils literal notranslate"><span class="pre">asset.minVersion</span></code> SHOULD NOT be present.</p>
+<p><strong>Implementation Note.</strong>  The Khronos registry carries version 2.0 only, currently revision 2.0.1, and states that every update to it is a backwards-compatible patch; new capability arrives as extensions rather than as minor versions.</p>
+</section>
+</section>
+<section id="coordinate-systems-and-units">
+<h2>Coordinate systems and units<a class="headerlink" href="#coordinate-systems-and-units" title="Link to this heading"></a></h2>
+<p>The vocabulary this section uses (coordinate system, datum, origin, node space, scene space) is defined once in the <a class="reference internal" href="reference/glossary.html"><span class="std std-doc">glossary</span></a>.</p>
+<section id="units">
+<h3>Units<a class="headerlink" href="#units" title="Link to this heading"></a></h3>
+<p>All linear distances MUST be in meters, at real-world scale, as glTF requires.</p>
+<p>The Blender scene unit scale MUST be 1.0, and object scale MUST be applied before export.</p>
+</section>
+<section id="axes">
+<h3>Axes<a class="headerlink" href="#axes" title="Link to this heading"></a></h3>
+<p>The delivered file MUST be expressed with <strong>+X forward, +Y left and +Z up</strong>: the mobile platform coordinate system of <a class="reference external" href="https://www.iso.org/standard/59444.html">ISO 9787:2013</a> §5.5, which is the same convention as <a class="reference external" href="https://www.ros.org/reps/rep-0103.html">REP 103</a>.</p>
+<p>Blender is Z-up and right-handed, so a part authored in this convention is exported by turning the glTF exporter’s <code class="docutils literal notranslate"><span class="pre">+Y</span> <span class="pre">Up</span></code> option <strong>off</strong>.  This is a deliberate departure from glTF, which states that an asset is Y-up and faces +Z.</p>
+<p><strong>Implementation Note.</strong>  Every stage of this pipeline uses the ROS convention (consistent with the ISO standard): the modeler’s Blender scene, the URDF, the SDF, the link coordinate systems Gazebo simulates in, and the standard those all descend from. Keeping the file in that convention means the part coordinate system the modeler builds in is the node coordinate system, is the scene coordinate system, is the link coordinate system a consumer uses: one coordinate system end to end, with no axis change anywhere.</p>
+<p><strong>Implementation Note.</strong> Verifying this convention cannot easily be automated.  The features that define “forward” and “up” must be specified at commissioning time and verified during integration.</p>
+<p><strong>Implementation Note.</strong>  The two consumers (Gazebo and RVIZ) disagree on how to handle the glTF convention.</p>
+<ul class="simple">
+<li><p>RViz attempts to convert from glTF (Y-up) to ROS REP 103 (Z-up) with a silent transform during import.</p></li>
+<li><p>Gazebo does not convert at all.</p></li>
+</ul>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Consumer</p></th>
+<th class="head"><p>What it does</p></th>
+<th class="head"><p>What a Z-up file needs</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Gazebo</p></td>
+<td><p>no up-axis conversion; buffer data goes straight onto the link axes (<a class="reference external" href="https://github.com/gazebosim/gz-common/blob/a08c258d4e566b1e1624cb85f12ab78068ab2870/graphics/src/AssimpLoader.cc#L955-L976">source</a>)</p></td>
+<td><p>nothing; an identity visual pose is correct</p></td>
+</tr>
+<tr class="row-odd"><td><p>RViz, Lyrical and later</p></td>
+<td><p>rotates a glTF mesh +90° about X as it loads (<a class="reference external" href="https://github.com/ros2/rviz/blob/baab61a68bc089217dfaa4f270276dc7a30268b1/rviz_rendering/src/rviz_rendering/mesh_loader_helpers/assimp_loader.cpp#L215-L222">source</a>)</p></td>
+<td><p>a compensating <code class="docutils literal notranslate"><span class="pre">rpy=&quot;-1.5708</span> <span class="pre">0</span> <span class="pre">0&quot;</span></code> on the URDF visual</p></td>
+</tr>
+<tr class="row-even"><td><p>RViz, Jazzy and Kilted</p></td>
+<td><p>no rotation branch: <code class="docutils literal notranslate"><span class="pre">ros2/rviz</span></code> #1482 was merged to <code class="docutils literal notranslate"><span class="pre">rolling</span></code> on 2025-06-16 and deliberately not backported</p></td>
+<td><p>nothing</p></td>
+</tr>
+<tr class="row-odd"><td><p>Khronos Sample Viewer, browser viewers</p></td>
+<td><p>assume Y-up</p></td>
+<td><p>nothing available: <strong>the part appears on its side</strong></p></td>
+</tr>
+</tbody>
+</table>
+<p>The last row is the consequence of our deviation from the glTF convention.</p>
+</section>
+<section id="forward-axis">
+<h3>Forward axis<a class="headerlink" href="#forward-axis" title="Link to this heading"></a></h3>
+<p>Fixed by the <a class="reference internal" href="#axes">Axes</a> section, together with the other two axes: +X forward.</p>
+</section>
+<section id="origin-datum-coordinate-system-location">
+<h3>Origin - datum coordinate system location<a class="headerlink" href="#origin-datum-coordinate-system-location" title="Link to this heading"></a></h3>
+<p>The origin MUST be what the <a class="reference internal" href="#datum-specification">datum specification</a> evaluates to against the delivered geometry.</p>
+<p>That is the whole rule. This profile narrows glTF’s several coordinate systems and robotics’ several names for them down to one, so in a conforming delivery the origin, the datum coordinate system, the part coordinate system, node space and scene space are the same thing, and the <a class="reference internal" href="reference/glossary.html#datum-coordinate-system"><span class="std std-ref">glossary</span></a> lists them as equivalents.</p>
+<p><strong>Implementation Note.</strong> No requried glTF field records what geometry is <em>referenced to</em>, which is why the datum is carried in the manifest, and why no validator can check it.</p>
+</section>
+<section id="scenes-and-nodes">
+<h3>Scenes and nodes<a class="headerlink" href="#scenes-and-nodes" title="Link to this heading"></a></h3>
+<p>The delivered file MUST contain exactly one scene, and that scene MUST list only the node.</p>
+<p>The delivered file MUST contain exactly <strong>one node</strong>. That node MUST NOT have children, and it MUST NOT carry a <code class="docutils literal notranslate"><span class="pre">translation</span></code>, a <code class="docutils literal notranslate"><span class="pre">rotation</span></code>, a <code class="docutils literal notranslate"><span class="pre">scale</span></code> or a <code class="docutils literal notranslate"><span class="pre">matrix</span></code> key.</p>
+<p>The node MUST be named <code class="docutils literal notranslate"><span class="pre">&lt;part&gt;</span></code> (with no numeric suffix such as <code class="docutils literal notranslate"><span class="pre">.001</span></code> and no spaces, etc.). It is RECOMMENDED that the mesh be named <code class="docutils literal notranslate"><span class="pre">&lt;part&gt;_mesh</span></code>.</p>
+<p><strong>Implementation Note.</strong> The prohibition is on the <strong>presence</strong> of each transform key, not on the value of the transform. glTF omits any component equal to its default, so an absent key and an identity value describe the same geometry.</p>
+<p><strong>Implementation Note.</strong> The node name within the glTF is an interface. Gazebo names what it builds from a mesh after the node, not after the mesh, so the node name is the identifier SDF selects part of a mesh by (see <a class="reference internal" href="#primitives">Primitives</a>), and it propagates into names derived downstream. The mesh name is read by neither consumer, so a <code class="docutils literal notranslate"><span class="pre">_mesh</span></code> suffix is free and tells a reader which is which.</p>
+<p><strong>Implementation Note.</strong> The point of the rule forbidding node transforms is that the file then has exactly one coordinate system. Scene space and node space coincide, so there is no second coordinate system for a consumer to lose and nothing for two consumers to compose differently. The <a class="reference internal" href="#origin-datum-coordinate-system-location">origin</a> is therefore unambiguous: the zero of node space is the zero of scene space is the link origin. Including a node transform is both unrecoverable and unsafe. E.g., Gazebo composes node transforms down the tree and bakes them into the vertices, so the structure a hierarchy expressed is not observable in the Gazebo input. And the two consumers compose a root transform against the up-axis correction in opposite orders. Gazebo applies its correction outside the root transform (<a class="reference external" href="https://github.com/gazebosim/gz-common/blob/a08c258d4e566b1e1624cb85f12ab78068ab2870/graphics/src/AssimpLoader.cc#L955-L976">source</a>), RViz post-multiplies inside it (<a class="reference external" href="https://github.com/ros2/rviz/blob/baab61a68bc089217dfaa4f270276dc7a30268b1/rviz_rendering/src/rviz_rendering/mesh_loader_helpers/assimp_loader.cpp#L215-L222">source</a>), so a translation of 0.5 m along the file’s Y puts the part 0.5 m up in one and 0.5 m to the side in the other. <code class="docutils literal notranslate"><span class="pre">probe/coords/make_markers.py</span></code> writes <code class="docutils literal notranslate"><span class="pre">marker_roottrans</span></code> and <code class="docutils literal notranslate"><span class="pre">marker_twonode</span></code> to demonstrate both, and they are deliberately non-conforming files.</p>
+</section>
+<section id="datum-specification">
+<h3>Datum specification<a class="headerlink" href="#datum-specification" title="Link to this heading"></a></h3>
+<p>A coordinate system has six degrees of freedom to fix: three of location and three of orientation. This profile fixes them in two different ways, and the split is what keeps the datum specification short.</p>
+<p><strong>Orientation is fixed once, for every delivery, by the <a class="reference internal" href="#axes">Axes</a> section.</strong> +X forward, +Y left, +Z up, from ISO 9787:2013 §5.5 and REP 103. It is not a per-part decision and is not named in a manifest as though it were.</p>
+<p><strong>Location is fixed per part, by naming one point.</strong> That is the datum specification: a single geometric point feature of the part, stated before authoring begins and recorded in the manifest.</p>
+<p><strong>Implementation Note.</strong> Why one point is enough, and why it is the right kind of feature. Each kind of situation feature constrains a different subset of the six: a plane fixes one translation and two rotations, an axis fixes two translations and two rotations, and a point fixes all three translations and no rotations.</p>
+<p>This is a narrowing of general datum practice. ASME Y14.5 and ISO 5459 build a datum reference frame from an ordered set of features (primary, secondary, tertiary) precisely because in mechanical inspection the orientation is not known in advance and has to be established from the part.</p>
+<section id="the-datum-point">
+<h4>The datum point<a class="headerlink" href="#the-datum-point" title="Link to this heading"></a></h4>
+<p>The datum point MUST be a geometric feature of the part: a vertex, a hole center, the intersection of named faces or axes, a fiducial or a survey mark.</p>
+<p>It MUST NOT be a derived quantity. A center of mass, a bounding-box center, a silhouette center and a centroid of any kind are all computable properties rather than features: they reference nothing, they move when the geometry changes, and a different tool computes a different one.</p>
+<p><strong>Implementation Note.</strong> A point in the datum specification and a point on the hardware are two different things, and a mature practice has both. ISO 5459 calls the second a <em>datum target</em>: a point, line or area designated so that every supplier seats the part identically. A definition without a realization cannot be measured on the bench; a realization without a definition cannot be reproduced on a redesign. Where a delivery has a physical realization the manifest SHOULD record it in <code class="docutils literal notranslate"><span class="pre">gltfrp:datumTarget</span></code>.</p>
+</section>
+<section id="a-base-part">
+<h4>A base part<a class="headerlink" href="#a-base-part" title="Link to this heading"></a></h4>
+<p>A base part MUST name its datum point. It is recorded in <a class="reference internal" href="#the-manifest">the manifest</a> as <code class="docutils literal notranslate"><span class="pre">gltfrp:datumPoint</span></code>.</p>
+<p><strong>Implementation Note.</strong> Why the base part specifically. A base part’s datum is the definition of <code class="docutils literal notranslate"><span class="pre">base_link</span></code>, and localization reports against it, so it is the one coordinate system in the vehicle whose meaning cannot be recovered by measuring anything afterwards. REP 105 says <code class="docutils literal notranslate"><span class="pre">base_link</span></code> is rigidly attached to the mobile robot base and declines to say where on it; the standards agree the placement must be stated and none of them state it for you. <code class="docutils literal notranslate"><span class="pre">base_footprint</span></code> is a derived runtime frame and is not a datum.</p>
+</section>
+<section id="a-component-part">
+<h4>A component part<a class="headerlink" href="#a-component-part" title="Link to this heading"></a></h4>
+<p>A component part SHOULD name its datum point, recorded the same way.</p>
+<p>Where a component attaches by a single mounting interface, the datum point SHOULD be the center of that interface. ISO 9787 §5.3 defines the mechanical interface coordinate system with its origin at the center of the mechanical interface, which is the same choice arrived at from the standard rather than from convenience.</p>
+<p><strong>Note.</strong> The questions below stay open. They are deferred until after the initial release and a round of prototyping.</p>
+<blockquote>
+<div><p><strong>Open.</strong> Whether a component datum becomes a requirement. It is a SHOULD because the mounting interface is usually obvious from the geometry and a wrong origin on a component is recoverable by editing one transform, where a wrong base datum is not. Settling it needs the pilot to say whether component origins cause trouble.</p>
+</div></blockquote>
+<blockquote>
+<div><p><strong>Open.</strong> What a delivery does when the component part’s nominal geometry is not published anywhere. A datum point names a feature of the part, which presumes an authority on what the part is; for an off-the-shelf component that is the vendor drawing, and for a custom part it may be nothing but the CAD. Not settled.</p>
+</div></blockquote>
+</section>
+</section>
+</section>
+<section id="geometry">
+<h2>Geometry<a class="headerlink" href="#geometry" title="Link to this heading"></a></h2>
+<p>Every primitive MUST use triangle topology.</p>
+<p>Every primitive MUST provide <code class="docutils literal notranslate"><span class="pre">POSITION</span></code>, <code class="docutils literal notranslate"><span class="pre">NORMAL</span></code> and <code class="docutils literal notranslate"><span class="pre">TEXCOORD_0</span></code>.</p>
+<p>Normals MUST be authored, with hard edges where the part has them. A file delivered without normals will have them generated on import, discarding the author’s intent.</p>
+<p>The model SHOULD NOT contain degenerate, zero-area triangles.</p>
+<p><code class="docutils literal notranslate"><span class="pre">TANGENT</span></code> is OPTIONAL and is NOT REQUIRED.</p>
+<p><strong>Implementation Note.</strong> Exporting tangents is harmless and improves portability to other viewers, and the Khronos validator emits a portability warning when a normal-mapped primitive omits them. Neither of this project’s consumers reads them: the loader has no tangent channel, and the renderer generates its own from the first UV set. What the renderer needs instead is a clean UV set on normal-mapped surfaces, since that is the input to that generation.</p>
+<section id="uv-sets">
+<h3>UV sets<a class="headerlink" href="#uv-sets" title="Link to this heading"></a></h3>
+<p>The model MUST carry <code class="docutils literal notranslate"><span class="pre">TEXCOORD_0</span></code>, with coordinates inside the range 0 to 1. A second UV set, <code class="docutils literal notranslate"><span class="pre">TEXCOORD_1</span></code>, MAY be present and then only to carry a baked ambient occlusion lightmap. No further UV set may be present.</p>
+<p><a class="reference external" href="https://github.com/openrobotics/reps/blob/main/_posts/rep-0158%3A2006.md">REP 158</a> requires the same range and adds uniqueness: “Unique UVs must be packed into the [0, 1] space”. It reserves coordinates outside that range for seamless tiling with repeat wrap modes, which this document does not permit. See the reference for the rest.</p>
+<p><strong>Implementation Note.</strong> Every texture except a lightmap is read from the first UV set. Coordinates are stored as half floats after loading, so precision degrades outside the 0 to 1 range.</p>
+<p><strong>Implementation Note.</strong> The two paragraphs above previously contradicted each other, requiring exactly one UV set and then permitting a second. <code class="docutils literal notranslate"><span class="pre">gltf-check</span></code> implements the rule as now written and fails a third set; it had been failing the permitted lightmap set as well.</p>
+<blockquote>
+<div><p><strong>Open.</strong> Whether the 0-to-1 requirement survives. It is the most contested rule in this profile and the disagreement is not marginal: the Khronos Real-time Asset Creation Guidelines endorse tiling above 1 for repeating patterns (<a class="reference internal" href="#closely-related-work-informative">Closely related work</a>), and REP 158 reserves the range outside 0 to 1 for exactly that. The rule is kept for now because tiling defeats the texel-density measurement the acceptance tooling relies on, and because half-float storage degrades precision outside the range. Neither reason is about correctness, and a part needing a repeating material is the case that would settle it.</p>
+</div></blockquote>
+</section>
+<section id="budgets">
+<h3>Budgets<a class="headerlink" href="#budgets" title="Link to this heading"></a></h3>
+<blockquote>
+<div><p><strong>Open.</strong> The triangle budget per part. The earlier draft proposed about 25,000. A single number is not defensible until each part states how much detail its role warrants, so the proposal is to record a visual requirement per part as one of a few named tiers, for example functional for the vehicles and the parts fitted to them, accessory for sensors and brackets, and scenery for items seen at distance, and then to set a triangle and texture budget per tier.</p>
+</div></blockquote>
+<p><strong>Implementation Note.</strong> Neither consumer imposes a triangle limit. Texture memory dominates the cost, not geometry.</p>
+</section>
+<section id="primitives">
+<h3>Primitives<a class="headerlink" href="#primitives" title="Link to this heading"></a></h3>
+<p><strong>Implementation Note.</strong> A part has more than one primitive when it has more than one material, and in practice only then, because a primitive holds at most one <code class="docutils literal notranslate"><span class="pre">material</span></code> and glTF has no other way to put two materials on one mesh. The glTF specification gives one further reason, to limit the number of indices per draw call, which does not arise at these part sizes. So the primitive count of a well-formed part is its material count, and the <a class="reference internal" href="#materials">Materials</a> section already requires every primitive to have a material.</p>
+<p>A primitive MUST exist only to carry a material distinct from its siblings, so that a mesh’s primitive count equals its material count and nothing is split for any other reason.</p>
+<p>A delivery MUST be usable as one whole mesh. Neither the part macro nor any world may depend on <code class="docutils literal notranslate"><span class="pre">&lt;mesh&gt;&lt;submesh&gt;</span></code> to select part of one.</p>
+<p><strong>Implementation Note.</strong> “Submesh” is Gazebo’s word and SDF’s. It is not a glTF term and not an assimp one. Gazebo’s loader turns every glTF primitive into one submesh and names it after the node that carries the primitive’s mesh, never after the mesh or the material, so all the primitives of one node arrive under the same name. SDF’s <code class="docutils literal notranslate"><span class="pre">&lt;mesh&gt;&lt;submesh&gt;&lt;name&gt;</span></code> selects by that name, returns the first match and stops, with no error and no warning, so primitives sharing a node cannot be told apart. This is a known upstream defect, <code class="docutils literal notranslate"><span class="pre">gz-common</span></code> pull request 659, open and unfinished since December 2024, and it cannot be designed around by naming things more carefully at this end. The rule above keeps the defect outside this project: if nothing selects by name, it does not matter that the names collide. The alternative, making selection work, needs one primitive per node and a naming rule for each, and the <a class="reference internal" href="#scenes-and-nodes">Scenes and nodes</a> section’s one-node rule forecloses it. The two rules are the same decision seen from two sides. The loader probe, <code class="docutils literal notranslate"><span class="pre">glb_probe</span></code>, prints the list the loader built, and is the only way to see it without a renderer.</p>
+<p><strong>Implementation Note.</strong> The neighboring override is in the <a class="reference internal" href="#materials">Materials</a> section: an SDF <code class="docutils literal notranslate"><span class="pre">&lt;material&gt;</span></code> replaces the material on every primitive with one, so per-primitive materials survive only while nothing declares one.</p>
+<p><strong>Implementation Note.</strong> This is closed rather than left open because nothing here depends on the alternative: a search of this project’s own model repositories for <code class="docutils literal notranslate"><span class="pre">&lt;submesh&gt;</span></code> returns nothing, so the rule costs no existing model anything.</p>
+</section>
+</section>
+<section id="materials">
+<h2>Materials<a class="headerlink" href="#materials" title="Link to this heading"></a></h2>
+<p>The metallic-roughness workflow MUST be used. The specular-glossiness extension MUST NOT be used.</p>
+<p><strong>Every primitive MUST have a material assigned.</strong> A primitive without one renders as white metal, because that is the glTF default material, and there is no fallback to a neighboring material.</p>
+<p><code class="docutils literal notranslate"><span class="pre">metallicFactor</span></code> and the metalness channel together MUST reflect what the part is made of. Plastics, composites and painted surfaces MUST be non-metallic. Only metal surfaces may be metallic.</p>
+<p><strong>Implementation Note.</strong> The glTF default for <code class="docutils literal notranslate"><span class="pre">metallicFactor</span></code> is 1.0, so a material whose metalness nobody set is fully metallic, and a metallic-roughness texture whose blue channel is white makes it metallic regardless of the factor. A plastic hull declared metallic renders dark under every light.</p>
+<p>Any material carrying a texture MUST also carry a <code class="docutils literal notranslate"><span class="pre">baseColorTexture</span></code>.</p>
+<p><strong>Implementation Note.</strong> This is a target constraint rather than a glTF rule. RViz iterates a material’s texture properties and asks for the diffuse texture; on a material whose only texture is a normal map, that lookup fails and RViz terminates. The project works around existing files with a baked neutral base color, and a regression test guards against new ones.</p>
+<p>A material property that is uniform across the surface SHOULD be delivered as a factor, not as a texture. A texture whose every texel is identical is a factor written the long way and costs a decode, a sampler and a file for nothing.</p>
+<p><strong>Implementation Note.</strong> A uniform white metallic-roughness texture is the metalness defect above seen from the other side: a constant-white blue channel tells the renderer the part is metal everywhere.</p>
+<p><code class="docutils literal notranslate"><span class="pre">normalTexture.scale</span></code> and <code class="docutils literal notranslate"><span class="pre">occlusionTexture.strength</span></code> MUST be 1.0. Both are ignored by this project’s consumers, so a value baked into the file will not be applied.</p>
+<p>Material names SHOULD name the component they cover, not a color. Material names are not read by either consumer and are hygiene only.</p>
+<p><strong>Implementation Note.</strong> The materials in the file are what renders. The generated part SDF declares no <code class="docutils literal notranslate"><span class="pre">&lt;material&gt;</span></code>, and if one were declared it would replace every embedded material with that one, so per-primitive materials survive only while nothing overrides them.</p>
+<p>A part’s materials are carried in the delivered file. An SDF <code class="docutils literal notranslate"><span class="pre">&lt;visual&gt;</span></code> for a part MUST NOT declare a <code class="docutils literal notranslate"><span class="pre">&lt;material&gt;</span></code>.</p>
+<p><strong>Implementation Note.</strong> This was an open question and is now settled, against a rule this project used to follow. The <code class="docutils literal notranslate"><span class="pre">maritime_ws</span></code> workspace configuration still says “PBR materials must be declared in the SDF. They are not read out of a <code class="docutils literal notranslate"><span class="pre">.glb</span></code>”, which came from a sandbox that saw bright mis-lit facets on the BlueBoat hull and worked around them in SDF. That was refuted: gz-common reads the full metallic-roughness set from the file, verified in source and with a probe, and the symptom was the hull’s metallic-roughness map being solid white in its blue channel, which is metalness 1.0 everywhere. The workaround masked a texture defect that the <a class="reference internal" href="#materials">Materials</a> section’s metalness rule now catches directly.</p>
+<p><strong>Implementation Note.</strong> Why the prohibition is the right way round. <code class="docutils literal notranslate"><span class="pre">gz-sim</span></code>’s <code class="docutils literal notranslate"><span class="pre">SceneManager</span></code> loads an SDF <code class="docutils literal notranslate"><span class="pre">&lt;material&gt;</span></code>, if one is present, and sets that single material on the whole geometry, replacing every embedded material; absent one, it uses the materials embedded in the file with the visual’s <code class="docutils literal notranslate"><span class="pre">&lt;transparency&gt;</span></code> multiplied in. So declaring a material in SDF does not supplement the file, it discards it, and because SDF gives one material per visual, a multi-material part loses every distinction the <a class="reference internal" href="#primitives">Primitives</a> section exists to preserve. The generated part SDF has never emitted one, so this rule records existing behavior rather than changing it.</p>
+<p>It was written for COLLADA, where the SDF is the only place a PBR material can live. For GLB it contradicts the rule above and the generated part SDF. Proposed: restate the workspace rule as applying to COLLADA visuals only.</p>
+</section>
+<section id="textures">
+<h2>Textures<a class="headerlink" href="#textures" title="Link to this heading"></a></h2>
+<p>Embedded images MUST be PNG or JPEG. No other image format loads.</p>
+<p><strong>Implementation Note.</strong> KTX2, Basis and WebP are all reachable from the Blender export dialog and all fail. The part loads untextured, with an error naming an unsupported compressed image format.</p>
+<p>Textures MUST be 2048 pixels or smaller on each side.</p>
+<p>Any texture carrying alpha MUST be PNG.</p>
+<p>Normal, metallic, roughness and packed ORM textures MUST be PNG, which <a class="reference external" href="https://github.com/openrobotics/reps/blob/main/_posts/rep-0158%3A2006.md">REP 158</a> also requires. It permits JPEG for base color and emissive only where they carry no alpha, and excludes EXR, TIFF and other high dynamic range formats from material maps. See the reference for the rest.</p>
+<p><strong>Implementation Note.</strong> The rule follows from the transfer function glTF assigns to each slot. Base color and emissive are sRGB color, which is what JPEG was designed for. Normal, metallic-roughness and occlusion are linear data whose channels are unrelated scalars or the components of one vector, and JPEG’s chroma subsampling blends channels that have nothing to do with each other. Measured on the BlueBoat normal map, JPEG at quality 95 with 4:4:4 subsampling leaves a mean error of 0.4 degrees and a 99.9th percentile above 6 degrees, concentrated at UV shell boundaries.</p>
+<p><strong>Implementation Note.</strong> Deliveries from anyone working in the normal way will arrive with JPEG normal maps, as most in Fuel and in the Gazebo team’s own demo assets do. The Blender exporter inherits the format of the source image, so this is a texture-authoring decision, not an export setting. A JPEG normal map cannot be repaired by converting it to PNG, because the damage is already in the pixels; the remedy is to re-export from the source texture.</p>
+<blockquote>
+<div><p><strong>Open.</strong> Whether base color and emissive textures may be JPEG, and the size cap per map type. Proposed: PNG by default for every map. JPEG is permitted for <code class="docutils literal notranslate"><span class="pre">baseColorTexture</span></code> and <code class="docutils literal notranslate"><span class="pre">emissiveTexture</span></code> only when all four hold: the material is <code class="docutils literal notranslate"><span class="pre">OPAQUE</span></code>, so no alpha is needed; the encoder is set to libjpeg quality 95 or better with 4:4:4 chroma subsampling, not a default; the JPEG is smaller than the PNG, which for flat maps it often is not; and the image is plugged into no other slot. For size, roughness and metalness maps SHOULD be smaller than the base color map, because they receive no mipmaps and shimmer at distance.</p>
+</div></blockquote>
+<p><strong>Implementation Note.</strong> Base color and emissive are treated as sRGB; every other map is linear. 16-bit images are converted to 8 bits on upload and buy nothing. PNG and JPEG both decode to the same size in video memory, so the choice costs disk and transfer, never GPU memory.</p>
+<p>A base color texture on an <code class="docutils literal notranslate"><span class="pre">OPAQUE</span></code> material SHOULD NOT carry an alpha channel. glTF ignores the channel on an opaque material, and a reader of the file cannot tell whether it was meant.</p>
+<p>Occlusion, roughness and metalness MAY be packed into a single texture, with occlusion in red, roughness in green and metalness in blue, as glTF specifies.</p>
+<p>Image names SHOULD identify what the map is, for example <code class="docutils literal notranslate"><span class="pre">Albedo-&lt;component&gt;</span></code> and <code class="docutils literal notranslate"><span class="pre">Normal-&lt;component&gt;</span></code>. It is the only clue a reviewer has for telling maps apart in a delivery.</p>
+</section>
+<section id="transparency">
+<h2>Transparency<a class="headerlink" href="#transparency" title="Link to this heading"></a></h2>
+<p>Transparency MUST be planned per material and MUST NOT be painted per pixel as a gradient.</p>
+<p>For cutouts such as vents, perforations and mesh guards, the material MUST use <code class="docutils literal notranslate"><span class="pre">alphaMode:</span> <span class="pre">MASK</span></code> with <code class="docutils literal notranslate"><span class="pre">alphaCutoff</span></code> 0.5 and binary alpha in a PNG base color texture.</p>
+<p>An opaque part MUST NOT be tagged <code class="docutils literal notranslate"><span class="pre">alphaMode:</span> <span class="pre">BLEND</span></code>.</p>
+<p><strong>Implementation Note.</strong> A base color texture needs an alpha channel in exactly one case: the opacity varies across the surface of one material, which is the cutout case above. Uniform translucency is a factor, not a channel. The BlueBoat chassis is a cutout region wearing the wrong clothes: 0.56 percent of its map is non-opaque and the whole hull is tagged <code class="docutils literal notranslate"><span class="pre">BLEND</span></code> for it, where <code class="docutils literal notranslate"><span class="pre">MASK</span></code> at cutoff 0.5 loses nothing.</p>
+<blockquote>
+<div><p><strong>Open.</strong> How uniform translucency, such as an acrylic tube, is expressed, and whether <code class="docutils literal notranslate"><span class="pre">BLEND</span></code> is used at all given that this project’s primary consumer ignores it. Proposed: give each translucent region its own material with the opacity in <code class="docutils literal notranslate"><span class="pre">baseColorFactor</span></code> alpha and the texture RGB only. Whether that material is tagged <code class="docutils literal notranslate"><span class="pre">BLEND</span></code> for the benefit of other viewers, or left <code class="docutils literal notranslate"><span class="pre">OPAQUE</span></code> so the file reads the same everywhere, is the part still to agree.</p>
+</div></blockquote>
+<p><strong>Implementation Note.</strong> Gazebo honors <code class="docutils literal notranslate"><span class="pre">MASK</span></code> and ignores <code class="docutils literal notranslate"><span class="pre">BLEND</span></code> entirely, rendering the material opaque. Uniform opacity reaches it instead through the alpha of <code class="docutils literal notranslate"><span class="pre">baseColorFactor</span></code>, on any alpha mode, and is applied twice, so an alpha of 0.5 renders at about 0.25. <code class="docutils literal notranslate"><span class="pre">doubleSided</span></code> is honored only on a <code class="docutils literal notranslate"><span class="pre">MASK</span></code> material; every other surface is back-face culled, so thin geometry needs thickness.</p>
+</section>
+<section id="prohibited-content">
+<h2>Prohibited content<a class="headerlink" href="#prohibited-content" title="Link to this heading"></a></h2>
+<p>A delivered file MUST NOT contain:</p>
+<ul class="simple">
+<li><p>a non-empty <code class="docutils literal notranslate"><span class="pre">extensionsRequired</span></code> array</p></li>
+<li><p>animations, skins, cameras or lights</p></li>
+<li><p>Draco mesh compression</p></li>
+<li><p>KTX2 or Basis textures</p></li>
+<li><p>the <code class="docutils literal notranslate"><span class="pre">KHR_texture_transform</span></code> extension</p></li>
+</ul>
+<p><strong>Implementation Note.</strong> These are prohibited for different reasons, and the reasons matter if one is ever reconsidered. Draco decodes correctly in both consumers but defeats the project’s own inspection tools. Texture transform is parsed and then ignored, so textures render in the wrong place. Animations are imported and force the bounding box to a unit cube, breaking culling. Cameras and lights are ignored harmlessly. <code class="docutils literal notranslate"><span class="pre">KHR_xmp_json_ld</span></code>, which carries <a class="reference internal" href="#the-manifest">the manifest</a>, is not prohibited: it is declared in <code class="docutils literal notranslate"><span class="pre">extensionsUsed</span></code>, has no effect on appearance, and a consumer that ignores it is behaving correctly. An empty <code class="docutils literal notranslate"><span class="pre">extensionsRequired</span></code> is the single check that covers the general case, and it is worth being clear about what that check buys. The glTF specification requires a conforming reader to refuse a file outright when it requires an extension the reader does not implement, so one reading of this rule is that it saves us from a file that would fail to load. Measurement says otherwise: <code class="docutils literal notranslate"><span class="pre">Distribution_Warehouse</span></code>, which declares <code class="docutils literal notranslate"><span class="pre">KHR_texture_transform</span></code> in <code class="docutils literal notranslate"><span class="pre">extensionsRequired</span></code>, loads through gz-common without complaint, building all 3,010 primitives and 19 materials. Gazebo is not a conforming reader on this point. The rule therefore protects against a file that loads and is silently wrong, which is the worse failure and the one nobody notices. The Gazebo team’s own demo assets declare <code class="docutils literal notranslate"><span class="pre">KHR_texture_transform</span></code> and <code class="docutils literal notranslate"><span class="pre">KHR_materials_specular</span></code>, so files from that workflow will fail this section and need re-export.</p>
+<blockquote>
+<div><p><strong>Open: Future.</strong> Which of these prohibitions are permanent. Two are not statements about the format: Draco decodes correctly in both consumers and is prohibited only because it defeats this project’s own inspection tools, and KTX2 is prohibited because Gazebo cannot read it while Drake recommends it for performance (<a class="reference internal" href="#closely-related-work-informative">Closely related work</a>). Both would be reconsidered if the tooling or the consumer changed, and compressed geometry and supercompressed textures are the two levers with real size savings behind them. Animations, cameras and lights are prohibited on their merits and are not expected to change.</p>
+</div></blockquote>
+</section>
+<section id="authoring-toolchain">
+<h2>Authoring toolchain<a class="headerlink" href="#authoring-toolchain" title="Link to this heading"></a></h2>
+<p>The version stack is pinned at patch level, because the behavior has been observe to be changning at the patch release level.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p></p></th>
+<th class="head"><p>Version</p></th>
+<th class="head"><p>Why it is pinned</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Blender</p></td>
+<td><p>5.2.2 LTS</p></td>
+<td><p>The authoring tool. Its <code class="docutils literal notranslate"><span class="pre">+Y</span> <span class="pre">Up</span></code> export option is the one that must be off (<a class="reference internal" href="#axes">Axes</a>), and its Set Origin behavior is what the <a class="reference internal" href="#origin-datum-coordinate-system-location">Origin</a> section warns about</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">io_scene_gltf2</span></code></p></td>
+<td><p>5.2.40</p></td>
+<td><p>The exporter. Writes <code class="docutils literal notranslate"><span class="pre">asset.generator</span></code> as <code class="docutils literal notranslate"><span class="pre">Khronos</span> <span class="pre">glTF</span> <span class="pre">Blender</span> <span class="pre">I/O</span> <span class="pre">v5.2.40</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>ROS</p></td>
+<td><p>Lyrical</p></td>
+<td><p>The distribution floor. RViz rotates glTF on load only from Lyrical onward, which is what makes the correction in the <a class="reference internal" href="#axes">Axes</a> section a single default rather than version dependent</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">rviz2</span></code>, <code class="docutils literal notranslate"><span class="pre">rviz_rendering</span></code></p></td>
+<td><p>15.2.5</p></td>
+<td><p>The consumer that rotates a glTF mesh as it loads</p></td>
+</tr>
+<tr class="row-even"><td><p>Gazebo Sim</p></td>
+<td><p>10.5.0</p></td>
+<td><p>The consumer that performs no up-axis conversion at all</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">gz-common</span></code></p></td>
+<td><p>7.3.0, via <code class="docutils literal notranslate"><span class="pre">ros-lyrical-gz-common-vendor</span></code> 0.3.6</p></td>
+<td><p>The loader. Composes node transforms and bakes them into the vertices, which is why the <a class="reference internal" href="#scenes-and-nodes">Scenes and nodes</a> section prohibits them. Also the version carrying the <code class="docutils literal notranslate"><span class="pre">.gltf</span></code> extension-comparison bug behind the <a class="reference internal" href="#file-format">File format</a> section</p></td>
+</tr>
+<tr class="row-even"><td><p>assimp</p></td>
+<td><p>6.0.4</p></td>
+<td><p>What <code class="docutils literal notranslate"><span class="pre">gz-common</span></code> parses the file with</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Implementation Note.</strong> The pin is necessary and not sufficient. <code class="docutils literal notranslate"><span class="pre">asset.generator</span></code> records the tool and never the settings, so two files from the same exporter can still differ in image format, tangents and compression, which is why the <a class="reference internal" href="#conformance-testing">Conformance testing</a> section’s checks constrain the outcome rather than the settings. Also, this is a reason it is recommended to save the exporter settings in the <code class="docutils literal notranslate"><span class="pre">.blend</span></code> asset source so that it can be re-exported with reporducible results.</p>
+</section>
+<section id="conformance-testing">
+<h2>Conformance testing<a class="headerlink" href="#conformance-testing" title="Link to this heading"></a></h2>
+<p>A delivery conforms when all of the following hold. The first two are the modeler’s responsibility, the third and fourth the integrator’s.</p>
+<ol class="arabic simple">
+<li><p><strong>Valid.</strong> Zero errors from the Khronos glTF Validator.</p></li>
+<li><p><strong>Intended.</strong> The model renders as the modeler intended in a conformant viewer. The Khronos glTF Sample Viewer is the reference. Blender’s viewport is not, because it shows Blender’s materials rather than the exported file.</p></li>
+<li><p><strong>Compliant.</strong> Every MUST in this profile is satisfied, checked mechanically where possible.</p></li>
+<li><p><strong>Usable.</strong> The part renders correctly in Gazebo and loads in RViz.</p></li>
+</ol>
+<p><strong>Implementation Note.</strong> These are four different questions and they fail independently. A file can be valid and not what the modeler meant. It can be both and still render wrong in Gazebo, which implements a subset of glTF and is actively changing. Passing in Gazebo is necessary and never sufficient, because a defect can be masked by something Gazebo ignores. External viewers such as Babylon and F3D are not a Gazebo proxy either; <code class="docutils literal notranslate"><span class="pre">glb_probe</span></code>, which prints what the loader built, is.</p>
+<p>The checks that answer each question, who runs them and when, are described in the <a class="reference internal" href="workflow.html#step-3-verify"><span class="std std-ref">workflow</span></a>.</p>
+</section>
+<section id="open-questions-informative">
+<h2>Open questions (Informative)<a class="headerlink" href="#open-questions-informative" title="Link to this heading"></a></h2>
+<section id="open-the-to-do-list-for-this-draft">
+<h3>Open: the to-do list for this draft<a class="headerlink" href="#open-the-to-do-list-for-this-draft" title="Link to this heading"></a></h3>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Section</p></th>
+<th class="head"><p>Question</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference internal" href="#a-component-part">A component part</a></p></td>
+<td><p>Component datum becomes a requirement (deferred)</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#a-component-part">A component part</a></p></td>
+<td><p>When the part’s nominal geometry is unpublished (deferred)</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#uv-sets">UV sets</a></p></td>
+<td><p>Whether the 0-to-1 UV requirement survives</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#budgets">Budgets</a></p></td>
+<td><p>Triangle budget, by visual requirement tier</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#textures">Textures</a></p></td>
+<td><p>Base color format and per-map size caps</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#transparency">Transparency</a></p></td>
+<td><p>Uniform translucency and use of BLEND</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="open-future-not-blocking-this-draft">
+<h3>Open: Future, not blocking this draft<a class="headerlink" href="#open-future-not-blocking-this-draft" title="Link to this heading"></a></h3>
+<p>The rule beside each of these is normative and a delivery must satisfy it. What is open is only whether the simple form stays.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Section</p></th>
+<th class="head"><p>Rule</p></th>
+<th class="head"><p>Why the simple form</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference internal" href="#file">File</a></p></td>
+<td><p>One part per delivered file</p></td>
+<td><p>Simplicity: one part, one model, one file is a mapping every tool can assume</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#file-format">File format</a></p></td>
+<td><p>Binary container as the only permitted form</p></td>
+<td><p>Simplicity, and two of the reasons are defects with upstream fixes pending</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#prohibited-content">Prohibited content</a></p></td>
+<td><p>Which prohibitions are permanent</p></td>
+<td><p>Draco defeats our own inspection tools; KTX2 is unreadable by Gazebo</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="references-informative">
+<h2>References (Informative)<a class="headerlink" href="#references-informative" title="Link to this heading"></a></h2>
+<p>The workflow this profile serves is built on published standards owned by other people, and defines project convention only where no standard reaches. This is deliberate. A project-local convention must be taught to every modeler, defended in every review and remembered by everyone who touches the pipeline. A standard is documented by someone else, understood by people not yet hired, and supported by software nobody here has to maintain.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Standard</p></th>
+<th class="head"><p>Title</p></th>
+<th class="head"><p>Role here</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference external" href="https://registry.khronos.org/glTF/specs/2.0/glTF-2.0.html">glTF 2.0</a>, Khronos, registry revision 2.0.1</p></td>
+<td><p>glTF 2.0 Specification</p></td>
+<td><p>The mesh format and its material model. Normative except where this profile narrows, adds to, or departs from it, each of which is marked. The Khronos registry text is cited rather than ISO/IEC 12113:2022, which froze the same content in 2022 and does not carry the extension registry</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="https://www.ros.org/reps/rep-0103.html">REP 103</a>, ROS</p></td>
+<td><p>Standard Units of Measure and Coordinate Conventions</p></td>
+<td><p>Coordinate conventions and units for the part coordinate system</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="https://www.rfc-editor.org/info/bcp14">BCP 14</a>, IETF</p></td>
+<td><p>Key words for use in RFCs to Indicate Requirement Levels: <a class="reference external" href="https://www.rfc-editor.org/rfc/rfc2119">RFC 2119</a> as amended by <a class="reference external" href="https://www.rfc-editor.org/rfc/rfc8174">RFC 8174</a></p></td>
+<td><p>The meaning of the requirement keywords in this document</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="https://github.com/openrobotics/reps/blob/main/_posts/rep-0158%3A2006.md">REP 158</a>, ROS and Gazebo (Draft)</p></td>
+<td><p>OpenUSD Conventions for Simulation Asset Interoperability in Open Source Robotics</p></td>
+<td><p>A strict OpenUSD profile for simulation assets. Its section 3 defines the export pathway to other formats, glTF 2.0 among them, and its geometry, material and texture rules are written for that pathway. Cited below wherever a rule here matches one of its requirements</p></td>
+</tr>
+</tbody>
+</table>
+<p>Three obligations follow from that design goal, and this document is bound by all of them. Where this profile departs from a standard, the departure is stated explicitly and the reason given, never left as a silent local habit. Where it adds a requirement the standard does not make, the rule says which consumer needs it, so that a reader can tell a limitation of our tools from a property of the format. And where a standard is silent, this profile says so plainly rather than implying an authority that does not exist.</p>
+<p><strong>Implementation Note.</strong> Gazebo’s glTF support carries no roadmap commitment, and this document does not treat it as one. The published Gazebo roadmap has no glTF, GLB, PBR or mesh-format item. The direction is on record only in project management committee minutes: <a class="reference external" href="https://discourse.openrobotics.org/t/gazebo-pmc-meeting-minutes-2026-08-17/57494">2026-08-17</a> discusses deprecating COLLADA in favor of glTF and GLB and leaves it unresolved, and <a class="reference external" href="https://discourse.openrobotics.org/t/gazebo-pmc-meeting-minutes-2026-06-15/55498">2026-06-15</a> decided to move mesh loading to Assimp by default. Behavior is what <code class="docutils literal notranslate"><span class="pre">MeshManager.cc</span></code> does today, which routes <code class="docutils literal notranslate"><span class="pre">gltf</span></code>, <code class="docutils literal notranslate"><span class="pre">glb</span></code> and <code class="docutils literal notranslate"><span class="pre">fbx</span></code> to the Assimp loader while <code class="docutils literal notranslate"><span class="pre">dae</span></code>, <code class="docutils literal notranslate"><span class="pre">obj</span></code> and <code class="docutils literal notranslate"><span class="pre">stl</span></code> keep their custom ones. Rules below cite that behavior as intent or as fact accordingly, never a roadmap.</p>
+</section>
+<section id="closely-related-work-informative">
+<h2>Closely related work (Informative)<a class="headerlink" href="#closely-related-work-informative" title="Link to this heading"></a></h2>
+<p>This profile is not the first attempt to make glTF actionable for a particular consumer. Three efforts are close enough to compare against, and the comparison is useful in both directions: it shows which of our rules are obvious enough that others reached them independently, and which are ours alone and therefore carry more risk.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Effort</p></th>
+<th class="head"><p>What it profiles</p></th>
+<th class="head"><p>Where we agree</p></th>
+<th class="head"><p>Where we differ</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference external" href="https://drake.mit.edu/doxygen_cxx/group__geometry__file__formats.html">Drake mesh file formats</a>, Toyota Research Institute</p></td>
+<td><p>glTF as consumed by one robotics simulator, stated as a supported-feature list rather than a specification</p></td>
+<td><p>Animation and skinning ignored; vertex normals required; PBR as the reason to prefer glTF over OBJ</p></td>
+<td><p>Drake does not support <code class="docutils literal notranslate"><span class="pre">.glb</span></code> at all, where we require it. Its published corpus is <code class="docutils literal notranslate"><span class="pre">.gltf</span></code> with external <code class="docutils literal notranslate"><span class="pre">.bin</span></code> and <code class="docutils literal notranslate"><span class="pre">.png</span></code>, and it recommends <code class="docutils literal notranslate"><span class="pre">KHR_texture_basisu</span></code>, which the <a class="reference internal" href="#prohibited-content">Prohibited content</a> section prohibits because Gazebo cannot read it</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="https://github.com/openrobotics/reps/blob/main/_posts/rep-0158%3A2006.md">REP 158</a>, ROS and Gazebo (Draft)</p></td>
+<td><p>OpenUSD for simulation-asset interchange, with glTF 2.0 as one export target</p></td>
+<td><p>PNG required for normal, metallic, roughness and packed ORM maps; JPEG permitted for base color and emissive without alpha; UVs packed into [0, 1]; the ROS right-handed convention</p></td>
+<td><p>Its subject is USD and glTF is downstream of it, so its rules are written for an export pathway rather than for a delivered glTF file. It is also Draft and unratified</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="https://github.com/KhronosGroup/3DC-Asset-Creation">Real-time Asset Creation Guidelines</a> v2.0.0, Khronos 3D Commerce</p></td>
+<td><p>glTF for real-time product visualization on web, apps and XR</p></td>
+<td><p>A single self-contained file is generally preferred; more than one UV map is discouraged; naming restricted to letters, digits, underscore and hyphen with no spaces; metalness should be black or white, gray only for anti-aliasing</p></td>
+<td><p>It endorses UV tiling above 1 for repeating patterns, which the <a class="reference internal" href="#uv-sets">UV sets</a> section forbids. Its target is photorealism at product scale, so it has no equivalent of a part frame, an origin convention or a collision companion</p></td>
+</tr>
+</tbody>
+</table>
+<p>Two things follow. The Khronos guidelines are the same exercise as this one in a different domain, and where they and this profile agree the rule is probably not controversial: the metalness rule in the <a class="reference internal" href="#materials">Materials</a> section is the clearest case, arrived at there from art-pipeline experience and here from measuring what robotics assets ship. Where all three differ from us the disagreement is usually about the consumer, not about glTF, and the <a class="reference internal" href="#prohibited-content">Prohibited content</a> section’s prohibitions are the place that shows most plainly: an extension Drake recommends for performance is one Gazebo cannot read.</p>
+<p>Nothing above is a survey. It is three efforts that publish enough detail to compare, and their existence is not evidence that a practice is settled.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="Honu Robotics’ glTF asset framework" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="workflow.html" class="btn btn-neutral float-right" title="Honu glTF Asset Workflow" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright Honu Robotics.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    <span class="fa fa-book"> Other Versions</span>
+    v: main
+    <span class="fa fa-caret-down"></span>
+  </span>
+  <div class="rst-other-versions">
+    <dl id="honu-version-list">
+      <dt>Distributions</dt>
+      <dd><a href="/gltf-robotics/main/" data-version="main">Main</a></dd>
+    </dl>
+  </div>
+</div>
+<script>
+  (function () {
+    var current = "main";
+    var base = "/gltf-robotics/";
+
+    /* Keep the reader on the same page when switching versions; the
+       version root href stays as the fallback for pages a version lacks. */
+    function wire() {
+      document.querySelectorAll('.rst-other-versions a[data-version]').forEach(function (a) {
+        var target = a.getAttribute('data-version');
+        var path = window.location.pathname;
+        if (target !== current && path.indexOf('/' + current + '/') !== -1) {
+          a.href = path.replace('/' + current + '/', '/' + target + '/');
+        }
+      });
+    }
+
+    if (!window.fetch) { wire(); return; }
+
+    /* The deploy tool maintains versions.json at the site root; reading it
+       at runtime lets builds published before a new distribution existed
+       still offer it in the flyout. Offline or local preview builds fall
+       back to the build time list rendered above. */
+    fetch(base + 'versions.json', {cache: 'no-cache'}).then(function (response) {
+      if (!response.ok) { throw new Error(response.status); }
+      return response.json();
+    }).then(function (entries) {
+      var list = document.getElementById('honu-version-list');
+      if (!list || !entries.length) { return; }
+      list.querySelectorAll('dd').forEach(function (dd) { dd.remove(); });
+      entries.forEach(function (entry) {
+        var a = document.createElement('a');
+        a.href = entry.url;
+        a.setAttribute('data-version', entry.name);
+        a.textContent = entry.name.charAt(0).toUpperCase() + entry.name.slice(1);
+        var dd = document.createElement('dd');
+        dd.appendChild(a);
+        list.appendChild(dd);
+      });
+    }).catch(function () {}).finally(wire);
+  })();
+</script><script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
