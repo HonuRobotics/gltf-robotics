@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<sdf version="1.9">
+  <world name="WalkthoughWorld">
+    <light type="directional" name="sun"><pose>0 0 10 0 0 0</pose><direction>-0.5 0.1 -0.9</direction><diffuse>0.9 0.9 0.9 1</diffuse></light>
+
+   <!-- <model name="ground"><static>true</static><link name="l"><visual name="v">
+      <geometry><plane><normal>0 0 1</normal><size>10 10</size></plane></geometry>
+      <material><ambient>0.85 0.85 0.85 1</ambient><diffuse>0.85 0.85 0.85 1</diffuse></material></visual></link></model>-->
+
+    <model name="blueboat_chassis"><static>true</static><pose>0 0 0 0 0 0</pose>
+      <link name="base_link"><visual name="v"><pose>0 0 0 0 0 0</pose>
+        <geometry><mesh><uri>
+        /home/bsb/maritime_ws/src/bluerobotics_models/bluerobotics_parts/models/blueboat_chassis/blueboat_chassis.visual.glb
+        </uri></mesh></geometry></visual></link></model>
+        
+  </world>
+</sdf>

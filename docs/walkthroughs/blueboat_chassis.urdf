@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<robot name="blueboat_chassis">
+  <link name="world"/>
+  <joint name="world_to_base" type="fixed">
+    <parent link="world"/><child link="base_link"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+  </joint>
+  <link name="base_link">
+    <visual><origin xyz="0 0 0" rpy="-1.5708 0 0"/>
+      <geometry><mesh filename="file:///home/bsb/maritime_ws/src/bluerobotics_models/bluerobotics_parts/models/blueboat_chassis/blueboat_chassis.visual.glb"/></geometry></visual>
+  </link>
+</robot>

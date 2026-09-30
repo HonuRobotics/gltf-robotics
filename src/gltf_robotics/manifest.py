@@ -75,7 +75,10 @@ def part_name(path):
 
 
 def load_commission(path):
-    data = yaml.safe_load(pathlib.Path(path).read_text())
+    try:
+        data = yaml.safe_load(pathlib.Path(path).read_text())
+    except yaml.YAMLError as exc:
+        raise ManifestError(f"{path} is not valid YAML. An unclosed quote is the usual cause.\n{exc}")
     if not isinstance(data, dict) or not isinstance(data.get("parts"), dict):
         raise ManifestError(f"{path}: a commission needs a 'parts' mapping, one block per part")
     return data
