@@ -42,7 +42,7 @@ The published source a part's dimensions are cited from. The integrator chooses 
 
 ### datum
 
-A situation feature of the part that the coordinate system is referenced to. The profile's [Datum specification](../profile.md#datum-specification) section states which features may serve and requires that those named together fix all six degrees of freedom. A datum is named before modeling starts; it is not measured from the geometry afterwards.
+A feature or set of features of the part that define the coordinate system reference - the location of the origin. The profile's [Datum specification](../profile.md#datum-specification) section states which features may serve and requires that those named together fix all six degrees of freedom. A datum is named before modeling starts; it is not measured from the geometry afterwards.
 
 ### datum coordinate system
 
