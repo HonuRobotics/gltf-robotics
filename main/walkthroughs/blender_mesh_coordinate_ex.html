@@ -149,7 +149,7 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="exporting-from-blender.html">Exporting from Blender</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="exporting-from-blender.html#author-in-the-ros-frame-and-do-not-let-the-exporter-convert">Author in the ROS frame, and do not let the exporter convert</a></li>
+<li class="toctree-l3"><a class="reference internal" href="exporting-from-blender.html#author-in-blender-s-own-convention-and-let-the-exporter-convert">Author in Blender’s own convention, and let the exporter convert</a></li>
 <li class="toctree-l3"><a class="reference internal" href="exporting-from-blender.html#clear-location-and-rotation-apply-scale-before-exporting">Clear location and rotation, apply scale, before exporting</a></li>
 <li class="toctree-l3"><a class="reference internal" href="exporting-from-blender.html#where-the-origin-goes-is-not-yours-to-choose">Where the origin goes is not yours to choose</a></li>
 <li class="toctree-l3"><a class="reference internal" href="exporting-from-blender.html#name-the-object-not-the-mesh">Name the object, not the mesh</a></li>
@@ -209,6 +209,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../reference/glossary.html#terms">Terms</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="../reference/glossary.html#assembly">assembly</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../reference/glossary.html#asset">asset</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/glossary.html#asset-coordinate-system">asset coordinate system</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../reference/glossary.html#base-part">base part</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../reference/glossary.html#commission">commission</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../reference/glossary.html#component-part">component part</a></li>
@@ -398,8 +399,7 @@
 </ul>
 <p>Export to glTF 2.0:
 There are 110 options in the export widget - many places to cause problems.</p>
-<p>See <a class="reference internal" href="../reference/blender-export-options.html"><span class="std std-doc">the export options reference</span></a> for all 110 with the thirteen that matter called out at the top.</p>
-<p>The first one to bite is <code class="docutils literal notranslate"><span class="pre">use_selection</span></code>. The reference prescribes it True, and the first export of this very example was made with nothing selected: the result was a valid 132-byte <code class="docutils literal notranslate"><span class="pre">.glb</span></code> holding one scene and no geometry, with no error and no warning anywhere. Select the object before exporting, and read the file back before going further.</p>
+<p>See <a class="reference internal" href="../reference/blender-export-options.html"><span class="std std-doc">the export options reference</span></a> for with the thirteen parameters that need to be verified/set.</p>
 </section>
 </section>
 <section id="baseline">
@@ -593,7 +593,7 @@ cat<span class="w"> </span>&gt;<span class="w"> </span>monkey.urdf<span class="w
 <h3>6. RViz<a class="headerlink" href="#rviz" title="Link to this heading"></a></h3>
 <p>Two commands, two shells.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ros2<span class="w"> </span>run<span class="w"> </span>robot_state_publisher<span class="w"> </span>robot_state_publisher<span class="w"> </span>--ros-args<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-p<span class="w"> </span>robot_description:<span class="o">=</span><span class="s2">"</span><span class="k">$(</span>cat<span class="w"> </span>~/maritime_ws/spike/walkthrough/monkey.urdf<span class="k">)</span><span class="s2">"</span>
+<span class="w">  </span>-p<span class="w"> </span>robot_description:<span class="o">=</span><span class="s2">"</span><span class="k">$(</span>cat<span class="w"> </span>~/maritime_ws/tools/gltf-robotics/examples/monkey.urdf<span class="k">)</span><span class="s2">"</span>
 </pre></div>
 </div>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>rviz2<span class="w"> </span>-d<span class="w"> </span>~/maritime_ws/tools/gltf-robotics/examples/monkey.rviz
@@ -615,6 +615,7 @@ cat<span class="w"> </span>&gt;<span class="w"> </span>monkey.urdf<span class="w
 <span class="p">}</span>
 </pre></div>
 </div>
+<p><img alt="" src="../_images/monkey_walkthrough4_annote.png" /></p>
 <p>Notes:</p>
 <ol class="arabic simple">
 <li><p>It is automatically and silently applied to any file with the matching extension (not a configurable parameter)</p></li>

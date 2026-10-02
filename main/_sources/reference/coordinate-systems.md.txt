@@ -563,17 +563,24 @@ Every row is what the source predicts. The `.dae` pair is why the project's earl
 
 ### The decision, and what it costs
 
-**[Practice]** This project delivers the file in the body coordinate system: Blender's `+Y Up` off, no transform on the root node, vertices already on the link axes. the profile's [Axes](../profile.md#axes) section is the normative statement and its [Scenes and nodes](../profile.md#scenes-and-nodes) section the root-node rule. In the chain above, that puts the rotation nowhere in the file and nowhere in Gazebo's `Pose`, which stays identity. RViz's rotation is inside the consumer and cannot be removed, so it is undone in `Pose`, on every URDF visual that shows a glTF part:
+**[Practice]** This project delivers the file in glTF's own coordinate system, the asset coordinate system: Blender's `+Y Up` on, the part built in Blender's convention with its front toward −Y, no transform on the root node. The profile's [Axes](../profile.md#axes) section is the normative statement and its [Scenes and nodes](../profile.md#scenes-and-nodes) section the root-node rule. In the chain above, that puts the rotation from the asset coordinate system to the part coordinate system in `Pose`, which the integrator writes. It is one fixed rotation, robot (x, y, z) = glTF (Z, X, Y), a roll of 90° then a yaw of 90°:
 
 ```xml
-<visual><origin xyz="0 0 0" rpy="-1.5708 0 0"/>
+<!-- Gazebo: nothing happens on load, so Pose carries the whole rotation -->
+<visual name="v"><pose>0 0 0 1.5708 0 1.5708</pose> ... </visual>
+
+<!-- RViz, Lyrical and later: Rx(90) is applied inside on load, so Pose carries only the yaw -->
+<visual><origin xyz="0 0 0" rpy="0 0 1.5708"/>
+
+<!-- RViz, Jazzy and Kilted: nothing happens on load -->
+<visual><origin xyz="0 0 0" rpy="1.5708 0 1.5708"/>
 ```
 
-**[Firm]** That gives `Rx(−90) · Root · Rx(+90) · p_node` in RViz. With an identity root the two rolls cancel and RViz shows the vertices exactly as Gazebo does. With a root transform they do not, because the undo acts outside the root and RViz's roll acts inside it: `examples/monkey_xform.glb` carries a 5 m translation and a 90 degree yaw on its root, and with the undo in place its centre lands at (0, 5, 0) in RViz where Gazebo puts it at (0, 0, 5). The identity-root rule is what makes the undo exact.
+**[Firm]** In RViz on Lyrical that gives `Rz(90) · Root · Rx(90) · p_node`, and in Gazebo `Rz(90) · Rx(90) · Root · p_node`. With an identity root the two are equal and RViz shows the vertices exactly as Gazebo does. With a root transform they are not, because the loader's roll acts inside the root in one consumer and nowhere in the other: `examples/monkey_xform.glb` carries a 5 m translation and a 90 degree yaw on its root, and the two consumers put its centre in different places. The identity-root rule is what makes the two agree.
 
-**[Practice]** The cost is that the file is not oriented the way the glTF specification says an asset should be. The Khronos Sample Viewer and every browser viewer assume Y-up, so they show the part on its side, and a URDF that omits the roll shows it that way in RViz. The reference viewer can therefore no longer answer whether a part is correctly oriented, only whether its materials are right. Against that, Blender, the file, Gazebo and the link agree with no conversion anywhere, and the one correction lives in one place, in the robot description, where it is visible in a diff.
+**[Practice]** This reverses the project's earlier decision, which delivered the file on the robotics axes with `+Y Up` off so that Gazebo needed no `Pose`. The cost of that was that the file was not oriented the way the glTF specification says an asset should be: the Khronos Sample Viewer and every browser viewer showed the part on its side, so the reference viewer could not answer whether a part was oriented right, and every RViz visual needed a compensating roll anyway. Now the file is right in every glTF tool, and the one conversion lives in the robot description, where it is visible in a diff.
 
-**[Open]** How the RViz correction is delivered in the model repositories, given that it depends on the ROS distribution: the profile's [Axes](../profile.md#axes) section carries the open block. Nothing in this document depends on the answer.
+**[Open]** How the RViz rotation is delivered in the model repositories, given that it depends on the ROS distribution. Nothing in this document depends on the answer.
 
 ## Next increment
 

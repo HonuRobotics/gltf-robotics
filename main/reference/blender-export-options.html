@@ -149,7 +149,7 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../walkthroughs/exporting-from-blender.html">Exporting from Blender</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../walkthroughs/exporting-from-blender.html#author-in-the-ros-frame-and-do-not-let-the-exporter-convert">Author in the ROS frame, and do not let the exporter convert</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../walkthroughs/exporting-from-blender.html#author-in-blender-s-own-convention-and-let-the-exporter-convert">Author in Blender’s own convention, and let the exporter convert</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../walkthroughs/exporting-from-blender.html#clear-location-and-rotation-apply-scale-before-exporting">Clear location and rotation, apply scale, before exporting</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../walkthroughs/exporting-from-blender.html#where-the-origin-goes-is-not-yours-to-choose">Where the origin goes is not yours to choose</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../walkthroughs/exporting-from-blender.html#name-the-object-not-the-mesh">Name the object, not the mesh</a></li>
@@ -209,6 +209,7 @@
 <li class="toctree-l3"><a class="reference internal" href="glossary.html#terms">Terms</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="glossary.html#assembly">assembly</a></li>
 <li class="toctree-l4"><a class="reference internal" href="glossary.html#asset">asset</a></li>
+<li class="toctree-l4"><a class="reference internal" href="glossary.html#asset-coordinate-system">asset coordinate system</a></li>
 <li class="toctree-l4"><a class="reference internal" href="glossary.html#base-part">base part</a></li>
 <li class="toctree-l4"><a class="reference internal" href="glossary.html#commission">commission</a></li>
 <li class="toctree-l4"><a class="reference internal" href="glossary.html#component-part">component part</a></li>
@@ -451,8 +452,8 @@
 <tr class="row-even"><td><p>+Y Up</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">export_yup</span></code></p></td>
 <td><p>True</p></td>
-<td><p>False</p></td>
-<td><p>the profile’s <a class="reference internal" href="../profile.html#axes"><span class="std std-ref">Axes</span></a> section requires the file Z-up, in the body coordinate system; it is the one axis conversion the workflow does not want</p></td>
+<td><p>True</p></td>
+<td><p>the profile’s <a class="reference internal" href="../profile.html#axes"><span class="std std-ref">Axes</span></a> section requires the file in glTF’s convention, +Y up and +Z forward; the default produces it from a part built in Blender’s own convention</p></td>
 </tr>
 <tr class="row-odd"><td><p>Limit to ▸ Selected Objects</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">use_selection</span></code></p></td>
@@ -699,12 +700,12 @@
 <tr class="row-even"><td><p>+Y Up</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">export_yup</span></code></p></td>
 <td><p>True</p></td>
-<td><p>required False — the profile’s <a class="reference internal" href="../profile.html#axes"><span class="std std-ref">Axes</span></a> section</p></td>
+<td><p>required True, the default — the profile’s <a class="reference internal" href="../profile.html#axes"><span class="std std-ref">Axes</span></a> section</p></td>
 </tr>
 </tbody>
 </table>
-<p>One option, and it is the whole of the coordinate conversion. Off, Blender’s Z-up axes pass through unchanged, which is the body coordinate system the profile’s <a class="reference internal" href="../profile.html#axes"><span class="std std-ref">Axes</span></a> section requires: the file is right in Gazebo with an identity visual pose, and the URDF visual carries <code class="docutils literal notranslate"><span class="pre">rpy=&quot;-1.5708</span> <span class="pre">0</span> <span class="pre">0&quot;</span></code> to undo the rotation RViz applies on load. On, it converts <code class="docutils literal notranslate"><span class="pre">(x,</span> <span class="pre">y,</span> <span class="pre">z)</span></code> to <code class="docutils literal notranslate"><span class="pre">(x,</span> <span class="pre">z,</span> <span class="pre">−y)</span></code> for vertices, normals and node TRS, producing the Y-up file the glTF specification describes, which Gazebo then shows lying on its side. The <a class="reference internal" href="coordinate-systems.html#one-body-one-mesh-who-rotates-what"><span class="std std-ref">coordinate-systems reference</span></a> has the derivation.</p>
-<p>Note what no check can do about it: <code class="docutils literal notranslate"><span class="pre">gltf-check</span></code> has no rule implementing the profile’s <a class="reference internal" href="../profile.html#axes"><span class="std std-ref">Axes</span></a> section’s Z-up MUST, because nothing in a file says which way its author meant up. This setting is verifiable only by rendering, or by the summary tool’s extents against a known dimension.</p>
+<p>One option, and it is the whole of the coordinate conversion. On, it converts <code class="docutils literal notranslate"><span class="pre">(x,</span> <span class="pre">y,</span> <span class="pre">z)</span></code> to <code class="docutils literal notranslate"><span class="pre">(x,</span> <span class="pre">z,</span> <span class="pre">−y)</span></code> for vertices, normals and node TRS, producing the file the glTF specification describes: +Y up, and Blender’s front, −Y, on +Z. That is what the profile’s <a class="reference internal" href="../profile.html#axes"><span class="std std-ref">Axes</span></a> section requires, and the consumer then applies one fixed rotation onto the robotics axes: <code class="docutils literal notranslate"><span class="pre">&lt;pose&gt;0</span> <span class="pre">0</span> <span class="pre">0</span> <span class="pre">1.5708</span> <span class="pre">0</span> <span class="pre">1.5708&lt;/pose&gt;</span></code> in Gazebo, <code class="docutils literal notranslate"><span class="pre">rpy=&quot;0</span> <span class="pre">0</span> <span class="pre">1.5708&quot;</span></code> in RViz on Lyrical. Off, Blender’s Z-up axes pass through unchanged and every glTF viewer shows the part on its side. The <a class="reference internal" href="coordinate-systems.html#one-body-one-mesh-who-rotates-what"><span class="std std-ref">coordinate-systems reference</span></a> has the derivation.</p>
+<p>Note what no check can do about it: <code class="docutils literal notranslate"><span class="pre">gltf-check</span></code> has no rule implementing the profile’s <a class="reference internal" href="../profile.html#axes"><span class="std std-ref">Axes</span></a> section, because nothing in a file says which way its author meant up or forward. This setting is verifiable only by rendering: a part exported with it off lies on its side in the Sample Viewer.</p>
 </section>
 <section id="data-scene-graph">
 <h2>Data ▸ Scene Graph<a class="headerlink" href="#data-scene-graph" title="Link to this heading"></a></h2>

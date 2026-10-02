@@ -149,7 +149,7 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="walkthroughs/exporting-from-blender.html">Exporting from Blender</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="walkthroughs/exporting-from-blender.html#author-in-the-ros-frame-and-do-not-let-the-exporter-convert">Author in the ROS frame, and do not let the exporter convert</a></li>
+<li class="toctree-l3"><a class="reference internal" href="walkthroughs/exporting-from-blender.html#author-in-blender-s-own-convention-and-let-the-exporter-convert">Author in Blender’s own convention, and let the exporter convert</a></li>
 <li class="toctree-l3"><a class="reference internal" href="walkthroughs/exporting-from-blender.html#clear-location-and-rotation-apply-scale-before-exporting">Clear location and rotation, apply scale, before exporting</a></li>
 <li class="toctree-l3"><a class="reference internal" href="walkthroughs/exporting-from-blender.html#where-the-origin-goes-is-not-yours-to-choose">Where the origin goes is not yours to choose</a></li>
 <li class="toctree-l3"><a class="reference internal" href="walkthroughs/exporting-from-blender.html#name-the-object-not-the-mesh">Name the object, not the mesh</a></li>
@@ -209,6 +209,7 @@
 <li class="toctree-l3"><a class="reference internal" href="reference/glossary.html#terms">Terms</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="reference/glossary.html#assembly">assembly</a></li>
 <li class="toctree-l4"><a class="reference internal" href="reference/glossary.html#asset">asset</a></li>
+<li class="toctree-l4"><a class="reference internal" href="reference/glossary.html#asset-coordinate-system">asset coordinate system</a></li>
 <li class="toctree-l4"><a class="reference internal" href="reference/glossary.html#base-part">base part</a></li>
 <li class="toctree-l4"><a class="reference internal" href="reference/glossary.html#commission">commission</a></li>
 <li class="toctree-l4"><a class="reference internal" href="reference/glossary.html#component-part">component part</a></li>
@@ -436,6 +437,7 @@
 <section id="build-to-the-honu-asset-profile-and-export">
 <h3>Build to the <a class="reference internal" href="profile.html"><span class="std std-doc">Honu Asset Profile</span></a> and export<a class="headerlink" href="#build-to-the-honu-asset-profile-and-export" title="Link to this heading"></a></h3>
 <p>The profile inlcudes the rules the model is built to.</p>
+<p>The part is built in Blender’s own convention, front toward −Y and up +Z, and exported with the <code class="docutils literal notranslate"><span class="pre">+Y</span> <span class="pre">Up</span></code> option on, which is the exporter’s default. The file is then in glTF’s coordinate system, as the profile’s <a class="reference internal" href="profile.html#axes"><span class="std std-ref">Axes</span></a> section requires, and the Sample Viewer shows it as the modeler saw it in Blender’s Front view.</p>
 <p>The <a class="reference internal" href="walkthroughs/exporting-from-blender.html"><span class="std std-doc">Blender export guide</span></a> is the tool-specific practice for meeting them.</p>
 </section>
 <section id="step-3-fill-the-glb-manifest-from-the-commission-yaml-integrator">
@@ -444,7 +446,7 @@
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>gltf-manifest<span class="w"> </span>commission.yaml<span class="w"> </span>&lt;part&gt;.visual.glb
 </pre></div>
 </div>
-<p>It finds the part’s block in the commission by the file’s name and copies the values in. It fills in the forward and up axes as <code class="docutils literal notranslate"><span class="pre">+X</span></code> and <code class="docutils literal notranslate"><span class="pre">+Z</span></code>, and the delivery date as today. Only the file’s metadata changes; the geometry and textures are copied through untouched.</p>
+<p>It finds the part’s block in the commission by the file’s name and copies the values in, with the delivery date as today. Only the file’s metadata changes; the geometry and textures are copied through untouched.</p>
 <p>The command refuses a key it does not know, so a misspelled key is caught here. If the commission changes after delivery, the integrator reruns the command; no re-export is needed.</p>
 </section>
 </section>
@@ -466,7 +468,7 @@
 </section>
 <section id="intended">
 <h3>Intended?<a class="headerlink" href="#intended" title="Link to this heading"></a></h3>
-<p>The <a class="reference external" href="https://github.khronos.org/glTF-Sample-Viewer-Release/">Khronos Sample Viewer</a> answers whether the file looks as intended, judged by a person against the commission’s images and material notes. The viewer assumes glTF’s Y-up convention, so the default view is Y-up, X-right, Z-towards viewer.  Qualitative comparision between physcial robot and 3D asset materials, textures, etc.</p>
+<p>The <a class="reference external" href="https://github.khronos.org/glTF-Sample-Viewer-Release/">Khronos Sample Viewer</a> answers whether the file looks as intended, judged by a person against the commission’s images and material notes. It also answers orientation: the viewer assumes glTF’s convention, which the file follows, so a conforming part stands upright and faces the camera in the default view. Qualitative comparison between the physical robot and the 3D asset: materials, textures, orientation.</p>
 </section>
 <section id="compliant">
 <h3>Compliant?<a class="headerlink" href="#compliant" title="Link to this heading"></a></h3>
@@ -479,13 +481,13 @@
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">gltf-check</span></code> again, with the output kept with the review.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">glb_probe</span></code> loads the file through the installed <code class="docutils literal notranslate"><span class="pre">gz-common</span></code>, exactly as Gazebo does, and prints the submeshes and materials the loader built. It is built and run inside drydock; the command is in the <a class="reference external" href="https://github.com/HonuRobotics/gltf-robotics/tree/main/probe">probe README</a>. The delivery passes when the output has no <code class="docutils literal notranslate"><span class="pre">[error]</span></code> lines, every submesh has a material, and the submesh name equals the part name.  It does not render, so it settles what a material is and not how it looks.</p></li>
-<li><p>Gazebo, standalone parts.   This step identifies Gazebo rendering issues that may or may not be consistent with glTF 2.0, e.g.,  white-metal patches mean a primitive with no material, a dark hull means metalness was left at its default. Other viewers do not predict any of this, because they honor <code class="docutils literal notranslate"><span class="pre">BLEND</span></code>, <code class="docutils literal notranslate"><span class="pre">doubleSided</span></code> and extensions that Gazebo ignores.</p>
+<li><p>Gazebo, standalone parts, with the visual placed by <code class="docutils literal notranslate"><span class="pre">&lt;pose&gt;0</span> <span class="pre">0</span> <span class="pre">0</span> <span class="pre">1.5708</span> <span class="pre">0</span> <span class="pre">1.5708&lt;/pose&gt;</span></code>, the fixed rotation from glTF’s axes onto the link’s (<a class="reference internal" href="profile.html#axes"><span class="std std-ref">Axes</span></a>). This step identifies Gazebo rendering issues that may or may not be consistent with glTF 2.0, e.g.,  white-metal patches mean a primitive with no material, a dark hull means metalness was left at its default. Other viewers do not predict any of this, because they honor <code class="docutils literal notranslate"><span class="pre">BLEND</span></code>, <code class="docutils literal notranslate"><span class="pre">doubleSided</span></code> and extensions that Gazebo ignores.</p>
 <ul>
 <li><p>Origin and orientation by eye against the datum specification, naming what the origin sits on in the part’s own terms.</p></li>
 <li><p>The commission’s visual requirement and priorities.</p></li>
 </ul>
 </li>
-<li><p>RViz with the URDF: the part renders, is upright and RViz stays up. Passing in Gazebo is necessary and never sufficient; a normal map with no base color renders in Gazebo and terminates RViz.</p></li>
+<li><p>RViz with the URDF, the visual carrying <code class="docutils literal notranslate"><span class="pre">rpy=&quot;0</span> <span class="pre">0</span> <span class="pre">1.5708&quot;</span></code> on Lyrical and later, or <code class="docutils literal notranslate"><span class="pre">rpy=&quot;1.5708</span> <span class="pre">0</span> <span class="pre">1.5708&quot;</span></code> on Jazzy and Kilted, which do not rotate glTF on load: the part renders, is upright and RViz stays up. Passing in Gazebo is necessary and never sufficient; a normal map with no base color renders in Gazebo and terminates RViz.</p></li>
 </ul>
 </section>
 <section id="when-the-checks-run">
@@ -511,7 +513,7 @@
 <tr class="row-odd"><td><p>Intended</p></td>
 <td><p>Modeler</p></td>
 <td><p>Sample Viewer, against the commission</p></td>
-<td><p>Signed off by the modeler, pose ignored</p></td>
+<td><p>Signed off by the modeler; upright and facing the camera</p></td>
 </tr>
 <tr class="row-even"><td><p>Compliant</p></td>
 <td><p>Modeler, then integrator</p></td>
@@ -534,7 +536,7 @@
 </section>
 <section id="after-acceptance">
 <h2>After acceptance<a class="headerlink" href="#after-acceptance" title="Link to this heading"></a></h2>
-<p>Out of scope here. The consuming project owns everything downstream of an accepted part: placement, the part macro, the RViz correction, joints and actuators, sensors, plugins and buoyancy.</p>
+<p>Out of scope here. The consuming project owns everything downstream of an accepted part: placement, the part macro, the RViz correction, joints and actuators, sensors, plugins and buoyancy. Its part macro applies the same fixed rotation on every glTF visual, roll 90° then yaw 90°, that the checks above apply by hand.</p>
 </section>
 <section id="not-settled-here">
 <h2>Not settled here<a class="headerlink" href="#not-settled-here" title="Link to this heading"></a></h2>

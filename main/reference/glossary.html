@@ -149,7 +149,7 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../walkthroughs/exporting-from-blender.html">Exporting from Blender</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../walkthroughs/exporting-from-blender.html#author-in-the-ros-frame-and-do-not-let-the-exporter-convert">Author in the ROS frame, and do not let the exporter convert</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../walkthroughs/exporting-from-blender.html#author-in-blender-s-own-convention-and-let-the-exporter-convert">Author in Blender’s own convention, and let the exporter convert</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../walkthroughs/exporting-from-blender.html#clear-location-and-rotation-apply-scale-before-exporting">Clear location and rotation, apply scale, before exporting</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../walkthroughs/exporting-from-blender.html#where-the-origin-goes-is-not-yours-to-choose">Where the origin goes is not yours to choose</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../walkthroughs/exporting-from-blender.html#name-the-object-not-the-mesh">Name the object, not the mesh</a></li>
@@ -209,6 +209,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#terms">Terms</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#assembly">assembly</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#asset">asset</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#asset-coordinate-system">asset coordinate system</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#base-part">base part</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#commission">commission</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#component-part">component part</a></li>
@@ -392,7 +393,11 @@
 </section>
 <section id="asset">
 <h3>asset<a class="headerlink" href="#asset" title="Link to this heading"></a></h3>
-<p>Avoided in normative text. In 3D work the word spans meshes, textures, rigs, scenes and library entries at every scale, and glTF itself uses <code class="docutils literal notranslate"><span class="pre">asset</span></code> for the metadata object inside a file, so it cannot be used precisely. Where the profile means the delivered file it says <em>visual model</em>; where it means the glTF object it writes <code class="docutils literal notranslate"><span class="pre">asset</span></code> in code font.</p>
+<p>Avoided in normative text, except in <em>asset coordinate system</em>. In 3D work the word spans meshes, textures, rigs, scenes and library entries at every scale, and glTF itself uses <code class="docutils literal notranslate"><span class="pre">asset</span></code> for the metadata object inside a file, so it cannot be used precisely. Where the profile means the delivered file it says <em>visual model</em>; where it means the glTF object it writes <code class="docutils literal notranslate"><span class="pre">asset</span></code> in code font.</p>
+</section>
+<section id="asset-coordinate-system">
+<h3>asset coordinate system<a class="headerlink" href="#asset-coordinate-system" title="Link to this heading"></a></h3>
+<p>The coordinate system a delivered file is expressed in: glTF’s own, right-handed, +Y up, +Z forward, −X right. A consumer reaches the part coordinate system from it by the fixed rotation in the profile’s <a class="reference internal" href="../profile.html#axes"><span class="std std-ref">Axes</span></a> section. Also called <em>scene space</em>.</p>
 </section>
 <section id="base-part">
 <h3>base part<a class="headerlink" href="#base-part" title="Link to this heading"></a></h3>
@@ -424,8 +429,8 @@
 </section>
 <section id="datum-coordinate-system">
 <h3>datum coordinate system<a class="headerlink" href="#datum-coordinate-system" title="Link to this heading"></a></h3>
-<p>What a datum specification evaluates to against a particular piece of geometry. In a conforming delivery it is the same thing as the part coordinate system, the origin, node space and scene space. The profile narrows all of them to one. The profile’s <a class="reference internal" href="../profile.html#origin-datum-coordinate-system-location"><span class="std std-ref">Origin</span></a> section says so normatively.</p>
-<p>One coordinate system, several names. glTF distinguishes <em>node space</em>, the coordinate system a node’s vertices are expressed in, from <em>scene space</em>, what node space becomes once node transforms are composed down from the root. The profile’s <a class="reference internal" href="../profile.html#scenes-and-nodes"><span class="std std-ref">Scenes and nodes</span></a> section requires exactly one node carrying no transform, which collapses the distinction: node space, scene space, the part coordinate system, the datum coordinate system and the origin are all the same thing in a conforming delivery. Narrowing them to one is a deliberate act of the profile, and it is why the terms are listed here as equivalents and not distinguished.</p>
+<p>What a datum specification evaluates to against a particular piece of geometry. In a conforming delivery its origin is the origin of the file, of node space and scene space, and of the part coordinate system. The profile’s <a class="reference internal" href="../profile.html#origin-datum-coordinate-system-location"><span class="std std-ref">Origin</span></a> section says so normatively.</p>
+<p>One origin, several coordinate systems. glTF distinguishes <em>node space</em>, the coordinate system a node’s vertices are expressed in, from <em>scene space</em>, what node space becomes once node transforms are composed down from the root. The profile’s <a class="reference internal" href="../profile.html#scenes-and-nodes"><span class="std std-ref">Scenes and nodes</span></a> section requires exactly one node carrying no transform, which collapses that distinction: node space and scene space are the same thing in a conforming delivery, the asset coordinate system. The part coordinate system shares their origin and differs by the fixed rotation in the <a class="reference internal" href="../profile.html#axes"><span class="std std-ref">Axes</span></a> section, glTF’s axes onto the robotics axes.</p>
 </section>
 <section id="datum-point">
 <h3>datum point<a class="headerlink" href="#datum-point" title="Link to this heading"></a></h3>
@@ -457,7 +462,7 @@
 </section>
 <section id="part-coordinate-system">
 <h3>part coordinate system<a class="headerlink" href="#part-coordinate-system" title="Link to this heading"></a></h3>
-<p>The coordinate system in which a part’s geometry is expressed. Its axes are fixed by the profile’s <a class="reference internal" href="../profile.html#axes"><span class="std std-ref">Axes</span></a> section (+X forward, +Y left, +Z up, per ISO 9787 §5.5 and REP 103) and its origin by the profile’s <a class="reference internal" href="../profile.html#origin-datum-coordinate-system-location"><span class="std std-ref">Origin</span></a> section.</p>
+<p>The robotics coordinate system of a part: +X forward, +Y left, +Z up, per ISO 9787 §5.5 and REP 103, with its origin at the datum point (<a class="reference internal" href="../profile.html#origin-datum-coordinate-system-location"><span class="std std-ref">Origin</span></a>). It is the link coordinate system a consumer places the part in. The delivered file is not expressed in it; the file uses the asset coordinate system, and the consumer applies the fixed rotation in the profile’s <a class="reference internal" href="../profile.html#axes"><span class="std std-ref">Axes</span></a> section.</p>
 </section>
 <section id="submesh">
 <h3>submesh<a class="headerlink" href="#submesh" title="Link to this heading"></a></h3>

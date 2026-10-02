@@ -12,7 +12,7 @@ This profile builds upon [glTF 2.0](https://registry.khronos.org/glTF/specs/2.0/
 
 - **Narrowing.** This profile focuses and narrows the standard's affordances for the specific needs of robotics simulation, to make it actionable in the context of developing 3D visual robotic assets. A file can be glTF-compliant and still be unusable in a robotics simulator.
 - **Adding.** Requiring something the standard does not, to satisfy the constraints of the robotics simulation and visualization consumers of the assets (e.g., Gazebo, RViz). This is required because some consumers implement only part of glTF, so a glTF-compliant asset is not guaranteed to be importable. Added constraints name the downstream consumer that motivates them.
-- **Departing.** Differing from what the standard says, which is done rarely and never silently. The [Axes](#axes) section is the one departure: the delivered file is expressed +X forward, +Y left, +Z up, following ISO 9787 and REP 103 rather than glTF's Y-up and +Z-forward convention, because every other stage of this pipeline uses the robotics convention and holding to glTF's would put a conversion in the middle of it.
+- **Departing.** Differing from what the standard says, which would be done rarely and never silently. No rule departs at present. An earlier draft delivered the file in the robotics coordinate system, +X forward and +Z up, and that was reversed because no glTF tool could then show a part correctly; the file now follows glTF's own convention and the consumer makes the one conversion ([Axes](#axes)).
 
 This profile is only about the visual 3D asset model and does not cover Collision geometry, inertia properties, joints, etc. 
 
@@ -103,15 +103,11 @@ A delivery MUST carry a manifest.
 
 The manifest MUST be expressed as [`KHR_xmp_json_ld`](https://github.com/KhronosGroup/glTF/tree/main/extensions/2.0/Khronos/KHR_xmp_json_ld) metadata attached to the glTF `asset` object.  This is a ratified Khronos extension to read and write metadata. That extension is listed in `extensionsUsed` and MUST NOT appear in `extensionsRequired`. Metadata has no effect on appearance, so a consumer that ignores it is behaving correctly.
 
-Three properties are the required minimum:
+One property is the required minimum:
 
 | Property | Type | What it records |
 |---|---|---|
 | `gltfrp:partRole` | Choice: `base`, `component` | Whether this part establishes a vehicle's reference coordinate system, or attaches to one. The [Datum specification](#datum-specification) section imposes more on a `base` |
-| `gltfrp:forward` | Choice from the six signed axes | Which axis of the delivered file the part's forward direction lies along. MUST be `+X` ([Axes](#axes)) |
-| `gltfrp:up` | Choice from the six signed axes | Which axis is up. MUST be `+Z` ([Axes](#axes)) |
-
-**Implementation Note.** `gltfrp:forward` and `gltfrp:up` restate what the [Axes](#axes) section already requires. The declaration is an attestation: the modeler states which way the part was built, and `gltf-check` fails a delivery whose attestation contradicts the [Axes](#axes) section. It converts part of the convention that could only be checked manually, by eye, into an algoritmic test that (partially) covers the requirement.
 
 Two properties record the datum ([Datum specification](#datum-specification)):
 
@@ -164,31 +160,26 @@ The Blender scene unit scale MUST be 1.0, and object scale MUST be applied befor
 
 ### Axes
 
-The delivered file MUST be expressed with **+X forward, +Y left and +Z up**: the mobile platform coordinate system of [ISO 9787:2013](https://www.iso.org/standard/59444.html) §5.5, which is the same convention as [REP 103](https://www.ros.org/reps/rep-0103.html). 
+The delivered file MUST be expressed in the coordinate system [glTF 2.0](https://registry.khronos.org/glTF/specs/2.0/glTF-2.0.html#coordinate-system-and-units) §3.4 defines: right-handed, **+Y up, +Z forward, −X right**. The front of the part faces +Z.
 
-Blender is Z-up and right-handed, so a part authored in this convention is exported by turning the glTF exporter's `+Y Up` option **off**.  This is a deliberate departure from glTF, which states that an asset is Y-up and faces +Z. 
+In Blender this is Blender's own convention: the part is built with its front toward −Y and up +Z, which is what Blender's Front view shows, and exported with the glTF exporter's `+Y Up` option **on**, which is the exporter's default. The exporter maps Blender (x, y, z) to glTF (x, z, −y), so Blender's front lands on +Z and Blender's up on +Y.
 
-**Implementation Note.**  Every stage of this pipeline uses the ROS convention (consistent with the ISO standard): the modeler's Blender scene, the URDF, the SDF, the link coordinate systems Gazebo simulates in, and the standard those all descend from. Keeping the file in that convention means the part coordinate system the modeler builds in is the node coordinate system, is the scene coordinate system, is the link coordinate system a consumer uses: one coordinate system end to end, with no axis change anywhere. 
+The robotics coordinate system of the part, +X forward, +Y left, +Z up ([ISO 9787:2013](https://www.iso.org/standard/59444.html) §5.5, [REP 103](https://www.ros.org/reps/rep-0103.html)), is reached by one fixed rotation that the consumer applies and the file never contains: robot (x, y, z) = glTF (Z, X, Y), which is a roll of 90° followed by a yaw of 90°. The rotation is about the origin, so the datum point is the origin in both coordinate systems.
 
-**Implementation Note.** Verifying this convention cannot easily be automated.  The features that define "forward" and "up" must be specified at commissioning time and verified during integration.  
-
-**Implementation Note.**  The two consumers (Gazebo and RVIZ) disagree on how to handle the glTF convention. 
-
-* RViz attempts to convert from glTF (Y-up) to ROS REP 103 (Z-up) with a silent transform during import.
-* Gazebo does not convert at all.
-
-| Consumer | What it does | What a Z-up file needs |
+| Consumer | What it does on load | What the integrator writes |
 |---|---|---|
-| Gazebo | no up-axis conversion; buffer data goes straight onto the link axes ([source](https://github.com/gazebosim/gz-common/blob/a08c258d4e566b1e1624cb85f12ab78068ab2870/graphics/src/AssimpLoader.cc#L955-L976)) | nothing; an identity visual pose is correct |
-| RViz, Lyrical and later | rotates a glTF mesh +90° about X as it loads ([source](https://github.com/ros2/rviz/blob/baab61a68bc089217dfaa4f270276dc7a30268b1/rviz_rendering/src/rviz_rendering/mesh_loader_helpers/assimp_loader.cpp#L215-L222)) | a compensating `rpy="-1.5708 0 0"` on the URDF visual |
-| RViz, Jazzy and Kilted | no rotation branch: `ros2/rviz` #1482 was merged to `rolling` on 2025-06-16 and deliberately not backported | nothing |
-| Khronos Sample Viewer, browser viewers | assume Y-up | nothing available: **the part appears on its side** |
+| Gazebo | no conversion; buffer data goes straight onto the link axes ([source](https://github.com/gazebosim/gz-common/blob/a08c258d4e566b1e1624cb85f12ab78068ab2870/graphics/src/AssimpLoader.cc#L955-L976)) | `<pose>0 0 0 1.5708 0 1.5708</pose>` on the visual |
+| RViz, Lyrical and later | rotates a glTF mesh +90° about X as it loads, Y-up to Z-up ([source](https://github.com/ros2/rviz/blob/baab61a68bc089217dfaa4f270276dc7a30268b1/rviz_rendering/src/rviz_rendering/mesh_loader_helpers/assimp_loader.cpp#L215-L222)) | `rpy="0 0 1.5708"` on the URDF visual |
+| RViz, Jazzy and Kilted | no rotation: `ros2/rviz` #1482 was merged to `rolling` on 2025-06-16 and deliberately not backported | `rpy="1.5708 0 1.5708"` on the URDF visual |
+| Khronos Sample Viewer, browser viewers | assume glTF's convention | nothing: the part stands upright and faces the camera |
 
-The last row is the consequence of our deviation from the glTF convention.
+**Implementation Note.** Why the rotation is the consumer's. Every stage of this pipeline except the file uses the robotics convention: the URDF, the SDF and the link coordinate systems Gazebo simulates in. The rotation between the two conventions has to live somewhere, and it lives in the robot description, once per visual, where it is visible in a diff. An earlier draft put it in the file instead, by delivering the geometry on the robotics axes. The cost was that no glTF tool showed a part correctly, so the reference viewer could not answer whether a part was oriented right, and every RViz visual needed a compensating roll anyway.
+
+**Implementation Note.** Orientation is verified by eye, not by a tool. Nothing in a glTF file records which way its author meant forward or up, so the feature that defines forward is named in the commission where the shape does not determine it, and the integrator confirms in the Khronos Sample Viewer that the part stands upright and faces the camera.
 
 ### Forward axis
 
-Fixed by the [Axes](#axes) section, together with the other two axes: +X forward.
+Fixed by the [Axes](#axes) section, together with the other two axes: +Z in the delivered file, which is −Y in Blender.
 
 ### Origin - datum coordinate system location
 
@@ -219,7 +210,7 @@ The node MUST be named `<part>` (with no numeric suffix such as `.001` and no sp
 
 A coordinate system has six degrees of freedom to fix: three of location and three of orientation. This profile fixes them in two different ways, and the split is what keeps the datum specification short.
 
-**Orientation is fixed once, for every delivery, by the [Axes](#axes) section.** +X forward, +Y left, +Z up, from ISO 9787:2013 §5.5 and REP 103. It is not a per-part decision and is not named in a manifest as though it were.
+**Orientation is fixed once, for every delivery, by the [Axes](#axes) section.** +Y up and +Z forward in the file, as glTF defines, with the consumer's fixed rotation onto the robotics axes. It is not a per-part decision and is not named in a manifest as though it were.
 
 **Location is fixed per part, by naming one point.** That is the datum specification: a single geometric point feature of the part, stated before authoring begins and recorded in the manifest.
 
@@ -391,9 +382,9 @@ The version stack is pinned at patch level, because the behavior has been observ
 
 | | Version | Why it is pinned |
 |---|---|---|
-| Blender | 5.2.2 LTS | The authoring tool. Its `+Y Up` export option is the one that must be off ([Axes](#axes)), and its Set Origin behavior is what the [Origin](#origin---datum-coordinate-system-location) section warns about |
+| Blender | 5.2.2 LTS | The authoring tool. Its `+Y Up` export option must be on, which is its default ([Axes](#axes)), and its Set Origin behavior is what the [Origin](#origin---datum-coordinate-system-location) section warns about |
 | `io_scene_gltf2` | 5.2.40 | The exporter. Writes `asset.generator` as `Khronos glTF Blender I/O v5.2.40` |
-| ROS | Lyrical | The distribution floor. RViz rotates glTF on load only from Lyrical onward, which is what makes the correction in the [Axes](#axes) section a single default rather than version dependent |
+| ROS | Lyrical | The distribution floor. RViz rotates glTF on load only from Lyrical onward, so the URDF rotation in the [Axes](#axes) section differs between Lyrical and the distributions before it |
 | `rviz2`, `rviz_rendering` | 15.2.5 | The consumer that rotates a glTF mesh as it loads |
 | Gazebo Sim | 10.5.0 | The consumer that performs no up-axis conversion at all |
 | `gz-common` | 7.3.0, via `ros-lyrical-gz-common-vendor` 0.3.6 | The loader. Composes node transforms and bakes them into the vertices, which is why the [Scenes and nodes](#scenes-and-nodes) section prohibits them. Also the version carrying the `.gltf` extension-comparison bug behind the [File format](#file-format) section |

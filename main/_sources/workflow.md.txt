@@ -38,6 +38,8 @@ If any modifications are needed to keep the commission YAML file in alignment wi
 
 The profile inlcudes the rules the model is built to. 
 
+The part is built in Blender's own convention, front toward −Y and up +Z, and exported with the `+Y Up` option on, which is the exporter's default. The file is then in glTF's coordinate system, as the profile's [Axes](profile.md#axes) section requires, and the Sample Viewer shows it as the modeler saw it in Blender's Front view.
+
 The [Blender export guide](walkthroughs/exporting-from-blender.md) is the tool-specific practice for meeting them.
 
 ### Step 3: Fill the `.glb` manifest from the commission YAML [Integrator]
@@ -48,7 +50,7 @@ After export, one command writes [the manifest](profile.md#the-manifest) into th
 gltf-manifest commission.yaml <part>.visual.glb
 ```
 
-It finds the part's block in the commission by the file's name and copies the values in. It fills in the forward and up axes as `+X` and `+Z`, and the delivery date as today. Only the file's metadata changes; the geometry and textures are copied through untouched.
+It finds the part's block in the commission by the file's name and copies the values in, with the delivery date as today. Only the file's metadata changes; the geometry and textures are copied through untouched.
 
 The command refuses a key it does not know, so a misspelled key is caught here. If the commission changes after delivery, the integrator reruns the command; no re-export is needed.
 
@@ -72,7 +74,7 @@ gltf_validator -o -a <part>.visual.glb
 ```
 
 ### Intended?
-The [Khronos Sample Viewer](https://github.khronos.org/glTF-Sample-Viewer-Release/) answers whether the file looks as intended, judged by a person against the commission's images and material notes. The viewer assumes glTF's Y-up convention, so the default view is Y-up, X-right, Z-towards viewer.  Qualitative comparision between physcial robot and 3D asset materials, textures, etc. 
+The [Khronos Sample Viewer](https://github.khronos.org/glTF-Sample-Viewer-Release/) answers whether the file looks as intended, judged by a person against the commission's images and material notes. It also answers orientation: the viewer assumes glTF's convention, which the file follows, so a conforming part stands upright and faces the camera in the default view. Qualitative comparison between the physical robot and the 3D asset: materials, textures, orientation.
 
 ### Compliant?
 `gltf-check` answers whether the file satisfies the profile and passes when thereare no failures, every warning is understood. It covers the container and header, extensions, scene and node structure, primitive attributes, materials, image format and size, transparency and the manifest. How to read its output is in the [checking walkthrough](walkthroughs/checking-a-delivery.md).
@@ -85,10 +87,10 @@ The modeler delivers with a note that these four were done. The integrator does 
 
 * `gltf-check` again, with the output kept with the review.
 * `glb_probe` loads the file through the installed `gz-common`, exactly as Gazebo does, and prints the submeshes and materials the loader built. It is built and run inside drydock; the command is in the [probe README](https://github.com/HonuRobotics/gltf-robotics/tree/main/probe). The delivery passes when the output has no `[error]` lines, every submesh has a material, and the submesh name equals the part name.  It does not render, so it settles what a material is and not how it looks.
-* Gazebo, standalone parts.   This step identifies Gazebo rendering issues that may or may not be consistent with glTF 2.0, e.g.,  white-metal patches mean a primitive with no material, a dark hull means metalness was left at its default. Other viewers do not predict any of this, because they honor `BLEND`, `doubleSided` and extensions that Gazebo ignores.
+* Gazebo, standalone parts, with the visual placed by `<pose>0 0 0 1.5708 0 1.5708</pose>`, the fixed rotation from glTF's axes onto the link's ([Axes](profile.md#axes)). This step identifies Gazebo rendering issues that may or may not be consistent with glTF 2.0, e.g.,  white-metal patches mean a primitive with no material, a dark hull means metalness was left at its default. Other viewers do not predict any of this, because they honor `BLEND`, `doubleSided` and extensions that Gazebo ignores.
     * Origin and orientation by eye against the datum specification, naming what the origin sits on in the part's own terms.
     * The commission's visual requirement and priorities. 
-* RViz with the URDF: the part renders, is upright and RViz stays up. Passing in Gazebo is necessary and never sufficient; a normal map with no base color renders in Gazebo and terminates RViz.
+* RViz with the URDF, the visual carrying `rpy="0 0 1.5708"` on Lyrical and later, or `rpy="1.5708 0 1.5708"` on Jazzy and Kilted, which do not rotate glTF on load: the part renders, is upright and RViz stays up. Passing in Gazebo is necessary and never sufficient; a normal map with no base color renders in Gazebo and terminates RViz.
 
 
 
@@ -102,7 +104,7 @@ The checks run when a delivery is reviewed.  These  are not CI tests: once a par
 | Question | Asked by | Tool | Passes when |
 |---|---|---|---|
 | Valid | Modeler | Khronos Validator | Zero errors |
-| Intended | Modeler | Sample Viewer, against the commission | Signed off by the modeler, pose ignored |
+| Intended | Modeler | Sample Viewer, against the commission | Signed off by the modeler; upright and facing the camera |
 | Compliant | Modeler, then integrator | `gltf-check` | No failures, warnings reviewed, open items discussed |
 | Usable | Integrator | `glb_probe`, Gazebo, RViz | Loads, renders upright, RViz stays up |
 | Matches the commission | Integrator | `gltf-check`, `gltf-summary`, datasheet, eyes | Within tolerance, datum recognized, priorities met |
@@ -110,7 +112,7 @@ The checks run when a delivery is reviewed.  These  are not CI tests: once a par
 
 ## After acceptance
 
-Out of scope here. The consuming project owns everything downstream of an accepted part: placement, the part macro, the RViz correction, joints and actuators, sensors, plugins and buoyancy.
+Out of scope here. The consuming project owns everything downstream of an accepted part: placement, the part macro, the RViz correction, joints and actuators, sensors, plugins and buoyancy. Its part macro applies the same fixed rotation on every glTF visual, roll 90° then yaw 90°, that the checks above apply by hand.
 
 ## Not settled here
 

@@ -149,7 +149,7 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="exporting-from-blender.html">Exporting from Blender</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="exporting-from-blender.html#author-in-the-ros-frame-and-do-not-let-the-exporter-convert">Author in the ROS frame, and do not let the exporter convert</a></li>
+<li class="toctree-l3"><a class="reference internal" href="exporting-from-blender.html#author-in-blender-s-own-convention-and-let-the-exporter-convert">Author in Blender’s own convention, and let the exporter convert</a></li>
 <li class="toctree-l3"><a class="reference internal" href="exporting-from-blender.html#clear-location-and-rotation-apply-scale-before-exporting">Clear location and rotation, apply scale, before exporting</a></li>
 <li class="toctree-l3"><a class="reference internal" href="exporting-from-blender.html#where-the-origin-goes-is-not-yours-to-choose">Where the origin goes is not yours to choose</a></li>
 <li class="toctree-l3"><a class="reference internal" href="exporting-from-blender.html#name-the-object-not-the-mesh">Name the object, not the mesh</a></li>
@@ -209,6 +209,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../reference/glossary.html#terms">Terms</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="../reference/glossary.html#assembly">assembly</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../reference/glossary.html#asset">asset</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/glossary.html#asset-coordinate-system">asset coordinate system</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../reference/glossary.html#base-part">base part</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../reference/glossary.html#commission">commission</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../reference/glossary.html#component-part">component part</a></li>
@@ -381,6 +382,9 @@
              
   <section id="blueboat-walkthrough">
 <h1>BlueBoat Walkthrough<a class="headerlink" href="#blueboat-walkthrough" title="Link to this heading"></a></h1>
+<blockquote>
+<div><p><strong>Note.</strong> This walkthrough was recorded under the profile’s earlier convention, a Z-up file exported with <code class="docutils literal notranslate"><span class="pre">+Y</span> <span class="pre">Up</span></code> off, which has since been reversed: the file now follows glTF’s own convention and the consumer applies the rotation (<a class="reference internal" href="../profile.html#axes"><span class="std std-ref">Axes</span></a>). The tool steps still apply; the Sample Viewer remark, the Axes check and the URDF roll do not.</p>
+</div></blockquote>
 <p>Following the new workflow</p>
 <section id="commission">
 <h2>Commission<a class="headerlink" href="#commission" title="Link to this heading"></a></h2>

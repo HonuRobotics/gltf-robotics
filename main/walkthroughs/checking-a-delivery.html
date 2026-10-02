@@ -149,7 +149,7 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="exporting-from-blender.html">Exporting from Blender</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="exporting-from-blender.html#author-in-the-ros-frame-and-do-not-let-the-exporter-convert">Author in the ROS frame, and do not let the exporter convert</a></li>
+<li class="toctree-l3"><a class="reference internal" href="exporting-from-blender.html#author-in-blender-s-own-convention-and-let-the-exporter-convert">Author in Blender’s own convention, and let the exporter convert</a></li>
 <li class="toctree-l3"><a class="reference internal" href="exporting-from-blender.html#clear-location-and-rotation-apply-scale-before-exporting">Clear location and rotation, apply scale, before exporting</a></li>
 <li class="toctree-l3"><a class="reference internal" href="exporting-from-blender.html#where-the-origin-goes-is-not-yours-to-choose">Where the origin goes is not yours to choose</a></li>
 <li class="toctree-l3"><a class="reference internal" href="exporting-from-blender.html#name-the-object-not-the-mesh">Name the object, not the mesh</a></li>
@@ -209,6 +209,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../reference/glossary.html#terms">Terms</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="../reference/glossary.html#assembly">assembly</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../reference/glossary.html#asset">asset</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/glossary.html#asset-coordinate-system">asset coordinate system</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../reference/glossary.html#base-part">base part</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../reference/glossary.html#commission">commission</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../reference/glossary.html#component-part">component part</a></li>
@@ -410,7 +411,7 @@
 </table>
 <p>Passing in Gazebo is necessary and never sufficient: Gazebo ignores several things a file can get wrong, so a defect can be invisible there and fatal elsewhere. The clearest case is a material carrying a normal map and no base colour, which renders in Gazebo and terminates RViz.</p>
 <p>Blender’s viewport answers none of these. It shows Blender’s materials, not the exported file, and the export is a translation in which metallic factor, image format, alpha mode and tangents can all change.</p>
-<p>The reference viewer cannot answer orientation either, and this is a deliberate cost rather than a gap. The profile’s <a class="reference internal" href="../profile.html#axes"><span class="std std-ref">Axes</span></a> section delivers files +X forward and +Z up, following ISO 9787 and REP 103, where glTF’s own convention is Y-up. Every third-party viewer assumes glTF’s, so every conforming part appears rotated ninety degrees in the Sample Viewer and in any browser viewer. Read those views for materials, textures, transparency and validity, and ignore the pose. Orientation is settled by the manifest declaration that <code class="docutils literal notranslate"><span class="pre">gltf-check</span></code> verifies, and by opening the part in Gazebo.</p>
+<p>The reference viewer does answer orientation. The profile’s <a class="reference internal" href="../profile.html#axes"><span class="std std-ref">Axes</span></a> section delivers files in glTF’s own convention, +Y up and +Z forward, which is what every third-party viewer assumes, so a conforming part stands upright and faces the camera in the Sample Viewer’s default view. A part on its side was exported with <code class="docutils literal notranslate"><span class="pre">+Y</span> <span class="pre">Up</span></code> off; a part facing sideways was built facing the wrong way in Blender. No tool can settle orientation from the file alone, since nothing in a glTF file records which way its author meant forward, so this view and the Gazebo check are where it is decided.</p>
 <section id="running-the-checker">
 <h2>Running the checker<a class="headerlink" href="#running-the-checker" title="Link to this heading"></a></h2>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>git+https://github.com/HonuRobotics/gltf-robotics

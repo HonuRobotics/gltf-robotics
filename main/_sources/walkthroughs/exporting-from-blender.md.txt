@@ -2,13 +2,13 @@
 
 Every delivery this project has received came out of `Khronos glTF Blender I/O`, and most of the defects found in them are export defaults rather than modelling mistakes. This page collects the ones that bite, each with what the export does and what to do instead.
 
-None of it is a substitute for checking the result: run [`gltf-check`](checking-a-delivery.md) on the exported file, and open it in the Khronos Sample Viewer before delivering it. Expect the viewer to show the part lying on its side — it assumes glTF's Y-up convention and this profile departs from it, so the viewer can tell you about materials, textures and transparency but nothing about orientation.
+None of it is a substitute for checking the result: run [`gltf-check`](checking-a-delivery.md) on the exported file, and open it in the Khronos Sample Viewer before delivering it. The viewer assumes glTF's convention and so does the file, so a correct export stands upright and faces the camera; the viewer answers orientation as well as materials, textures and transparency.
 
-## Author in the ROS frame, and do not let the exporter convert
+## Author in Blender's own convention, and let the exporter convert
 
-Blender is Z-up and right-handed, the same convention as ISO 9787 and REP 103, so a part is modelled x forward, y left, z up — exactly the part coordinate system the macro uses. Turn the exporter's `+Y Up` option **off**. The file then carries those axes unchanged, which is what the profile's [Axes](../profile.md#axes) section requires.
+Build the part the way Blender expects: front toward −Y, which is what the Front view (numpad 1) looks at, and up +Z. Leave the exporter's `+Y Up` option **on**, its default. The exporter maps Blender (x, y, z) to glTF (x, z, −y), so the file comes out in glTF's own convention, +Y up and +Z forward, which is what the profile's [Axes](../profile.md#axes) section requires.
 
-The consequence is that every delivered file has forward on +X and up on +Z, and Gazebo shows it correctly with an identity visual pose. RViz rotates every glTF mesh +90° about X as it loads, so the URDF visual that shows the part carries `rpy="-1.5708 0 0"` to undo it. That line is the integrator's, not yours: do not rotate the part in Blender to compensate for either consumer, and expect the Khronos Sample Viewer and other glTF viewers to show the part on its side, because they assume Y-up. The [coordinate-systems reference](../reference/coordinate-systems.md#one-body-one-mesh-who-rotates-what) explains who rotates what.
+The conversion to the robotics axes is the integrator's, not yours: Gazebo places the part with `<pose>0 0 0 1.5708 0 1.5708</pose>` on the visual, and the URDF visual carries `rpy="0 0 1.5708"` on Lyrical, where RViz rotates glTF on load, or `rpy="1.5708 0 1.5708"` on Jazzy and Kilted, where it does not. Do not rotate the part in Blender to compensate for either consumer. The [coordinate-systems reference](../reference/coordinate-systems.md#one-body-one-mesh-who-rotates-what) explains who rotates what.
 
 ## Clear location and rotation, apply scale, before exporting
 
@@ -25,7 +25,7 @@ Four steps, in this order:
 1. **Read the datum specification.** It names features of the part and says which degrees of freedom each one removes: a mounting face, a bore axis, a locating pin. Between them they fix all six, and that is what determines both the origin and the axis directions. If you were not given one, stop and ask — there is no default, and nothing downstream can recover the intent.
 2. **Set the object origin to the datum origin.** Whatever it takes in Blender: snap the 3D cursor to a vertex, an edge midpoint or a face centre and use `Origin to 3D Cursor`, or place an empty and snap to that.
 3. **Bring the object to the world origin**, with its datum axes aligned to the world axes: clear location and rotation, apply scale, as above. The datum now coincides with Blender's world origin, which is what makes node space, scene space and the part's coordinate system the same thing.
-4. **Export** with `+Y Up` off.
+4. **Export** with `+Y Up` on, the default.
 
 **Do not use Set Origin's centre options to decide the origin.** Blender offers four — the vertex mean, the bounding-box midpoint, the surface centroid and the volume centroid — and none of them is a datum. They are measurements of the mesh: they move when the mesh changes, they reference no feature, and a different one is a different answer. Two of them are also traps. The `Center` option defaults to `Median`, which is the arithmetic **mean** of the vertex coordinates and not a median at all; and which of the two it uses is silently taken from the viewport's Transform Pivot Point unless you override it in the operator panel. So the same menu click gives different results in different sessions.
 

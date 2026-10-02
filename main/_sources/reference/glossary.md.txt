@@ -14,7 +14,11 @@ A collection of parts and the joints between them. Out of scope: an assembly is 
 
 ### asset
 
-Avoided in normative text. In 3D work the word spans meshes, textures, rigs, scenes and library entries at every scale, and glTF itself uses `asset` for the metadata object inside a file, so it cannot be used precisely. Where the profile means the delivered file it says *visual model*; where it means the glTF object it writes `asset` in code font.
+Avoided in normative text, except in *asset coordinate system*. In 3D work the word spans meshes, textures, rigs, scenes and library entries at every scale, and glTF itself uses `asset` for the metadata object inside a file, so it cannot be used precisely. Where the profile means the delivered file it says *visual model*; where it means the glTF object it writes `asset` in code font.
+
+### asset coordinate system
+
+The coordinate system a delivered file is expressed in: glTF's own, right-handed, +Y up, +Z forward, −X right. A consumer reaches the part coordinate system from it by the fixed rotation in the profile's [Axes](../profile.md#axes) section. Also called *scene space*.
 
 ### base part
 
@@ -46,9 +50,9 @@ A feature or set of features of the part that define the coordinate system refer
 
 ### datum coordinate system
 
-What a datum specification evaluates to against a particular piece of geometry. In a conforming delivery it is the same thing as the part coordinate system, the origin, node space and scene space. The profile narrows all of them to one. The profile's [Origin](../profile.md#origin---datum-coordinate-system-location) section says so normatively.
+What a datum specification evaluates to against a particular piece of geometry. In a conforming delivery its origin is the origin of the file, of node space and scene space, and of the part coordinate system. The profile's [Origin](../profile.md#origin---datum-coordinate-system-location) section says so normatively.
 
-One coordinate system, several names. glTF distinguishes *node space*, the coordinate system a node's vertices are expressed in, from *scene space*, what node space becomes once node transforms are composed down from the root. The profile's [Scenes and nodes](../profile.md#scenes-and-nodes) section requires exactly one node carrying no transform, which collapses the distinction: node space, scene space, the part coordinate system, the datum coordinate system and the origin are all the same thing in a conforming delivery. Narrowing them to one is a deliberate act of the profile, and it is why the terms are listed here as equivalents and not distinguished.
+One origin, several coordinate systems. glTF distinguishes *node space*, the coordinate system a node's vertices are expressed in, from *scene space*, what node space becomes once node transforms are composed down from the root. The profile's [Scenes and nodes](../profile.md#scenes-and-nodes) section requires exactly one node carrying no transform, which collapses that distinction: node space and scene space are the same thing in a conforming delivery, the asset coordinate system. The part coordinate system shares their origin and differs by the fixed rotation in the [Axes](../profile.md#axes) section, glTF's axes onto the robotics axes.
 
 ### datum point
 
@@ -80,7 +84,7 @@ A single physical component, geometry only, no joints. The unit the profile deli
 
 ### part coordinate system
 
-The coordinate system in which a part's geometry is expressed. Its axes are fixed by the profile's [Axes](../profile.md#axes) section (+X forward, +Y left, +Z up, per ISO 9787 §5.5 and REP 103) and its origin by the profile's [Origin](../profile.md#origin---datum-coordinate-system-location) section.
+The robotics coordinate system of a part: +X forward, +Y left, +Z up, per ISO 9787 §5.5 and REP 103, with its origin at the datum point ([Origin](../profile.md#origin---datum-coordinate-system-location)). It is the link coordinate system a consumer places the part in. The delivered file is not expressed in it; the file uses the asset coordinate system, and the consumer applies the fixed rotation in the profile's [Axes](../profile.md#axes) section.
 
 ### submesh
 
