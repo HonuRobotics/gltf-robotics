@@ -29,7 +29,7 @@ Models:
 
 9. Examples, [examples/](examples/). The files behind the walkthroughs: the Blender source, exported `.glb` files, and the SDF, URDF and RViz configuration that load them.
 10. Exemplar, [exemplar/](exemplar/). Planned as a reference model that satisfies the profile, with counterexamples that deliberately do not. At present it holds only a minimal glTF file used to explain the file structure.
-11. Demo, [demo/](demo/). A Blender script that builds an axis-marker scene in the robotics coordinate convention (x forward, y left, z up), for seeing how each consumer treats the axes.
+11. Demo, [demo/](demo/). A Blender script that builds an axis-marker scene in Blender's own convention, front toward −Y, so that a default export conforms to the profile, for seeing how each consumer treats the axes.
 
 Other:
 

@@ -68,8 +68,6 @@ def manifest(role="component", **over):
         "xmp:CreatorTool": "gltf-robotics test fixtures",
         "gltfrp:partRole": role,
         "gltfrp:datumPoint": "center of the mounting face, on the bore axis",
-        "gltfrp:forward": "+X",
-        "gltfrp:up": "+Z",
     }
     packet.update(over)
     return packet

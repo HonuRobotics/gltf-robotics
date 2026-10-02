@@ -13,7 +13,7 @@ Passing in Gazebo is necessary and never sufficient: Gazebo ignores several thin
 
 Blender's viewport answers none of these. It shows Blender's materials, not the exported file, and the export is a translation in which metallic factor, image format, alpha mode and tangents can all change.
 
-The reference viewer cannot answer orientation either, and this is a deliberate cost rather than a gap. The profile's [Axes](../profile.md#axes) section delivers files +X forward and +Z up, following ISO 9787 and REP 103, where glTF's own convention is Y-up. Every third-party viewer assumes glTF's, so every conforming part appears rotated ninety degrees in the Sample Viewer and in any browser viewer. Read those views for materials, textures, transparency and validity, and ignore the pose. Orientation is settled by the manifest declaration that `gltf-check` verifies, and by opening the part in Gazebo.
+The reference viewer does answer orientation. The profile's [Axes](../profile.md#axes) section delivers files in glTF's own convention, +Y up and +Z forward, which is what every third-party viewer assumes, so a conforming part stands upright and faces the camera in the Sample Viewer's default view. A part on its side was exported with `+Y Up` off; a part facing sideways was built facing the wrong way in Blender. No tool can settle orientation from the file alone, since nothing in a glTF file records which way its author meant forward, so this view and the Gazebo check are where it is decided.
 
 ## Running the checker
 

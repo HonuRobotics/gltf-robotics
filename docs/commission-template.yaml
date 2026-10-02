@@ -45,7 +45,7 @@ parts:
     # For the modeler to read. Not written to the file.
     referenceImages:
       - "hull_port.jpg: port side, shows the chine line and the hatch outline"
-    forwardFeature: "the bow; +X points from the transom to the bow"
+    forwardFeature: "the bow; in Blender the bow faces -Y, so the file faces +Z"
     visualRequirement: "viewed from 2 m and beyond; the hatch outline and the rub rail must be recognizable, fasteners may be left out"
     materials: "hull: non-metal, gloss white gelcoat. Rub rail: non-metal, black rubber"
     openings: "none"

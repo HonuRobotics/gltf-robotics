@@ -41,10 +41,11 @@ def test_a_stamped_file_passes_the_manifest_rules(write_model, commission):
     assert not failures(path)
 
 
-def test_axes_are_filled_in(write_model, commission):
+def test_no_axes_are_written(write_model, commission):
+    """The file follows glTF's convention, so the manifest does not declare axes."""
     path = write_model(strip)
     packet = manifest.stamp(commission(), path)
-    assert packet["gltfrp:forward"] == "+X" and packet["gltfrp:up"] == "+Z"
+    assert "gltfrp:forward" not in packet and "gltfrp:up" not in packet
 
 
 def test_the_binary_chunk_is_untouched(write_model, commission):

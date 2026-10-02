@@ -10,20 +10,22 @@ The marker is four box arms of deliberately different lengths, authored in the R
 
 A bounding box alone therefore identifies every axis and its sign, and a mirrored or mis-rotated file is visibly wrong. Every variant below carries the same marker; they differ only in how the coordinate system is expressed, so that each file isolates one question.
 
-Only marker_zup conforms to the profile. The rest are deliberately non-conforming and exist to demonstrate what the rules prohibit and why: profile 5.2 requires a Z-up file, and 5.5 requires exactly one node with no transform and no children. Do not copy any of these as an example of a delivery.
+Only marker_gltf conforms to the profile. The rest are deliberately non-conforming and exist to demonstrate what the rules prohibit and why: the profile's Axes section requires glTF's own convention (+Y up, +Z forward), and Scenes and nodes requires exactly one node with no transform and no children. Do not copy any of these as an example of a delivery.
 
 Outputs, in the directory given as argv[1] (default: alongside this script):
 
-  marker_zup.gltf / .glb      buffer raw in the body coordinate system, one node, no transform.  CONFORMS: what an export with "+Y Up" off produces.
-  marker_yup.gltf / .glb      buffer converted (x,y,z)->(x,z,-y), one node, no transform.  What "+Y Up" on produces; violates 5.2, and Gazebo shows it on its side.
-  marker_rotnode.gltf / .glb  buffer raw (Z-up) and a node rotation of -90 deg about X, so the composed result equals marker_yup.  Violates 5.5. Is a node rotation honored, and by whom?
-  marker_roottrans.gltf/.glb  marker_yup with a node translation (0, 0.5, 0) in file space.  Violates 5.2 and 5.5. Gazebo rolls it with the geometry; RViz does not (root post-multiply), which is why 5.5 prohibits it.
-  marker_twonode.glb          marker_yup plus a child node "pointer" with its own mesh, translated and rotated.  Violates 5.2 and 5.5 twice over. Node composition and submesh naming.
+  marker_gltf.gltf / .glb     buffer in glTF's convention, (x,y,z)->(y,z,x): forward on +Z, up on +Y, left on +X.  CONFORMS: what a part built in Blender's own convention (front -Y) exports to with "+Y Up" on.
+  marker_zup.gltf / .glb      buffer raw in the body coordinate system, one node, no transform.  What an export with "+Y Up" off produces; every glTF viewer shows it on its side.
+  marker_yup.gltf / .glb      buffer converted (x,y,z)->(x,z,-y), one node, no transform.  What "+Y Up" on produces from a part built facing +X in Blender: up is right, forward is not.
+  marker_rotnode.gltf / .glb  buffer raw (Z-up) and a node rotation of -90 deg about X, so the composed result equals marker_yup.  Violates Scenes and nodes. Is a node rotation honored, and by whom?
+  marker_roottrans.gltf/.glb  marker_yup with a node translation (0, 0.5, 0) in file space.  Violates Scenes and nodes. Gazebo rolls it with the geometry; RViz does not (root post-multiply), which is why the rule prohibits it.
+  marker_twonode.glb          marker_yup plus a child node "pointer" with its own mesh, translated and rotated.  Violates Scenes and nodes twice over. Node composition and submesh naming.
   marker_zup_declZ.dae        Z-up buffer, <up_axis>Z_UP</up_axis>.   } identical buffers, different declarations:
   marker_zup_declY.dae        Z-up buffer, <up_axis>Y_UP</up_axis>.   } if a consumer's output is identical, it ignores the declaration.
-  world_marker.sdf            gz sim world placing marker_yup.glb with an identity visual pose.
-  world_marker_rolled.sdf     the same, with <pose>0 0 0 1.5708 0 0</pose> on the visual.
-  marker.urdf                 one link, marker_yup.glb as its visual, identity origin.
+  world_marker.sdf            gz sim world placing marker_gltf.glb with the profile's Gazebo pose, <pose>0 0 0 1.5708 0 1.5708</pose>: the red arm should point along +X and the blue arm up.
+  world_marker_raw.sdf        the same file with an identity visual pose, which is what the consumer sees without the rotation.
+  world_marker_rolled.sdf     marker_yup.glb with <pose>0 0 0 1.5708 0 0</pose> on the visual, the earlier roll-only correction.
+  marker.urdf                 one link, marker_gltf.glb as its visual, rpy="0 0 1.5708": the Lyrical RViz pose.
 """
 import base64, json, math, os, struct, sys
 
@@ -66,6 +68,14 @@ def box(lo, hi):
 def swizzle_yup(p):
     """Blender's exporter: (x, y, z) -> (x, z, -y).  gltf2_blender_math.swizzle_yup_location."""
     return (p[0], p[2], -p[1])
+
+def to_gltf(p):
+    """Body (x fwd, y left, z up) -> glTF (+X left, +Y up, +Z forward): (x, y, z) -> (y, z, x).
+
+    The same result as building the part in Blender's convention, front toward -Y
+    (Blender (y, -x, z)), and exporting with "+Y Up" on.
+    """
+    return (p[1], p[2], p[0])
 
 def quat_axis(axis, deg):
     s = math.sin(math.radians(deg) / 2)
@@ -173,11 +183,11 @@ def write_sdf(path, mesh_uri, rpy):
 </sdf>
 """)
 
-def write_urdf(path, mesh_uri):
+def write_urdf(path, mesh_uri, rpy="0 0 0"):
     with open(path, "w") as f: f.write(f"""<?xml version="1.0"?>
 <robot name="marker">
   <link name="base_link">
-    <visual><origin xyz="0 0 0" rpy="0 0 0"/><geometry><mesh filename="{mesh_uri}"/></geometry></visual>
+    <visual><origin xyz="0 0 0" rpy="{rpy}"/><geometry><mesh filename="{mesh_uri}"/></geometry></visual>
   </link>
 </robot>
 """)
@@ -188,6 +198,7 @@ def main():
     os.makedirs(out, exist_ok=True)
     ident = lambda p: p
 
+    g = Gltf(); g.node("marker", g.mesh("marker_mesh", ARMS, to_gltf)); g.write(f"{out}/marker_gltf")
     g = Gltf(); g.node("marker", g.mesh("marker_mesh", ARMS, swizzle_yup)); g.write(f"{out}/marker_yup")
     g = Gltf(); g.node("marker", g.mesh("marker_mesh", ARMS, ident)); g.write(f"{out}/marker_zup")
     g = Gltf(); g.node("marker", g.mesh("marker_mesh", ARMS, ident), rotation=quat_axis((1, 0, 0), -90)); g.write(f"{out}/marker_rotnode")
@@ -204,9 +215,10 @@ def main():
     write_dae(f"{out}/marker_zup_declZ.dae", "Z_UP", ident)
     write_dae(f"{out}/marker_zup_declY.dae", "Y_UP", ident)
 
-    write_sdf(f"{out}/world_marker.sdf", f"file://{out}/marker_yup.glb", "0 0 0")
+    write_sdf(f"{out}/world_marker.sdf", f"file://{out}/marker_gltf.glb", "1.5708 0 1.5708")
+    write_sdf(f"{out}/world_marker_raw.sdf", f"file://{out}/marker_gltf.glb", "0 0 0")
     write_sdf(f"{out}/world_marker_rolled.sdf", f"file://{out}/marker_yup.glb", "1.5708 0 0")
-    write_urdf(f"{out}/marker.urdf", f"file://{out}/marker_yup.glb")
+    write_urdf(f"{out}/marker.urdf", f"file://{out}/marker_gltf.glb", "0 0 1.5708")
     write_sdf(f"{out}/world_roottrans_rolled.sdf", f"file://{out}/marker_roottrans.glb", "1.5708 0 0")
     write_urdf(f"{out}/marker_roottrans.urdf", f"file://{out}/marker_roottrans.glb")
 

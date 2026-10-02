@@ -23,7 +23,7 @@ Change these. They are the only five that differ from the default:
 
 | UI label | Identifier | Default | Set to | Why |
 |---|---|---|---|---|
-| +Y Up | `export_yup` | True | False | the profile's [Axes](../profile.md#axes) section requires the file Z-up, in the body coordinate system; it is the one axis conversion the workflow does not want |
+| +Y Up | `export_yup` | True | True | the profile's [Axes](../profile.md#axes) section requires the file in glTF's convention, +Y up and +Z forward; the default produces it from a part built in Blender's own convention |
 | Limit to ▸ Selected Objects | `use_selection` | False | True | one part per delivery — the profile's [File](../profile.md#file) section |
 | Animation | `export_animations` | True | False | the profile's [Prohibited content](../profile.md#prohibited-content) section prohibits `animations`, and no scene should rely on having no actions |
 | Remember Export Settings | `will_save_settings` | False | True | the `.blend` then carries the settings it was exported with, so the delivery can be reproduced from its source |
@@ -117,11 +117,11 @@ The operation is not `Object ▸ Apply ▸ All Transforms`, which is the one a r
 
 | UI label | Identifier | Default | Ours |
 |---|---|---|---|
-| +Y Up | `export_yup` | True | required False — the profile's [Axes](../profile.md#axes) section |
+| +Y Up | `export_yup` | True | required True, the default — the profile's [Axes](../profile.md#axes) section |
 
-One option, and it is the whole of the coordinate conversion. Off, Blender's Z-up axes pass through unchanged, which is the body coordinate system the profile's [Axes](../profile.md#axes) section requires: the file is right in Gazebo with an identity visual pose, and the URDF visual carries `rpy="-1.5708 0 0"` to undo the rotation RViz applies on load. On, it converts `(x, y, z)` to `(x, z, −y)` for vertices, normals and node TRS, producing the Y-up file the glTF specification describes, which Gazebo then shows lying on its side. The [coordinate-systems reference](coordinate-systems.md#one-body-one-mesh-who-rotates-what) has the derivation.
+One option, and it is the whole of the coordinate conversion. On, it converts `(x, y, z)` to `(x, z, −y)` for vertices, normals and node TRS, producing the file the glTF specification describes: +Y up, and Blender's front, −Y, on +Z. That is what the profile's [Axes](../profile.md#axes) section requires, and the consumer then applies one fixed rotation onto the robotics axes: `<pose>0 0 0 1.5708 0 1.5708</pose>` in Gazebo, `rpy="0 0 1.5708"` in RViz on Lyrical. Off, Blender's Z-up axes pass through unchanged and every glTF viewer shows the part on its side. The [coordinate-systems reference](coordinate-systems.md#one-body-one-mesh-who-rotates-what) has the derivation.
 
-Note what no check can do about it: `gltf-check` has no rule implementing the profile's [Axes](../profile.md#axes) section's Z-up MUST, because nothing in a file says which way its author meant up. This setting is verifiable only by rendering, or by the summary tool's extents against a known dimension.
+Note what no check can do about it: `gltf-check` has no rule implementing the profile's [Axes](../profile.md#axes) section, because nothing in a file says which way its author meant up or forward. This setting is verifiable only by rendering: a part exported with it off lies on its side in the Sample Viewer.
 
 ## Data ▸ Scene Graph
 

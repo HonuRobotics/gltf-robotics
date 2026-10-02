@@ -56,26 +56,13 @@ def test_generator_must_be_recorded(write_model):
 
 # ------------------------------------- coordinate systems, nodes
 
-def test_declared_axes_must_match_the_profile(write_model):
-    """Axes is a decided MUST, so a manifest declaring glTF's convention fails."""
+def test_old_axis_declarations_are_accepted_silently(write_model):
+    """The file follows glTF's convention now, so the old attestation is harmless."""
     from conftest import manifest
     path = write_model(lambda g: g["extensions"]["KHR_xmp_json_ld"].update(
-        packets=[manifest(**{"gltfrp:up": "+Y"})]))
-    assert "Axes" in failures(path)
-    detail = " ".join(f.detail for f in check_file(path) if f.level == FAIL)
-    assert "+Z" in detail
-
-
-def test_undeclared_axes_are_reported_once_by_4_1_1_not_twice(write_model):
-    """One omission, one defect. The manifest section owns presence; Axes owns the values."""
-    from conftest import manifest
-    packet = manifest()
-    packet.pop("gltfrp:forward")
-    packet.pop("gltfrp:up")
-    path = write_model(lambda g: g["extensions"]["KHR_xmp_json_ld"].update(packets=[packet]))
-    assert "The manifest" in failures(path)
-    assert "Axes" not in failures(path)
-    assert "Axes" not in warnings(path)
+        packets=[manifest(**{"gltfrp:forward": "+X", "gltfrp:up": "+Z"})]))
+    assert failures(path) == set()
+    assert not any("forward" in f.summary or "gltfrp:up" in f.summary for f in check_file(path))
 
 
 def test_two_scenes(write_model):
@@ -416,13 +403,11 @@ def test_a_missing_manifest_fails(write_model):
         g.pop("extensionsUsed")
     path = write_model(mutate)
     assert "The manifest" in failures(path)
-    # Axes has nothing to compare against and must not double-report the omission.
-    assert "Axes" not in failures(path)
 
 
-@pytest.mark.parametrize("key", ["gltfrp:partRole", "gltfrp:forward", "gltfrp:up"])
+@pytest.mark.parametrize("key", ["gltfrp:partRole"])
 def test_each_required_manifest_property_fails_when_absent(write_model, key):
-    """The three that record what no measurement can recover."""
+    """The one property that records what no measurement can recover."""
     from conftest import manifest
     packet = manifest()
     packet.pop(key)
@@ -542,9 +527,3 @@ def test_superseded_datum_properties_warn(write_model):
     path = write_model(lambda g: _packet(g).update(
         {"gltfrp:datumFeature": {"@list": ["mounting face"]}}))
     assert "Datum specification" in warnings(path)
-
-
-def test_declared_axes_must_agree_with_5_2(write_model):
-    """Axes owns the orientation; the manifest attests to it and can contradict it."""
-    path = write_model(lambda g: _packet(g).update({"gltfrp:up": "-X"}))
-    assert "Axes" in failures(path)

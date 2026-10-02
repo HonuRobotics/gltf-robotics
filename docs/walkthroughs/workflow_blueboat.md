@@ -1,5 +1,6 @@
 # BlueBoat Walkthrough
 
+> **Note.** This walkthrough was recorded under the profile's earlier convention, a Z-up file exported with `+Y Up` off, which has since been reversed: the file now follows glTF's own convention and the consumer applies the rotation ([Axes](../profile.md#axes)). The tool steps still apply; the Sample Viewer remark, the Axes check and the URDF roll do not.
 
 Following the new workflow
 

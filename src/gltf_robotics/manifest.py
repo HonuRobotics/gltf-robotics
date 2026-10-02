@@ -37,8 +37,6 @@ CONTEXT = {
 # Commission key -> manifest property, and what it records.
 KEYS = {
     "partRole": ("gltfrp:partRole", "base or component"),
-    "forward": ("gltfrp:forward", "the forward axis as delivered; +X unless stated"),
-    "up": ("gltfrp:up", "the up axis as delivered; +Z unless stated"),
     "datumPoint": ("gltfrp:datumPoint", "the feature of the part the origin is referenced to"),
     "datumTarget": ("gltfrp:datumTarget", "the physical realization of the datum"),
     "nominalDimension": ("gltfrp:nominalDimension", "the cited dimension, with its name and unit"),
@@ -58,7 +56,7 @@ NOTES = ("referenceImages", "forwardFeature", "visualRequirement", "materials", 
 # Keys that may be stated once for the whole commission and apply to every part.
 SHARED = ("creator", "rights", "source", "dimensionSource", "authoringSource", "date")
 
-DEFAULTS = {"forward": "+X", "up": "+Z"}
+DEFAULTS = {}  # the axes are glTF's own and are no longer declared
 
 
 class ManifestError(Exception):

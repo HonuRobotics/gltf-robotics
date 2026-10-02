@@ -42,7 +42,6 @@ SKIP = "skip"
 
 LINEAR_SLOTS = ("normal", "metallicRoughness", "occlusion")
 NS = "https://honurobotics.github.io/gltf-robotics/ns/profile/1.0/"
-AXES = ("+X", "-X", "+Y", "-Y", "+Z", "-Z")
 PROHIBITED_EXTENSIONS = {
     "KHR_draco_mesh_compression": "Draco mesh compression",
     "KHR_texture_basisu": "KTX2/Basis textures",
@@ -621,39 +620,6 @@ def rule_11_generator(m):
     return Finding("Authoring toolchain", PASS, f"generator: {generator}")
 
 
-REQUIRED_AXES = (("gltfrp:forward", "+X"), ("gltfrp:up", "+Z"))
-
-
-def rule_5_2_axes(m):
-    """The profile's Axes section: +X forward, +Y left, +Z up -- ISO 9787 and REP 103.
-
-    Nothing in a glTF file records which way its author meant up or forward, so
-    the geometry cannot settle this. What can be checked is the manifest's
-    declaration under the manifest section, and a declaration that disagrees with Axes is a
-    straightforward failure: the rule is decided, not interim.
-
-    An absent declaration is a WARN rather than a FAIL because it is the second
-    kind of warning the legend describes -- a MUST the file alone cannot settle.
-    Only a rendered view or the authoring source can.
-    """
-    packet = m.manifest() or {}
-    declared = {key: packet.get(key) for key, _ in REQUIRED_AXES}
-    if all(v is None for v in declared.values()):
-        # The profile's manifest section requires the declaration and reports its absence. Saying
-        # so twice would make one omission look like two defects.
-        return Finding("Axes", SKIP, "the axes are not declared, so there is nothing to compare",
-                       "the profile's manifest section reports the missing declaration; nothing in the geometry "
-                       "records an axis, so this rule can only check what a manifest states")
-    wrong = [f"{key} is {declared[key]!r}, expected {want!r}"
-             for key, want in REQUIRED_AXES if declared[key] != want]
-    if wrong:
-        return Finding("Axes", FAIL, "the manifest declares axes that the profile's Axes section prohibits",
-                       "; ".join(wrong) + ". The profile follows ISO 9787 and REP 103 rather "
-                       "than glTF, so a delivery is +X forward and +Z up. Export from Blender "
-                       "with the '+Y Up' option off.")
-    return Finding("Axes", PASS, "declared +X forward, +Z up")
-
-
 def rule_5_1_scale(m):
     """The profile's Units section requires meters at real-world scale.
 
@@ -715,13 +681,12 @@ def rule_5_1_scale(m):
 
 
 def rule_4_1_1_manifest(m):
-    """The profile's manifest section: a delivery MUST carry a manifest declaring three properties.
+    """The profile's manifest section: a delivery MUST carry a manifest declaring its part role.
 
-    The three are `gltfrp:partRole`, `gltfrp:forward` and `gltfrp:up`, and each
-    records something no measurement can recover: whether Datum specification's datum rule
-    applies, and the two axes that are this profile's departure from glTF. This
-    rule owns whether they are *present*; the profile's Axes section owns whether the axis
-    values are the ones it requires.
+    `gltfrp:partRole` records something no measurement can recover: whether the
+    Datum specification's base-part rule applies. The axes are not declared any
+    more; the file follows glTF's own convention, and an old manifest that still
+    carries gltfrp:forward or gltfrp:up is accepted without comment.
     """
     packet = m.manifest()
     if packet is None:
@@ -732,21 +697,14 @@ def rule_4_1_1_manifest(m):
                             "whole delivery")]
         return [Finding("The manifest", FAIL, "no manifest",
                         "a delivery must carry one in KHR_xmp_json_ld attached to the asset object, "
-                        "declaring at least gltfrp:partRole, gltfrp:forward and gltfrp:up. "
+                        "declaring at least gltfrp:partRole. "
                         "Provenance cannot be reconstructed afterwards.")]
 
     out = []
-    for key, what in (("gltfrp:forward", "which axis the part faces"),
-                      ("gltfrp:up", "which axis is up")):
-        if packet.get(key) is None:
-            out.append(Finding("The manifest", FAIL, f"the manifest does not declare {key}",
-                               f"one of the three required properties: {what}. Nothing in a glTF "
-                               f"file records it, so an undeclared axis cannot be checked at all"))
-
     role = packet.get("gltfrp:partRole")
     if role is None:
         out.append(Finding("The manifest", FAIL, "the manifest does not declare gltfrp:partRole",
-                           "one of the three required properties; base or component"))
+                           "the one required property; base or component"))
     elif role not in ("base", "component"):
         out.append(Finding("The manifest", FAIL, f"gltfrp:partRole is {role!r}",
                            "must be base or component"))
@@ -819,7 +777,6 @@ RULES = [
     rule_4_3_asset_header,
     rule_4_1_1_manifest,
     rule_5_1_scale,
-    rule_5_2_axes,
     rule_5_5_scenes_and_nodes,
     rule_5_6_datum,
     rule_6_geometry,

@@ -1,5 +1,7 @@
 # Minimum viable workflow
 
+
+
 This is meant as the simplest possible workflow to demonstrate the workflow and test various assumptions and conventions and to verify the utilities and claims.
 
 ## Minimum monkey mesh 
@@ -16,9 +18,8 @@ Add->Mesh->Monkey
 Export to glTF 2.0:
 There are 110 options in the export widget - many places to cause problems. 
 
-See [the export options reference](../reference/blender-export-options.md) for all 110 with the thirteen that matter called out at the top.
+See [the export options reference](../reference/blender-export-options.md) for with the thirteen parameters that need to be verified/set.
 
-The first one to bite is `use_selection`. The reference prescribes it True, and the first export of this very example was made with nothing selected: the result was a valid 132-byte `.glb` holding one scene and no geometry, with no error and no warning anywhere. Select the object before exporting, and read the file back before going further.
 
 
 
@@ -240,7 +241,7 @@ Two commands, two shells.
 
 ```bash
 ros2 run robot_state_publisher robot_state_publisher --ros-args \
-  -p robot_description:="$(cat ~/maritime_ws/spike/walkthrough/monkey.urdf)"
+  -p robot_description:="$(cat ~/maritime_ws/tools/gltf-robotics/examples/monkey.urdf)"
 ```
 
 ```bash
@@ -264,6 +265,9 @@ if (ext == ".gltf" || ext == ".glb" || ext == ".vrm") {
   scene->mRootNode->mTransformation = scene->mRootNode->mTransformation * transform;
 }
 ```
+
+![](./images/monkey_walkthrough4_annote.png)
+
 
 Notes: 
 1. It is automatically and silently applied to any file with the matching extension (not a configurable parameter)
