@@ -162,16 +162,28 @@ The Blender scene unit scale MUST be 1.0, and object scale MUST be applied befor
 
 The delivered file MUST be expressed in the coordinate system [glTF 2.0](https://registry.khronos.org/glTF/specs/2.0/glTF-2.0.html#coordinate-system-and-units) §3.4 defines: right-handed, **+Y up, +Z forward, −X right**. The front of the part faces +Z.
 
+The coordinate systems used at each stage of the workflow are the based on the conventions of the tool or specification.
+
+| Coordinate Convention| +x | +y | +z |
+|---|---|---|---|
+| Blender | left | back | up |   
+| glTF 2.0 | left | up | fwd |
+| ISO 9787 <br> ROS REP 103 | fwd | left | up|
+
+
+![](./walkthroughs/images/monkey_walkthrough4_annote.png)
+
 In Blender this is Blender's own convention: the part is built with its front toward −Y and up +Z, which is what Blender's Front view shows, and exported with the glTF exporter's `+Y Up` option **on**, which is the exporter's default. The exporter maps Blender (x, y, z) to glTF (x, z, −y), so Blender's front lands on +Z and Blender's up on +Y.
 
 The robotics coordinate system of the part, +X forward, +Y left, +Z up ([ISO 9787:2013](https://www.iso.org/standard/59444.html) §5.5, [REP 103](https://www.ros.org/reps/rep-0103.html)), is reached by one fixed rotation that the consumer applies and the file never contains: robot (x, y, z) = glTF (Z, X, Y), which is a roll of 90° followed by a yaw of 90°. The rotation is about the origin, so the datum point is the origin in both coordinate systems.
 
 | Consumer | What it does on load | What the integrator writes |
 |---|---|---|
-| Gazebo | no conversion; buffer data goes straight onto the link axes ([source](https://github.com/gazebosim/gz-common/blob/a08c258d4e566b1e1624cb85f12ab78068ab2870/graphics/src/AssimpLoader.cc#L955-L976)) | `<pose>0 0 0 1.5708 0 1.5708</pose>` on the visual |
-| RViz, Lyrical and later | rotates a glTF mesh +90° about X as it loads, Y-up to Z-up ([source](https://github.com/ros2/rviz/blob/baab61a68bc089217dfaa4f270276dc7a30268b1/rviz_rendering/src/rviz_rendering/mesh_loader_helpers/assimp_loader.cpp#L215-L222)) | `rpy="0 0 1.5708"` on the URDF visual |
-| RViz, Jazzy and Kilted | no rotation: `ros2/rviz` #1482 was merged to `rolling` on 2025-06-16 and deliberately not backported | `rpy="1.5708 0 1.5708"` on the URDF visual |
 | Khronos Sample Viewer, browser viewers | assume glTF's convention | nothing: the part stands upright and faces the camera |
+| Gazebo | no conversion; buffer data goes straight onto the link axes ([source](https://github.com/gazebosim/gz-common/blob/a08c258d4e566b1e1624cb85f12ab78068ab2870/graphics/src/AssimpLoader.cc#L955-L976)) | `<pose>0 0 0 1.5708 0 1.5708</pose>` on the visual |
+| RViz, Lyrical and later | rotates a glTF mesh +90° about X as it loads, Y-up to Z-up ([source](https://github.com/ros2/rviz/blob/baab61a68bc089217dfaa4f270276dc7a30268b1/rviz_rendering/src/rviz_rendering/mesh_loader_helpers/assimp_loader.cpp#L215-L222)) | `<origin xyz="0 0 0" rpy="-1.5708 0 1.5708"/>` on the URDF visual |
+| RViz, Jazzy and Kilted | no rotation: `ros2/rviz` #1482 was merged to `rolling` on 2025-06-16 and deliberately not backported | `rpy="TBD"` on the URDF visual |
+
 
 **Implementation Note.** Why the rotation is the consumer's. Every stage of this pipeline except the file uses the robotics convention: the URDF, the SDF and the link coordinate systems Gazebo simulates in. The rotation between the two conventions has to live somewhere, and it lives in the robot description, once per visual, where it is visible in a diff. An earlier draft put it in the file instead, by delivering the geometry on the robotics axes. The cost was that no glTF tool showed a part correctly, so the reference viewer could not answer whether a part was oriented right, and every RViz visual needed a compensating roll anyway.
 

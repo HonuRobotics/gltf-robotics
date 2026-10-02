@@ -42,7 +42,7 @@ The part is built in Blender's own convention, front toward −Y and up +Z, and 
 
 The [Blender export guide](walkthroughs/exporting-from-blender.md) is the tool-specific practice for meeting them.
 
-### Step 3: Fill the `.glb` manifest from the commission YAML [Integrator]
+## Step 3: Fill the `.glb` manifest from the commission YAML [Integrator]
 
 After export, one command writes [the manifest](profile.md#the-manifest) into the file:
 
@@ -54,14 +54,14 @@ It finds the part's block in the commission by the file's name and copies the va
 
 The command refuses a key it does not know, so a misspelled key is caught here. If the commission changes after delivery, the integrator reruns the command; no re-export is needed.
 
-## Step 3: Verify
+## Step 4: Verify [Integrator]
 
 The profile's [Conformance testing](profile.md#conformance-testing) section asks four questions of a delivery
 
-1. Valid? `gltf_validator` CLI tool 
-2. Intended? [Khronos Sample Viewer](https://github.khronos.org/glTF-Sample-Viewer-Release/)  browser render
-3. Compliant? `gltf-check` evaluates the `.glb` file against the [./profile.md]
-4. Usable?
+1. **Valid?** Test with `gltf_validator` CLI tool 
+2. **Intended?** Check with online [Khronos Sample Viewer](https://github.khronos.org/glTF-Sample-Viewer-Release/) browser render
+3. **Compliant?** `gltf-check` evaluates the `.glb` file against the [./profile.md]
+4. **Usable?** Verify in Gazebo and RVIZ
 
 
 
