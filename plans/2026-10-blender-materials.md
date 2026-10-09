@@ -84,7 +84,7 @@ Drafts first to `plans/issues-draft.md` (not committed) and opened in VSCode; po
 
 One `bluerobotics_models` issue, J: "Assembling chassis and props: frames and an example SDF", pointing at the composed `blueboat_gazebo` model and `bluerobotics_parts/bluerobotics_parts/assembly.py`, asking Ryan to share the chassis-plus-props `.blend` to the Honu Drive (the Honu account cannot see his personal link).
 
-- [ ] Drafts written and reviewed.
+- [ ] Drafts written and reviewed. Draft written 2026-10-09 at `plans/issues-draft.md` (untracked, deleted once posted); review in progress.
 - [ ] Issues posted; numbers recorded in the Status column.
 - [ ] Closing note for the Google Doc drafted (Brian pastes).
 
