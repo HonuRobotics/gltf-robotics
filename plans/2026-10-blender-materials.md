@@ -68,27 +68,27 @@ Before any coordinate text is edited, Brian gives the definitive rule. Asks, num
 
 ### Step 2. Open the GitHub issues
 
-Drafts first to `plans/issues-draft.md` (not committed) and opened in VSCode; posting with `gh issue create` happens only after Brian says post. Each body in the collegial voice (Ryan reads them), with four fixed headings: Finding (with tags and source links), Proposal, What closes it, Status. Credit Ryan's test as the origin where it is. Labels from the existing set. Each issue links back to this file.
+Posted 2026-10-09. Each issue opens with the exchange from the Google Doc, quoted as written (or, for 6 to 8, the gap as found); solution and plan are added as comments. Issue numbers in this repository.
 
-| # | Title | Label | Finding, in one line | Closes when | Status |
-|---|---|---|---|---|---|
-| A | Metal renders dark in Gazebo: no environment map reaches embedded materials | question | gz-rendering metallic workflow, reflection only via `SetEnvironmentMap`, sky is background only | Gazebo test (metalness 0 / 0.5 / 1, with and without `<sky>`), then the policy decision: physical truth vs cap | not opened |
-| B | `+Y Up` export lies on its side: the part SDF is missing the consumer pose | bug | `model.sdf` on `bsb/blueboat_gltf_workflow` has no visual pose; flag is right | pose added on the branch; step 1 statement published | not opened |
-| C | Uniform translucency: transmission maps to plain opacity, BLEND is ignored | question | `transmissionFactor` → `Transparency`, so 1.0 vanishes; RViz ignores it | monkey test at `baseColorFactor` alpha 0.5 OPAQUE vs BLEND, transmission 0.5 via `glb_probe`; closes the profile Transparency Open | not opened |
-| D | Prohibit `KHR_materials_variants`: one delivery per color | enhancement | absent from assimp 6.0.4; exporter preference default off | profile Prohibited content row and `gltf-check` rule merged | not opened |
-| E | Export guide has no material authoring section | documentation | Principled BSDF socket reading, exporter packs G/B, `glTF Material Output` for occlusion, MASK via Round, Non-Color | new section merged; Ryan confirms it matches his working graph | not opened |
-| F | `export_image_format`: AUTO passes WebP through, and there is no PNG option | documentation | four option values; Gazebo fails on WebP | options reference updated; WebP export test confirms `gltf-check` FAIL | not opened |
-| G | `export_apply` (Apply Modifiers): decide for deliveries | question | default off, blocks shape keys | chassis export with a live modifier on and off, compared with `gltf-summary` | not opened |
-| H | Coordinate statements disagree across the docs | documentation | the list under step 1 | step 1 propagation merged | not opened |
-| I | Metalness, occlusion, normal and MASK confirmed on the GPU | documentation | Ryan's cube upgrades four S rows to P | loader-behavior addendum merged; can close same day | not opened |
+| # | Title | Source | Status |
+|---|---|---|---|
+| [#1](https://github.com/HonuRobotics/gltf-robotics/issues/1) | Metallic texture renders black in Gazebo | doc, email 2026-10-05 | open |
+| [#2](https://github.com/HonuRobotics/gltf-robotics/issues/2) | Export with the Y-up flag loads on its side in Gazebo | doc | open |
+| [#3](https://github.com/HonuRobotics/gltf-robotics/issues/3) | Transmission (glass) material does not show up in Gazebo | doc | open |
+| [#4](https://github.com/HonuRobotics/gltf-robotics/issues/4) | Material variants: how to use them in Gazebo | doc | open |
+| [#5](https://github.com/HonuRobotics/gltf-robotics/issues/5) | Assembling a model from its parts | doc | open |
+| [#6](https://github.com/HonuRobotics/gltf-robotics/issues/6) | Export guide has no section on authoring materials in Blender | docs survey | open |
+| [#7](https://github.com/HonuRobotics/gltf-robotics/issues/7) | Apply Modifiers export option is still marked unsettled | options reference | open |
+| [#8](https://github.com/HonuRobotics/gltf-robotics/issues/8) | Loader behavior page: upgrade four rows from source-read to observed | docs survey | open |
 
-One `bluerobotics_models` issue, J: "Assembling chassis and props: frames and an example SDF", pointing at the composed `blueboat_gazebo` model and `bluerobotics_parts/bluerobotics_parts/assembly.py`, asking Ryan to share the chassis-plus-props `.blend` to the Honu Drive (the Honu account cannot see his personal link).
+Topics from the survey that were not opened as issues and are folded into the steps below instead: the Images option passing WebP through (step 4), the coordinate disagreements (step 1), and the `KHR_materials_variants` prohibition (#4 and step 8).
 
-- [ ] Drafts written and reviewed. Draft written 2026-10-09 at `plans/issues-draft.md` (untracked, deleted once posted); review in progress.
-- [ ] Issues posted; numbers recorded in the Status column.
+- [x] Drafts written and reviewed (`plans/issues-draft.md`, deleted after posting).
+- [x] Issues posted; numbers recorded above.
 - [ ] Closing note for the Google Doc drafted (Brian pastes).
+- [ ] Solution and plan posted as a comment on each of #1 to #5, after step 1.
 
-### Step 3. Export guide: materials section (issue E, F, C)
+### Step 3. Export guide: materials section (#6, #3)
 
 [exporting-from-blender.md](../docs/walkthroughs/exporting-from-blender.md). Insert after "Name the object, not the mesh" a section "Wire the material the way the exporter reads it", in the page's voice (what the export does, what to do instead), one short paragraph per point:
 
@@ -98,32 +98,32 @@ One `bluerobotics_models` issue, J: "Assembling chassis and props: frames and an
 - Normal: Image Texture (Non-Color) → Normal Map (Tangent Space) → Normal; strength 1.0.
 - Alpha: cutouts through Math Round (or Greater Than) into Alpha, which writes MASK at 0.5; opaque materials leave Alpha at 1.0 so no BLEND is written by accident; Backface Culling on except for MASK cutouts that must show both sides.
 - Do not use Transmission, variants, Clearcoat, Sheen, IOR, Volume, Anisotropy; say which consumer does what with each, with the issue links.
-- What it looks like in Gazebo: metal is dark, [Firm] with source, policy [Open] in issue A.
+- What it looks like in Gazebo: metal is dark, [Firm] with source, policy [Open] in #1.
 
-Also: "Texture format is decided by the source image" gains the WebP case and the four option values; "Transparency is per material" gains one sentence on uniform translucency pointing at issue C.
+Also: "Texture format is decided by the source image" gains the WebP case and the four option values; "Transparency is per material" gains one sentence on uniform translucency pointing at #3.
 
 - [ ] Section written and committed.
 
-### Step 4. Export options reference (issues F, G, D)
+### Step 4. Export options reference (#7, #4)
 
 [blender-export-options.md](../docs/reference/blender-export-options.md).
 
 - [ ] L66 stale 5.1 pin → 5.2.2 / 5.2.40.
 - [ ] L167-178 Images rows: four values, no PNG option, WebP pass-through.
-- [ ] L154-158 and worklist L226-234: `export_apply` stays open, record the shape-key warning and the test (issue G).
+- [ ] L154-158 and worklist L226-234: `export_apply` stays open, record the shape-key warning and the test (#7).
 - [ ] New note "Add-on preferences, not dialog options": `KHR_materials_variants_ui` (must be off) and `settings_node_ui` (must be on) live in Edit ▸ Preferences ▸ Add-ons and are not saved by `will_save_settings`.
 
-### Step 5. Profile (issues A, C, D, H)
+### Step 5. Profile (#1, #3, #4)
 
 [profile.md](../docs/profile.md).
 
 - [ ] Axes rows per step 1.
-- [ ] Materials: Implementation Note with the environment-map finding under L311-313, and an explicit Open on capping metalness, citing issue A. Fold or remove the orphaned paragraph at L335.
-- [ ] Transparency Open L373: add the transmission finding as an Implementation Note; the proposal stands; issue C decides the tag.
+- [ ] Materials: Implementation Note with the environment-map finding under L311-313, and an explicit Open on capping metalness, citing #1. Fold or remove the orphaned paragraph at L335.
+- [ ] Transparency Open L373: add the transmission finding as an Implementation Note; the proposal stands; #3 decides the tag.
 - [ ] Prohibited content L377-389: add `KHR_materials_variants` and `KHR_materials_transmission` with reasons. Update the Open questions tables L424-443.
 - [ ] L393 typo "observe to be changning".
 
-### Step 6. Loader behavior addendum (issues A, I)
+### Step 6. Loader behavior addendum (#1, #8)
 
 - [ ] [loader-behavior.md](../docs/reference/loader-behavior.md): dated addendum (2026-10-07) under the consumers table with the environment-map finding and source lines, assimp has no `KHR_materials_variants`, and the P upgrades from Ryan's cube. Keep the snapshot framing.
 
@@ -131,12 +131,12 @@ Also: "Texture format is decided by the source image" gains the WebP case and th
 
 - [ ] [workflow.md](../docs/workflow.md): step "Author" points at the new materials section; step "Verify ▸ Intended?" says metal looks dark in Gazebo by design, judge color and roughness there and metal in the Sample Viewer.
 
-### Step 8. Checker (issue D)
+### Step 8. Checker (#4)
 
 - [ ] `src/gltf_robotics/check/rules.py`: add `KHR_materials_variants` and `KHR_materials_transmission` to `PROHIBITED_EXTENSIONS`.
 - [ ] `tests/test_check.py`: two new cases using the fixture in `tests/conftest.py`. Confirm rule 8 already FAILs `image/webp`; add a test if not.
 
-### Step 9. The chassis SDF (issue B)
+### Step 9. The chassis SDF (#2)
 
 - [ ] `bluerobotics_models` branch `bsb/blueboat_gltf_workflow`: add `<pose>0 0 0 1.5708 0 1.5708</pose>` to the chassis visual in `bluerobotics_parts/models/blueboat_chassis/model.sdf`, or to the generator if `scripts/sdf_to_part.py` or `assembly.py` writes that file, then regenerate. Retire `scripts/gltf_to_yup.py`. Commit and link from issue B.
 
@@ -151,10 +151,10 @@ Recorded in the issue and in the doc that owns the item.
 
 | Issue | Test | Result |
 |---|---|---|
-| A | Cube with three materials, metalness 0 / 0.5 / 1, roughness 0.3, in `gz sim` with and without `<sky>`; screenshots (GUI). Then read gz-sim `RenderUtil` for any env-map hook reaching `Ogre2Material::SetEnvironmentMap` on mesh materials. Decide cap vs truth; consider a gz-rendering upstream issue. | pending |
-| C | Monkey at `baseColorFactor` alpha 0.5 tagged OPAQUE and BLEND, transmission 0.5; `glb_probe` for built Transparency, `gz sim` for the look, Sample Viewer for other viewers. | pending |
-| F | Export a material whose source image is WebP under AUTO; `gltf-check` must FAIL, `glb_probe` must report the unsupported-format error. | pending |
-| G | Chassis export with a live Mirror or Bevel modifier, on and off; `gltf-summary` triangle count and `gltf-check` both ways. | pending |
+| #1 | Cube with three materials, metalness 0 / 0.5 / 1, roughness 0.3, in `gz sim` with and without `<sky>`; screenshots (GUI). Then read gz-sim `RenderUtil` for any env-map hook reaching `Ogre2Material::SetEnvironmentMap` on mesh materials. Decide cap vs truth; consider a gz-rendering upstream issue. | pending |
+| #3 | Monkey at `baseColorFactor` alpha 0.5 tagged OPAQUE and BLEND, transmission 0.5; `glb_probe` for built Transparency, `gz sim` for the look, Sample Viewer for other viewers. | pending |
+| WebP (step 4) | Export a material whose source image is WebP under AUTO; `gltf-check` must FAIL, `glb_probe` must report the unsupported-format error. | pending |
+| #7 | Chassis export with a live Mirror or Bevel modifier, on and off; `gltf-summary` triangle count and `gltf-check` both ways. | pending |
 
 ## Verification
 
