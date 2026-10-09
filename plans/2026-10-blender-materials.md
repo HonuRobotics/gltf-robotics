@@ -138,7 +138,7 @@ Also: "Texture format is decided by the source image" gains the WebP case and th
 
 ### Step 9. The chassis SDF (#2)
 
-- [ ] `bluerobotics_models` branch `bsb/blueboat_gltf_workflow`: add `<pose>0 0 0 1.5708 0 1.5708</pose>` to the chassis visual in `bluerobotics_parts/models/blueboat_chassis/model.sdf`, or to the generator if `scripts/sdf_to_part.py` or `assembly.py` writes that file, then regenerate. Retire `scripts/gltf_to_yup.py`. Commit and link from issue B.
+- [ ] `bluerobotics_models` branch `bsb/blueboat_gltf_workflow`: add `<pose>0 0 0 1.5708 0 1.5708</pose>` to the chassis visual in `bluerobotics_parts/models/blueboat_chassis/model.sdf`, or to the generator if `scripts/sdf_to_part.py` or `assembly.py` writes that file, then regenerate. Retire `scripts/gltf_to_yup.py`. Commit and link from #2.
 
 ### Step 10. Walkthrough addendum
 
@@ -162,4 +162,4 @@ Recorded in the issue and in the doc that owns the item.
 2. Checker: `python3 -m pytest tests/test_check.py -q` passes with the new cases; `PYTHONPATH=src python3 -m gltf_robotics.check` on `examples/monkey.glb` and the chassis GLB shows no regressions.
 3. Coordinates: `grep -rn "1.5708" docs/ examples/` lists one Gazebo pose and the two URDF values from step 1 only; `grep -rn "Y Up" docs/` finds the reversal only in historical notes.
 4. SDF fix: inside drydock, `gz sdf -p` on the chassis `model.sdf` parses; the visual check in `gz sim` is Brian's.
-5. Issues: `gh issue list` shows A to I with labels; each body has the four headings; issue B links the branch commit.
+5. Issues: `gh issue list` shows #1 to #8 with labels; #2 links the branch commit; #1 to #5 each carry a solution comment.
