@@ -23,4 +23,6 @@ extensions = ['sphinx_honu']
 # three used elsewhere: the reference notes nest to #### and cross-link at that
 # depth, and an anchor that is not generated is a build error here.
 myst_heading_anchors = 4
+# Plain ```mermaid fences become the directive, so the same block renders on GitHub and here.
+myst_fence_as_directive = ["mermaid"]
 honu_github = ('HonuRobotics', 'gltf-robotics')
