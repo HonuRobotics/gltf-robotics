@@ -580,7 +580,7 @@ Every row is what the source predicts. The `.dae` pair is why the project's earl
 
 **[Practice]** This reverses the project's earlier decision, which delivered the file on the robotics axes with `+Y Up` off so that Gazebo needed no `Pose`. The cost of that was that the file was not oriented the way the glTF specification says an asset should be: the Khronos Sample Viewer and every browser viewer showed the part on its side, so the reference viewer could not answer whether a part was oriented right, and every RViz visual needed a compensating roll anyway. Now the file is right in every glTF tool, and the one conversion lives in the robot description, where it is visible in a diff.
 
-**[Open]** How the RViz rotation is delivered in the model repositories, given that it depends on the ROS distribution. Nothing in this document depends on the answer.
+**[Practice]** The project supports Lyrical and later only ([Authoring toolchain](../profile.md#authoring-toolchain)), so every URDF visual carries `rpy="0 0 1.5708"` and the Jazzy and Kilted value above is for reference. That closes the earlier open question of delivering a per-distribution rotation. The [Coordinate orientation demo](../walkthroughs/coordinate_orientation_demo.md) is the on-screen record, 2026-10-09.
 
 ## Next increment
 

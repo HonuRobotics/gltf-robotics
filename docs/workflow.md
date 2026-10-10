@@ -90,7 +90,7 @@ The modeler delivers with a note that these four were done. The integrator does 
 * Gazebo, standalone parts, with the visual placed by `<pose>0 0 0 1.5708 0 1.5708</pose>`, the fixed rotation from glTF's axes onto the link's ([Axes](profile.md#axes)). This step identifies Gazebo rendering issues that may or may not be consistent with glTF 2.0, e.g.,  white-metal patches mean a primitive with no material, a dark hull means metalness was left at its default. Other viewers do not predict any of this, because they honor `BLEND`, `doubleSided` and extensions that Gazebo ignores.
     * Origin and orientation by eye against the datum specification, naming what the origin sits on in the part's own terms.
     * The commission's visual requirement and priorities. 
-* RViz with the URDF, the visual carrying `rpy="0 0 1.5708"` on Lyrical and later, or `rpy="1.5708 0 1.5708"` on Jazzy and Kilted, which do not rotate glTF on load: the part renders, is upright and RViz stays up. Passing in Gazebo is necessary and never sufficient; a normal map with no base color renders in Gazebo and terminates RViz.
+* RViz with the URDF, the visual carrying `rpy="0 0 1.5708"` (RViz on Lyrical and later rotates glTF on load; earlier distributions do not and are not supported): the part renders, is upright and RViz stays up. Passing in Gazebo is necessary and never sufficient; a normal map with no base color renders in Gazebo and terminates RViz.
 
 
 
