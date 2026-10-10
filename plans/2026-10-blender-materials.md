@@ -43,7 +43,7 @@ Read from gz-rendering `gz-rendering10` and assimp `v6.0.4`, plus the 2026-09-04
 ### Coordinates and the SDF Ryan loaded
 
 - [Firm] `bluerobotics_parts/models/blueboat_chassis/model.sdf` on `bluerobotics_models` branch `bsb/blueboat_gltf_workflow` (HEAD `782cdde`, 2026-09-29) has no `<pose>` on the visual. It predates the 2026-10-02 switch to glTF-native files. A `+Y Up` export is correct and lands on its side in that SDF because the consumer rotation is missing, not because the flag is wrong.
-- The docs disagree on the URDF rotation: `profile.md:184` says Lyrical `rpy="-1.5708 0 1.5708"` and `:185` says Jazzy/Kilted `TBD`; `coordinate-systems.md:566-579` ([Firm]), `exporting-from-blender.md:11`, `workflow.md:93` and `blender-export-options.md:122` say Lyrical `rpy="0 0 1.5708"` and Jazzy/Kilted `rpy="1.5708 0 1.5708"`. `blender_mesh_coordinate_ex.md:288` still says the decision is `+Y Up` off and uses `rpy="-1.5708 0 0"` at L220, L227, L284; `workflow_blueboat.md:257` uses the old roll; `blender-export-options.md:66` still calls the toolchain pin 5.1 and Open. Step 1 resolves which statement is right before any of these are touched.
+- The docs disagree on the URDF rotation: `profile.md:184` says Lyrical `rpy="-1.5708 0 1.5708"` and `:185` says Jazzy/Kilted `TBD`; `coordinate-systems.md:566-579` ([Firm]), `exporting-from-blender.md:11`, `workflow.md:93` and `blender-export-options.md:122` say Lyrical `rpy="0 0 1.5708"` and Jazzy/Kilted `rpy="1.5708 0 1.5708"`. `coordinate_orientation_demo.md:288` still says the decision is `+Y Up` off and uses `rpy="-1.5708 0 0"` at L220, L227, L284; `workflow_blueboat.md:257` uses the old roll; `blender-export-options.md:66` still calls the toolchain pin 5.1 and Open. Step 1 resolves which statement is right before any of these are touched.
 
 ## Steps, in order
 
@@ -64,7 +64,7 @@ Before any coordinate text is edited, Brian gives the definitive rule. Asks, num
 5. How the RViz rotation is delivered per distro (the [Open] at `coordinate-systems.md:583`): xacro argument, two URDFs, or leave Open?
 
 - [ ] Brian's statement recorded here.
-- [ ] Propagated to: `profile.md:163-185` (Axes table, stray "; " at L95), `exporting-from-blender.md:9-11`, `workflow.md:93`, `blender-export-options.md:66,116-124`, `coordinate-systems.md:566-583`, `blender_mesh_coordinate_ex.md:220,227,284,288` and its banner, `workflow_blueboat.md:3,257`, and `examples/monkey.urdf`, `examples/monkeys.sdf` and the spike walkthrough files if they carry the old values.
+- [ ] Propagated to: `profile.md:163-185` (Axes table, stray "; " at L95), `exporting-from-blender.md:9-11`, `workflow.md:93`, `blender-export-options.md:66,116-124`, `coordinate-systems.md:566-583`, `coordinate_orientation_demo.md:220,227,284,288` and its banner, `workflow_blueboat.md:3,257`, and `examples/monkey.urdf`, `examples/monkeys.sdf` and the spike walkthrough files if they carry the old values.
 
 ### Step 2. Open the GitHub issues
 
@@ -143,7 +143,7 @@ Also: "Texture format is decided by the source image" gains the WebP case and th
 ### Step 10. Walkthrough addendum
 
 - [ ] [workflow_blueboat.md](../docs/walkthroughs/workflow_blueboat.md): "Materials test (2026-10-05)" subsection summarising Ryan's cube results with explanations and issue links, and the SDF pose fix as the resolution of the on-its-side report.
-- [ ] [blender_mesh_coordinate_ex.md](../docs/walkthroughs/blender_mesh_coordinate_ex.md): step 1 values and a banner if the rest cannot be re-recorded now.
+- [ ] [coordinate_orientation_demo.md](../docs/walkthroughs/coordinate_orientation_demo.md): step 1 values and a banner if the rest cannot be re-recorded now.
 
 ## Tests that close the Open items
 

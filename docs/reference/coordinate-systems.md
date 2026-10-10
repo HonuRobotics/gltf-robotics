@@ -2,7 +2,7 @@
 
 An incremental build up of the understanding and explanation of how these coordinate systems are used, from 3D authoring through to robotic simulation.
 
-This is the only version. An earlier draft was abandoned for building detail on assumptions that were never checked, and it lives in git history at `ab5f6a6` in the `maritime-workspace` repository. Do not treat its framing as current. The two things in it that were verified from source, the loader mechanism and the probe results, are now carried in [One body, one mesh: who rotates what](#one-body-one-mesh-who-rotates-what) below, re-read against the versions in the container. Two things remain only in the draft: its three-consumer tutorial (§12), which the [walkthrough](../walkthroughs/blender_mesh_coordinate_ex.md) has since replaced, and its audit of what the project's own documents said (§14). The probe generator and its output are live at `probe/coords/`.
+This is the only version. An earlier draft was abandoned for building detail on assumptions that were never checked, and it lives in git history at `ab5f6a6` in the `maritime-workspace` repository. Do not treat its framing as current. The two things in it that were verified from source, the loader mechanism and the probe results, are now carried in [One body, one mesh: who rotates what](#one-body-one-mesh-who-rotates-what) below, re-read against the versions in the container. Two things remain only in the draft: its three-consumer tutorial (§12), which the [orientation demo](../walkthroughs/coordinate_orientation_demo.md) has since replaced, and its audit of what the project's own documents said (§14). The probe generator and its output are live at `probe/coords/`.
 
 ##  Objective
 
@@ -450,7 +450,7 @@ Each row is one frame; each column is what that frame is called, or what stands 
 
 ## One body, one mesh: who rotates what
 
-This is the first two items of the increment list below, taken together because the second cannot be stated without the first. One rigid body, one mesh, no joints; the question is how a vertex in the file reaches the link, and which of Blender, the file, Gazebo and RViz rotates it on the way. Everything here is read from source or measured with the probe, and the walkthrough [Minimum viable workflow](../walkthroughs/blender_mesh_coordinate_ex.md) is the worked example, verified on screen on 2026-09-27.
+This is the first two items of the increment list below, taken together because the second cannot be stated without the first. One rigid body, one mesh, no joints; the question is how a vertex in the file reaches the link, and which of Blender, the file, Gazebo and RViz rotates it on the way. Everything here is read from source or measured with the probe, and the [Coordinate orientation demo](../walkthroughs/coordinate_orientation_demo.md) is the worked example, verified on screen on 2026-10-09.
 
 ### The chain, and where a rotation can be inserted
 
