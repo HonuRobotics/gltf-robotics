@@ -286,7 +286,10 @@
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Gazebo and RViz loader behavior</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#the-consumers">The consumers</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#the-gazebo-path-step-by-step">The Gazebo path, step by step</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#what-the-loader-reads-from-a-gltf-material">What the loader reads from a glTF material</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#what-the-loader-reads-from-a-gltf-material">What the loader reads from a glTF material</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#rendered-observations-2026-10-05">Rendered observations, 2026-10-05</a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="#the-rviz-path">The RViz path</a></li>
 </ul>
 </li>
@@ -396,7 +399,10 @@
 <tr class="row-odd"><td><p>P</p></td>
 <td><p>Observed by running <code class="docutils literal notranslate"><span class="pre">glb_probe</span></code> against our files inside the drydock container</p></td>
 </tr>
-<tr class="row-even"><td><p>U</p></td>
+<tr class="row-even"><td><p>R</p></td>
+<td><p>Seen rendered on screen in <code class="docutils literal notranslate"><span class="pre">gz</span> <span class="pre">sim</span></code>, on a machine with a graphics card</p></td>
+</tr>
+<tr class="row-odd"><td><p>U</p></td>
 <td><p>Not verified</p></td>
 </tr>
 </tbody>
@@ -636,6 +642,17 @@
 </tr>
 </tbody>
 </table>
+<section id="rendered-observations-2026-10-05">
+<h3>Rendered observations, 2026-10-05<a class="headerlink" href="#rendered-observations-2026-10-05" title="Link to this heading"></a></h3>
+<p>Ryan Lee’s cube test, a textured cube exported from Blender and opened in <code class="docutils literal notranslate"><span class="pre">gz</span> <span class="pre">sim</span></code> on his own machine (Gazebo version not recorded), is the first rendered check of the table above. It was reported by email with screenshots.</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">metallicRoughnessTexture</span></code>, roughness in green: renders as expected, black shiny and white dull. [R]</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">occlusionTexture</span></code> on UV set 0: renders as ambient occlusion. [R]</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">normalTexture</span></code>: renders. [R]</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">alphaMode:</span> <span class="pre">MASK</span></code>: cuts out at the cutoff once alpha is rounded to 0 or 1; <code class="docutils literal notranslate"><span class="pre">BLEND</span></code> is ignored and renders opaque. [R]</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">metallicRoughnessTexture</span></code>, metalness in blue: metallic regions render black. Tracked in <a class="reference external" href="https://github.com/HonuRobotics/gltf-robotics/issues/1">#1</a>. [R]</p></li>
+</ul>
+</section>
 </section>
 <section id="the-rviz-path">
 <h2>The RViz path<a class="headerlink" href="#the-rviz-path" title="Link to this heading"></a></h2>
