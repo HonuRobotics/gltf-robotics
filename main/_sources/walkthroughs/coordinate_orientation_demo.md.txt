@@ -25,7 +25,7 @@ For each stage in the workflow, we use the standards and/or convention of that t
 
 Directions are the asset's own: its left, its back, its up. The normative statement is the profile's [Axes](../profile.md#axes) section.
 
-```{mermaid}
+```mermaid
 flowchart LR
   B["Blender<br/>convention: Blender, +x left, +y back, +z up<br/>you: model with the front toward −Y"]
   E["glTF exporter<br/>rotates Blender axes onto glTF axes<br/>you: leave +Y Up on"]
