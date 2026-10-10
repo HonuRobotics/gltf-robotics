@@ -53,18 +53,23 @@ Read from gz-rendering `gz-rendering10` and assimp `v6.0.4`, plus the 2026-09-04
 
 Each later step ends with this file updated and committed: the box checked, the issue number, commit, test result or decision and its reason recorded under it.
 
-### Step 1. The coordinate statement (Brian, then Claude)
+### Step 1. The coordinate statement
 
-Before any coordinate text is edited, Brian gives the definitive rule. Asks, numbered so they can be answered by number:
+The rule, stated once: build in Blender's convention (front −Y, up +Z); export with `+Y Up` on, so the file is in glTF's convention (+Y up, +Z forward); the consumer rotates it onto the robotics axes with `<pose>0 0 0 1.5708 0 1.5708</pose>` on the Gazebo visual and `rpy="0 0 1.5708"` on the URDF visual for RViz on Lyrical and later, which rolls glTF files +90° about X itself. Earlier ROS distributions do not rotate and are not supported.
 
-1. Gazebo visual pose for a `+Y Up` export: confirm `<pose>0 0 0 1.5708 0 1.5708</pose>` (roll 90° then yaw 90°).
-2. URDF `<origin rpy>` on Lyrical and later, where RViz applies Rx(90) on load: `"0 0 1.5708"` (coordinate-systems) or `"-1.5708 0 1.5708"` (profile)?
-3. URDF `<origin rpy>` on Jazzy and Kilted, where RViz does nothing: `"1.5708 0 1.5708"`, or still TBD?
-4. Is the Blender rule exactly "build front toward −Y, up +Z, `+Y Up` on, no rotation in Blender"? Anything to add about Blender's Front view or the exporter mapping (x, y, z) → (x, z, −y)?
-5. How the RViz rotation is delivered per distro (the [Open] at `coordinate-systems.md:583`): xacro argument, two URDFs, or leave Open?
+Evidence (2026-10-09): [S] gz-common `gz-common7_7.3.0` `AssimpLoader.cc` L849-853, L955-976 applies no up-axis conversion; [S] rviz `lyrical` `assimp_loader.cpp` L215-222 post-multiplies Rx(+90°) onto the root; [P] `glb_probe` in drydock returns the raw buffer bounds for `monkey.glb` (Y-up) and the Z-up export alike; [M] with R = Rz·Ry·Rx only the stated values give face +X, up +Z; on screen in `gz sim` 10.5.0 and `rviz_rendering` 15.2.5 by Brian, recorded in the [Coordinate orientation demo](../docs/walkthroughs/coordinate_orientation_demo.md). The earlier `rpy="-1.5708 0 1.5708"` in the profile was the right value for a Z-up file and came from the old `monkey.urdf`.
 
-- [ ] Brian's statement recorded here.
-- [ ] Propagated to: `profile.md:163-185` (Axes table, stray "; " at L95), `exporting-from-blender.md:9-11`, `workflow.md:93`, `blender-export-options.md:66,116-124`, `coordinate-systems.md:566-583`, `coordinate_orientation_demo.md:220,227,284,288` and its banner, `workflow_blueboat.md:3,257`, and `examples/monkey.urdf`, `examples/monkeys.sdf` and the spike walkthrough files if they carry the old values.
+- [x] Statement recorded (above) and shown end to end in the demo, commit `ca1b5ad`.
+- [x] Propagated: profile Axes table and Jazzy/Kilted note, stray "; " at L95, `step-4-verify-integrator` anchor; coordinate-systems [Open] on per-distro delivery closed as [Practice]; export guide; workflow; options reference (5.2.2 / 5.2.40 pin); BlueBoat walkthrough banner and a note under its recorded URDF; `examples/monkeys.sdf`. Commit on `main` after `ca1b5ad`.
+- [x] `bluerobotics_models` `bsb/blueboat_gltf_workflow`: chassis `model.sdf` visual pose and `parts.xacro` `part_visual` values (`1.5708 0 1.5708` for Gazebo, `0 0 1.5708` for RViz), committed locally in a worktree, not pushed. The chassis `.glb` on that branch is still the Z-up, X-forward export (v5.1.20), so the branch renders wrong until Ryan's `+Y Up` export replaces it; that is the remaining action under #2.
+- [ ] Push the branch commit and comment on #2 (draft below), after Brian's say-so.
+- [ ] Migration note: `bluerobotics_models` `main` still assumes Y-up, X-forward files from `gltf_to_yup.py` (`part_visual` roll only). Moving every part to the profile's convention means re-exporting each `.glb` with `+Y Up` on and taking the new `part_visual` values; `gltf_to_yup.py` retires then. Needs its own issue in `bluerobotics_models`.
+
+Draft comment for #2:
+
+> Resolved on the docs side. The flag is right: export with `+Y Up` on. What was missing is the consumer rotation in the SDF. For a file in glTF's convention Gazebo applies nothing on load, so the visual needs `<pose>0 0 0 1.5708 0 1.5708</pose>` (roll 90° then yaw 90°); RViz on Lyrical rolls the mesh +90° about X itself, so the URDF visual needs only `rpy="0 0 1.5708"`. Read from gz-common 7.3.0 and rviz lyrical source, checked with the probe and the math, and seen on screen with the monkey on 2026-10-09; the [Coordinate orientation demo](https://github.com/HonuRobotics/gltf-robotics/blob/main/docs/walkthroughs/coordinate_orientation_demo.md) shows it end to end. The chassis `model.sdf` and `part_visual` on `bsb/blueboat_gltf_workflow` now carry these values (commit to follow). What is left is the file: the chassis `.glb` on that branch is still the Z-up export, so once your `+Y Up` export is pushed there it should load upright. Could you push it and check?
+
+Not re-recorded this round: `docs/walkthroughs/blueboat_chassis.urdf` and the URDF snippet in the BlueBoat walkthrough keep the old `rpy="-1.5708 0 0"` as a record of the earlier convention, with a note.
 
 ### Step 2. Open the GitHub issues
 
