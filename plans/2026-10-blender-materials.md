@@ -79,7 +79,7 @@ Posted 2026-10-09. Each issue opens with the exchange from the Google Doc, quote
 | [#1](https://github.com/HonuRobotics/gltf-robotics/issues/1) | Metallic texture renders black in Gazebo | doc, email 2026-10-05 | open |
 | [#2](https://github.com/HonuRobotics/gltf-robotics/issues/2) | Export with the Y-up flag loads on its side in Gazebo | doc | open |
 | [#3](https://github.com/HonuRobotics/gltf-robotics/issues/3) | Transmission (glass) material does not show up in Gazebo | doc | open |
-| [#4](https://github.com/HonuRobotics/gltf-robotics/issues/4) | Material variants: how to use them in Gazebo | doc | open |
+| [#4](https://github.com/HonuRobotics/gltf-robotics/issues/4) | Material variants: how to use them in Gazebo | doc | decided 2026-10-10: MUST NOT; profile row and checker rule committed; close once commented |
 | [#5](https://github.com/HonuRobotics/gltf-robotics/issues/5) | Assembling a model from its parts | doc | open |
 | [#6](https://github.com/HonuRobotics/gltf-robotics/issues/6) | Export guide has no section on authoring materials in Blender | docs survey | open |
 | [#7](https://github.com/HonuRobotics/gltf-robotics/issues/7) | Apply Modifiers export option is still marked unsettled | options reference | open |

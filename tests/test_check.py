@@ -281,6 +281,7 @@ def test_mask_requires_alpha_in_the_base_colour(write_model):
     "KHR_texture_basisu",
     "KHR_texture_transform",
     "KHR_materials_pbrSpecularGlossiness",
+    "KHR_materials_variants",
 ])
 def test_prohibited_extensions(write_model, extension):
     path = write_model(lambda g: g.update(extensionsUsed=[extension]))

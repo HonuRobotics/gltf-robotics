@@ -47,6 +47,7 @@ PROHIBITED_EXTENSIONS = {
     "KHR_texture_basisu": "KTX2/Basis textures",
     "KHR_texture_transform": "KHR_texture_transform",
     "KHR_materials_pbrSpecularGlossiness": "the specular-glossiness workflow",
+    "KHR_materials_variants": "material variants",
 }
 IDENTITY = [[1.0, 0, 0, 0], [0, 1.0, 0, 0], [0, 0, 1.0, 0], [0, 0, 0, 1.0]]
 # Units a cited dimension may be written in, as meters per unit.
