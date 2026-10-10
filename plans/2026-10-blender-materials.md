@@ -61,9 +61,8 @@ Evidence (2026-10-09): [S] gz-common `gz-common7_7.3.0` `AssimpLoader.cc` L849-8
 
 - [x] Statement recorded (above) and shown end to end in the demo, commit `ca1b5ad`.
 - [x] Propagated: profile Axes table and Jazzy/Kilted note, stray "; " at L95, `step-4-verify-integrator` anchor; coordinate-systems [Open] on per-distro delivery closed as [Practice]; export guide; workflow; options reference (5.2.2 / 5.2.40 pin); BlueBoat walkthrough banner and a note under its recorded URDF; `examples/monkeys.sdf`. Commit on `main` after `ca1b5ad`.
-- [x] `bluerobotics_models` `bsb/blueboat_gltf_workflow`: chassis `model.sdf` visual pose and `parts.xacro` `part_visual` values (`1.5708 0 1.5708` for Gazebo, `0 0 1.5708` for RViz), committed locally in a worktree, not pushed. The chassis `.glb` on that branch is still the Z-up, X-forward export (v5.1.20), so the branch renders wrong until Ryan's `+Y Up` export replaces it; that is the remaining action under #2.
-- [ ] Push the branch commit and comment on #2 (draft below), after Brian's say-so.
-- [ ] Migration note: `bluerobotics_models` `main` still assumes Y-up, X-forward files from `gltf_to_yup.py` (`part_visual` roll only). Moving every part to the profile's convention means re-exporting each `.glb` with `+Y Up` on and taking the new `part_visual` values; `gltf_to_yup.py` retires then. Needs its own issue in `bluerobotics_models`.
+- [~] `bluerobotics_models` is deferred (Brian, 2026-10-09). The chassis `model.sdf` pose and `part_visual` values are committed locally on `bsb/blueboat_gltf_workflow` as `1d725f0`, not pushed; the chassis `.glb` there is still the Z-up, X-forward export. The migration of `main` off `gltf_to_yup.py` is likewise parked. Pick both up when the repo comes back into scope.
+- [ ] Comment on #2 (draft below), after Brian's say-so.
 
 Draft comment for #2:
 
