@@ -1,6 +1,6 @@
 # BlueBoat Walkthrough
 
-> **Note.** This walkthrough was recorded under the profile's earlier convention, a Z-up file exported with `+Y Up` off, which has since been reversed: the file now follows glTF's own convention and the consumer applies the rotation ([Axes](../profile.md#axes)). The tool steps still apply; the Sample Viewer remark, the Axes check and the URDF roll do not.
+> **Note.** This walkthrough was recorded under the profile's earlier convention, a Z-up file exported with `+Y Up` off, which has since been reversed: the file now follows glTF's own convention and the consumer applies the rotation ([Axes](../profile.md#axes)). The tool steps still apply; the Sample Viewer remark, the Axes check and the URDF roll do not. The current rule is shown end to end in the [Coordinate orientation demo](coordinate_orientation_demo.md).
 
 Following the new workflow
 
@@ -257,6 +257,8 @@ Manually create URDF - see [./blueboat_chassis.urdf].  Note that we undo the aut
     <visual><origin xyz="0 0 0" rpy="-1.5708 0 0"/>
       <geometry><mesh filename="file:///home/bsb/maritime_ws/src/bluerobotics_models/bluerobotics_parts/models/blueboat_chassis/blueboat_chassis.visual.glb"/></geometry></visual>
 ```
+
+> **Note.** Recorded under the old convention. For a `+Y Up` export the visual carries `rpy="0 0 1.5708"` and the Gazebo visual `<pose>0 0 0 1.5708 0 1.5708</pose>` ([Axes](../profile.md#axes)).
 
 Two shells in drydock
 

@@ -114,10 +114,10 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../workflow.html#step-2-author-3d-asset-modeler">Step 2: Author 3D asset [Modeler]</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../workflow.html#build-to-the-honu-asset-profile-and-export">Build to the <span class="xref myst">Honu Asset Profile</span> and export</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../workflow.html#step-3-fill-the-glb-manifest-from-the-commission-yaml-integrator">Step 3: Fill the <code class="docutils literal notranslate"><span class="pre">.glb</span></code> manifest from the commission YAML [Integrator]</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../workflow.html#step-3-verify">Step 3: Verify</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../workflow.html#step-3-fill-the-glb-manifest-from-the-commission-yaml-integrator">Step 3: Fill the <code class="docutils literal notranslate"><span class="pre">.glb</span></code> manifest from the commission YAML [Integrator]</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../workflow.html#step-4-verify-integrator">Step 4: Verify [Integrator]</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../workflow.html#valid">Valid?</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../workflow.html#intended">Intended?</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../workflow.html#compliant">Compliant?</a></li>
@@ -131,19 +131,17 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../walkthroughs/index.html">Walkthroughs</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../walkthroughs/blender_mesh_coordinate_ex.html">Minimum viable workflow</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../walkthroughs/blender_mesh_coordinate_ex.html#minimum-monkey-mesh">Minimum monkey mesh</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../walkthroughs/blender_mesh_coordinate_ex.html#create-in-blender-and-export">Create in Blender and export</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../walkthroughs/coordinate_orientation_demo.html">Coordinate system orientation demonstration</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../walkthroughs/coordinate_orientation_demo.html#the-overarching-structure">The overarching structure</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../walkthroughs/coordinate_orientation_demo.html#minimum-monkey-mesh">Minimum monkey mesh</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../walkthroughs/coordinate_orientation_demo.html#create-in-blender">Create in Blender</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../walkthroughs/coordinate_orientation_demo.html#export-blender-gltf">Export Blender -&gt; glTF</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../walkthroughs/coordinate_orientation_demo.html#view-in-gltf-sample-viewer">View in gltF Sample Viewer</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="../walkthroughs/coordinate_orientation_demo.html#gltf-to-gazebo">glTF to Gazebo</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../walkthroughs/coordinate_orientation_demo.html#gltf-to-rviz">glTF to RVIZ</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="../walkthroughs/blender_mesh_coordinate_ex.html#baseline">Baseline</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../walkthroughs/blender_mesh_coordinate_ex.html#the-y-up-export">The +Y Up Export</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../walkthroughs/blender_mesh_coordinate_ex.html#transforms-frames-coordinate-systems-and-spaces">Transforms, frames, coordinate systems and spaces</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../walkthroughs/blender_mesh_coordinate_ex.html#see-what-assimploader-receives">3. See what AssimpLoader receives</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../walkthroughs/blender_mesh_coordinate_ex.html#write-a-world-and-a-urdf">4. Write a world and a URDF</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../walkthroughs/blender_mesh_coordinate_ex.html#gazebo">5. Gazebo</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../walkthroughs/blender_mesh_coordinate_ex.html#rviz">6. RViz</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../walkthroughs/blender_mesh_coordinate_ex.html#what-rviz-does-to-a-gltf-file-and-how-to-undo-it">What RViz does to a glTF file, and how to undo it</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../walkthroughs/coordinate_orientation_demo.html#summary">Summary</a></li>
 </ul>
 </li>
 </ul>
@@ -383,7 +381,7 @@
   <section id="coordinate-systems-gltf-gazebo-and-ros">
 <h1>Coordinate Systems: glTF, Gazebo and ROS<a class="headerlink" href="#coordinate-systems-gltf-gazebo-and-ros" title="Link to this heading"></a></h1>
 <p>An incremental build up of the understanding and explanation of how these coordinate systems are used, from 3D authoring through to robotic simulation.</p>
-<p>This is the only version. An earlier draft was abandoned for building detail on assumptions that were never checked, and it lives in git history at <code class="docutils literal notranslate"><span class="pre">ab5f6a6</span></code> in the <code class="docutils literal notranslate"><span class="pre">maritime-workspace</span></code> repository. Do not treat its framing as current. The two things in it that were verified from source, the loader mechanism and the probe results, are now carried in <a class="reference internal" href="#one-body-one-mesh-who-rotates-what">One body, one mesh: who rotates what</a> below, re-read against the versions in the container. Two things remain only in the draft: its three-consumer tutorial (§12), which the <a class="reference internal" href="../walkthroughs/blender_mesh_coordinate_ex.html"><span class="std std-doc">walkthrough</span></a> has since replaced, and its audit of what the project’s own documents said (§14). The probe generator and its output are live at <code class="docutils literal notranslate"><span class="pre">probe/coords/</span></code>.</p>
+<p>This is the only version. An earlier draft was abandoned for building detail on assumptions that were never checked, and it lives in git history at <code class="docutils literal notranslate"><span class="pre">ab5f6a6</span></code> in the <code class="docutils literal notranslate"><span class="pre">maritime-workspace</span></code> repository. Do not treat its framing as current. The two things in it that were verified from source, the loader mechanism and the probe results, are now carried in <a class="reference internal" href="#one-body-one-mesh-who-rotates-what">One body, one mesh: who rotates what</a> below, re-read against the versions in the container. Two things remain only in the draft: its three-consumer tutorial (§12), which the <a class="reference internal" href="../walkthroughs/coordinate_orientation_demo.html"><span class="std std-doc">orientation demo</span></a> has since replaced, and its audit of what the project’s own documents said (§14). The probe generator and its output are live at <code class="docutils literal notranslate"><span class="pre">probe/coords/</span></code>.</p>
 <section id="objective">
 <h2>Objective<a class="headerlink" href="#objective" title="Link to this heading"></a></h2>
 <p>The purpose of this document is to be a clear explanation of how coordinate systems can be conceptualized and labeled from 3D graphics (authoring 3D assets in Blender) to robotic simulation (rendering visual assets aligned with collision models in Gazebo and RViz).</p>
@@ -1111,7 +1109,7 @@ This is a sticking point - and one we’ve gotten wrong.</p></li>
 </section>
 <section id="one-body-one-mesh-who-rotates-what">
 <h2>One body, one mesh: who rotates what<a class="headerlink" href="#one-body-one-mesh-who-rotates-what" title="Link to this heading"></a></h2>
-<p>This is the first two items of the increment list below, taken together because the second cannot be stated without the first. One rigid body, one mesh, no joints; the question is how a vertex in the file reaches the link, and which of Blender, the file, Gazebo and RViz rotates it on the way. Everything here is read from source or measured with the probe, and the walkthrough <a class="reference internal" href="../walkthroughs/blender_mesh_coordinate_ex.html"><span class="std std-doc">Minimum viable workflow</span></a> is the worked example, verified on screen on 2026-09-27.</p>
+<p>This is the first two items of the increment list below, taken together because the second cannot be stated without the first. One rigid body, one mesh, no joints; the question is how a vertex in the file reaches the link, and which of Blender, the file, Gazebo and RViz rotates it on the way. Everything here is read from source or measured with the probe, and the <a class="reference internal" href="../walkthroughs/coordinate_orientation_demo.html"><span class="std std-doc">Coordinate orientation demo</span></a> is the worked example, verified on screen on 2026-10-09.</p>
 <section id="the-chain-and-where-a-rotation-can-be-inserted">
 <h3>The chain, and where a rotation can be inserted<a class="headerlink" href="#the-chain-and-where-a-rotation-can-be-inserted" title="Link to this heading"></a></h3>
 <p><strong>[Firm]</strong> For one body the chain has three coordinate systems from this document’s table: the node coordinate system, in which the file’s vertices are written; the asset coordinate system, which is the scene the node hangs in; and the part coordinate system, which is the link. A vertex reaches the link through two transforms: the node’s own, <code class="docutils literal notranslate"><span class="pre">Root</span></code>, from node to asset coordinate system, and the visual pose <code class="docutils literal notranslate"><span class="pre">Pose</span></code>, from asset to part coordinate system. In an SDF the second is <code class="docutils literal notranslate"><span class="pre">&lt;visual&gt;&lt;pose&gt;</span></code>; in a URDF it is <code class="docutils literal notranslate"><span class="pre">&lt;visual&gt;&lt;origin&gt;</span></code>.</p>
@@ -1257,7 +1255,7 @@ RViz:    p_part = Pose · Root · Rx(90) · p_node
 </div>
 <p><strong>[Firm]</strong> In RViz on Lyrical that gives <code class="docutils literal notranslate"><span class="pre">Rz(90)</span> <span class="pre">·</span> <span class="pre">Root</span> <span class="pre">·</span> <span class="pre">Rx(90)</span> <span class="pre">·</span> <span class="pre">p_node</span></code>, and in Gazebo <code class="docutils literal notranslate"><span class="pre">Rz(90)</span> <span class="pre">·</span> <span class="pre">Rx(90)</span> <span class="pre">·</span> <span class="pre">Root</span> <span class="pre">·</span> <span class="pre">p_node</span></code>. With an identity root the two are equal and RViz shows the vertices exactly as Gazebo does. With a root transform they are not, because the loader’s roll acts inside the root in one consumer and nowhere in the other: <code class="docutils literal notranslate"><span class="pre">examples/monkey_xform.glb</span></code> carries a 5 m translation and a 90 degree yaw on its root, and the two consumers put its centre in different places. The identity-root rule is what makes the two agree.</p>
 <p><strong>[Practice]</strong> This reverses the project’s earlier decision, which delivered the file on the robotics axes with <code class="docutils literal notranslate"><span class="pre">+Y</span> <span class="pre">Up</span></code> off so that Gazebo needed no <code class="docutils literal notranslate"><span class="pre">Pose</span></code>. The cost of that was that the file was not oriented the way the glTF specification says an asset should be: the Khronos Sample Viewer and every browser viewer showed the part on its side, so the reference viewer could not answer whether a part was oriented right, and every RViz visual needed a compensating roll anyway. Now the file is right in every glTF tool, and the one conversion lives in the robot description, where it is visible in a diff.</p>
-<p><strong>[Open]</strong> How the RViz rotation is delivered in the model repositories, given that it depends on the ROS distribution. Nothing in this document depends on the answer.</p>
+<p><strong>[Practice]</strong> The project supports Lyrical and later only (<a class="reference internal" href="../profile.html#authoring-toolchain"><span class="std std-ref">Authoring toolchain</span></a>), so every URDF visual carries <code class="docutils literal notranslate"><span class="pre">rpy=&quot;0</span> <span class="pre">0</span> <span class="pre">1.5708&quot;</span></code> and the Jazzy and Kilted value above is for reference. That closes the earlier open question of delivering a per-distribution rotation. The <a class="reference internal" href="../walkthroughs/coordinate_orientation_demo.html"><span class="std std-doc">Coordinate orientation demo</span></a> is the on-screen record, 2026-10-09.</p>
 </section>
 </section>
 <section id="next-increment">

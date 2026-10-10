@@ -21,7 +21,7 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Minimum viable workflow" href="blender_mesh_coordinate_ex.html" />
+    <link rel="next" title="Coordinate system orientation demonstration" href="coordinate_orientation_demo.html" />
     <link rel="prev" title="Honu glTF Asset Workflow" href="../workflow.html" /> 
 </head>
 
@@ -114,10 +114,10 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../workflow.html#step-2-author-3d-asset-modeler">Step 2: Author 3D asset [Modeler]</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../workflow.html#build-to-the-honu-asset-profile-and-export">Build to the <span class="xref myst">Honu Asset Profile</span> and export</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../workflow.html#step-3-fill-the-glb-manifest-from-the-commission-yaml-integrator">Step 3: Fill the <code class="docutils literal notranslate"><span class="pre">.glb</span></code> manifest from the commission YAML [Integrator]</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../workflow.html#step-3-verify">Step 3: Verify</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../workflow.html#step-3-fill-the-glb-manifest-from-the-commission-yaml-integrator">Step 3: Fill the <code class="docutils literal notranslate"><span class="pre">.glb</span></code> manifest from the commission YAML [Integrator]</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../workflow.html#step-4-verify-integrator">Step 4: Verify [Integrator]</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../workflow.html#valid">Valid?</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../workflow.html#intended">Intended?</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../workflow.html#compliant">Compliant?</a></li>
@@ -131,19 +131,17 @@
 </ul>
 </li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Walkthroughs</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="blender_mesh_coordinate_ex.html">Minimum viable workflow</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="blender_mesh_coordinate_ex.html#minimum-monkey-mesh">Minimum monkey mesh</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="blender_mesh_coordinate_ex.html#create-in-blender-and-export">Create in Blender and export</a></li>
+<li class="toctree-l2"><a class="reference internal" href="coordinate_orientation_demo.html">Coordinate system orientation demonstration</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="coordinate_orientation_demo.html#the-overarching-structure">The overarching structure</a></li>
+<li class="toctree-l3"><a class="reference internal" href="coordinate_orientation_demo.html#minimum-monkey-mesh">Minimum monkey mesh</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="coordinate_orientation_demo.html#create-in-blender">Create in Blender</a></li>
+<li class="toctree-l4"><a class="reference internal" href="coordinate_orientation_demo.html#export-blender-gltf">Export Blender -&gt; glTF</a></li>
+<li class="toctree-l4"><a class="reference internal" href="coordinate_orientation_demo.html#view-in-gltf-sample-viewer">View in gltF Sample Viewer</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="coordinate_orientation_demo.html#gltf-to-gazebo">glTF to Gazebo</a></li>
+<li class="toctree-l5"><a class="reference internal" href="coordinate_orientation_demo.html#gltf-to-rviz">glTF to RVIZ</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="blender_mesh_coordinate_ex.html#baseline">Baseline</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="blender_mesh_coordinate_ex.html#the-y-up-export">The +Y Up Export</a></li>
-<li class="toctree-l4"><a class="reference internal" href="blender_mesh_coordinate_ex.html#transforms-frames-coordinate-systems-and-spaces">Transforms, frames, coordinate systems and spaces</a></li>
-<li class="toctree-l4"><a class="reference internal" href="blender_mesh_coordinate_ex.html#see-what-assimploader-receives">3. See what AssimpLoader receives</a></li>
-<li class="toctree-l4"><a class="reference internal" href="blender_mesh_coordinate_ex.html#write-a-world-and-a-urdf">4. Write a world and a URDF</a></li>
-<li class="toctree-l4"><a class="reference internal" href="blender_mesh_coordinate_ex.html#gazebo">5. Gazebo</a></li>
-<li class="toctree-l4"><a class="reference internal" href="blender_mesh_coordinate_ex.html#rviz">6. RViz</a></li>
-<li class="toctree-l4"><a class="reference internal" href="blender_mesh_coordinate_ex.html#what-rviz-does-to-a-gltf-file-and-how-to-undo-it">What RViz does to a glTF file, and how to undo it</a></li>
+<li class="toctree-l4"><a class="reference internal" href="coordinate_orientation_demo.html#summary">Summary</a></li>
 </ul>
 </li>
 </ul>
@@ -383,16 +381,16 @@
 <h1>Walkthroughs<a class="headerlink" href="#walkthroughs" title="Link to this heading"></a></h1>
 <p>Complete step-by-step examples and how-tos. Each one is run end to end, with the real output of each tool quoted, including where the result is surprising.</p>
 <ul class="simple">
-<li><p><a class="reference internal" href="blender_mesh_coordinate_ex.html"><span class="std std-doc">Minimum viable workflow</span></a>. One mesh from Blender to Gazebo and RViz, the simplest thing that exercises the whole pipeline, used to test the conventions and verify the tools against a file we made ourselves.</p></li>
+<li><p><a class="reference internal" href="coordinate_orientation_demo.html"><span class="std std-doc">Coordinate orientation demo</span></a>. One monkey mesh from Blender through the Sample Viewer to Gazebo and RViz, showing the coordinate convention at each step and the rotation each consumer needs.</p></li>
 <li><p><a class="reference internal" href="exporting-from-blender.html"><span class="std std-doc">Exporting from Blender</span></a>. The export defaults that produce most of the defects we see, and what to do instead.</p></li>
 <li><p><a class="reference internal" href="checking-a-delivery.html"><span class="std std-doc">Checking a delivery</span></a>. The four conformance questions, what answers each, and how to read <code class="docutils literal notranslate"><span class="pre">gltf-check</span></code> output.</p></li>
 <li><p><a class="reference internal" href="workflow_blueboat.html"><span class="std std-doc">BlueBoat walkthrough</span></a>. The BlueBoat chassis taken through the workflow: commission, manifest, and the four conformance checks, with each tool’s real output.</p></li>
 </ul>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="blender_mesh_coordinate_ex.html">Minimum viable workflow</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="blender_mesh_coordinate_ex.html#minimum-monkey-mesh">Minimum monkey mesh</a></li>
-<li class="toctree-l2"><a class="reference internal" href="blender_mesh_coordinate_ex.html#baseline">Baseline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="coordinate_orientation_demo.html">Coordinate system orientation demonstration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="coordinate_orientation_demo.html#the-overarching-structure">The overarching structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="coordinate_orientation_demo.html#minimum-monkey-mesh">Minimum monkey mesh</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="exporting-from-blender.html">Exporting from Blender</a><ul>
@@ -429,7 +427,7 @@
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="../workflow.html" class="btn btn-neutral float-left" title="Honu glTF Asset Workflow" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="blender_mesh_coordinate_ex.html" class="btn btn-neutral float-right" title="Minimum viable workflow" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="coordinate_orientation_demo.html" class="btn btn-neutral float-right" title="Coordinate system orientation demonstration" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

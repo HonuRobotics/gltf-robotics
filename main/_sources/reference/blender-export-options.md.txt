@@ -63,7 +63,7 @@ EOF
 | `asset.generator` written | `Khronos glTF Blender I/O v5.2.40` |
 | Properties | 110 |
 
-Every current delivery reports `Khronos glTF Blender I/O v5.1.20`, which is Blender 5.1. This page is one minor version ahead of the deliveries. The profile's [Authoring toolchain](../profile.md#authoring-toolchain) section proposes pinning 5.1 and is Open; nothing here decides it.
+Deliveries before the pin report `Khronos glTF Blender I/O v5.1.20`, which is Blender 5.1. The profile's [Authoring toolchain](../profile.md#authoring-toolchain) section pins Blender 5.2.2 LTS with `io_scene_gltf2` 5.2.40, which is the version this page enumerates.
 
 ## What no option does
 
@@ -119,7 +119,7 @@ The operation is not `Object ▸ Apply ▸ All Transforms`, which is the one a r
 |---|---|---|---|
 | +Y Up | `export_yup` | True | required True, the default — the profile's [Axes](../profile.md#axes) section |
 
-One option, and it is the whole of the coordinate conversion. On, it converts `(x, y, z)` to `(x, z, −y)` for vertices, normals and node TRS, producing the file the glTF specification describes: +Y up, and Blender's front, −Y, on +Z. That is what the profile's [Axes](../profile.md#axes) section requires, and the consumer then applies one fixed rotation onto the robotics axes: `<pose>0 0 0 1.5708 0 1.5708</pose>` in Gazebo, `rpy="0 0 1.5708"` in RViz on Lyrical. Off, Blender's Z-up axes pass through unchanged and every glTF viewer shows the part on its side. The [coordinate-systems reference](coordinate-systems.md#one-body-one-mesh-who-rotates-what) has the derivation.
+One option, and it is the whole of the coordinate conversion. On, it converts `(x, y, z)` to `(x, z, −y)` for vertices, normals and node TRS, producing the file the glTF specification describes: +Y up, and Blender's front, −Y, on +Z. That is what the profile's [Axes](../profile.md#axes) section requires, and the consumer then applies one fixed rotation onto the robotics axes: `<pose>0 0 0 1.5708 0 1.5708</pose>` in Gazebo, `rpy="0 0 1.5708"` in RViz on Lyrical and later. Off, Blender's Z-up axes pass through unchanged and every glTF viewer shows the part on its side. The [coordinate-systems reference](coordinate-systems.md#one-body-one-mesh-who-rotates-what) has the derivation.
 
 Note what no check can do about it: `gltf-check` has no rule implementing the profile's [Axes](../profile.md#axes) section, because nothing in a file says which way its author meant up or forward. This setting is verifiable only by rendering: a part exported with it off lies on its side in the Sample Viewer.
 

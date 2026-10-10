@@ -114,10 +114,10 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="workflow.html#step-2-author-3d-asset-modeler">Step 2: Author 3D asset [Modeler]</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="workflow.html#build-to-the-honu-asset-profile-and-export">Build to the <span class="xref myst">Honu Asset Profile</span> and export</a></li>
-<li class="toctree-l3"><a class="reference internal" href="workflow.html#step-3-fill-the-glb-manifest-from-the-commission-yaml-integrator">Step 3: Fill the <code class="docutils literal notranslate"><span class="pre">.glb</span></code> manifest from the commission YAML [Integrator]</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="workflow.html#step-3-verify">Step 3: Verify</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="workflow.html#step-3-fill-the-glb-manifest-from-the-commission-yaml-integrator">Step 3: Fill the <code class="docutils literal notranslate"><span class="pre">.glb</span></code> manifest from the commission YAML [Integrator]</a></li>
+<li class="toctree-l2"><a class="reference internal" href="workflow.html#step-4-verify-integrator">Step 4: Verify [Integrator]</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="workflow.html#valid">Valid?</a></li>
 <li class="toctree-l3"><a class="reference internal" href="workflow.html#intended">Intended?</a></li>
 <li class="toctree-l3"><a class="reference internal" href="workflow.html#compliant">Compliant?</a></li>
@@ -131,19 +131,17 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="walkthroughs/index.html">Walkthroughs</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="walkthroughs/blender_mesh_coordinate_ex.html">Minimum viable workflow</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="walkthroughs/blender_mesh_coordinate_ex.html#minimum-monkey-mesh">Minimum monkey mesh</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="walkthroughs/blender_mesh_coordinate_ex.html#create-in-blender-and-export">Create in Blender and export</a></li>
+<li class="toctree-l2"><a class="reference internal" href="walkthroughs/coordinate_orientation_demo.html">Coordinate system orientation demonstration</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="walkthroughs/coordinate_orientation_demo.html#the-overarching-structure">The overarching structure</a></li>
+<li class="toctree-l3"><a class="reference internal" href="walkthroughs/coordinate_orientation_demo.html#minimum-monkey-mesh">Minimum monkey mesh</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="walkthroughs/coordinate_orientation_demo.html#create-in-blender">Create in Blender</a></li>
+<li class="toctree-l4"><a class="reference internal" href="walkthroughs/coordinate_orientation_demo.html#export-blender-gltf">Export Blender -&gt; glTF</a></li>
+<li class="toctree-l4"><a class="reference internal" href="walkthroughs/coordinate_orientation_demo.html#view-in-gltf-sample-viewer">View in gltF Sample Viewer</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="walkthroughs/coordinate_orientation_demo.html#gltf-to-gazebo">glTF to Gazebo</a></li>
+<li class="toctree-l5"><a class="reference internal" href="walkthroughs/coordinate_orientation_demo.html#gltf-to-rviz">glTF to RVIZ</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="walkthroughs/blender_mesh_coordinate_ex.html#baseline">Baseline</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="walkthroughs/blender_mesh_coordinate_ex.html#the-y-up-export">The +Y Up Export</a></li>
-<li class="toctree-l4"><a class="reference internal" href="walkthroughs/blender_mesh_coordinate_ex.html#transforms-frames-coordinate-systems-and-spaces">Transforms, frames, coordinate systems and spaces</a></li>
-<li class="toctree-l4"><a class="reference internal" href="walkthroughs/blender_mesh_coordinate_ex.html#see-what-assimploader-receives">3. See what AssimpLoader receives</a></li>
-<li class="toctree-l4"><a class="reference internal" href="walkthroughs/blender_mesh_coordinate_ex.html#write-a-world-and-a-urdf">4. Write a world and a URDF</a></li>
-<li class="toctree-l4"><a class="reference internal" href="walkthroughs/blender_mesh_coordinate_ex.html#gazebo">5. Gazebo</a></li>
-<li class="toctree-l4"><a class="reference internal" href="walkthroughs/blender_mesh_coordinate_ex.html#rviz">6. RViz</a></li>
-<li class="toctree-l4"><a class="reference internal" href="walkthroughs/blender_mesh_coordinate_ex.html#what-rviz-does-to-a-gltf-file-and-how-to-undo-it">What RViz does to a glTF file, and how to undo it</a></li>
+<li class="toctree-l4"><a class="reference internal" href="walkthroughs/coordinate_orientation_demo.html#summary">Summary</a></li>
 </ul>
 </li>
 </ul>
@@ -490,7 +488,7 @@
 <td><p><a class="reference internal" href="#scenes-and-nodes">Scenes and nodes</a></p></td>
 </tr>
 <tr class="row-even"><td><p>One coordinate system</p></td>
-<td><p>; Blender (global, local); glTF (scene space, node space) and the origin coordinate system and the datum coordinate system all  coincide</p></td>
+<td><p>Blender (global, local), glTF (scene space, node space), the origin coordinate system and the datum coordinate system all coincide</p></td>
 <td><p><a class="reference internal" href="reference/glossary.html#datum-coordinate-system"><span class="std std-ref">Glossary</span></a>, <a class="reference internal" href="#origin-datum-coordinate-system-location">Origin</a></p></td>
 </tr>
 <tr class="row-odd"><td><p>One mesh</p></td>
@@ -607,6 +605,34 @@
 <section id="axes">
 <h3>Axes<a class="headerlink" href="#axes" title="Link to this heading"></a></h3>
 <p>The delivered file MUST be expressed in the coordinate system <a class="reference external" href="https://registry.khronos.org/glTF/specs/2.0/glTF-2.0.html#coordinate-system-and-units">glTF 2.0</a> §3.4 defines: right-handed, <strong>+Y up, +Z forward, −X right</strong>. The front of the part faces +Z.</p>
+<p>The coordinate systems used at each stage of the workflow are the based on the conventions of the tool or specification.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Coordinate Convention</p></th>
+<th class="head"><p>+x</p></th>
+<th class="head"><p>+y</p></th>
+<th class="head"><p>+z</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Blender</p></td>
+<td><p>left</p></td>
+<td><p>back</p></td>
+<td><p>up</p></td>
+</tr>
+<tr class="row-odd"><td><p>glTF 2.0</p></td>
+<td><p>left</p></td>
+<td><p>up</p></td>
+<td><p>fwd</p></td>
+</tr>
+<tr class="row-even"><td><p>ISO 9787 <br> ROS REP 103</p></td>
+<td><p>fwd</p></td>
+<td><p>left</p></td>
+<td><p>up</p></td>
+</tr>
+</tbody>
+</table>
+<p><img alt="" src="_images/monkey_walkthrough4_annote.png" /></p>
 <p>In Blender this is Blender’s own convention: the part is built with its front toward −Y and up +Z, which is what Blender’s Front view shows, and exported with the glTF exporter’s <code class="docutils literal notranslate"><span class="pre">+Y</span> <span class="pre">Up</span></code> option <strong>on</strong>, which is the exporter’s default. The exporter maps Blender (x, y, z) to glTF (x, z, −y), so Blender’s front lands on +Z and Blender’s up on +Y.</p>
 <p>The robotics coordinate system of the part, +X forward, +Y left, +Z up (<a class="reference external" href="https://www.iso.org/standard/59444.html">ISO 9787:2013</a> §5.5, <a class="reference external" href="https://www.ros.org/reps/rep-0103.html">REP 103</a>), is reached by one fixed rotation that the consumer applies and the file never contains: robot (x, y, z) = glTF (Z, X, Y), which is a roll of 90° followed by a yaw of 90°. The rotation is about the origin, so the datum point is the origin in both coordinate systems.</p>
 <table class="docutils align-default">
@@ -617,24 +643,21 @@
 </tr>
 </thead>
 <tbody>
-<tr class="row-even"><td><p>Gazebo</p></td>
-<td><p>no conversion; buffer data goes straight onto the link axes (<a class="reference external" href="https://github.com/gazebosim/gz-common/blob/a08c258d4e566b1e1624cb85f12ab78068ab2870/graphics/src/AssimpLoader.cc#L955-L976">source</a>)</p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">&lt;pose&gt;0</span> <span class="pre">0</span> <span class="pre">0</span> <span class="pre">1.5708</span> <span class="pre">0</span> <span class="pre">1.5708&lt;/pose&gt;</span></code> on the visual</p></td>
-</tr>
-<tr class="row-odd"><td><p>RViz, Lyrical and later</p></td>
-<td><p>rotates a glTF mesh +90° about X as it loads, Y-up to Z-up (<a class="reference external" href="https://github.com/ros2/rviz/blob/baab61a68bc089217dfaa4f270276dc7a30268b1/rviz_rendering/src/rviz_rendering/mesh_loader_helpers/assimp_loader.cpp#L215-L222">source</a>)</p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">rpy=&quot;0</span> <span class="pre">0</span> <span class="pre">1.5708&quot;</span></code> on the URDF visual</p></td>
-</tr>
-<tr class="row-even"><td><p>RViz, Jazzy and Kilted</p></td>
-<td><p>no rotation: <code class="docutils literal notranslate"><span class="pre">ros2/rviz</span></code> #1482 was merged to <code class="docutils literal notranslate"><span class="pre">rolling</span></code> on 2025-06-16 and deliberately not backported</p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">rpy=&quot;1.5708</span> <span class="pre">0</span> <span class="pre">1.5708&quot;</span></code> on the URDF visual</p></td>
-</tr>
-<tr class="row-odd"><td><p>Khronos Sample Viewer, browser viewers</p></td>
+<tr class="row-even"><td><p>Khronos Sample Viewer, browser viewers</p></td>
 <td><p>assume glTF’s convention</p></td>
 <td><p>nothing: the part stands upright and faces the camera</p></td>
 </tr>
+<tr class="row-odd"><td><p>Gazebo</p></td>
+<td><p>no conversion; buffer data goes straight onto the link axes (<a class="reference external" href="https://github.com/gazebosim/gz-common/blob/a08c258d4e566b1e1624cb85f12ab78068ab2870/graphics/src/AssimpLoader.cc#L955-L976">source</a>)</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">&lt;pose&gt;0</span> <span class="pre">0</span> <span class="pre">0</span> <span class="pre">1.5708</span> <span class="pre">0</span> <span class="pre">1.5708&lt;/pose&gt;</span></code> on the visual</p></td>
+</tr>
+<tr class="row-even"><td><p>RViz, Lyrical and later</p></td>
+<td><p>rotates a glTF mesh +90° about X as it loads, Y-up to Z-up (<a class="reference external" href="https://github.com/ros2/rviz/blob/baab61a68bc089217dfaa4f270276dc7a30268b1/rviz_rendering/src/rviz_rendering/mesh_loader_helpers/assimp_loader.cpp#L215-L222">source</a>)</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">&lt;origin</span> <span class="pre">xyz=&quot;0</span> <span class="pre">0</span> <span class="pre">0&quot;</span> <span class="pre">rpy=&quot;0</span> <span class="pre">0</span> <span class="pre">1.5708&quot;/&gt;</span></code> on the URDF visual</p></td>
+</tr>
 </tbody>
 </table>
+<p><strong>Note.</strong> RViz on Jazzy and Kilted does not rotate glTF on load: <code class="docutils literal notranslate"><span class="pre">ros2/rviz</span></code> #1482 was merged to <code class="docutils literal notranslate"><span class="pre">rolling</span></code> on 2025-06-16 and deliberately not backported, so there the URDF visual would carry the whole rotation, <code class="docutils literal notranslate"><span class="pre">rpy=&quot;1.5708</span> <span class="pre">0</span> <span class="pre">1.5708&quot;</span></code>. Those distributions are below this project’s floor (<a class="reference internal" href="#authoring-toolchain">Authoring toolchain</a>) and are not supported. The <a class="reference internal" href="walkthroughs/coordinate_orientation_demo.html"><span class="std std-doc">Coordinate orientation demo</span></a> shows the rule end to end on one mesh, verified on screen on 2026-10-09.</p>
 <p><strong>Implementation Note.</strong> Why the rotation is the consumer’s. Every stage of this pipeline except the file uses the robotics convention: the URDF, the SDF and the link coordinate systems Gazebo simulates in. The rotation between the two conventions has to live somewhere, and it lives in the robot description, once per visual, where it is visible in a diff. An earlier draft put it in the file instead, by delivering the geometry on the robotics axes. The cost was that no glTF tool showed a part correctly, so the reference viewer could not answer whether a part was oriented right, and every RViz visual needed a compensating roll anyway.</p>
 <p><strong>Implementation Note.</strong> Orientation is verified by eye, not by a tool. Nothing in a glTF file records which way its author meant forward or up, so the feature that defines forward is named in the commission where the shape does not determine it, and the integrator confirms in the Khronos Sample Viewer that the part stands upright and faces the camera.</p>
 </section>
@@ -838,7 +861,7 @@
 <li><p><strong>Usable.</strong> The part renders correctly in Gazebo and loads in RViz.</p></li>
 </ol>
 <p><strong>Implementation Note.</strong> These are four different questions and they fail independently. A file can be valid and not what the modeler meant. It can be both and still render wrong in Gazebo, which implements a subset of glTF and is actively changing. Passing in Gazebo is necessary and never sufficient, because a defect can be masked by something Gazebo ignores. External viewers such as Babylon and F3D are not a Gazebo proxy either; <code class="docutils literal notranslate"><span class="pre">glb_probe</span></code>, which prints what the loader built, is.</p>
-<p>The checks that answer each question, who runs them and when, are described in the <a class="reference internal" href="workflow.html#step-3-verify"><span class="std std-ref">workflow</span></a>.</p>
+<p>The checks that answer each question, who runs them and when, are described in the <a class="reference internal" href="workflow.html#step-4-verify-integrator"><span class="std std-ref">workflow</span></a>.</p>
 </section>
 <section id="open-questions-informative">
 <h2>Open questions (Informative)<a class="headerlink" href="#open-questions-informative" title="Link to this heading"></a></h2>

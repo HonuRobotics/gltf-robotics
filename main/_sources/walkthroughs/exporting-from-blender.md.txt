@@ -8,7 +8,7 @@ None of it is a substitute for checking the result: run [`gltf-check`](checking-
 
 Build the part the way Blender expects: front toward −Y, which is what the Front view (numpad 1) looks at, and up +Z. Leave the exporter's `+Y Up` option **on**, its default. The exporter maps Blender (x, y, z) to glTF (x, z, −y), so the file comes out in glTF's own convention, +Y up and +Z forward, which is what the profile's [Axes](../profile.md#axes) section requires.
 
-The conversion to the robotics axes is the integrator's, not yours: Gazebo places the part with `<pose>0 0 0 1.5708 0 1.5708</pose>` on the visual, and the URDF visual carries `rpy="0 0 1.5708"` on Lyrical, where RViz rotates glTF on load, or `rpy="1.5708 0 1.5708"` on Jazzy and Kilted, where it does not. Do not rotate the part in Blender to compensate for either consumer. The [coordinate-systems reference](../reference/coordinate-systems.md#one-body-one-mesh-who-rotates-what) explains who rotates what.
+The conversion to the robotics axes is the integrator's, not yours: Gazebo places the part with `<pose>0 0 0 1.5708 0 1.5708</pose>` on the visual, and the URDF visual carries `rpy="0 0 1.5708"` for RViz on Lyrical and later, which rotates glTF on load itself (earlier distributions do not, and are not supported). Do not rotate the part in Blender to compensate for either consumer. The [coordinate-systems reference](../reference/coordinate-systems.md#one-body-one-mesh-who-rotates-what) explains who rotates what.
 
 ## Clear location and rotation, apply scale, before exporting
 
