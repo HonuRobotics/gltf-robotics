@@ -83,7 +83,7 @@ Posted 2026-10-09. Each issue opens with the exchange from the Google Doc, quote
 | [#5](https://github.com/HonuRobotics/gltf-robotics/issues/5) | Assembling a model from its parts | doc | open |
 | [#6](https://github.com/HonuRobotics/gltf-robotics/issues/6) | Export guide has no section on authoring materials in Blender | docs survey | open |
 | [#7](https://github.com/HonuRobotics/gltf-robotics/issues/7) | Apply Modifiers export option is still marked unsettled | options reference | open |
-| [#8](https://github.com/HonuRobotics/gltf-robotics/issues/8) | Loader behavior page: upgrade four rows from source-read to observed | docs survey | open |
+| [#8](https://github.com/HonuRobotics/gltf-robotics/issues/8) | Loader behavior page: upgrade four rows from source-read to observed | docs survey | closed 2026-10-10: rendered tag and dated observations added |
 
 Topics from the survey that were not opened as issues and are folded into the steps below instead: the Images option passing WebP through (step 4), the coordinate disagreements (step 1), and the `KHR_materials_variants` prohibition (#4 and step 8).
 

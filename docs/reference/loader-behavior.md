@@ -10,6 +10,7 @@ Evidence tags used below:
 |---|---|
 | S | Read in the source of the version listed |
 | P | Observed by running `glb_probe` against our files inside the drydock container |
+| R | Seen rendered on screen in `gz sim`, on a machine with a graphics card |
 | U | Not verified |
 
 > **Open.** Whether to contribute the material table below to Gazebo, on the open documentation issue that asked for it, and whether to file an issue for the `SceneManager` material-override TODO. Both are small, and neither is a rule of the profile.
@@ -88,6 +89,16 @@ Where the branch and the installed version could differ, a P-tagged observation 
 | `TANGENT` | read by assimp | not copied | Ogre-Next regenerates from UV0 |
 | `animations`, `skins` | read | skeleton and animation built | Bounding box forced to a unit cube when an animation exists, so a stray animation breaks culling |
 | `cameras`, `KHR_lights_punctual` | read by assimp | not read | Ignored |
+
+### Rendered observations, 2026-10-05
+
+Ryan Lee's cube test, a textured cube exported from Blender and opened in `gz sim` on his own machine (Gazebo version not recorded), is the first rendered check of the table above. It was reported by email with screenshots.
+
+- `metallicRoughnessTexture`, roughness in green: renders as expected, black shiny and white dull. [R]
+- `occlusionTexture` on UV set 0: renders as ambient occlusion. [R]
+- `normalTexture`: renders. [R]
+- `alphaMode: MASK`: cuts out at the cutoff once alpha is rounded to 0 or 1; `BLEND` is ignored and renders opaque. [R]
+- `metallicRoughnessTexture`, metalness in blue: metallic regions render black. Tracked in [#1](https://github.com/HonuRobotics/gltf-robotics/issues/1). [R]
 
 ## The RViz path
 
