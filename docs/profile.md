@@ -386,16 +386,15 @@ A delivered file MUST NOT contain:
 - the `KHR_texture_transform` extension
 - the `KHR_materials_variants` extension
 
-**Implementation Note.** These are prohibited for different reasons.  The justification is provided briefly for completeness in caseone is ever reconsidered:
-* An empty `extensionsRequired` is the single check that covers the general case. The glTF specification requires a conforming reader to refuse a file outright when it requires an extension the reader does not implement, so one reading of this rule is that it saves us from a file that would fail to load. Testing of examples contradicts this: `Distribution_Warehouse` % CLAUDE: give a citation - where did this model come from 
-, which declares `KHR_texture_transform` in `extensionsRequired`, loads through gz-common without complaint, building all 3,010 primitives and 19 materials. Gazebo is not a conforming reader on this point. The rule therefore protects against a file that loads and is silently wrong. 
-* The Gazebo team's own demo assets declare `KHR_texture_transform` and `KHR_materials_specular`, so files from that workflow will fail this section and need re-export. % CLAUDE: explain - whch prohibition does this fail?
-* Draco decodes correctly in both consumers but defeats the project's own inspection tools. 
-* Texture transform is parsed and then ignored, so textures render in the wrong place. \
-* Animations are imported and force the bounding box to a unit cube, breaking culling Cameras and lights are ignored harmlessly. 
-* Material variants are not read by assimp.  A part that comes in several colors is delivered as one file per color. 
-* `KHR_xmp_json_ld`, which carries [the manifest](#the-manifest), is not prohibited: it is declared in `extensionsUsed`, has no effect on appearance, and a consumer that ignores it is behaving correctly. 
+**Implementation Note.** These are prohibited for different reasons. The justification is given briefly for completeness, in case one is ever reconsidered:
 
+* An empty `extensionsRequired` is the single check that covers the general case. The glTF specification requires a conforming reader to refuse a file outright when it requires an extension the reader does not implement, so one reading of this rule is that it saves us from a file that would fail to load. Testing contradicts this: `Distribution_Warehouse`, the Fuel model [OpenRobotics/Distribution_Warehouse](https://app.gazebosim.org/OpenRobotics/fuel/models/Distribution_Warehouse) that also ships byte for byte in the Gazebo team's `jetty_demo` assets ([Community exemplars](assessments/community-exemplars.md)), declares `KHR_texture_transform` in `extensionsRequired` (which gazebo does not support) and loads through gz-common without complaint,. Gazebo is not a conforming reader on this point and silently ignores an extension it does not support. The rule therefore protects against a file that loads and is silently wrong.
+* The Gazebo team's own demo assets declare `KHR_texture_transform`, several of them in `extensionsRequired`, so files from that workflow fail this section on both counts and need re-export. They also declare `KHR_materials_specular`, which is not prohibited: both consumers parse it and ignore it.
+* Draco decodes correctly in both consumers but defeats the project's own inspection tools.
+* Texture transform is parsed and then ignored, so textures render in the wrong place.
+* Animations are imported and force the bounding box to a unit cube, breaking culling. Cameras and lights are ignored harmlessly.
+* Material variants are not read by assimp. A part that comes in several colors is delivered as one file per color.
+* `KHR_xmp_json_ld`, which carries [the manifest](#the-manifest), is not prohibited: it is declared in `extensionsUsed`, has no effect on appearance, and a consumer that ignores it is behaving correctly.
 
 > **Open: Future.** Which of these prohibitions are permanent. Two are not statements about the format: Draco decodes correctly in both consumers and is prohibited only because it defeats this project's own inspection tools, and KTX2 is prohibited because Gazebo cannot read it while Drake recommends it for performance ([Closely related work](#closely-related-work-informative)). Both would be reconsidered if the tooling or the consumer changed, and compressed geometry and supercompressed textures are the two levers with real size savings behind them. Animations, cameras and lights are prohibited on their merits and are not expected to change.
 
