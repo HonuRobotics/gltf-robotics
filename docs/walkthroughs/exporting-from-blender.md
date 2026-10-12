@@ -112,6 +112,42 @@ The generator string records the tool and never the settings, so two files from 
 
 The option names and defaults on this page were read from the operator, not from documentation, and the same command checks them against a new release:
 
+## Importing the Gazebo Material in Blender
+
+- A Gazebo compliant glTF material (henceforth "Gazebo Material") is provided in /examples/glTF-Material/Gazebo-Compliant-glTF-Material-Only.blend
+- The example file /examples/glTF/Gazebo-Compliant-glTF-Material-Example.blend demonstrates how each component is used in Blender.
+- For this provided material to work in Gazebo, it is assumed you have:
+  - A **Base Color Map** texture in PNG format
+  - If you have are using an **Alpha Channel**, it is in the **Base Color** texture
+  - You have a single **ORM Map** combining the **Occlusion**, **Roughness**, and **Metalness** as described above.
+
+1. Open your Blender scene containing the mesh object to which you would like to apply the Gazboe Material
+2. In Blender, navigate to File > Append..
+3. Select the Gazebo-Compliant-glTF-Material-Only.blend, then select Materials, then Gazebo Compliant glTF Material from the list and click Append.
+4. Select your mesh object in Blender
+5. Navigate to the Materials tab.
+6. Assign the Gazebo Compliant glTF Material to your object.
+
+## Using the Gazebo Material
+
+Use the Materials tab to assign the **Base Color**, **ORM Map**, and, if apllicable, **Normal Map**.
+
+### Assign the material to the mesh
+
+![Assign Material in Blender](./images/Assign-Material.png)
+
+1. Locate the material tab
+2. Assign the material
+3. Locate and select the Gazebo Material from the list
+
+### Assign textures to the material
+
+![Assign Textures to the Material](./images/Assign-Textures.png)
+
+1. Assign the Base Color to the Base Color + Alpha slot
+2. Assign the ORM to one of the ORM Map slot. Either will work--they are connected to the same source.
+3. Assign the Normal Map if you have one.
+
 ```bash
 blender --background --factory-startup --python - <<'EOF'
 import bpy
