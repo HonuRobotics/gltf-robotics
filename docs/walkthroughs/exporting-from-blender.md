@@ -2,6 +2,8 @@
 
 Every delivery this project has received came out of `Khronos glTF Blender I/O`, and most of the defects found in them are export defaults rather than modelling mistakes. This page collects the ones that bite, each with what the export does and what to do instead.
 
+It is informative: a reference implementation in Blender 5.2.2, the route used to verify the profile. The [profile](../profile.md) is the requirement and constrains the file, not the tool, so anyone working in other software meets it their own way.
+
 None of it is a substitute for checking the result: run [`gltf-check`](checking-a-delivery.md) on the exported file, and open it in the Khronos Sample Viewer before delivering it. The viewer assumes glTF's convention and so does the file, so a correct export stands upright and faces the camera; the viewer answers orientation as well as materials, textures and transparency.
 
 ## Author in Blender's own convention, and let the exporter convert
@@ -65,6 +67,10 @@ Plan transparency per material. For cutouts — vents, perforations, mesh guards
 
 Do not tag an opaque part `BLEND`. Gazebo ignores `BLEND` and renders the material opaque, so the result looks fine there and is wrong everywhere else. One delivered chassis reached us exactly this way: 0.56% of its base colour map is a cutout region, and the whole hull had been tagged `BLEND` to handle it.
 
+## Turn on Apply Modifiers
+
+Turn on `Apply Modifiers` in the export dialog. Off, the exporter ignores the modifier stack and writes the base mesh, so a Mirror ships half the part and nothing reports it; on, an object without modifiers exports unchanged. The profile neither requires nor forbids it. The [export options reference](../reference/blender-export-options.md) has the detail.
+
 ## Keep the authoring source, outside the simulation repository
 
 A delivered `.glb` is an export, and an export is lossy in one direction that matters: you cannot get the modifier stack, the material node graph, the UV seams or the named datum features back out of it. So keep the `.blend`, and the CAD it came from if there was any.
@@ -75,6 +81,6 @@ This is a practice rather than a rule. The profile's [manifest](../profile.md#th
 
 ## Versions
 
-The toolchain is pinned at patch level in the profile's [Authoring toolchain](../profile.md#authoring-toolchain) section: Blender 5.2.2 LTS with `io_scene_gltf2` 5.2.40, which writes `asset.generator` as `Khronos glTF Blender I/O v5.2.40`. Earlier deliveries report `v5.1.20`, which is Blender 5.1; they predate the pin and are not held to it.
+The reference implementation uses the versions in the profile's [Authoring toolchain](../profile.md#authoring-toolchain) section: Blender 5.2.2 LTS with `io_scene_gltf2` 5.2.40, which writes `asset.generator` as `Khronos glTF Blender I/O v5.2.40`. Earlier deliveries report `v5.1.20`, which is Blender 5.1; they predate the pin and are not held to it.
 
 The generator string records the tool and never the settings, so two files from the same exporter can still differ in image format, tangents and compression. That is why the checks constrain the outcome rather than the settings, and why `will_save_settings` is worth turning on — it puts the settings in the `.blend` where a re-export can reproduce them.

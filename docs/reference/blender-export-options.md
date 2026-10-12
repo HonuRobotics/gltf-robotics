@@ -2,9 +2,11 @@
 
 Every option the Blender glTF exporter offers, with its default. The dialog has 110 properties and no guide we have written names more than a handful, so the settings that matter are collected here first and the full enumeration follows as backing.
 
-## Directive
+This page is informative. The [profile](../profile.md) governs the delivered file, not the tool that produced it, and many configurations of this dialog meet it. What follows is one of them, the reference configuration used to verify the profile in Blender 5.2.2. Where a row says *fixed by the profile*, a different value produces a file that does not conform; every other value is this example's choice.
 
-Thirteen options out of 110. Everything not named below stays at its Blender default.
+## One configuration that meets the profile
+
+Fourteen options out of 110. Everything not named below stays at its Blender default.
 
 Confirm these. They are already Blender's defaults, so the work is checking rather than changing:
 
@@ -19,19 +21,20 @@ Confirm these. They are already Blender's defaults, so the work is checking rath
 | Punctual Lights | `export_lights` | False | the profile's [Prohibited content](../profile.md#prohibited-content) section prohibits `KHR_lights_punctual` |
 | Draco | `export_draco_mesh_compression_enable` | False | the profile's [Prohibited content](../profile.md#prohibited-content) section prohibits `KHR_draco_mesh_compression` |
 
-Change these. They are the only five that differ from the default:
+Set these:
 
 | UI label | Identifier | Default | Set to | Why |
 |---|---|---|---|---|
 | +Y Up | `export_yup` | True | True | the profile's [Axes](../profile.md#axes) section requires the file in glTF's convention, +Y up and +Z forward; the default produces it from a part built in Blender's own convention |
 | Limit to ▸ Selected Objects | `use_selection` | False | True | one part per delivery — the profile's [File](../profile.md#file) section |
+| Apply Modifiers | `export_apply` | False | True | the file carries the geometry the viewport shows; the profile says nothing about modifiers |
 | Animation | `export_animations` | True | False | the profile's [Prohibited content](../profile.md#prohibited-content) section prohibits `animations`, and no scene should rely on having no actions |
 | Remember Export Settings | `will_save_settings` | False | True | the `.blend` then carries the settings it was exported with, so the delivery can be reproduced from its source |
 | Copyright | `export_copyright` | `''` | `Copyright Honu Robotics` | |
 
 Four decide where the geometry lands: `export_format`, `export_yup`, `at_collection_center` and `use_selection`. The rest is payload, prohibition or provenance.
 
-Two are not settled, and the dialog default is what we use until they are: `export_apply` (Apply Modifiers) and `export_image_format` (`AUTO`, which is necessary and not sufficient — see the Data ▸ Material panel below).
+One is not settled, and the dialog default is what we use until it is: `export_image_format` (`AUTO`, which is necessary and not sufficient — see the Data ▸ Material panel below).
 
 ### Four things that decide the result and are not in this dialog
 
@@ -75,9 +78,9 @@ The operation is not `Object ▸ Apply ▸ All Transforms`, which is the one a r
 
 ## Top of the dialog
 
-| UI label | Identifier | Default | Ours |
+| UI label | Identifier | Default | This example |
 |---|---|---|---|
-| Format | `export_format` | GLB | required GLB — the profile's [File format](../profile.md#file-format) section |
+| Format | `export_format` | GLB | GLB, fixed by the profile's [File format](../profile.md#file-format) section |
 | Copyright | `export_copyright` | `''` | `Copyright Honu Robotics` |
 | Remember Export Settings | `will_save_settings` | False | True — the `.blend` then carries the settings it was exported with |
 | File path | `filepath` | `''` | naming is governed by the profile's [File](../profile.md#file) section: `<part>.visual.glb` |
@@ -95,7 +98,7 @@ The operation is not `Object ▸ Apply ▸ All Transforms`, which is the one a r
 
 ## Include
 
-| UI label | Identifier | Default | Ours |
+| UI label | Identifier | Default | This example |
 |---|---|---|---|
 | Limit to ▸ Selected Objects | `use_selection` | False | True — the profile's [File](../profile.md#file) section is one part per delivery |
 | Limit to ▸ Visible Objects | `use_visible` | False | default |
@@ -104,10 +107,10 @@ The operation is not `Object ▸ Apply ▸ All Transforms`, which is the one a r
 | … with Nested Collections | `use_active_collection_with_nested` | True | default |
 | Limit to ▸ Active Scene | `use_active_scene` | False | open — the profile's [Scenes and nodes](../profile.md#scenes-and-nodes) section requires exactly one scene, and six deliveries carried leftover empty ones |
 | Collection by name | `collection` | `''` | default |
-| At Collection Center | `at_collection_center` | False | required False — it would move the origin, which the profile's [Origin](../profile.md#origin---datum-coordinate-system-location) and [Datum specification](../profile.md#datum-specification) sections govern |
+| At Collection Center | `at_collection_center` | False | False — it would move the origin, which the profile's [Origin](../profile.md#origin---datum-coordinate-system-location) and [Datum specification](../profile.md#datum-specification) sections govern |
 | Data ▸ Custom Properties | `export_extras` | False | open — the archive-the-source question in the profile's [manifest](../profile.md#the-manifest) section |
-| Data ▸ Cameras | `export_cameras` | False | required False — the profile's [Prohibited content](../profile.md#prohibited-content) section prohibits `cameras` |
-| Data ▸ Punctual Lights | `export_lights` | False | required False — the profile's [Prohibited content](../profile.md#prohibited-content) section prohibits `KHR_lights_punctual` |
+| Data ▸ Cameras | `export_cameras` | False | False, fixed by the profile's [Prohibited content](../profile.md#prohibited-content) section, which prohibits `cameras` |
+| Data ▸ Punctual Lights | `export_lights` | False | False, fixed by the profile's [Prohibited content](../profile.md#prohibited-content) section, which prohibits `KHR_lights_punctual` |
 
 `use_selection` is prescribed True rather than left at the default. The profile's [File](../profile.md#file) section is one part per delivery, and an export that takes whatever happens to be in the scene is the mechanism by which leftover objects and empty scenes reach a delivery. Requiring a selection makes the modeler state what the part is. The profile's [Scenes and nodes](../profile.md#scenes-and-nodes) section now requires exactly one node with no children, so a delivery cannot legitimately hold more than one object and this will not relax.
 
@@ -115,9 +118,9 @@ The operation is not `Object ▸ Apply ▸ All Transforms`, which is the one a r
 
 ## Transform
 
-| UI label | Identifier | Default | Ours |
+| UI label | Identifier | Default | This example |
 |---|---|---|---|
-| +Y Up | `export_yup` | True | required True, the default — the profile's [Axes](../profile.md#axes) section |
+| +Y Up | `export_yup` | True | True, the default, fixed by the profile's [Axes](../profile.md#axes) section |
 
 One option, and it is the whole of the coordinate conversion. On, it converts `(x, y, z)` to `(x, z, −y)` for vertices, normals and node TRS, producing the file the glTF specification describes: +Y up, and Blender's front, −Y, on +Z. That is what the profile's [Axes](../profile.md#axes) section requires, and the consumer then applies one fixed rotation onto the robotics axes: `<pose>0 0 0 1.5708 0 1.5708</pose>` in Gazebo, `rpy="0 0 1.5708"` in RViz on Lyrical and later. Off, Blender's Z-up axes pass through unchanged and every glTF viewer shows the part on its side. The [coordinate-systems reference](coordinate-systems.md#one-body-one-mesh-who-rotates-what) has the derivation.
 
@@ -125,54 +128,52 @@ Note what no check can do about it: `gltf-check` has no rule implementing the pr
 
 ## Data ▸ Scene Graph
 
-| UI label | Identifier | Default | Ours |
+| UI label | Identifier | Default | This example |
 |---|---|---|---|
 | Flatten Object Hierarchy | `export_hierarchy_flatten_objs` | False | moot — the profile's [Scenes and nodes](../profile.md#scenes-and-nodes) section permits exactly one node with no children, so there is no hierarchy to flatten |
 | Flatten Bone Hierarchy | `export_hierarchy_flatten_bones` | False | default — no armatures |
-| Full Collection Hierarchy | `export_hierarchy_full_collections` | False | required False — it adds intermediate nodes |
+| Full Collection Hierarchy | `export_hierarchy_full_collections` | False | False — it adds intermediate nodes |
 | Remove Armature Object | `export_armature_object_remove` | False | default — no armatures |
-| GPU Instances | `export_gpu_instances` | False | required False — `EXT_mesh_gpu_instancing`, and the profile's [Prohibited content](../profile.md#prohibited-content) section fails any `extensionsRequired` |
+| GPU Instances | `export_gpu_instances` | False | False — `EXT_mesh_gpu_instancing`, and the profile's [Prohibited content](../profile.md#prohibited-content) section fails any `extensionsRequired` |
 
 ## Data ▸ Mesh
 
-| UI label | Identifier | Default | Ours |
+| UI label | Identifier | Default | This example |
 |---|---|---|---|
-| Apply Modifiers | `export_apply` | False | open — see the note below |
-| UVs | `export_texcoords` | True | required True — the profile's [Geometry](../profile.md#geometry) section requires `TEXCOORD_0` on every primitive |
-| Normals | `export_normals` | True | required True — the profile's [Geometry](../profile.md#geometry) section requires `NORMAL` |
+| Apply Modifiers | `export_apply` | False | True — see the note below |
+| UVs | `export_texcoords` | True | True, fixed by the profile's [Geometry](../profile.md#geometry) section, which requires `TEXCOORD_0` on every primitive |
+| Normals | `export_normals` | True | True, fixed by the profile's [Geometry](../profile.md#geometry) section, which requires `NORMAL` |
 | Tangents | `export_tangents` | False | default False — neither consumer needs them |
 | Vertex Colors | `export_vertex_color` | `'MATERIAL'` | open |
 | … name | `export_vertex_color_name` | `'Color'` | default |
 | … export all | `export_all_vertex_colors` | True | open — its own description says a fake `COLOR_0` may be created; see below |
 | … active when no material | `export_active_vertex_color_when_no_material` | True | open |
-| Attributes | `export_attributes` | False | required False — underscore-prefixed custom attributes are not in the profile |
-| Loose Edges | `use_mesh_edges` | False | required False — the profile's [Geometry](../profile.md#geometry) section requires triangles |
-| Loose Points | `use_mesh_vertices` | False | required False — same |
+| Attributes | `export_attributes` | False | False — underscore-prefixed custom attributes are not in the profile |
+| Loose Edges | `use_mesh_edges` | False | False, fixed by the profile's [Geometry](../profile.md#geometry) section, which requires triangles |
+| Loose Points | `use_mesh_vertices` | False | False — same |
 | Shared Accessors | `export_shared_accessors` | False | open — it changes accessor layout, which `glb_probe` reads |
 | Geometry Nodes Instances | `export_gn_mesh` | False | open |
 
-Two rows to settle by experiment.
+`export_apply` is on in this example, and the profile neither requires nor forbids it. Off, the exporter writes the base mesh and ignores the modifier stack without a warning, so a Mirror ships half the part and a Bevel or Subdivision the modeler intended is lost. On, each object that has modifiers is exported as Blender evaluates it for the viewport, and an object with none is exported unchanged. Two consequences to check: the viewport level of a Subdivision is the one that ships, not the render level, and the triangle count can grow without anyone seeing it, so read it from [`gltf-summary`](../walkthroughs/checking-a-delivery.md). The option's own warning, that it prevents exporting shape keys, does not apply to a static part.
 
-`export_apply` is genuinely open. Leaving it off delivers the base mesh and ignores the modifier stack, which silently drops a bevel or a subdivision the modeler intended. Turning it on bakes modifiers and, per its own warning, prevents exporting shape keys — which we do not want anyway. The profile says nothing about modifiers.
-
-`export_all_vertex_colors` defaults True and its description warns that "if no Vertex Color is used in the mesh materials, a fake `COLOR_0` will be created". A plain cube with no material exports with `POSITION`, `NORMAL` and `TEXCOORD_0` only, so the fake attribute does not appear in the simplest case. The condition that triggers it is not yet established.
+`export_all_vertex_colors` is still to be settled by experiment. It defaults True and its description warns that "if no Vertex Color is used in the mesh materials, a fake `COLOR_0` will be created". A plain cube with no material exports with `POSITION`, `NORMAL` and `TEXCOORD_0` only, so the fake attribute does not appear in the simplest case. The condition that triggers it is not yet established.
 
 Also worth recording: `export_texcoords` defaults True, and Blender's primitives carry a `UVMap`, so a normal Blender export satisfies the profile's [Geometry](../profile.md#geometry) section's `TEXCOORD_0` requirement without anyone thinking about it. Hand-authored files do not — `probe/coords/marker_yup.glb` fails rule 6 for exactly this reason.
 
 ## Data ▸ Material
 
-| UI label | Identifier | Default | Ours |
+| UI label | Identifier | Default | This example |
 |---|---|---|---|
-| Materials | `export_materials` | `'EXPORT'` | required EXPORT — the profile's [Materials](../profile.md#materials) section |
+| Materials | `export_materials` | `'EXPORT'` | EXPORT, fixed by the profile's [Materials](../profile.md#materials) section |
 | Images | `export_image_format` | `'AUTO'` | open — see below |
 | Image quality | `export_image_quality` | 75 | open |
 | JPEG quality | `export_jpeg_quality` | 75 | open |
-| Create WebP | `export_image_add_webp` | False | required False — not in the profile |
-| WebP fallback | `export_image_webp_fallback` | False | required False |
-| Keep original textures | `export_keep_originals` | False | required False — its own warning says only one texture survives |
+| Create WebP | `export_image_add_webp` | False | False — not in the profile |
+| WebP fallback | `export_image_webp_fallback` | False | False |
+| Keep original textures | `export_keep_originals` | False | False — its own warning says only one texture survives |
 | Texture folder | `export_texture_dir` | `''` | n/a for GLB |
-| Unused Images | `export_unused_images` | False | required False |
-| Unused Textures | `export_unused_textures` | False | required False — its description says it needs a non-standard extension |
+| Unused Images | `export_unused_images` | False | False |
+| Unused Textures | `export_unused_textures` | False | False — its description says it needs a non-standard extension |
 | Original PBR Specular | `export_original_specular` | False | default |
 
 `export_image_format` is where the profile and the dialog do not line up. The profile's [Textures](../profile.md#textures) section requires PNG for normal, metallic, roughness and packed ORM maps and for anything carrying alpha. `AUTO` writes JPEG when the source image is JPEG, so the setting alone cannot deliver that — the fix is at the texture source, as the export guide says. Forcing `JPEG` is wrong for the linear slots, and `NONE` drops images entirely. So `AUTO` is correct and insufficient at the same time, which is worth stating rather than recording a tick.
@@ -183,7 +184,7 @@ Nothing in this panel controls `metallicFactor`. That is a material property in 
 
 A static part has no shape keys, no armature and no lights, so all twelve options in these three panels stay at their defaults and none can affect the result.
 
-| UI label | Identifier | Default | Ours |
+| UI label | Identifier | Default | This example |
 |---|---|---|---|
 | Shape Keys | `export_morph` | True | default — nothing to export |
 | Skinning | `export_skins` | True | default — the profile's [Prohibited content](../profile.md#prohibited-content) section prohibits `skins`, but none exist without an armature |
@@ -195,7 +196,7 @@ The nine remaining options are sub-settings of those three and are not enumerate
 
 There should be no animations. Change `export_animations` to False. Leaving it True is usually harmless because there are no animations to export, but better to be sure.
 
-| UI label | Identifier | Default | Ours |
+| UI label | Identifier | Default | This example |
 |---|---|---|---|
 | Animation | `export_animations` | True | False — the profile's [Prohibited content](../profile.md#prohibited-content) section prohibits `animations` |
 
@@ -205,11 +206,11 @@ With `export_animations` off, the other 25 options in this group have no effect 
 
 All of it is prohibited by the profile's [Prohibited content](../profile.md#prohibited-content) section, one way or another, and all of it is off by default.
 
-| UI label | Identifier | Default | Ours |
+| UI label | Identifier | Default | This example |
 |---|---|---|---|
-| Draco | `export_draco_mesh_compression_enable` | False | required False — the profile's [Prohibited content](../profile.md#prohibited-content) section prohibits `KHR_draco_mesh_compression` |
-| Meshopt | `export_meshopt_compression_enable` | False | required False — it lands in `extensionsRequired`, which the profile's [Prohibited content](../profile.md#prohibited-content) section fails outright |
-| gltfpack | `export_use_gltfpack` | False | required False — it converts textures to KTX2/BasisU, which is `KHR_texture_basisu`, prohibited |
+| Draco | `export_draco_mesh_compression_enable` | False | False, fixed by the profile's [Prohibited content](../profile.md#prohibited-content) section, which prohibits `KHR_draco_mesh_compression` |
+| Meshopt | `export_meshopt_compression_enable` | False | False — it lands in `extensionsRequired`, which the profile's [Prohibited content](../profile.md#prohibited-content) section fails outright |
+| gltfpack | `export_use_gltfpack` | False | False — it converts textures to KTX2/BasisU, which is `KHR_texture_basisu`, prohibited |
 
 The 19 quantization and quality sub-settings of those three are not enumerated here.
 
@@ -217,15 +218,14 @@ Draco is absent from this Blender install regardless: `libextern_draco.so` is no
 
 ## What this enumeration suggests, and needs checking
 
-A reading worth testing rather than adopting. Of the 110 options, four are changed from the default and nine are confirmed at it. Two of the four changes are provenance rather than geometry (`will_save_settings`, `export_copyright`) and one is belt and braces (`export_animations`, which produces nothing either way on a scene with no actions). That leaves `use_selection` as the only change that alters what a clean scene exports.
+A reading worth testing rather than adopting. Of the 110 options, five are changed from the default and nine are confirmed at it. Two of the five changes are provenance rather than geometry (`will_save_settings`, `export_copyright`) and one is belt and braces (`export_animations`, which produces nothing either way on a scene with no actions). That leaves `use_selection`, and `export_apply` on a part that uses modifiers, as the only changes that alter what a clean scene exports.
 
-If that holds, then the defects in delivered files do not come from the export dialog. They come from the scene: transforms not applied, `metallicFactor` left to a node graph the exporter cannot read, `Cube.001` names, leftover empty scenes, JPEG source textures, `BLEND` on an opaque hull. None of those is a checkbox in this dialog, which is why the four items under [Four things that decide the result and are not in this dialog](#four-things-that-decide-the-result-and-are-not-in-this-dialog) carry more weight than the thirteen that are.
+If that holds, then the defects in delivered files do not come from the export dialog. They come from the scene: transforms not applied, `metallicFactor` left to a node graph the exporter cannot read, `Cube.001` names, leftover empty scenes, JPEG source textures, `BLEND` on an opaque hull. None of those is a checkbox in this dialog, which is why the four items under [Four things that decide the result and are not in this dialog](#four-things-that-decide-the-result-and-are-not-in-this-dialog) carry more weight than the fourteen that are.
 
 That sits awkwardly against the opening line of our [export guide](../walkthroughs/exporting-from-blender.md), which says most defects "are export defaults rather than modelling mistakes". Both can be true if "defaults" is read broadly enough to include Blender's material and naming defaults, and the guide's own examples are mostly of that kind. Worth resolving in wording once the rows below are settled.
 
 ## Open rows, as a worklist
 
-- `export_apply` — do we want modifiers baked, and does the answer differ for a delivery versus a working file?
 - `export_image_format` — the wording that makes clear `AUTO` is necessary and not sufficient.
 - `export_all_vertex_colors` and the rest of the vertex-colour group — what actually triggers the fake `COLOR_0`, and does any rule care?
 - `export_extras` — a candidate for the manifest question in the profile's [manifest](../profile.md#the-manifest) section.
@@ -233,4 +233,4 @@ That sits awkwardly against the opening line of our [export guide](../walkthroug
 - `export_shared_accessors` — whether it changes what `glb_probe` reports.
 - `export_current_frame` — whether a static part is safe on the default.
 
-Settled by this review and no longer open: `use_selection` (True), `will_save_settings` (True), `export_copyright` (`Copyright Honu Robotics`), `export_animations` (False).
+Settled by this review and no longer open: `use_selection` (True), `will_save_settings` (True), `export_copyright` (`Copyright Honu Robotics`), `export_animations` (False), `export_apply` (True, [#7](https://github.com/HonuRobotics/gltf-robotics/issues/7)).

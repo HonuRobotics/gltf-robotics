@@ -156,7 +156,7 @@ The vocabulary this section uses (coordinate system, datum, origin, node space, 
 
 All linear distances MUST be in meters, at real-world scale, as glTF requires.
 
-The Blender scene unit scale MUST be 1.0, and object scale MUST be applied before export. 
+**Implementation Note.** In Blender, this means a scene unit scale of 1.0 and object scale applied before export.
 
 ### Axes
 
@@ -173,7 +173,7 @@ The coordinate systems used at each stage of the workflow are the based on the c
 
 ![](./walkthroughs/images/monkey_walkthrough4_annote.png)
 
-In Blender this is Blender's own convention: the part is built with its front toward −Y and up +Z, which is what Blender's Front view shows, and exported with the glTF exporter's `+Y Up` option **on**, which is the exporter's default. The exporter maps Blender (x, y, z) to glTF (x, z, −y), so Blender's front lands on +Z and Blender's up on +Y.
+**Implementation Note.** In Blender, the part is built in Blender's own convention, with its front toward −Y and up +Z, which is what Blender's Front view shows, and exported with the glTF exporter's `+Y Up` option **on**, which is the exporter's default. The exporter maps Blender (x, y, z) to glTF (x, z, −y), so Blender's front lands on +Z and Blender's up on +Y.
 
 The robotics coordinate system of the part, +X forward, +Y left, +Z up ([ISO 9787:2013](https://www.iso.org/standard/59444.html) §5.5, [REP 103](https://www.ros.org/reps/rep-0103.html)), is reached by one fixed rotation that the consumer applies and the file never contains: robot (x, y, z) = glTF (Z, X, Y), which is a roll of 90° followed by a yaw of 90°. The rotation is about the origin, so the datum point is the origin in both coordinate systems.
 
@@ -400,11 +400,11 @@ A delivered file MUST NOT contain:
 
 ## Authoring toolchain
 
-The version stack is pinned at patch level, because the behavior has been observe to be changning at the patch release level. 
+The version stack is pinned at patch level, because the behavior has been observed to change at the patch release level. The Blender and `io_scene_gltf2` rows are informative: they record the reference implementation the profile was verified with, and a file from any tool that meets the rules conforms.
 
 | | Version | Why it is pinned |
 |---|---|---|
-| Blender | 5.2.2 LTS | The authoring tool. Its `+Y Up` export option must be on, which is its default ([Axes](#axes)), and its Set Origin behavior is what the [Origin](#origin---datum-coordinate-system-location) section warns about |
+| Blender | 5.2.2 LTS | The reference authoring tool. Its `+Y Up` export option, on by default, produces the axes the [Axes](#axes) section requires, and its Set Origin behavior is what the [Origin](#origin---datum-coordinate-system-location) section warns about |
 | `io_scene_gltf2` | 5.2.40 | The exporter. Writes `asset.generator` as `Khronos glTF Blender I/O v5.2.40` |
 | ROS | Lyrical | The distribution floor. RViz rotates glTF on load only from Lyrical onward, so the URDF rotation in the [Axes](#axes) section differs between Lyrical and the distributions before it |
 | `rviz2`, `rviz_rendering` | 15.2.5 | The consumer that rotates a glTF mesh as it loads |

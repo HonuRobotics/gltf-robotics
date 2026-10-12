@@ -14,6 +14,9 @@ Decisions taken so far:
 - The coordinate rule (URDF `rpy` per distro and the Blender `+Y Up` statement) is Brian's to state definitively; propagation waits on that statement (step 1).
 - Metalness policy is decided after a Gazebo test; the profile keeps its Open item with the finding attached.
 - `KHR_materials_variants` is prohibited; one GLB per color variant.
+- The profile is the interface and tool-agnostic; the Blender guide and options reference are an informative reference implementation in Blender 5.2.2, one of many configurations that meet it (2026-10-11). Blender statements in the profile became Implementation Notes.
+- Material authoring in Blender is in scope after all (#6, reversed 2026-10-11): the export guide teaches how to wire a material so the exporter reads it, as part of the informative reference implementation, alongside Ryan's .blend examples. Step 3 stands.
+- `export_apply` is on in the reference configuration; the profile neither requires nor forbids it (#7, Ryan's recommendation, 2026-10-11).
 
 ## What was established on 2026-10-07
 
@@ -82,7 +85,7 @@ Posted 2026-10-09. Each issue opens with the exchange from the Google Doc, quote
 | [#4](https://github.com/HonuRobotics/gltf-robotics/issues/4) | Material variants: how to use them in Gazebo | doc | closed 2026-10-10: MUST NOT in the profile, `gltf-check` fails on it (31857aa) |
 | [#5](https://github.com/HonuRobotics/gltf-robotics/issues/5) | Assembling a model from its parts | doc | open |
 | [#6](https://github.com/HonuRobotics/gltf-robotics/issues/6) | Export guide has no section on authoring materials in Blender | docs survey | open |
-| [#7](https://github.com/HonuRobotics/gltf-robotics/issues/7) | Apply Modifiers export option is still marked unsettled | options reference | open |
+| [#7](https://github.com/HonuRobotics/gltf-robotics/issues/7) | Apply Modifiers export option is still marked unsettled | options reference | decided 2026-10-11: on in the reference configuration, profile silent; test confirms the stated reasons |
 | [#8](https://github.com/HonuRobotics/gltf-robotics/issues/8) | Loader behavior page: upgrade four rows from source-read to observed | docs survey | closed 2026-10-10: rendered tag and dated observations added |
 
 Topics from the survey that were not opened as issues and are folded into the steps below instead: the Images option passing WebP through (step 4), the coordinate disagreements (step 1), and the `KHR_materials_variants` prohibition (#4 and step 8).
@@ -114,7 +117,7 @@ Also: "Texture format is decided by the source image" gains the WebP case and th
 
 - [ ] L66 stale 5.1 pin → 5.2.2 / 5.2.40.
 - [ ] L167-178 Images rows: four values, no PNG option, WebP pass-through.
-- [ ] L154-158 and worklist L226-234: `export_apply` stays open, record the shape-key warning and the test (#7).
+- [x] `export_apply` settled True as the reference configuration's choice, page framed as informative, `required` relabeled as *fixed by the profile*; export guide gains "Turn on Apply Modifiers" (#7).
 - [ ] New note "Add-on preferences, not dialog options": `KHR_materials_variants_ui` (must be off) and `settings_node_ui` (must be on) live in Edit ▸ Preferences ▸ Add-ons and are not saved by `will_save_settings`.
 
 ### Step 5. Profile (#1, #3, #4)
@@ -125,7 +128,7 @@ Also: "Texture format is decided by the source image" gains the WebP case and th
 - [ ] Materials: Implementation Note with the environment-map finding under L311-313, and an explicit Open on capping metalness, citing #1. Fold or remove the orphaned paragraph at L335.
 - [ ] Transparency Open L373: add the transmission finding as an Implementation Note; the proposal stands; #3 decides the tag.
 - [ ] Prohibited content L377-389: add `KHR_materials_variants` and `KHR_materials_transmission` with reasons. Update the Open questions tables L424-443.
-- [ ] L393 typo "observe to be changning".
+- [x] L393 typo "observe to be changning".
 
 ### Step 6. Loader behavior addendum (#1, #8)
 
@@ -158,7 +161,7 @@ Recorded in the issue and in the doc that owns the item.
 | #1 | Cube with three materials, metalness 0 / 0.5 / 1, roughness 0.3, in `gz sim` with and without `<sky>`; screenshots (GUI). Then read gz-sim `RenderUtil` for any env-map hook reaching `Ogre2Material::SetEnvironmentMap` on mesh materials. Decide cap vs truth; consider a gz-rendering upstream issue. | pending |
 | #3 | Monkey at `baseColorFactor` alpha 0.5 tagged OPAQUE and BLEND, transmission 0.5; `glb_probe` for built Transparency, `gz sim` for the look, Sample Viewer for other viewers. | pending |
 | WebP (step 4) | Export a material whose source image is WebP under AUTO; `gltf-check` must FAIL, `glb_probe` must report the unsupported-format error. | pending |
-| #7 | Chassis export with a live Mirror or Bevel modifier, on and off; `gltf-summary` triangle count and `gltf-check` both ways. | pending |
+| #7 | Confirms the reasons, not the decision. Chassis export with a live Mirror and Bevel, plus Smooth by Angle shading and a Subdivision with viewport and render levels differing, on and off; `gltf-summary` triangle count and `gltf-check` both ways, Sample Viewer for shading. Add Smooth by Angle to the docs only if confirmed. | pending |
 
 ## Verification
 
