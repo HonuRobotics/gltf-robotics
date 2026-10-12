@@ -112,10 +112,18 @@ The generator string records the tool and never the settings, so two files from 
 
 The option names and defaults on this page were read from the operator, not from documentation, and the same command checks them against a new release:
 
+```bash
+blender --background --factory-startup --python - <<'EOF'
+import bpy
+for p in bpy.ops.export_scene.gltf.get_rna_type().properties:
+    print(p.identifier, p.type, getattr(p, "default", None))
+EOF
+```
+
 ## Importing the Gazebo Material in Blender
 
-- A Gazebo compliant glTF material (henceforth "Gazebo Material") is provided in /examples/glTF-Material/Gazebo-Compliant-glTF-Material-Only.blend
-- The example file /examples/glTF/Gazebo-Compliant-glTF-Material-Example.blend demonstrates how each component is used in Blender.
+- A Gazebo compliant glTF material (henceforth "Gazebo Material") is provided in [Gazebo-Compliant-glTF-Material-Only.blend](../../examples/glTF-Material/Gazebo-Compliant-glTF-Material-Only.blend)
+- Refer to the example file [Gazebo-Compliant-glTF-Material-Example.blend](../../examples/glTF-Material/Gazebo-Compliant-glTF-Material-Example.blend) to see how each component is used in Blender.
 - For this provided material to work in Gazebo, it is assumed you have:
   - A **Base Color Map** texture in PNG format
   - If you have are using an **Alpha Channel**, it is in the **Base Color** texture
@@ -148,10 +156,11 @@ Use the Materials tab to assign the **Base Color**, **ORM Map**, and, if apllica
 2. Assign the ORM to one of the ORM Map slot. Either will work--they are connected to the same source.
 3. Assign the Normal Map if you have one.
 
-```bash
-blender --background --factory-startup --python - <<'EOF'
-import bpy
-for p in bpy.ops.export_scene.gltf.get_rna_type().properties:
-    print(p.identifier, p.type, getattr(p, "default", None))
-EOF
-```
+### Creating a simple ORM map
+
+- In an image editor of your choice, create a small image whose dimensions are a power of 2, such as 16 pixels by 16 pixels. 
+- Fill the image one of the following colors:
+  - Shiny object, not metal: #FF0000
+  - Rough object, not metal: #FFFF00
+  - Shiny Metal: #FF00FF
+  - Rough Metal: #FFFFFF
