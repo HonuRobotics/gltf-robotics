@@ -156,7 +156,7 @@ Use the Materials tab to assign the **Base Color**, **ORM Map**, and, if apllica
 ### Creating a simple ORM map
 
 - In an image editor of your choice, create a small image whose dimensions are a power of 2, such as 16 pixels by 16 pixels. 
-- Fill the image one of the following colors:
+- Fill the image with one of the following colors:
   - Shiny object, not metal: #FF0000
   - Rough object, not metal: #FFFF00
   - Shiny Metal: #FF00FF
