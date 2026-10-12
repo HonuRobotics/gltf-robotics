@@ -1,4 +1,4 @@
-# Blender export and materials, then the BlueBoat pilot
+# Towards a first release of gltf-robotics
 
 A living plan. Steps are worked in order, checked off as they close, and rewritten as the work demands. Each step records its outcome (issue number, commit, test result, or decision and why) below its checkbox. Started 2026-10-07.
 
@@ -6,20 +6,20 @@ A living plan. Steps are worked in order, checked off as they close, and rewritt
 
 Ryan Lee (the modeller, GitHub `phfatmonkey`) ran the new glTF workflow on a test cube and then the BlueBoat chassis during the week of 2026-10-05. His findings are in the "Modeling workflow beta" email thread and, since 2026-10-06, in the shared Google Doc `3DVisualAssetWorkflowDiscussion` in the Honu Drive. He also sent the [mundobytes article](https://mundobytes.com/en/Blender-prepares-and-exports-models-to-GLTF-with-PBR-materials./) on Blender glTF PBR export (2026-10-02). A team call is being arranged for Friday 2026-10-09.
 
-On 2026-10-11 the plan turned from closing issues to piloting the profile and workflow on Ryan's new BlueBoat chassis and propeller models (Step 9); the existing BlueBoat walkthrough is retired (Step 10).
+On 2026-10-11 the plan turned from closing issues to piloting the profile and workflow on Ryan's new BlueBoat chassis and propeller models (Plan Step 9); the existing BlueBoat walkthrough is retired (Plan Step 10).
 
 Every one of Ryan's observations has an answer in source read on 2026-10-07, and most point at gaps or contradictions in the docs. A survey of `main` found that no page explains how to author materials in Blender at all, and that the coordinate docs disagree with each other in four places.
 
 Decisions taken so far:
 
 - Each topic becomes a GitHub issue in this repository, so every question has a thread that records the finding, the decision and why. Ryan is not a collaborator, so he can comment but cannot be assigned. The Google Doc gets one closing note pointing at the issues.
-- The coordinate rule (URDF `rpy` per distro and the Blender `+Y Up` statement) is Brian's to state definitively; propagation waits on that statement (step 1).
+- The coordinate rule (URDF `rpy` per distro and the Blender `+Y Up` statement) is Brian's to state definitively; propagation waits on that statement (Plan Step 1).
 - Metalness policy is decided after a Gazebo test; the profile keeps its Open item with the finding attached.
 - `KHR_materials_variants` is prohibited; one GLB per color variant.
 - The profile is the interface and tool-agnostic; the Blender export guide is an informative reference implementation in Blender 5.2.2, one of many configurations that meet it (2026-10-11). Blender statements in the profile became Implementation Notes.
 - One Blender page, not two: the options reference (`docs/reference/blender-export-options.md`) is merged into the export guide and deleted (2026-10-11). The guide carries the fourteen-option table, the Images values and the introspection command; the 110-row enumeration lives in git history and the command reproduces it.
-- Material authoring in Blender is in scope after all (#6, reversed 2026-10-11): the export guide teaches how to wire a material so the exporter reads it, as part of the informative reference implementation, alongside Ryan's .blend examples. Step 3 stands.
-- `export_apply` is on in the reference configuration; the profile neither requires nor forbids it (#7, Ryan's recommendation, 2026-10-11).
+- Material authoring in Blender is in scope after all (Issue #6, reversed 2026-10-11): the export guide teaches how to wire a material so the exporter reads it, as part of the informative reference implementation, alongside Ryan's .blend examples. Plan Step 3 stands.
+- `export_apply` is on in the reference configuration; the profile neither requires nor forbids it (Issue #7, Ryan's recommendation, 2026-10-11).
 
 ## What was established on 2026-10-07
 
@@ -49,7 +49,7 @@ Read from gz-rendering `gz-rendering10` and assimp `v6.0.4`, plus the 2026-09-04
 ### Coordinates and the SDF Ryan loaded
 
 - [Firm] `bluerobotics_parts/models/blueboat_chassis/model.sdf` on `bluerobotics_models` branch `bsb/blueboat_gltf_workflow` (HEAD `782cdde`, 2026-09-29) has no `<pose>` on the visual. It predates the 2026-10-02 switch to glTF-native files. A `+Y Up` export is correct and lands on its side in that SDF because the consumer rotation is missing, not because the flag is wrong.
-- The docs disagree on the URDF rotation: `profile.md:184` says Lyrical `rpy="-1.5708 0 1.5708"` and `:185` says Jazzy/Kilted `TBD`; `coordinate-systems.md:566-579` ([Firm]), `exporting-from-blender.md:11`, `workflow.md:93` and `blender-export-options.md:122` say Lyrical `rpy="0 0 1.5708"` and Jazzy/Kilted `rpy="1.5708 0 1.5708"`. `coordinate_orientation_demo.md:288` still says the decision is `+Y Up` off and uses `rpy="-1.5708 0 0"` at L220, L227, L284; `workflow_blueboat.md:257` uses the old roll; `blender-export-options.md:66` still calls the toolchain pin 5.1 and Open. Step 1 resolves which statement is right before any of these are touched.
+- The docs disagree on the URDF rotation: `profile.md:184` says Lyrical `rpy="-1.5708 0 1.5708"` and `:185` says Jazzy/Kilted `TBD`; `coordinate-systems.md:566-579` ([Firm]), `exporting-from-blender.md:11`, `workflow.md:93` and `blender-export-options.md:122` say Lyrical `rpy="0 0 1.5708"` and Jazzy/Kilted `rpy="1.5708 0 1.5708"`. `coordinate_orientation_demo.md:288` still says the decision is `+Y Up` off and uses `rpy="-1.5708 0 0"` at L220, L227, L284; `workflow_blueboat.md:257` uses the old roll; `blender-export-options.md:66` still calls the toolchain pin 5.1 and Open. Plan Step 1 resolves which statement is right before any of these are touched.
 
 ## Steps, in order
 
@@ -67,10 +67,10 @@ Evidence (2026-10-09): [S] gz-common `gz-common7_7.3.0` `AssimpLoader.cc` L849-8
 
 - [x] Statement recorded (above) and shown end to end in the demo, commit `ca1b5ad`.
 - [x] Propagated: profile Axes table and Jazzy/Kilted note, stray "; " at L95, `step-4-verify-integrator` anchor; coordinate-systems [Open] on per-distro delivery closed as [Practice]; export guide; workflow; options reference (5.2.2 / 5.2.40 pin); BlueBoat walkthrough banner and a note under its recorded URDF; `examples/monkeys.sdf`. Commit on `main` after `ca1b5ad`.
-- [x] Superseded 2026-10-11: the chassis and propeller come back as new models from Ryan, piloted in Step 9. Formerly: `bluerobotics_models` is deferred (Brian, 2026-10-09). The chassis `model.sdf` pose and `part_visual` values are committed locally on `bsb/blueboat_gltf_workflow` as `1d725f0`, not pushed; the chassis `.glb` there is still the Z-up, X-forward export. The migration of `main` off `gltf_to_yup.py` is likewise parked. Pick both up when the repo comes back into scope. As of 2026-10-11 `1d725f0` is not in `src/bluerobotics_models`; only `origin/bsb/blueboat_gltf_workflow` exists.
+- [x] Superseded 2026-10-11: the chassis and propeller come back as new models from Ryan, piloted in Plan Step 9. Formerly: `bluerobotics_models` is deferred (Brian, 2026-10-09). The chassis `model.sdf` pose and `part_visual` values are committed locally on `bsb/blueboat_gltf_workflow` as `1d725f0`, not pushed; the chassis `.glb` there is still the Z-up, X-forward export. The migration of `main` off `gltf_to_yup.py` is likewise parked. Pick both up when the repo comes back into scope. As of 2026-10-11 `1d725f0` is not in `src/bluerobotics_models`; only `origin/bsb/blueboat_gltf_workflow` exists.
 - [x] #2 closed 2026-10-10 after [Brian's comment](https://github.com/HonuRobotics/gltf-robotics/issues/2#issuecomment-6098473150) linking the coordinate orientation demo; Ryan agreed.
 
-No BlueBoat walkthrough is re-recorded: it is retired (Step 10), and the pilot on Ryan's models replaces it.
+No BlueBoat walkthrough is re-recorded: it is retired (Plan Step 10), and the pilot on Ryan's models replaces it.
 
 ### Step 2. Open the GitHub issues
 
@@ -78,71 +78,59 @@ Posted 2026-10-09. Each issue opens with the exchange from the Google Doc, quote
 
 | # | Title | Source | Status |
 |---|---|---|---|
-| [#1](https://github.com/HonuRobotics/gltf-robotics/issues/1) | Metallic texture renders black in Gazebo | doc, email 2026-10-05 | open |
-| [#2](https://github.com/HonuRobotics/gltf-robotics/issues/2) | Export with the Y-up flag loads on its side in Gazebo | doc | open |
-| [#3](https://github.com/HonuRobotics/gltf-robotics/issues/3) | Transmission (glass) material does not show up in Gazebo | doc | open |
+| [#1](https://github.com/HonuRobotics/gltf-robotics/issues/1) | Metallic texture renders black in Gazebo | doc, email 2026-10-05 | open: the scene needs a skybox or environment map (Ryan); verify and document in the pilot, Plan Step 9 |
+| [#2](https://github.com/HonuRobotics/gltf-robotics/issues/2) | Export with the Y-up flag loads on its side in Gazebo | doc | closed 2026-10-10 (Plan Step 1) |
+| [#3](https://github.com/HonuRobotics/gltf-robotics/issues/3) | Transmission (glass) material does not show up in Gazebo | doc | open, back burner: looking for an existence proof among community models, else future work |
 | [#4](https://github.com/HonuRobotics/gltf-robotics/issues/4) | Material variants: how to use them in Gazebo | doc | closed 2026-10-10: MUST NOT in the profile, `gltf-check` fails on it (31857aa) |
-| [#5](https://github.com/HonuRobotics/gltf-robotics/issues/5) | Assembling a model from its parts | doc | open |
-| [#6](https://github.com/HonuRobotics/gltf-robotics/issues/6) | Export guide has no section on authoring materials in Blender | docs survey | open |
-| [#7](https://github.com/HonuRobotics/gltf-robotics/issues/7) | Apply Modifiers export option is still marked unsettled | options reference | decided 2026-10-11: on in the reference configuration, profile silent; test confirms the stated reasons |
+| [#5](https://github.com/HonuRobotics/gltf-robotics/issues/5) | Assembling a model from its parts | doc | open: in the pilot, Plan Step 9 |
+| [#6](https://github.com/HonuRobotics/gltf-robotics/issues/6) | Export guide has no section on authoring materials in Blender | docs survey | open: Ryan's PR, Plan Step 3 |
+| [#7](https://github.com/HonuRobotics/gltf-robotics/issues/7) | Apply Modifiers export option is still marked unsettled | options reference | decided 2026-10-11, settled by `c5c0f28`; close when Ryan concurs |
 | [#8](https://github.com/HonuRobotics/gltf-robotics/issues/8) | Loader behavior page: upgrade four rows from source-read to observed | docs survey | closed 2026-10-10: rendered tag and dated observations added |
 
-Topics from the survey that were not opened as issues and are folded into the steps below instead: the Images option passing WebP through (step 4), the coordinate disagreements (step 1), and the `KHR_materials_variants` prohibition (#4 and step 8).
+The plan tracks these issues; each one's plan lives in its comments. Topics from the survey that were not opened as issues were folded into Plan Steps 1, 4 and 8.
 
 - [x] Drafts written and reviewed (`plans/issues-draft.md`, deleted after posting).
 - [x] Issues posted; numbers recorded above.
-- [ ] Solution and plan posted as a comment on each of #1 to #5, after step 1.
+- [x] A plan comment on each open issue: Issue #1, Issue #3 ([2026-10-12](https://github.com/HonuRobotics/gltf-robotics/issues/3#issuecomment-6115969328)), Issue #5, Issue #6, Issue #7.
 
-### Step 3. Export guide: materials section (#6, #3)
+### Step 3. Export guide: materials section (Issue #6)
 
-[exporting-from-blender.md](../docs/walkthroughs/exporting-from-blender.md). Insert after "Name the object, not the mesh" a section "Wire the material the way the exporter reads it", in the page's voice (what the export does, what to do instead), one short paragraph per point:
+The first draft is in [exporting-from-blender.md](../docs/walkthroughs/exporting-from-blender.md): metalness, texture format (with the four Images values and WebP), and transparency (MASK at 0.5, no `BLEND` on opaque parts). What is missing is the wiring itself, and per Brian's comment on Issue #6 it comes from Ryan's PR: his material `.blend` files plus the guide changes. Revisited in the pilot, Plan Step 9.
 
-- One Principled BSDF per material; the exporter reads the named sockets only (Base Color, Metallic, Roughness, Normal, Alpha, Emission).
-- Roughness and metalness: one ORM image through Separate Color, or two grayscale images; the exporter packs G and B itself. Image Texture color space Non-Color. A uniform channel stays unlinked and becomes a factor.
-- Occlusion: add `glTF Material Output` from the Add menu, ORM red through Separate Color into its Occlusion input; legacy name `glTF Settings`; enable the add-on preference if the entry is missing.
-- Normal: Image Texture (Non-Color) → Normal Map (Tangent Space) → Normal; strength 1.0.
-- Alpha: cutouts through Math Round (or Greater Than) into Alpha, which writes MASK at 0.5; opaque materials leave Alpha at 1.0 so no BLEND is written by accident; Backface Culling on except for MASK cutouts that must show both sides.
-- Do not use Transmission, variants, Clearcoat, Sheen, IOR, Volume, Anisotropy; say which consumer does what with each, with the issue links.
-- What it looks like in Gazebo: metal is dark, [Firm] with source, policy [Open] in #1.
+- [ ] Ryan's PR: material `.blend` examples and the guide's materials section.
+- [ ] Reviewed against this checklist: the Principled BSDF sockets the exporter reads; ORM through Separate Color, Non-Color; occlusion through the `glTF Material Output` node group and the add-on preference `settings_node_ui`; the normal map chain; the alpha nodes that write MASK and Backface Culling for `doubleSided`; what not to use (Transmission, variants, Clearcoat and the rest); metal looks dark in Gazebo without a skybox (Issue #1).
 
-Also: "Texture format is decided by the source image" gains the WebP case and the four option values; "Transparency is per material" gains one sentence on uniform translucency pointing at #3.
-
-- [ ] Section written and committed.
-
-### Step 4. Export settings (#7, #4) — done
+### Step 4. Export settings (Issue #7, Issue #4) — done
 
 Formerly the options reference, now merged into [exporting-from-blender.md](../docs/walkthroughs/exporting-from-blender.md).
 
 - [x] Stale 5.1 pin: gone with the page.
 - [x] Images: four values, no PNG option, WebP pass-through, in the guide's texture-format section.
-- [x] `export_apply` settled True as the reference configuration's choice, page framed as informative, `required` relabeled as *fixed by the profile*; export guide gains "Turn on Apply Modifiers" (#7).
-- [x] Moved to step 3: the materials section notes the add-on preferences `KHR_materials_variants_ui` (off) and `settings_node_ui` (on), which live in Edit ▸ Preferences ▸ Add-ons and are not saved by `will_save_settings`.
+- [x] `export_apply` settled True as the reference configuration's choice, page framed as informative, `required` relabeled as *fixed by the profile*; export guide gains "Turn on Apply Modifiers" (Issue #7).
+- [x] Moved to Plan Step 3: the materials section notes the add-on preferences `KHR_materials_variants_ui` (off) and `settings_node_ui` (on), which live in Edit ▸ Preferences ▸ Add-ons and are not saved by `will_save_settings`.
 - [x] Open option rows moved to [Parked](#parked).
 
-### Step 5. Profile (#1, #3, #4)
+### Step 5. Profile (Issue #4) — done
 
 [profile.md](../docs/profile.md).
 
-- [x] Axes rows per step 1 (`d548653`).
-- [ ] Waits on the #1 test. Materials: Implementation Note with the environment-map finding under L311-313, and an explicit Open on capping metalness, citing #1. Fold or remove the orphaned paragraph at L335.
-- [ ] Waits on the #3 test. Transparency Open L373: add the transmission finding as an Implementation Note; the proposal stands; #3 decides the tag.
+- [x] Axes rows per Plan Step 1 (`d548653`).
 - [x] `KHR_materials_variants` prohibited (`31857aa`).
-- [ ] Waits on the #3 test. Prohibited content: add `KHR_materials_transmission` with reasons. Update the Open questions tables L424-443.
-- [x] L393 typo "observe to be changning".
+- [x] Typo "observe to be changning".
+- Profile changes for Issue #1 (environment map) and Issue #3 (transmission) are tracked in those issues.
 
-### Step 6. Loader behavior addendum (#1, #8)
+### Step 6. Loader behavior addendum (Issue #8) — done
 
-- [x] Rendered observations from Ryan's cube, and the P upgrades (`0dfbb57`).
-- [ ] Waits on the #1 test. [loader-behavior.md](../docs/reference/loader-behavior.md): dated addendum (2026-10-07) under the consumers table with the environment-map finding and source lines, assimp has no `KHR_materials_variants`, and the P upgrades from Ryan's cube. Keep the snapshot framing.
+- [x] Rendered observations from Ryan's cube, and the P upgrades (`0dfbb57`). The environment-map finding is tracked in Issue #1.
 
 ### Step 7. Workflow
 
 - [ ] [workflow.md](../docs/workflow.md): step "Author" points at the new materials section; step "Verify ▸ Intended?" says metal looks dark in Gazebo by design, judge color and roughness there and metal in the Sample Viewer.
 
-### Step 8. Checker (#4)
+### Step 8. Checker
 
-- [ ] `src/gltf_robotics/check/rules.py`: add `KHR_materials_variants` and `KHR_materials_transmission` to `PROHIBITED_EXTENSIONS`.
-- [ ] `tests/test_check.py`: two new cases using the fixture in `tests/conftest.py`. Confirm rule 8 already FAILs `image/webp`; add a test if not.
+- [x] `KHR_materials_variants` in `PROHIBITED_EXTENSIONS`, with a test (`31857aa`). `KHR_materials_transmission` is tracked in Issue #3.
+- [ ] `tests/test_check.py`: confirm rule 8 FAILs an `image/webp` texture; add the test if not.
 
 ### Step 9. Pilot on Ryan's BlueBoat models
 
@@ -166,19 +154,18 @@ Recorded in the issue and in the doc that owns the item.
 
 | Issue | Test | Result |
 |---|---|---|
-| #1 | Cube with three materials, metalness 0 / 0.5 / 1, roughness 0.3, in `gz sim` with and without `<sky>`; screenshots (GUI). Then read gz-sim `RenderUtil` for any env-map hook reaching `Ogre2Material::SetEnvironmentMap` on mesh materials. Decide cap vs truth; consider a gz-rendering upstream issue. | pending |
-| #3 | Monkey at `baseColorFactor` alpha 0.5 tagged OPAQUE and BLEND, transmission 0.5; `glb_probe` for built Transparency, `gz sim` for the look, Sample Viewer for other viewers. | pending |
-| WebP (step 4) | Export a material whose source image is WebP under AUTO; `gltf-check` must FAIL, `glb_probe` must report the unsupported-format error. | pending |
-| #7 | Confirms the reasons, not the decision; run on Ryan's chassis when the Step 9 PR arrives. Chassis export with a live Mirror and Bevel, plus Smooth by Angle shading and a Subdivision with viewport and render levels differing, on and off; `gltf-summary` triangle count and `gltf-check` both ways, Sample Viewer for shading. Add Smooth by Angle to the docs only if confirmed. | pending |
+| Issue #1, Issue #3 | Tracked in the issues; their plans are in the comments. | — |
+| WebP (Plan Step 8) | Export a material whose source image is WebP under AUTO; `gltf-check` must FAIL, `glb_probe` must report the unsupported-format error. | pending |
+| Issue #7 | Confirms the reasons, not the decision; run on Ryan's chassis when the Plan Step 9 PR arrives. Chassis export with a live Mirror and Bevel, plus Smooth by Angle shading and a Subdivision with viewport and render levels differing, on and off; `gltf-summary` triangle count and `gltf-check` both ways, Sample Viewer for shading. Add Smooth by Angle to the docs only if confirmed. | pending |
 
 ## Verification
 
 1. Docs build: `~/maritime_ws/tools/maritime-workspace/docs-build gltf-robotics` on the host; no new warnings; anchors `#materials`, `#prohibited-content`, `#transparency` resolve from the export guide.
 2. Checker: `python3 -m pytest tests/test_check.py -q` passes with the new cases; `PYTHONPATH=src python3 -m gltf_robotics.check` on `examples/monkey.glb` and the chassis GLB shows no regressions.
-3. Coordinates: `grep -rn "1.5708" docs/ examples/` lists one Gazebo pose and the two URDF values from step 1 only; `grep -rn "Y Up" docs/` finds the reversal only in historical notes.
+3. Coordinates: `grep -rn "1.5708" docs/ examples/` lists one Gazebo pose and the two URDF values from Plan Step 1 only; `grep -rn "Y Up" docs/` finds the reversal only in historical notes.
 4. Pilot: inside drydock, `gz sdf -p` parses each piloted `model.sdf`; the visual check in `gz sim` is Brian's.
-5. Issues: #2, #4 and #8 closed; #1 and #3 close on their tests; #6 closes with the Step 3 section; #7 with its test.
+5. Issues: Issues #2, #4 and #8 closed; Issue #7 closes when Ryan concurs; Issue #6 with Plan Step 3; Issues #1 and #5 in the pilot; Issue #3 on the back burner.
 
 ## Parked
 
-Export options carried over from the deleted options reference, to settle or drop when one matters: `export_all_vertex_colors` (what triggers the fake `COLOR_0`), `export_extras` (manifest), `use_active_scene` (exactly one scene), `export_shared_accessors` (`glb_probe`), `export_current_frame`.
+Export options carried over from the deleted options reference, to settle or drop before a first release: `export_all_vertex_colors` (what triggers the fake `COLOR_0`), `export_extras` (manifest), `use_active_scene` (exactly one scene), `export_shared_accessors` (`glb_probe`), `export_current_frame`.
