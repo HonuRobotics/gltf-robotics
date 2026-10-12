@@ -129,18 +129,15 @@ EOF
   - If you have are using an **Alpha Channel**, it is in the **Base Color** texture
   - You have a single **ORM Map** combining the **Occlusion**, **Roughness**, and **Metalness** as described above.
 
-1. Open your Blender scene containing the mesh object to which you would like to apply the Gazboe Material
-2. In Blender, navigate to File > Append..
-3. Select the Gazebo-Compliant-glTF-Material-Only.blend, then select Materials, then Gazebo Compliant glTF Material from the list and click Append.
-4. Select your mesh object in Blender
-5. Navigate to the Materials tab.
-6. Assign the Gazebo Compliant glTF Material to your object.
+1. Open your Blender scene containing the mesh object to which you would like to apply the Gazebo Material
+2. In Blender, navigate to File > Append...
+3. Select the Gazebo-Compliant-glTF-Material-Only.blend, then select Materials, then **Gazebo Compliant glTF Material** from the list and click Append.
 
 ## Using the Gazebo Material
 
-Use the Materials tab to assign the **Base Color**, **ORM Map**, and, if apllicable, **Normal Map**.
-
 ### Assign the material to the mesh
+
+Use the Materials tab to assign the **Base Color**, **ORM Map**, and, if apllicable, **Normal Map**.
 
 ![Assign Material in Blender](./images/Assign-Material.png)
 
