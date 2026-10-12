@@ -66,7 +66,7 @@ Add->Mesh->Monkey
 Export to glTF 2.0: We **DO** select the **+Y Up option** for export
 
 * There are 110 options in the export widget - many places to cause problems. 
-* See [the export options reference](../reference/blender-export-options.md) for with the thirteen parameters that need to be verified/set.
+* See [the export dialog](exporting-from-blender.md#the-export-dialog) in the Blender export guide for the fourteen that are verified or set.
 
 The product of the export with **+Y Up option** selected is [examples/monkey.glb](https://github.com/HonuRobotics/gltf-robotics/blob/main/examples/monkey.glb)
 

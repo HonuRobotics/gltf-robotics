@@ -14,7 +14,8 @@ Decisions taken so far:
 - The coordinate rule (URDF `rpy` per distro and the Blender `+Y Up` statement) is Brian's to state definitively; propagation waits on that statement (step 1).
 - Metalness policy is decided after a Gazebo test; the profile keeps its Open item with the finding attached.
 - `KHR_materials_variants` is prohibited; one GLB per color variant.
-- The profile is the interface and tool-agnostic; the Blender guide and options reference are an informative reference implementation in Blender 5.2.2, one of many configurations that meet it (2026-10-11). Blender statements in the profile became Implementation Notes.
+- The profile is the interface and tool-agnostic; the Blender export guide is an informative reference implementation in Blender 5.2.2, one of many configurations that meet it (2026-10-11). Blender statements in the profile became Implementation Notes.
+- One Blender page, not two: the options reference (`docs/reference/blender-export-options.md`) is merged into the export guide and deleted (2026-10-11). The guide carries the fourteen-option table, the Images values and the introspection command; the 110-row enumeration lives in git history and the command reproduces it.
 - Material authoring in Blender is in scope after all (#6, reversed 2026-10-11): the export guide teaches how to wire a material so the exporter reads it, as part of the informative reference implementation, alongside Ryan's .blend examples. Step 3 stands.
 - `export_apply` is on in the reference configuration; the profile neither requires nor forbids it (#7, Ryan's recommendation, 2026-10-11).
 
@@ -111,14 +112,15 @@ Also: "Texture format is decided by the source image" gains the WebP case and th
 
 - [ ] Section written and committed.
 
-### Step 4. Export options reference (#7, #4)
+### Step 4. Export settings (#7, #4)
 
-[blender-export-options.md](../docs/reference/blender-export-options.md).
+Formerly the options reference, now merged into [exporting-from-blender.md](../docs/walkthroughs/exporting-from-blender.md).
 
-- [ ] L66 stale 5.1 pin → 5.2.2 / 5.2.40.
-- [ ] L167-178 Images rows: four values, no PNG option, WebP pass-through.
+- [x] Stale 5.1 pin: gone with the page.
+- [x] Images: four values, no PNG option, WebP pass-through, in the guide's texture-format section.
 - [x] `export_apply` settled True as the reference configuration's choice, page framed as informative, `required` relabeled as *fixed by the profile*; export guide gains "Turn on Apply Modifiers" (#7).
-- [ ] New note "Add-on preferences, not dialog options": `KHR_materials_variants_ui` (must be off) and `settings_node_ui` (must be on) live in Edit ▸ Preferences ▸ Add-ons and are not saved by `will_save_settings`.
+- [ ] Moved to step 3: the materials section notes the add-on preferences `KHR_materials_variants_ui` (off) and `settings_node_ui` (on), which live in Edit ▸ Preferences ▸ Add-ons and are not saved by `will_save_settings`.
+- [ ] Open rows carried over from the deleted page, to settle or drop: `export_all_vertex_colors` (what triggers the fake `COLOR_0`), `export_extras` (manifest), `use_active_scene` (exactly one scene), `export_shared_accessors` (`glb_probe`), `export_current_frame`.
 
 ### Step 5. Profile (#1, #3, #4)
 

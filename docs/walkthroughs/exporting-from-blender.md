@@ -1,10 +1,33 @@
 # Exporting from Blender
 
-Every delivery this project has received came out of `Khronos glTF Blender I/O`, and most of the defects found in them are export defaults rather than modelling mistakes. This page collects the ones that bite, each with what the export does and what to do instead.
+Every delivery this project has received came out of `Khronos glTF Blender I/O`, and most of the defects found in them are Blender defaults rather than modelling mistakes — more often in the scene and its materials than in the export dialog. This page collects the ones that bite, each with what the export does and what to do instead.
 
 It is informative: a reference implementation in Blender 5.2.2, the route used to verify the profile. The [profile](../profile.md) is the requirement and constrains the file, not the tool, so anyone working in other software meets it their own way.
 
 None of it is a substitute for checking the result: run [`gltf-check`](checking-a-delivery.md) on the exported file, and open it in the Khronos Sample Viewer before delivering it. The viewer assumes glTF's convention and so does the file, so a correct export stands upright and faces the camera; the viewer answers orientation as well as materials, textures and transparency.
+
+## The export dialog
+
+The dialog has 110 options. Fourteen are named here and everything else stays at its Blender default. Where the reason cites a profile section, a different value produces a file that does not conform; the rest are this reference configuration's choices.
+
+| Option | Identifier | Set to | Why |
+|---|---|---|---|
+| Format | `export_format` | GLB (default) | the profile's [File format](../profile.md#file-format) section requires `.glb` |
+| +Y Up | `export_yup` | True (default) | the profile's [Axes](../profile.md#axes) section; see the next section |
+| At Collection Center | `at_collection_center` | False (default) | on, it relocates the origin away from the datum |
+| Limit to ▸ Selected Objects | `use_selection` | True | one part per delivery, the profile's [File](../profile.md#file) section; selecting makes you state what the part is |
+| Apply Modifiers | `export_apply` | True | see [Turn on Apply Modifiers](#turn-on-apply-modifiers) |
+| UVs | `export_texcoords` | True (default) | the profile's [Geometry](../profile.md#geometry) section requires `TEXCOORD_0` |
+| Normals | `export_normals` | True (default) | the profile's [Geometry](../profile.md#geometry) section requires `NORMAL` |
+| Materials | `export_materials` | Export (default) | the profile's [Materials](../profile.md#materials) section |
+| Cameras | `export_cameras` | False (default) | the profile's [Prohibited content](../profile.md#prohibited-content) section |
+| Punctual Lights | `export_lights` | False (default) | the profile's [Prohibited content](../profile.md#prohibited-content) section |
+| Draco | `export_draco_mesh_compression_enable` | False (default) | the profile's [Prohibited content](../profile.md#prohibited-content) section |
+| Animation | `export_animations` | False | the profile's [Prohibited content](../profile.md#prohibited-content) section; harmless on a scene with no actions, but better not to rely on that |
+| Remember Export Settings | `will_save_settings` | True | the `.blend` keeps the settings it was exported with, so a re-export reproduces the delivery |
+| Copyright | `export_copyright` | `Copyright Honu Robotics` | written to `asset.copyright` |
+
+No export option applies object transforms, sets `metallicFactor`, names the object, or chooses a texture's format. Those are done in the scene before the dialog opens, and the sections below cover each.
 
 ## Author in Blender's own convention, and let the exporter convert
 
@@ -53,7 +76,7 @@ Two fixes, either is fine: set `metallicFactor` to 0 for anything not genuinely 
 
 ## Texture format is decided by the source image
 
-Under its default Automatic image setting the exporter writes JPEG when the source image is JPEG. So a preset change alone will not get PNG normal maps out of a project whose source textures are JPEG — the fix is at the texture source.
+The Images option has four values — Automatic, JPEG, WebP and None — and no PNG. Automatic, the default and the right choice, writes PNG as PNG, JPEG as JPEG, WebP as WebP and anything else as PNG. So a preset change alone will not get PNG normal maps out of a project whose source textures are JPEG — the fix is at the texture source. A WebP source is worse: it is embedded as WebP, which Gazebo cannot load.
 
 This matters because chroma subsampling blends channels that are unrelated in a normal or ORM map, and converting an existing JPEG to PNG preserves the damage rather than undoing it. A re-export from the original texture is the remedy.
 
@@ -69,7 +92,9 @@ Do not tag an opaque part `BLEND`. Gazebo ignores `BLEND` and renders the materi
 
 ## Turn on Apply Modifiers
 
-Turn on `Apply Modifiers` in the export dialog. Off, the exporter ignores the modifier stack and writes the base mesh, so a Mirror ships half the part and nothing reports it; on, an object without modifiers exports unchanged. The profile neither requires nor forbids it. The [export options reference](../reference/blender-export-options.md) has the detail.
+Turn on `Apply Modifiers` in the export dialog. Off, the exporter ignores the modifier stack and writes the base mesh, so a Mirror ships half the part and nothing reports it; on, an object without modifiers exports unchanged. The profile neither requires nor forbids it.
+
+On, each object is exported as Blender evaluates it for the viewport, so a Subdivision ships at its viewport level, not its render level. Read the triangle count from [`gltf-summary`](checking-a-delivery.md) to catch a stack that grew more than intended.
 
 ## Keep the authoring source, outside the simulation repository
 
@@ -84,3 +109,13 @@ This is a practice rather than a rule. The profile's [manifest](../profile.md#th
 The reference implementation uses the versions in the profile's [Authoring toolchain](../profile.md#authoring-toolchain) section: Blender 5.2.2 LTS with `io_scene_gltf2` 5.2.40, which writes `asset.generator` as `Khronos glTF Blender I/O v5.2.40`. Earlier deliveries report `v5.1.20`, which is Blender 5.1; they predate the pin and are not held to it.
 
 The generator string records the tool and never the settings, so two files from the same exporter can still differ in image format, tangents and compression. That is why the checks constrain the outcome rather than the settings, and why `will_save_settings` is worth turning on — it puts the settings in the `.blend` where a re-export can reproduce them.
+
+The option names and defaults on this page were read from the operator, not from documentation, and the same command checks them against a new release:
+
+```bash
+blender --background --factory-startup --python - <<'EOF'
+import bpy
+for p in bpy.ops.export_scene.gltf.get_rna_type().properties:
+    print(p.identifier, p.type, getattr(p, "default", None))
+EOF
+```
