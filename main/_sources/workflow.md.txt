@@ -40,7 +40,7 @@ The profile inlcudes the rules the model is built to.
 
 The part is built in Blender's own convention, front toward −Y and up +Z, and exported with the `+Y Up` option on, which is the exporter's default. The file is then in glTF's coordinate system, as the profile's [Axes](profile.md#axes) section requires, and the Sample Viewer shows it as the modeler saw it in Blender's Front view.
 
-The [Blender export guide](walkthroughs/exporting-from-blender.md) is the tool-specific practice for meeting them.
+The [Blender export guide](walkthroughs/exporting-from-blender.md) is one worked example of meeting them, in Blender 5.2.2; the profile is the requirement, and any tool that produces a conforming file is fine.
 
 ## Step 3: Fill the `.glb` manifest from the commission YAML [Integrator]
 

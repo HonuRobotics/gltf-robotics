@@ -147,6 +147,7 @@
 </ul>
 </li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Exporting from Blender</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#the-export-dialog">The export dialog</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#author-in-blender-s-own-convention-and-let-the-exporter-convert">Author in Blender’s own convention, and let the exporter convert</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#clear-location-and-rotation-apply-scale-before-exporting">Clear location and rotation, apply scale, before exporting</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#where-the-origin-goes-is-not-yours-to-choose">Where the origin goes is not yours to choose</a></li>
@@ -154,6 +155,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#metalness-is-the-defect-that-keeps-recurring">Metalness is the defect that keeps recurring</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#texture-format-is-decided-by-the-source-image">Texture format is decided by the source image</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#transparency-is-per-material-not-per-pixel">Transparency is per material, not per pixel</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#turn-on-apply-modifiers">Turn on Apply Modifiers</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#keep-the-authoring-source-outside-the-simulation-repository">Keep the authoring source, outside the simulation repository</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#versions">Versions</a></li>
 </ul>
@@ -293,26 +295,6 @@
 <li class="toctree-l3"><a class="reference internal" href="../reference/loader-behavior.html#the-rviz-path">The RViz path</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../reference/blender-export-options.html">Blender glTF Export Options</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../reference/blender-export-options.html#directive">Directive</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../reference/blender-export-options.html#four-things-that-decide-the-result-and-are-not-in-this-dialog">Four things that decide the result and are not in this dialog</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="../reference/blender-export-options.html#provenance">Provenance</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../reference/blender-export-options.html#what-no-option-does">What no option does</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../reference/blender-export-options.html#top-of-the-dialog">Top of the dialog</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../reference/blender-export-options.html#include">Include</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../reference/blender-export-options.html#transform">Transform</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../reference/blender-export-options.html#data-scene-graph">Data ▸ Scene Graph</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../reference/blender-export-options.html#data-mesh">Data ▸ Mesh</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../reference/blender-export-options.html#data-material">Data ▸ Material</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../reference/blender-export-options.html#data-shape-keys-skinning-lighting">Data ▸ Shape Keys, Skinning, Lighting</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../reference/blender-export-options.html#animation">Animation</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../reference/blender-export-options.html#compression">Compression</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../reference/blender-export-options.html#what-this-enumeration-suggests-and-needs-checking">What this enumeration suggests, and needs checking</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../reference/blender-export-options.html#open-rows-as-a-worklist">Open rows, as a worklist</a></li>
-</ul>
-</li>
 <li class="toctree-l2"><a class="reference internal" href="../reference/pbr-and-gltf.html">PBR, and why glTF is inseparable from it</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../reference/pbr-and-gltf.html#the-shift-in-one-sentence">The shift in one sentence</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../reference/pbr-and-gltf.html#what-we-had-before-collada-plus-an-image">What we had before: Collada plus an image</a></li>
@@ -383,8 +365,95 @@
              
   <section id="exporting-from-blender">
 <h1>Exporting from Blender<a class="headerlink" href="#exporting-from-blender" title="Link to this heading"></a></h1>
-<p>Every delivery this project has received came out of <code class="docutils literal notranslate"><span class="pre">Khronos</span> <span class="pre">glTF</span> <span class="pre">Blender</span> <span class="pre">I/O</span></code>, and most of the defects found in them are export defaults rather than modelling mistakes. This page collects the ones that bite, each with what the export does and what to do instead.</p>
+<p>Every delivery this project has received came out of <code class="docutils literal notranslate"><span class="pre">Khronos</span> <span class="pre">glTF</span> <span class="pre">Blender</span> <span class="pre">I/O</span></code>, and most of the defects found in them are Blender defaults rather than modelling mistakes — more often in the scene and its materials than in the export dialog. This page collects the ones that bite, each with what the export does and what to do instead.</p>
+<p>It is informative: a reference implementation in Blender 5.2.2, the route used to verify the profile. The <a class="reference internal" href="../profile.html"><span class="std std-doc">profile</span></a> is the requirement and constrains the file, not the tool, so anyone working in other software meets it their own way.</p>
 <p>None of it is a substitute for checking the result: run <a class="reference internal" href="checking-a-delivery.html"><span class="std std-doc"><code class="docutils literal notranslate"><span class="pre">gltf-check</span></code></span></a> on the exported file, and open it in the Khronos Sample Viewer before delivering it. The viewer assumes glTF’s convention and so does the file, so a correct export stands upright and faces the camera; the viewer answers orientation as well as materials, textures and transparency.</p>
+<section id="the-export-dialog">
+<h2>The export dialog<a class="headerlink" href="#the-export-dialog" title="Link to this heading"></a></h2>
+<p>The dialog has 110 options. Fourteen are named here and everything else stays at its Blender default. Where the reason cites a profile section, a different value produces a file that does not conform; the rest are this reference configuration’s choices.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Option</p></th>
+<th class="head"><p>Identifier</p></th>
+<th class="head"><p>Set to</p></th>
+<th class="head"><p>Why</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Format</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">export_format</span></code></p></td>
+<td><p>GLB (default)</p></td>
+<td><p>the profile’s <a class="reference internal" href="../profile.html#file-format"><span class="std std-ref">File format</span></a> section requires <code class="docutils literal notranslate"><span class="pre">.glb</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>+Y Up</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">export_yup</span></code></p></td>
+<td><p>True (default)</p></td>
+<td><p>the profile’s <a class="reference internal" href="../profile.html#axes"><span class="std std-ref">Axes</span></a> section; see the next section</p></td>
+</tr>
+<tr class="row-even"><td><p>At Collection Center</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">at_collection_center</span></code></p></td>
+<td><p>False (default)</p></td>
+<td><p>on, it relocates the origin away from the datum</p></td>
+</tr>
+<tr class="row-odd"><td><p>Limit to ▸ Selected Objects</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">use_selection</span></code></p></td>
+<td><p>True</p></td>
+<td><p>one part per delivery, the profile’s <a class="reference internal" href="../profile.html#file"><span class="std std-ref">File</span></a> section; selecting makes you state what the part is</p></td>
+</tr>
+<tr class="row-even"><td><p>Apply Modifiers</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">export_apply</span></code></p></td>
+<td><p>True</p></td>
+<td><p>see <a class="reference internal" href="#turn-on-apply-modifiers">Turn on Apply Modifiers</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>UVs</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">export_texcoords</span></code></p></td>
+<td><p>True (default)</p></td>
+<td><p>the profile’s <a class="reference internal" href="../profile.html#geometry"><span class="std std-ref">Geometry</span></a> section requires <code class="docutils literal notranslate"><span class="pre">TEXCOORD_0</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>Normals</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">export_normals</span></code></p></td>
+<td><p>True (default)</p></td>
+<td><p>the profile’s <a class="reference internal" href="../profile.html#geometry"><span class="std std-ref">Geometry</span></a> section requires <code class="docutils literal notranslate"><span class="pre">NORMAL</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>Materials</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">export_materials</span></code></p></td>
+<td><p>Export (default)</p></td>
+<td><p>the profile’s <a class="reference internal" href="../profile.html#materials"><span class="std std-ref">Materials</span></a> section</p></td>
+</tr>
+<tr class="row-even"><td><p>Cameras</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">export_cameras</span></code></p></td>
+<td><p>False (default)</p></td>
+<td><p>the profile’s <a class="reference internal" href="../profile.html#prohibited-content"><span class="std std-ref">Prohibited content</span></a> section</p></td>
+</tr>
+<tr class="row-odd"><td><p>Punctual Lights</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">export_lights</span></code></p></td>
+<td><p>False (default)</p></td>
+<td><p>the profile’s <a class="reference internal" href="../profile.html#prohibited-content"><span class="std std-ref">Prohibited content</span></a> section</p></td>
+</tr>
+<tr class="row-even"><td><p>Draco</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">export_draco_mesh_compression_enable</span></code></p></td>
+<td><p>False (default)</p></td>
+<td><p>the profile’s <a class="reference internal" href="../profile.html#prohibited-content"><span class="std std-ref">Prohibited content</span></a> section</p></td>
+</tr>
+<tr class="row-odd"><td><p>Animation</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">export_animations</span></code></p></td>
+<td><p>False</p></td>
+<td><p>the profile’s <a class="reference internal" href="../profile.html#prohibited-content"><span class="std std-ref">Prohibited content</span></a> section; harmless on a scene with no actions, but better not to rely on that</p></td>
+</tr>
+<tr class="row-even"><td><p>Remember Export Settings</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">will_save_settings</span></code></p></td>
+<td><p>True</p></td>
+<td><p>the <code class="docutils literal notranslate"><span class="pre">.blend</span></code> keeps the settings it was exported with, so a re-export reproduces the delivery</p></td>
+</tr>
+<tr class="row-odd"><td><p>Copyright</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">export_copyright</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">Copyright</span> <span class="pre">Honu</span> <span class="pre">Robotics</span></code></p></td>
+<td><p>written to <code class="docutils literal notranslate"><span class="pre">asset.copyright</span></code></p></td>
+</tr>
+</tbody>
+</table>
+<p>No export option applies object transforms, sets <code class="docutils literal notranslate"><span class="pre">metallicFactor</span></code>, names the object, or chooses a texture’s format. Those are done in the scene before the dialog opens, and the sections below cover each.</p>
+</section>
 <section id="author-in-blender-s-own-convention-and-let-the-exporter-convert">
 <h2>Author in Blender’s own convention, and let the exporter convert<a class="headerlink" href="#author-in-blender-s-own-convention-and-let-the-exporter-convert" title="Link to this heading"></a></h2>
 <p>Build the part the way Blender expects: front toward −Y, which is what the Front view (numpad 1) looks at, and up +Z. Leave the exporter’s <code class="docutils literal notranslate"><span class="pre">+Y</span> <span class="pre">Up</span></code> option <strong>on</strong>, its default. The exporter maps Blender (x, y, z) to glTF (x, z, −y), so the file comes out in glTF’s own convention, +Y up and +Z forward, which is what the profile’s <a class="reference internal" href="../profile.html#axes"><span class="std std-ref">Axes</span></a> section requires.</p>
@@ -423,7 +492,7 @@
 </section>
 <section id="texture-format-is-decided-by-the-source-image">
 <h2>Texture format is decided by the source image<a class="headerlink" href="#texture-format-is-decided-by-the-source-image" title="Link to this heading"></a></h2>
-<p>Under its default Automatic image setting the exporter writes JPEG when the source image is JPEG. So a preset change alone will not get PNG normal maps out of a project whose source textures are JPEG — the fix is at the texture source.</p>
+<p>The Images option has four values — Automatic, JPEG, WebP and None — and no PNG. Automatic, the default and the right choice, writes PNG as PNG, JPEG as JPEG, WebP as WebP and anything else as PNG. So a preset change alone will not get PNG normal maps out of a project whose source textures are JPEG — the fix is at the texture source. A WebP source is worse: it is embedded as WebP, which Gazebo cannot load.</p>
 <p>This matters because chroma subsampling blends channels that are unrelated in a normal or ORM map, and converting an existing JPEG to PNG preserves the damage rather than undoing it. A re-export from the original texture is the remedy.</p>
 <p>The profile’s <a class="reference internal" href="../profile.html#textures"><span class="std std-ref">Textures</span></a> section requires PNG for normal, metallic, roughness and packed ORM maps, and for anything carrying alpha. Base colour and emissive may be JPEG. Textures are capped at 2048 pixels on each side.</p>
 <p>Be aware that the corpus disagrees with this rule more sharply than with any other in the profile: counted by image, normal maps in the wider corpus run 38 JPEG to 4 PNG. The rule is about what this project accepts, not a description of what arrives.</p>
@@ -433,6 +502,11 @@
 <p>Plan transparency per material. For cutouts — vents, perforations, mesh guards — use <code class="docutils literal notranslate"><span class="pre">alphaMode:</span> <span class="pre">MASK</span></code> with <code class="docutils literal notranslate"><span class="pre">alphaCutoff</span></code> 0.5 and binary alpha in a PNG base colour.</p>
 <p>Do not tag an opaque part <code class="docutils literal notranslate"><span class="pre">BLEND</span></code>. Gazebo ignores <code class="docutils literal notranslate"><span class="pre">BLEND</span></code> and renders the material opaque, so the result looks fine there and is wrong everywhere else. One delivered chassis reached us exactly this way: 0.56% of its base colour map is a cutout region, and the whole hull had been tagged <code class="docutils literal notranslate"><span class="pre">BLEND</span></code> to handle it.</p>
 </section>
+<section id="turn-on-apply-modifiers">
+<h2>Turn on Apply Modifiers<a class="headerlink" href="#turn-on-apply-modifiers" title="Link to this heading"></a></h2>
+<p>Turn on <code class="docutils literal notranslate"><span class="pre">Apply</span> <span class="pre">Modifiers</span></code> in the export dialog. Off, the exporter ignores the modifier stack and writes the base mesh, so a Mirror ships half the part and nothing reports it; on, an object without modifiers exports unchanged. The profile neither requires nor forbids it.</p>
+<p>On, each object is exported as Blender evaluates it for the viewport, so a Subdivision ships at its viewport level, not its render level. Read the triangle count from <a class="reference internal" href="checking-a-delivery.html"><span class="std std-doc"><code class="docutils literal notranslate"><span class="pre">gltf-summary</span></code></span></a> to catch a stack that grew more than intended.</p>
+</section>
 <section id="keep-the-authoring-source-outside-the-simulation-repository">
 <h2>Keep the authoring source, outside the simulation repository<a class="headerlink" href="#keep-the-authoring-source-outside-the-simulation-repository" title="Link to this heading"></a></h2>
 <p>A delivered <code class="docutils literal notranslate"><span class="pre">.glb</span></code> is an export, and an export is lossy in one direction that matters: you cannot get the modifier stack, the material node graph, the UV seams or the named datum features back out of it. So keep the <code class="docutils literal notranslate"><span class="pre">.blend</span></code>, and the CAD it came from if there was any.</p>
@@ -441,8 +515,16 @@
 </section>
 <section id="versions">
 <h2>Versions<a class="headerlink" href="#versions" title="Link to this heading"></a></h2>
-<p>The toolchain is pinned at patch level in the profile’s <a class="reference internal" href="../profile.html#authoring-toolchain"><span class="std std-ref">Authoring toolchain</span></a> section: Blender 5.2.2 LTS with <code class="docutils literal notranslate"><span class="pre">io_scene_gltf2</span></code> 5.2.40, which writes <code class="docutils literal notranslate"><span class="pre">asset.generator</span></code> as <code class="docutils literal notranslate"><span class="pre">Khronos</span> <span class="pre">glTF</span> <span class="pre">Blender</span> <span class="pre">I/O</span> <span class="pre">v5.2.40</span></code>. Earlier deliveries report <code class="docutils literal notranslate"><span class="pre">v5.1.20</span></code>, which is Blender 5.1; they predate the pin and are not held to it.</p>
+<p>The reference implementation uses the versions in the profile’s <a class="reference internal" href="../profile.html#authoring-toolchain"><span class="std std-ref">Authoring toolchain</span></a> section: Blender 5.2.2 LTS with <code class="docutils literal notranslate"><span class="pre">io_scene_gltf2</span></code> 5.2.40, which writes <code class="docutils literal notranslate"><span class="pre">asset.generator</span></code> as <code class="docutils literal notranslate"><span class="pre">Khronos</span> <span class="pre">glTF</span> <span class="pre">Blender</span> <span class="pre">I/O</span> <span class="pre">v5.2.40</span></code>. Earlier deliveries report <code class="docutils literal notranslate"><span class="pre">v5.1.20</span></code>, which is Blender 5.1; they predate the pin and are not held to it.</p>
 <p>The generator string records the tool and never the settings, so two files from the same exporter can still differ in image format, tangents and compression. That is why the checks constrain the outcome rather than the settings, and why <code class="docutils literal notranslate"><span class="pre">will_save_settings</span></code> is worth turning on — it puts the settings in the <code class="docutils literal notranslate"><span class="pre">.blend</span></code> where a re-export can reproduce them.</p>
+<p>The option names and defaults on this page were read from the operator, not from documentation, and the same command checks them against a new release:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>blender<span class="w"> </span>--background<span class="w"> </span>--factory-startup<span class="w"> </span>--python<span class="w"> </span>-<span class="w"> </span><span class="s">&lt;&lt;'EOF'</span>
+<span class="s">import bpy</span>
+<span class="s">for p in bpy.ops.export_scene.gltf.get_rna_type().properties:</span>
+<span class="s">    print(p.identifier, p.type, getattr(p, "default", None))</span>
+<span class="s">EOF</span>
+</pre></div>
+</div>
 </section>
 </section>
 
