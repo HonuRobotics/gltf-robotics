@@ -158,6 +158,13 @@
 <li class="toctree-l3"><a class="reference internal" href="#turn-on-apply-modifiers">Turn on Apply Modifiers</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#keep-the-authoring-source-outside-the-simulation-repository">Keep the authoring source, outside the simulation repository</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#versions">Versions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#importing-the-gazebo-material-in-blender">Importing the Gazebo Material in Blender</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#using-the-gazebo-material">Using the Gazebo Material</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#assign-the-material-to-the-mesh">Assign the material to the mesh</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#assign-textures-to-the-material">Assign textures to the material</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#creating-a-simple-orm-map">Creating a simple ORM map</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="checking-a-delivery.html">Checking a delivery</a><ul>
@@ -508,6 +515,61 @@
 <span class="s">EOF</span>
 </pre></div>
 </div>
+</section>
+<section id="importing-the-gazebo-material-in-blender">
+<h2>Importing the Gazebo Material in Blender<a class="headerlink" href="#importing-the-gazebo-material-in-blender" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>A Gazebo compliant glTF material (henceforth “Gazebo Material”) is provided in <a class="reference download internal" download="" href="../_downloads/8b4bae9d0503b96ce568630b0902685d/Gazebo-Compliant-glTF-Material-Only.blend"><span class="xref download myst">Gazebo-Compliant-glTF-Material-Only.blend</span></a></p></li>
+<li><p>Refer to the example file <a class="reference download internal" download="" href="../_downloads/1f3a8a183c62bd9ac29f38a157e3dda4/Gazebo-Compliant-glTF-Material-Example.blend"><span class="xref download myst">Gazebo-Compliant-glTF-Material-Example.blend</span></a> to see how each component is used in Blender.</p></li>
+<li><p>For this provided material to work in Gazebo, it is assumed you have:</p>
+<ul>
+<li><p>A <strong>Base Color Map</strong> texture in PNG format</p></li>
+<li><p>If you have are using an <strong>Alpha Channel</strong>, it is in the <strong>Base Color</strong> texture</p></li>
+<li><p>You have a single <strong>ORM Map</strong> combining the <strong>Occlusion</strong>, <strong>Roughness</strong>, and <strong>Metalness</strong> as described above.</p></li>
+</ul>
+</li>
+</ul>
+<ol class="arabic simple">
+<li><p>Open your Blender scene containing the mesh object to which you would like to apply the Gazebo Material</p></li>
+<li><p>In Blender, navigate to File &gt; Append…</p></li>
+<li><p>Select the Gazebo-Compliant-glTF-Material-Only.blend, then select Materials, then <strong>Gazebo Compliant glTF Material</strong> from the list and click Append.</p></li>
+</ol>
+</section>
+<section id="using-the-gazebo-material">
+<h2>Using the Gazebo Material<a class="headerlink" href="#using-the-gazebo-material" title="Link to this heading"></a></h2>
+<section id="assign-the-material-to-the-mesh">
+<h3>Assign the material to the mesh<a class="headerlink" href="#assign-the-material-to-the-mesh" title="Link to this heading"></a></h3>
+<p>Use the Materials tab to assign the <strong>Base Color</strong>, <strong>ORM Map</strong>, and, if apllicable, <strong>Normal Map</strong>.</p>
+<p><img alt="Assign Material in Blender" src="../_images/Assign-Material.png" /></p>
+<ol class="arabic simple">
+<li><p>Locate the material tab</p></li>
+<li><p>Assign the material</p></li>
+<li><p>Locate and select the Gazebo Material from the list</p></li>
+</ol>
+</section>
+<section id="assign-textures-to-the-material">
+<h3>Assign textures to the material<a class="headerlink" href="#assign-textures-to-the-material" title="Link to this heading"></a></h3>
+<p><img alt="Assign Textures to the Material" src="../_images/Assign-Textures.png" /></p>
+<ol class="arabic simple">
+<li><p>Assign the Base Color to the Base Color + Alpha slot</p></li>
+<li><p>Assign the ORM to one of the ORM Map slot. Either will work–they are connected to the same source.</p></li>
+<li><p>Assign the Normal Map if you have one.</p></li>
+</ol>
+</section>
+<section id="creating-a-simple-orm-map">
+<h3>Creating a simple ORM map<a class="headerlink" href="#creating-a-simple-orm-map" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>In an image editor of your choice, create a small image whose dimensions are a power of 2, such as 16 pixels by 16 pixels.</p></li>
+<li><p>Fill the image with one of the following colors:</p>
+<ul>
+<li><p>Shiny object, not metal: #FF0000</p></li>
+<li><p>Rough object, not metal: #FFFF00</p></li>
+<li><p>Shiny Metal: #FF00FF</p></li>
+<li><p>Rough Metal: #FFFFFF</p></li>
+</ul>
+</li>
+</ul>
+</section>
 </section>
 </section>
 
