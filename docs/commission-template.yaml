@@ -4,7 +4,7 @@
 # it in before modeling starts (workflow step 1). The modeler reads it, and
 # after exporting each part runs
 #
-#     gltf-manifest commission.yaml <part>.visual.glb
+#     gltf-manifest commission.yaml <part>_visual.glb
 #
 # which copies that part's block into the file's manifest. Keys are plain
 # names. `gltf-manifest --keys` lists what each one writes.
