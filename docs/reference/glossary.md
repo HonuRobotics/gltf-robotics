@@ -92,4 +92,4 @@ Gazebo's word and SDF's, not a glTF term and not an assimp one. Gazebo's loader 
 
 ### visual model
 
-The visual geometry delivered for a part: the file `<part>.visual.glb` and its contents.
+The visual geometry delivered for a part: the file `<part>_visual.glb` and its contents.

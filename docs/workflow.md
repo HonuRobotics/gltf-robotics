@@ -17,7 +17,7 @@ These and the other terms this document uses, among them part, delivery, commiss
 | Step | Owner | Input | Output | Gate to the next step |
 |---|---|---|---|---|
 | 1. Commission | Integrator | Reference material, datasheets, the vehicle's datum decision | One commission per vehicle or batch of parts, one block per part | Every block complete and agreed with the modeler |
-| 2. Model | Modeler | The commission and the profile | One `<part>.visual.glb` per part, manifest filled from the commission | The modeler's own checks pass |
+| 2. Model | Modeler | The commission and the profile | One `<part>_visual.glb` per part, manifest filled from the commission | The modeler's own checks pass |
 | 3. Verify | Modeler, then integrator | The delivery and the commission | Acceptance, or a request for modification | All checks pass |
 
 ## Step 1: Commission [Integrator]
@@ -47,7 +47,7 @@ The [Blender export guide](walkthroughs/exporting-from-blender.md) is one worked
 After export, one command writes [the manifest](profile.md#the-manifest) into the file:
 
 ```bash
-gltf-manifest commission.yaml <part>.visual.glb
+gltf-manifest commission.yaml <part>_visual.glb
 ```
 
 It finds the part's block in the commission by the file's name and copies the values in, with the delivery date as today. Only the file's metadata changes; the geometry and textures are copied through untouched.
@@ -70,7 +70,7 @@ The profile's [Conformance testing](profile.md#conformance-testing) section asks
 The Khronos glTF Validator answers whether the file is legal glTF. It is a single binary from the [glTF-Validator releases](https://github.com/KhronosGroup/glTF-Validator/releases). The delivery passes with zero errors. Warnings and infos are read and explained: a warning that a normal-mapped primitive has no tangents is expected, because neither consumer reads them ([Geometry](profile.md#geometry)). 
 
 ```bash
-gltf_validator -o -a <part>.visual.glb
+gltf_validator -o -a <part>_visual.glb
 ```
 
 ### Intended?
