@@ -32,7 +32,7 @@ def test_baseline_conforms(write_model):
 # ------------------------------------------------------- delivery
 
 def test_part_name_must_be_snake_case(write_model):
-    path = write_model(name="TestPart.visual.glb")
+    path = write_model(name="TestPart_visual.glb")
     assert "File naming" in failures(path)
 
 
@@ -482,7 +482,7 @@ def test_every_section_has_a_title(write_model):
 
 
 def test_legend_prints_once_per_run(write_model, capsys):
-    a, b = write_model(), write_model(name="other_part.visual.glb")
+    a, b = write_model(), write_model(name="other_part_visual.glb")
     cli.main([str(a), str(b)])
     out = capsys.readouterr().out
     assert out.count("marks:") == 1

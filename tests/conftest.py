@@ -140,9 +140,9 @@ def baseline():
 
 @pytest.fixture
 def write_model(tmp_path):
-    """write_model(mutate=None, name="test_part.visual.glb") -> path to a .glb."""
+    """write_model(mutate=None, name="test_part_visual.glb") -> path to a .glb."""
 
-    def _write(mutate=None, name="test_part.visual.glb", buffer_mutate=None):
+    def _write(mutate=None, name="test_part_visual.glb", buffer_mutate=None):
         gltf, buffer = baseline()
         gltf = copy.deepcopy(gltf)
         if mutate is not None:

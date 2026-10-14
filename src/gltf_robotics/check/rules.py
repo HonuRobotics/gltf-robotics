@@ -85,9 +85,9 @@ class Model:
 
     @property
     def part_name(self):
-        """The part name implied by the filename: `<part>.visual.glb` -> `<part>`."""
+        """The part name implied by the filename: `<part>_visual.glb` -> `<part>`."""
         name = self.path.name
-        for suffix in (".visual.glb", ".visual.gltf", ".glb", ".gltf"):
+        for suffix in ("_visual.glb", "_visual.gltf", ".glb", ".gltf"):
             if name.endswith(suffix):
                 return name[: -len(suffix)]
         return self.path.stem
@@ -221,10 +221,10 @@ def png_has_alpha(head):
 # --------------------------------------------------------------- the rules
 
 def rule_4_1_filename(m):
-    """The profile's File section: named `<part>.visual.glb`, part lowercase snake_case."""
+    """The profile's File section: named `<part>_visual.glb`, part lowercase snake_case."""
     name = m.path.name
-    if not name.endswith(".visual.glb"):
-        return Finding("File naming", WARN, "filename is not <part>.visual.glb",
+    if not name.endswith("_visual.glb"):
+        return Finding("File naming", WARN, "filename is not <part>_visual.glb",
                        f"{name!r}; the delivery rule names the file after the part")
     part = m.part_name
     if not re.fullmatch(r"[a-z0-9]+(_[a-z0-9]+)*", part):

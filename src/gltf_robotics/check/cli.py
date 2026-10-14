@@ -34,7 +34,7 @@ SCOPE = (
 # own is not readable without this: "PASS UV sets" tells you a rule passed and not
 # which question was asked.
 TITLES = {
-    "File naming": "named <part>.visual.glb, with <part> in lowercase snake_case",
+    "File naming": "named <part>_visual.glb, with <part> in lowercase snake_case",
     "File format": "delivered as binary .glb rather than .gltf",
     "The manifest": "carries a KHR_xmp_json_ld manifest, and its contents agree with the file",
     "Asset header": "asset header declares glTF 2.0 and no minVersion",

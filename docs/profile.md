@@ -60,7 +60,7 @@ A delivery MUST consist of exactly one file, and that file MUST describe exactly
 
 #### File naming
 
-A delivery SHOULD be named `<part>.visual.glb`, where `<part>` is the part name.
+A delivery SHOULD be named `<part>_visual.glb`, where `<part>` is the part name.
 
 The part name MUST be lowercase snake_case: lowercase letters, digits and underscores, beginning with a letter. It MUST NOT contain spaces.
 

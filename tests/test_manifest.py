@@ -86,7 +86,7 @@ def test_a_cited_dimension_with_no_figure_is_refused(write_model, commission):
 
 
 def test_a_part_missing_from_the_commission_is_refused(write_model, commission):
-    path = write_model(strip, name="other_part.visual.glb")
+    path = write_model(strip, name="other_part_visual.glb")
     with pytest.raises(manifest.ManifestError, match="other_part"):
         manifest.stamp(commission(), path)
 

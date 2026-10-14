@@ -64,9 +64,9 @@ class ManifestError(Exception):
 
 
 def part_name(path):
-    """The part name implied by the filename: `<part>.visual.glb` -> `<part>`."""
+    """The part name implied by the filename: `<part>_visual.glb` -> `<part>`."""
     name = pathlib.Path(path).name
-    for suffix in (".visual.glb", ".glb"):
+    for suffix in ("_visual.glb", ".glb"):
         if name.endswith(suffix):
             return name[: -len(suffix)]
     raise ManifestError(f"{name}: not a .glb file")
@@ -198,7 +198,7 @@ def main(argv=None):
         description="Write a part's manifest into its .glb, from the commission.",
     )
     parser.add_argument("commission", nargs="?", type=pathlib.Path, help="the commission, a YAML file")
-    parser.add_argument("files", nargs="*", type=pathlib.Path, help="<part>.visual.glb, one or more")
+    parser.add_argument("files", nargs="*", type=pathlib.Path, help="<part>_visual.glb, one or more")
     parser.add_argument("-o", "--output", type=pathlib.Path,
                         help="write here and leave the input untouched; one file only")
     parser.add_argument("--part", help="the part's name, when the filename does not give it")
