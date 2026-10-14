@@ -388,7 +388,7 @@
 <section id="running-the-checker">
 <h2>Running the checker<a class="headerlink" href="#running-the-checker" title="Link to this heading"></a></h2>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>git+https://github.com/HonuRobotics/gltf-robotics
-gltf-check<span class="w"> </span>path/to/part.visual.glb
+gltf-check<span class="w"> </span>path/to/part_visual.glb
 </pre></div>
 </div>
 <p>It parses the file rather than rendering it, so it needs no Gazebo, no GPU and no ROS. Point it at several files at once. The output is a checklist in profile order — one block per section stating what was tested, then the verdict — and it lists the checks that passed as well, since a report of problems alone cannot tell you whether the thing you cared about was examined. Add <code class="docutils literal notranslate"><span class="pre">-q</span></code> to drop the sections with nothing to report, <code class="docutils literal notranslate"><span class="pre">-v</span></code> to see the explanatory detail on passing checks too, <code class="docutils literal notranslate"><span class="pre">--json</span></code> for machine-readable output, and <code class="docutils literal notranslate"><span class="pre">--strict</span></code> to treat SHOULD violations as failures.</p>

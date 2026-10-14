@@ -19,7 +19,7 @@ The reference viewer does answer orientation. The profile's [Axes](../profile.md
 
 ```bash
 pip install git+https://github.com/HonuRobotics/gltf-robotics
-gltf-check path/to/part.visual.glb
+gltf-check path/to/part_visual.glb
 ```
 
 It parses the file rather than rendering it, so it needs no Gazebo, no GPU and no ROS. Point it at several files at once. The output is a checklist in profile order — one block per section stating what was tested, then the verdict — and it lists the checks that passed as well, since a report of problems alone cannot tell you whether the thing you cared about was examined. Add `-q` to drop the sections with nothing to report, `-v` to see the explanatory detail on passing checks too, `--json` for machine-readable output, and `--strict` to treat SHOULD violations as failures.

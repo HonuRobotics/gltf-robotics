@@ -383,7 +383,7 @@
 <tr class="row-odd"><td><p>2. Model</p></td>
 <td><p>Modeler</p></td>
 <td><p>The commission and the profile</p></td>
-<td><p>One <code class="docutils literal notranslate"><span class="pre">&lt;part&gt;.visual.glb</span></code> per part, manifest filled from the commission</p></td>
+<td><p>One <code class="docutils literal notranslate"><span class="pre">&lt;part&gt;_visual.glb</span></code> per part, manifest filled from the commission</p></td>
 <td><p>The modeler’s own checks pass</p></td>
 </tr>
 <tr class="row-even"><td><p>3. Verify</p></td>
@@ -417,7 +417,7 @@
 <section id="step-3-fill-the-glb-manifest-from-the-commission-yaml-integrator">
 <h2>Step 3: Fill the <code class="docutils literal notranslate"><span class="pre">.glb</span></code> manifest from the commission YAML [Integrator]<a class="headerlink" href="#step-3-fill-the-glb-manifest-from-the-commission-yaml-integrator" title="Link to this heading"></a></h2>
 <p>After export, one command writes <a class="reference internal" href="profile.html#the-manifest"><span class="std std-ref">the manifest</span></a> into the file:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>gltf-manifest<span class="w"> </span>commission.yaml<span class="w"> </span>&lt;part&gt;.visual.glb
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>gltf-manifest<span class="w"> </span>commission.yaml<span class="w"> </span>&lt;part&gt;_visual.glb
 </pre></div>
 </div>
 <p>It finds the part’s block in the commission by the file’s name and copies the values in, with the delivery date as today. Only the file’s metadata changes; the geometry and textures are copied through untouched.</p>
@@ -435,7 +435,7 @@
 <section id="valid">
 <h3>Valid?<a class="headerlink" href="#valid" title="Link to this heading"></a></h3>
 <p>The Khronos glTF Validator answers whether the file is legal glTF. It is a single binary from the <a class="reference external" href="https://github.com/KhronosGroup/glTF-Validator/releases">glTF-Validator releases</a>. The delivery passes with zero errors. Warnings and infos are read and explained: a warning that a normal-mapped primitive has no tangents is expected, because neither consumer reads them (<a class="reference internal" href="profile.html#geometry"><span class="std std-ref">Geometry</span></a>).</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>gltf_validator<span class="w"> </span>-o<span class="w"> </span>-a<span class="w"> </span>&lt;part&gt;.visual.glb
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>gltf_validator<span class="w"> </span>-o<span class="w"> </span>-a<span class="w"> </span>&lt;part&gt;_visual.glb
 </pre></div>
 </div>
 </section>
