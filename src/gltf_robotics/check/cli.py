@@ -61,6 +61,9 @@ def section_key(section):
     return names.index(section) if section in names else len(names)
 
 
+# Where the Markdown report goes unless --report names another file.
+DEFAULT_REPORT = "gltf-check-output.md"
+
 # ANSI colour per mark, used only when stdout is a terminal and NO_COLOR is unset.
 COLOR = {"FAIL": "31;1", "WARN": "33;1", "OPEN": "36", "PASS": "32", "SKIP": "2"}
 
@@ -305,9 +308,9 @@ def main(argv=None):
     parser.add_argument("-q", "--quiet", action="store_true",
                         help="show only the tests with something to report (no PASS or SKIP lines)")
     parser.add_argument("--json", action="store_true", help="machine-readable output")
-    parser.add_argument("--report", type=pathlib.Path, metavar="FILE.md",
-                        help="also write the full record as Markdown: every test, the reasons, "
-                             "the scene/node/mesh tree, and a matrix across files")
+    parser.add_argument("--report", type=pathlib.Path, metavar="FILE.md", default=pathlib.Path(DEFAULT_REPORT),
+                        help="where to write the full record as Markdown: every test, the reasons, "
+                             f"the scene/node/mesh tree, and a matrix across files (default: {DEFAULT_REPORT})")
     parser.add_argument("--strict", action="store_true",
                         help="treat SHOULD violations (WARN) as failures too")
     args = parser.parse_args(argv)
@@ -328,8 +331,7 @@ def main(argv=None):
                if f.level == FAIL or (args.strict and f.level == WARN)]
         failed = failed or bool(bad)
         compliant.append(not bad)
-        if args.report:
-            results.append((path, findings, Model(path)))
+        results.append((path, findings, Model(path)))
         if args.json:
             payload.append({"file": str(path), "compliant": not bad, "conforms": not bad,
                             "findings": [dict(vars(f), mark=MARK[f.level],
@@ -344,9 +346,8 @@ def main(argv=None):
         print(f"{len(args.files)} files: {sum(compliant)} compliant, "
               f"{len(compliant) - sum(compliant)} NOT compliant"
               + (f", {len(args.files) - len(compliant)} unreadable" if len(compliant) < len(args.files) else ""))
-    if args.report:
-        args.report.write_text(report(results, args.strict) + "\n")
-        print(f"report written to {args.report}")
+    args.report.write_text(report(results, args.strict) + "\n")
+    print(f"report written to {args.report}", file=sys.stderr if args.json else sys.stdout)
     return 1 if failed else 0
 
 

@@ -5,6 +5,8 @@ useful than one that fires on nothing, so every test asserts both the expected
 failure and the absence of collateral ones.
 """
 
+import json
+
 import pytest
 
 from gltf_robotics.check.rules import FAIL, WARN, check_file
@@ -441,7 +443,7 @@ from gltf_robotics.check import cli  # noqa: E402
 from gltf_robotics.check.rules import PASS, Model  # noqa: E402
 
 
-def test_verdict_agrees_with_exit_code(write_model, capsys):
+def test_verdict_agrees_with_exit_code(write_model, capsys, tmp_path):
     """The text verdict, the JSON flag and the exit code must give one answer.
 
     The profile's Conformance testing section defines compliant as every MUST satisfied, so a file carrying
@@ -454,12 +456,13 @@ def test_verdict_agrees_with_exit_code(write_model, capsys):
     text = cli.verdict(check_file(warn_only))
     assert "* compliant; 1 WARN to review" in text and "File naming" in text
     assert "NOT compliant under --strict" in cli.verdict(check_file(warn_only), strict=True)
-    assert cli.main([str(warn_only)]) == 0
-    assert cli.main(["--strict", str(warn_only)]) == 1
+    out_md = ["--report", str(tmp_path / "report.md")]
+    assert cli.main([str(warn_only), *out_md]) == 0
+    assert cli.main(["--strict", str(warn_only), *out_md]) == 1
 
     failing = write_model(lambda g: g["asset"].pop("generator"))
     assert "* NOT compliant: a MUST is violated in Authoring toolchain" in cli.verdict(check_file(failing))
-    assert cli.main([str(failing)]) == 1
+    assert cli.main([str(failing), *out_md]) == 1
     capsys.readouterr()
 
 
@@ -502,9 +505,9 @@ def test_legend_is_in_the_report_not_on_stdout(write_model, capsys, tmp_path):
         assert f"- **{mark}** " in text
 
 
-def test_terminal_output_is_plain_when_not_a_terminal(write_model, capsys):
+def test_terminal_output_is_plain_when_not_a_terminal(write_model, capsys, tmp_path):
     """Colour is for a person at a terminal; a pipe or a log gets plain text."""
-    cli.main([str(write_model(name="test_part.glb"))])
+    cli.main([str(write_model(name="test_part.glb")), "--report", str(tmp_path / "report.md")])
     assert "\033[" not in capsys.readouterr().out
 
 
@@ -528,6 +531,26 @@ def test_report_matrix_has_a_column_per_file_and_a_verdict_row(write_model):
     assert a.name in header and b.name in header
     verdict_row = next(line for line in text.splitlines() if line.startswith("Verdict"))
     assert [c.strip() for c in verdict_row.split(" | ")][1:] == ["compliant", "NOT compliant"]
+
+
+def test_report_is_written_by_default(write_model, capsys, tmp_path):
+    """Every run leaves the full record behind, in the working directory unless --report says where."""
+    import os
+    path = write_model()
+    here = os.getcwd()
+    os.chdir(tmp_path)
+    try:
+        cli.main([str(path)])
+    finally:
+        os.chdir(here)
+    written = tmp_path / cli.DEFAULT_REPORT
+    assert written.exists() and "# gltf-check report" in written.read_text()
+    assert f"report written to {cli.DEFAULT_REPORT}" in capsys.readouterr().out
+
+
+def test_json_stdout_stays_json_when_the_report_is_written(write_model, capsys, tmp_path):
+    cli.main([str(write_model()), "--json", "--report", str(tmp_path / "r.md")])
+    json.loads(capsys.readouterr().out)
 
 
 def test_report_shows_the_scene_tree(write_model):
