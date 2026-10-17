@@ -1,12 +1,10 @@
 # BlueBoat gltf Walkthrough
 
-This page documents the [workflow](../workflow.md) applied to the BlueBoat USV model in the bluerobotics_models]() repo.  The purpose is to illustrate the workflow applied to a minimal exaple.
+This page documents the [workflow](../workflow.md) applied to the BlueBoat USV model in the [bluerobotics_models]() repo.  The purpose is to illustrate the workflow applied to a minimal exaple.
 
 ## Step 1: Commission
 
-The commission contains three parts.
-
-The commission gets it's own PR - https://github.com/HonuRobotics/bluerobotics_models/pull/84
+The commission contains three "parts" in a single YAML file.   This YAML file addition is a PR - https://github.com/HonuRobotics/bluerobotics_models/pull/84
 
 ## Step 2: Author  3D asset
 
@@ -31,22 +29,13 @@ gltf-manifest \
     $M/m200_weedless_prop_ccw/m200_weedless_prop_ccw_visual.glb
 ```
 
-The command finds each part's block by the file name (`<part>_visual.glb` → `<part>`), so the commission's part keys must match the delivered names exactly. A dry run on 2026-10-17 with the PR #84 and PR #83 heads, writing to a scratch directory with `-o`, gave:
+The command finds each part's block (within the commission yaml) by the file name (`<part>_visual.glb` → `<part>`), so the commission's part keys must match the delivered names exactly. Expected results are below...
 
 ```
 blueboat_chassis_visual.glb: manifest written, 11 properties, role base
 m200_weedless_prop_cw_visual.glb: manifest written, 10 properties, role component
 m200_weedless_prop_ccw_visual.glb: manifest written, 10 properties, role component
 ```
-
-If the commission changes during review (for example, the prop datum Ryan is asked to check in PR #84), edit the YAML and rerun the same command; no re-export is needed.
-
-Carried to Step 4, from `gltf-summary` on the same files:
-
-- Each prop file holds both props: two scenes, `m200_weedless_prop_cw` and `m200_weedless_prop_ccw`, differing only in which one the file opens. A delivery is one part per file.
-- Node names use the old suffix, `<part>.visual`, in all three files.
-- Chassis extent along glTF +Z (forward) is 1.192 m, against the commission's 1.20 m length overall. Prop extent along glTF +Y is 0.111 m, against 112 mm diameter.
-- Prop origin reads `x 0.50, y 0.50, z 0.46`, close to the bounding-box midpoint, where the commission's datum is the hub's mating face. Check it against the datum in the Sample Viewer and Gazebo.
 
 ## Step 4: Verify
 
@@ -55,29 +44,39 @@ Carried to Step 4, from `gltf-summary` on the same files:
 Run the validator tool on all three delivered glb files.  For example, for the cassis part...
 
 ```
-cd /home/bsb/maritime_ws/src/bluerobotics_models/bluerobotics_parts/models/blueboat_chassis
-gltf_validator -o -a blueboat_chassis_visual.glb 
+cd ~/maritime_ws/src/bluerobotics_models/bluerobotics_parts/models
+gltf_validator -o -a blueboat_chassis/blueboat_chassis_visual.glb 
 ```
 
 Results in 
 
 ```
+gltf_validator -o -a blueboat_chassis/blueboat_chassis_visual.glb 
 /home/bsb/maritime_ws/src/bluerobotics_models/bluerobotics_parts/models/blueboat_chassis/blueboat_chassis_visual.glb
-Errors: 0, Warnings: 1, Infos: 0, Hints: 0
-Time: 16ms
+Errors: 0, Warnings: 1, Infos: 1, Hints: 0
+Time: 28ms
 
         Warnings:
                 /meshes/0/primitives/0/material: Material requires a tangent space but the mesh primitive does not provide it. Runtime-generated tangent space may be non-portable across implementations.
-    ...
+
+        Infos:
+                /extensionsUsed/0: Cannot validate an extension as it is not supported by the validator: 'KHR_xmp_json_ld'.
+
+{
+    "uri": "blueboat_chassis/blueboat_chassis_visual.glb",
+    "mimeType": "model/gltf-binary",
+    "validatorVersion": "2.0.0-dev.3.10",
+    ....
 ```
 
-The three delivered files from PR #83:
+
+The three delivered files from PR #83, after Step 3 has written the manifest:
 
 | File | Errors | Warnings | Infos |
 |---|---|---|---|
-| `blueboat_chassis_visual.glb` | 0 | 1 | 0 |
-| `m200_weedless_prop_cw_visual.glb` | 0 | 2 | 0 |
-| `m200_weedless_prop_ccw_visual.glb` | 0 | 2 | 0 |
+| `blueboat_chassis_visual.glb` | 0 | 1 | 1 |
+| `m200_weedless_prop_cw_visual.glb` | 0 | 2 | 1 |
+| `m200_weedless_prop_ccw_visual.glb` | 0 | 2 | 1 |
 
 All three are valid glTF: the gate is zero errors.
 
@@ -89,11 +88,11 @@ Every warning is `MESH_PRIMITIVE_GENERATED_TANGENT_SPACE`.  These warnings are e
 - Blender writes no tangents unless the exporter's Tangents option is on
 - Neither Gazebo nor RViz reads them ([Geometry](../profile.md#geometry)), so the warning is expected and is accepted with this explanation.
 
-Run on the files after Step 3, the validator adds one info, `UNSUPPORTED_EXTENSION` for `KHR_xmp_json_ld`: the validator cannot check the manifest's extension, which is expected. The manifest itself is checked by `gltf-check`.
+The one info in each file is `UNSUPPORTED_EXTENSION` for `KHR_xmp_json_ld`, added by Step 3: the validator cannot check the manifest's extension, which is expected. The manifest itself is checked by `gltf-check`.
 
 #### Why two (not one) errors for the prop files?
 
-The duplicate warnings for the prop files are because each file is actually almost identical and each file contains.  Each file contains BOTH mesh files (CW and CCW). Each prop file contains two scenes...
+The duplicate warnings for the prop files are because each file is actually almost identical and each file contains.  Each file contains BOTH mesh files (CW and CCW) - so it is the same warning twice. Each prop file contains two scenes...
 
 ```
 m200_weedless_prop_*_visual.glb:
@@ -124,36 +123,121 @@ This is a qualitative test and requires human evaluation of the visuals.
     - Also rotate, zoom, etc. to visually expect.
 
 
-### Compliant?  Custom `gltf-check` to enforce [profile]
+### Compliant?  Custom `gltf-check` to enforce [profile](../profile.md)
 
-`gltf-check` tests each file against the [profile](../profile.md) and passes when there are no FAIL lines and every WARN is understood. `gltf-summary` describes what is in the file, and its `origin at` line is checked against the commission's datum. How to read the `gltf-check` output is in [Checking a delivery](checking-a-delivery.md).
+* `gltf-check` tests each file against the [profile](../profile.md) and passes when there are no FAIL lines and every WARN is understood. 
+* `gltf-summary` describes what is in the file, and its `origin at` line is checked against the commission's datum. How to read the `gltf-check` output is in [Checking a delivery](checking-a-delivery.md).
 
-Here both run on the files as delivered in PR #83, before Step 3 has written the manifest, because the commission (PR #84) is not yet merged. The manifest test therefore FAILs, and the Units test is OPEN because no dimension is cited; both are decided once Step 3 has run. For the chassis:
+Start at root of repo:
 
-```bash
-cd ~/maritime_ws/src/bluerobotics_models/bluerobotics_parts/models/blueboat_chassis
+```
+cd ~/maritime_ws/src/bluerobotics_models
 ```
 
+For the chassis:
+
 ```bash
-gltf-check blueboat_chassis_visual.glb
+gltf-check bluerobotics_parts/models/blueboat_chassis/blueboat_chassis_visual.glb
 ```
 
-(Can also run `gltf-check -h` for cli options.)
+The tool reports the results to stdout and writes a markdown report (default output file is `gltf-check-output.md`).  Use `-h` for details.   The chassis part passes:
 
-```bash
-gltf-summary blueboat_chassis_visual.glb
+```
+bluerobotics_parts/models/blueboat_chassis/blueboat_chassis_visual.glb  compliant; 2 WARN to review before delivering (Scenes and nodes, Materials)
+  15 checks: 2 WARN, 13 PASS
+
+  WARN  Scenes and nodes     the root node is not named after the part
+        'blueboat_chassis.visual'. the filename implies 'blueboat_chassis'
+  WARN  Materials            1 material leaves metallicFactor unset but carry an ORM map
+        Gazebo Compliant glTF Material (metallicFactor unset, so 1.0, metallicRoughness texture present). (more with -v)
+
+  PASS  13: File naming, File format, The manifest, Asset header, Units, Datum specification, Geometry, UV sets, Primitives, Textures, Transparency, Prohibited content, Authoring toolchain
+
+report written to gltf-check-output.md
 ```
 
-For the props:
+For the cw prop:
 
 ```bash
-cd ~/maritime_ws/src/bluerobotics_models/bluerobotics_parts/models/m200_weedless_prop_cw
-gltf-check m200_weedless_prop_cw_visual.glb
-gltf-summary m200_weedless_prop_cw_visual.glb
+gltf-check bluerobotics_parts/models/m200_weedless_prop_cw/m200_weedless_prop_cw_visual.glb
+```
 
-cd ../m200_weedless_prop_ccw
-gltf-check m200_weedless_prop_ccw_visual.glb
-gltf-summary m200_weedless_prop_ccw_visual.glb
+This part fails
+```
+bluerobotics_parts/models/m200_weedless_prop_cw/m200_weedless_prop_cw_visual.glb  NOT compliant: 3 MUSTs are violated in Scenes and nodes
+  18 checks: 3 FAIL, 2 WARN, 13 PASS
+
+  FAIL  Scenes and nodes     2 scenes, expected exactly 1
+  FAIL  Scenes and nodes     2 nodes, expected exactly 1
+        'm200_weedless_prop_ccw.visual', 'm200_weedless_prop_cw.visual'. A part is one node: placement belongs to the SDF visual pose and the joint tree, not to the asset
+  FAIL  Scenes and nodes     2 root nodes, expected exactly 1
+        'm200_weedless_prop_ccw.visual', 'm200_weedless_prop_cw.visual'
+  WARN  Scenes and nodes     2 root nodes are not named after the part
+        'm200_weedless_prop_ccw.visual', 'm200_weedless_prop_cw.visual'. the filename implies 'm200_weedless_prop_cw'
+  WARN  Materials            2 materials leave metallicFactor unset but carry an ORM map
+        Prop-CCW-Mat (metallicFactor unset, so 1.0, metallicRoughness texture present); Prop-CW-Mat (metallicFactor unset, so 1.0, metallicRoughness texture present). (more with -v)
+
+  PASS  13: File naming, File format, The manifest, Asset header, Units, Datum specification, Geometry, UV sets, Primitives, Textures, Transparency, Prohibited content, Authoring toolchain
+
+report written to gltf-check-output.md
+```
+
+The detailed report is archived at [gltf-check-output.md](./gltf-check-output.md)
+
+The issues in this case are illustrative of the details that are not immediately evident.  We can introspect further with
+```
+gltf-summary bluerobotics_parts/models/m200_weedless_prop_cw/m200_weedless_prop_cw_visual.glb
+```
+
+Which gives us a summary of the gltf layout
+```
+bsb@hulihuli:~/maritime_ws/src/bluerobotics_models$ gltf-summary bluerobotics_parts/models/m200_weedless_prop_cw/m200_weedless_prop_cw_visual.glb
+bluerobotics_parts/models/m200_weedless_prop_cw/m200_weedless_prop_cw_visual.glb  (553708 bytes, .glb)
+  glTF 2.0   exported by: Khronos glTF Blender I/O v5.2.40
+  extensions: used ['KHR_xmp_json_ld']  required []
+  manifest: KHR_xmp_json_ld present
+
+  scenes: 2 total; the file opens scene [1]
+    scene [0] 'm200_weedless_prop_ccw' lists 1 root node: [0]
+    scene [1] 'm200_weedless_prop_cw' lists 1 root node: [1]
+  nodes: 2 total, 2 root, 0 child
+    node [0] 'm200_weedless_prop_ccw.visual'  root   -> mesh [0]
+        translation [0, 0, 0]                  absent, so glTF's default applies
+        rotation    [0, 0, 0, 1]               absent, so glTF's default applies (identity)
+        scale       [1, 1, 1]                  absent, so glTF's default applies
+                    -> node space and scene space coincide
+    node [1] 'm200_weedless_prop_cw.visual'  root   -> mesh [1]
+        translation [0, 0, 0]                  absent, so glTF's default applies
+        rotation    [0, 0, 0, 1]               absent, so glTF's default applies (identity)
+        scale       [1, 1, 1]                  absent, so glTF's default applies
+                    -> node space and scene space coincide
+  meshes: 2 instantiated, holding 2 primitives in total
+    mesh [0] 'Cylinder.004'  -- 1 primitive
+      primitive [0]  NORMAL + POSITION + TEXCOORD_0   material: Prop-CCW-Mat
+        -- in NODE space, where the node origin is zero
+        vertex min/max   [-0.02147, -0.05548, -0.03101] -> [0.02148, 0.05524, 0.03635]   declared by the accessor
+        bbox midpoint    [5.868e-06, -0.0001216, 0.002666]
+        vertex mean      [5.63e-06, -0.0001615, 0.002848]   over 431 vertices, split at UV seams, so not the authoring tool's count
+    mesh [1] 'Cylinder.007'  -- 1 primitive
+      primitive [0]  NORMAL + POSITION + TEXCOORD_0   material: Prop-CW-Mat
+        -- in NODE space, where the node origin is zero
+        vertex min/max   [-0.02133, -0.0546, -0.0313] -> [0.02133, 0.05572, 0.03638]   declared by the accessor
+        bbox midpoint    [0, 0.0005572, 0.002542]
+        vertex mean      [5.665e-07, 0.000473, 0.002841]   over 431 vertices, split at UV seams, so not the authoring tool's count
+
+  geometry in NODE space, which is also SCENE space here -- no node carries a transform
+    bounding box  [-0.02147, -0.05548, -0.0313] -> [0.02148, 0.05572, 0.03638]
+                  union over 2 primitives, unchanged from the vertex min/max above
+    extent        [0.04296, 0.1112, 0.06768]   = max - min of that box
+    origin at     x 0.50, y 0.50, z 0.46   = (0 - min) / extent, per axis
+                  0 = minimum face, 0.5 = midpoint of the bounding box, 1 = maximum face
+
+  materials: 2 total
+    material [0] 'Prop-CCW-Mat'  metallic absent, so glTF's default of 1.0 applies  roughness None  MASK  doubleSided
+       textures: baseColorTexture, metallicRoughnessTexture, normalTexture, occlusionTexture
+    material [1] 'Prop-CW-Mat'  metallic absent, so glTF's default of 1.0 applies  roughness None  MASK  doubleSided
+       textures: baseColorTexture, metallicRoughnessTexture, normalTexture, occlusionTexture
+  images: 4 total  ['image/png', 'image/png', 'image/png', 'image/png']
 ```
 
 `gltf-check -q` drops the PASS and SKIP lines, `-v` lists every test with its full reason, and `gltf-summary --explain` appends how to read its output.
@@ -168,24 +252,21 @@ gltf-check \
     m200_weedless_prop_ccw/m200_weedless_prop_ccw_visual.glb
 ```
 
-Results, run on 2026-10-17 on PR #83 at `79eb6ed`. The terminal ends `3 files: 0 compliant, 3 NOT compliant`, and the matrix at the top of `gltf-check-output.md` reads, for the tests that did not pass:
+Results, run on 2026-10-17 on PR #83 at `79eb6ed` with the Step 3 manifest written. The terminal ends `3 files: 1 compliant, 2 NOT compliant`, and the matrix at the top of `gltf-check-output.md` reads, for the tests that did not pass:
 
 | Test | `blueboat_chassis_visual.glb` | `m200_weedless_prop_cw_visual.glb` | `m200_weedless_prop_ccw_visual.glb` |
 |---|---|---|---|
-| The manifest | FAIL | FAIL | FAIL |
-| Units | OPEN | OPEN | OPEN |
 | Scenes and nodes | WARN | FAIL | FAIL |
-| Datum specification | SKIP | SKIP | SKIP |
 | Materials | WARN | WARN | WARN |
-| Verdict | NOT compliant | NOT compliant | NOT compliant |
+| Verdict | compliant | NOT compliant | NOT compliant |
 
-The other ten tests (File naming, File format, Asset header, Geometry, UV sets, Primitives, Textures, Transparency, Prohibited content, Authoring toolchain) PASS on all three. The chassis has 15 checks (1 FAIL, 2 WARN, 1 OPEN, 10 PASS, 1 SKIP); each prop has 18 (4 FAIL, 2 WARN, 1 OPEN, 10 PASS, 1 SKIP), the extra three being the scene and node counts.
+
 
 Reading each row that did not pass:
 
-- The manifest, FAIL on all three: `no manifest`, because Step 3 has not been run on these files. Units is OPEN for the same reason (`the manifest cites no dimension`), and Datum specification is SKIP because with no declared role no datum requirement applies. All three are rechecked after Step 3.
-- Scenes and nodes, FAIL on both props: `2 scenes, expected exactly 1`, `2 nodes, expected exactly 1` and `2 root nodes, expected exactly 1`. This is the two-scene layout found by the validator above. The two prop files are the same size (552,684 bytes) and their `gltf-summary` output differs only in the line `the file opens scene [0]` or `[1]`. To be fixed in the export: one prop per file.
+- Scenes and nodes, FAIL on both props: `2 scenes, expected exactly 1`, `2 nodes, expected exactly 1` and `2 root nodes, expected exactly 1`. This is the two-scene layout found by the validator above. The two prop files are the same size (553,708 bytes with the manifest) and their `gltf-summary` output differs only in the line `the file opens scene [0]` or `[1]`. To be fixed in the export: one prop per file.
 - Scenes and nodes, WARN on all three: `the root node is not named after the part`. The nodes carry the old suffix, `blueboat_chassis.visual`, where the filename implies `blueboat_chassis`. Renaming the object in Blender clears it.
 - Materials, WARN on all three: `metallicFactor unset but carry an ORM map`. With the factor absent glTF's default of 1.0 applies, so metalness comes entirely from the texture's blue channel, which `gltf-check` does not decode. Decoded by hand, the maps are not the all-white case the warning guards against: on the chassis B is 0 for 95.8% of texels and above 128 for 4.1%, so metal is confined to small regions painted in the map; on the props B is 0 throughout (the CW map peaks at 37), so they are not metal. The metalness is where Ryan painted it, and this WARN is understood and accepted. Writing a `metallicFactor` of 0 would clear it but also remove the chassis's metal regions.
 
-To carry forward: the manifest after Step 3, and from Ryan one prop per file and root nodes named after the part.
+## Next steps
+To carry forward, from Ryan: one prop per file and root nodes named after the part.
