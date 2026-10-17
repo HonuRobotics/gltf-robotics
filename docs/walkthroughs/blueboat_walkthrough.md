@@ -142,9 +142,7 @@ PYTHONPATH=$GLTF/src python3 -m gltf_robotics.check.cli blueboat_chassis_visual.
 
 (Can also run `PYTHONPATH=$GLTF/src python3 -m gltf_robotics.check.cli -h` for cli options.)
 
-
-
-
+```bash
 PYTHONPATH=$GLTF/src python3 -m gltf_robotics.summary blueboat_chassis_visual.glb
 ```
 
@@ -172,8 +170,24 @@ PYTHONPATH=$GLTF/src python3 -m gltf_robotics.check.cli \
     m200_weedless_prop_ccw/m200_weedless_prop_ccw_visual.glb
 ```
 
-Results:
+Results, run on 2026-10-17 on PR #83 at `79eb6ed`. The terminal ends `3 files: 0 compliant, 3 NOT compliant`, and the matrix at the top of `gltf-check-output.md` reads, for the tests that did not pass:
 
+| Test | `blueboat_chassis_visual.glb` | `m200_weedless_prop_cw_visual.glb` | `m200_weedless_prop_ccw_visual.glb` |
+|---|---|---|---|
+| The manifest | FAIL | FAIL | FAIL |
+| Units | OPEN | OPEN | OPEN |
+| Scenes and nodes | WARN | FAIL | FAIL |
+| Datum specification | SKIP | SKIP | SKIP |
+| Materials | WARN | WARN | WARN |
+| Verdict | NOT compliant | NOT compliant | NOT compliant |
 
+The other ten tests (File naming, File format, Asset header, Geometry, UV sets, Primitives, Textures, Transparency, Prohibited content, Authoring toolchain) PASS on all three. The chassis has 15 checks (1 FAIL, 2 WARN, 1 OPEN, 10 PASS, 1 SKIP); each prop has 18 (4 FAIL, 2 WARN, 1 OPEN, 10 PASS, 1 SKIP), the extra three being the scene and node counts.
 
+Reading each row that did not pass:
 
+- The manifest, FAIL on all three: `no manifest`, because Step 3 has not been run on these files. Units is OPEN for the same reason (`the manifest cites no dimension`), and Datum specification is SKIP because with no declared role no datum requirement applies. All three are rechecked after Step 3.
+- Scenes and nodes, FAIL on both props: `2 scenes, expected exactly 1`, `2 nodes, expected exactly 1` and `2 root nodes, expected exactly 1`. This is the two-scene layout found by the validator above. The two prop files are the same size (552,684 bytes) and their `gltf-summary` output differs only in the line `the file opens scene [0]` or `[1]`. To be fixed in the export: one prop per file.
+- Scenes and nodes, WARN on all three: `the root node is not named after the part`. The nodes carry the old suffix, `blueboat_chassis.visual`, where the filename implies `blueboat_chassis`. Renaming the object in Blender clears it.
+- Materials, WARN on all three: `metallicFactor unset but carry an ORM map`. With the factor absent glTF's default of 1.0 applies, so metalness comes entirely from the texture's blue channel, which `gltf-check` does not decode. Decoded by hand, the maps are not the all-white case the warning guards against: on the chassis B is 0 for 95.8% of texels and above 128 for 4.1%, so metal is confined to small regions painted in the map; on the props B is 0 throughout (the CW map peaks at 37), so they are not metal. The metalness is where Ryan painted it, and this WARN is understood and accepted. Writing a `metallicFactor` of 0 would clear it but also remove the chassis's metal regions.
+
+To carry forward: the manifest after Step 3, and from Ryan one prop per file and root nodes named after the part.
