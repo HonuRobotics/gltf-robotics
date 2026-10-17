@@ -118,9 +118,9 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#step-3-fill-the-glb-manifest-from-the-commission-yaml-integrator">Step 3: Fill the <code class="docutils literal notranslate"><span class="pre">.glb</span></code> manifest from the commission YAML [Integrator]</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#step-4-verify-integrator">Step 4: Verify [Integrator]</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#valid">Valid?</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#intended">Intended?</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#compliant">Compliant?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#valid-test-with-khronos-cli-gltf-validator">Valid? Test with Khronos CLI <code class="docutils literal notranslate"><span class="pre">gltf_validator</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#intended-visual-check-with-khronos-sample-viewer-in-browser">Intended?  Visual check with Khronos sample viewer in browser</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#compliant-custom-gltf-check-to-enforce-profile">Compliant?  Custom <code class="docutils literal notranslate"><span class="pre">gltf-check</span></code> to enforce [profile]</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#what-the-integrator-checks">What the integrator checks</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#when-the-checks-run">When the checks run</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#who-answers-what">Who answers what</a></li>
@@ -171,6 +171,21 @@
 <li class="toctree-l3"><a class="reference internal" href="walkthroughs/checking-a-delivery.html#running-the-checker">Running the checker</a></li>
 <li class="toctree-l3"><a class="reference internal" href="walkthroughs/checking-a-delivery.html#reading-the-output">Reading the output</a></li>
 <li class="toctree-l3"><a class="reference internal" href="walkthroughs/checking-a-delivery.html#what-a-clean-run-does-not-mean">What a clean run does not mean</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="walkthroughs/blueboat_walkthrough.html">BlueBoat gltf Walkthrough</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="walkthroughs/blueboat_walkthrough.html#step-1-commission">Step 1: Commission</a></li>
+<li class="toctree-l3"><a class="reference internal" href="walkthroughs/blueboat_walkthrough.html#step-2-author-3d-asset">Step 2: Author  3D asset</a></li>
+<li class="toctree-l3"><a class="reference internal" href="walkthroughs/blueboat_walkthrough.html#step-3-fill-the-manifest-from-the-commission">Step 3: Fill the manifest from the commission</a></li>
+<li class="toctree-l3"><a class="reference internal" href="walkthroughs/blueboat_walkthrough.html#step-4-verify">Step 4: Verify</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="walkthroughs/blueboat_walkthrough.html#valid-test-with-khronos-cli-gltf-validator">Valid? Test with Khronos CLI <code class="docutils literal notranslate"><span class="pre">gltf_validator</span></code></a><ul>
+<li class="toctree-l5"><a class="reference internal" href="walkthroughs/blueboat_walkthrough.html#why-two-not-one-errors-for-the-prop-files">Why two (not one) errors for the prop files?</a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="walkthroughs/blueboat_walkthrough.html#intended-visual-check-with-khronos-sample-viewer-in-browser">Intended?  Visual check with Khronos sample viewer in browser</a></li>
+<li class="toctree-l4"><a class="reference internal" href="walkthroughs/blueboat_walkthrough.html#compliant-custom-gltf-check-to-enforce-profile">Compliant?  Custom <code class="docutils literal notranslate"><span class="pre">gltf-check</span></code> to enforce [profile]</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -401,8 +416,10 @@
 <section id="commission-yaml-file">
 <h3>Commission YAML file<a class="headerlink" href="#commission-yaml-file" title="Link to this heading"></a></h3>
 <p>The commission is a YAML file, see <a class="reference download internal" download="" href="_downloads/621d10d31f35f6b33d71f96943392e81/commission-template.yaml"><span class="xref download myst">commission template</span></a>, which shows every field with an example. This meta data will be written into the <code class="docutils literal notranslate"><span class="pre">.glb</span></code> file later in the process.</p>
+<p>Commissions may contain multiple parts, but can only contain a one (or none) <code class="docutils literal notranslate"><span class="pre">base</span></code>.  (see <code class="docutils literal notranslate"><span class="pre">partRole</span></code> field.)</p>
 <p>Half of the fields are the manifest wich will be written into the <code class="docutils literal notranslate"><span class="pre">.glb</span></code> file later in the process.  The other half are notes and links for the modeler.</p>
 <p>If any modifications are needed to keep the commission YAML file in alignment with the modeling deliverable, the written YAML file should be updated.  At delivery, the YAML commission and part geometry should agree.</p>
+<p>The original YAML commission typically gets is own PR and modeling doesn’t happen until the PR is approved.</p>
 </section>
 </section>
 <section id="step-2-author-3d-asset-modeler">
@@ -432,19 +449,19 @@
 <li><p><strong>Compliant?</strong> <code class="docutils literal notranslate"><span class="pre">gltf-check</span></code> evaluates the <code class="docutils literal notranslate"><span class="pre">.glb</span></code> file against the [./profile.md]</p></li>
 <li><p><strong>Usable?</strong> Verify in Gazebo and RVIZ</p></li>
 </ol>
-<section id="valid">
-<h3>Valid?<a class="headerlink" href="#valid" title="Link to this heading"></a></h3>
+<section id="valid-test-with-khronos-cli-gltf-validator">
+<h3>Valid? Test with Khronos CLI <code class="docutils literal notranslate"><span class="pre">gltf_validator</span></code><a class="headerlink" href="#valid-test-with-khronos-cli-gltf-validator" title="Link to this heading"></a></h3>
 <p>The Khronos glTF Validator answers whether the file is legal glTF. It is a single binary from the <a class="reference external" href="https://github.com/KhronosGroup/glTF-Validator/releases">glTF-Validator releases</a>. The delivery passes with zero errors. Warnings and infos are read and explained: a warning that a normal-mapped primitive has no tangents is expected, because neither consumer reads them (<a class="reference internal" href="profile.html#geometry"><span class="std std-ref">Geometry</span></a>).</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>gltf_validator<span class="w"> </span>-o<span class="w"> </span>-a<span class="w"> </span>&lt;part&gt;_visual.glb
 </pre></div>
 </div>
 </section>
-<section id="intended">
-<h3>Intended?<a class="headerlink" href="#intended" title="Link to this heading"></a></h3>
+<section id="intended-visual-check-with-khronos-sample-viewer-in-browser">
+<h3>Intended?  Visual check with Khronos sample viewer in browser<a class="headerlink" href="#intended-visual-check-with-khronos-sample-viewer-in-browser" title="Link to this heading"></a></h3>
 <p>The <a class="reference external" href="https://github.khronos.org/glTF-Sample-Viewer-Release/">Khronos Sample Viewer</a> answers whether the file looks as intended, judged by a person against the commission’s images and material notes. It also answers orientation: the viewer assumes glTF’s convention, which the file follows, so a conforming part stands upright and faces the camera in the default view. Qualitative comparison between the physical robot and the 3D asset: materials, textures, orientation.</p>
 </section>
-<section id="compliant">
-<h3>Compliant?<a class="headerlink" href="#compliant" title="Link to this heading"></a></h3>
+<section id="compliant-custom-gltf-check-to-enforce-profile">
+<h3>Compliant?  Custom <code class="docutils literal notranslate"><span class="pre">gltf-check</span></code> to enforce [profile]<a class="headerlink" href="#compliant-custom-gltf-check-to-enforce-profile" title="Link to this heading"></a></h3>
 <p><code class="docutils literal notranslate"><span class="pre">gltf-check</span></code> answers whether the file satisfies the profile and passes when thereare no failures, every warning is understood. It covers the container and header, extensions, scene and node structure, primitive attributes, materials, image format and size, transparency and the manifest. How to read its output is in the <a class="reference internal" href="walkthroughs/checking-a-delivery.html"><span class="std std-doc">checking walkthrough</span></a>.</p>
 <p><code class="docutils literal notranslate"><span class="pre">gltf-summary</span></code> shows where the origin sits, and the origin line has to agree with the datum specification. An origin on a mounting face reads 0.00 or 1.00 on that axis; 0.50 on all three axes is the bounding-box midpoint and almost always means the origin was inherited and not specified.</p>
 <p>The modeler delivers with a note that these four were done. The integrator does not repeat the first two.</p>

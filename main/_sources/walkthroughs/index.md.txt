@@ -5,6 +5,7 @@ Complete step-by-step examples and how-tos. Each one is run end to end, with the
 - [Coordinate orientation demo](coordinate_orientation_demo.md). One monkey mesh from Blender through the Sample Viewer to Gazebo and RViz, showing the coordinate convention at each step and the rotation each consumer needs.
 - [Exporting from Blender](exporting-from-blender.md). The export defaults that produce most of the defects we see, and what to do instead.
 - [Checking a delivery](checking-a-delivery.md). The four conformance questions, what answers each, and how to read `gltf-check` output.
+- [BlueBoat walkthrough](blueboat_walkthrough.md). The workflow applied to the BlueBoat chassis and propellers, step by step, as the pilot runs. In progress.
 
 ```{toctree}
 :maxdepth: 2
@@ -12,4 +13,5 @@ Complete step-by-step examples and how-tos. Each one is run end to end, with the
 coordinate_orientation_demo
 exporting-from-blender
 checking-a-delivery
+blueboat_walkthrough
 ```
