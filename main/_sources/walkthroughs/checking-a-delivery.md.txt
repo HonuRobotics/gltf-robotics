@@ -22,13 +22,17 @@ pip install git+https://github.com/HonuRobotics/gltf-robotics
 gltf-check path/to/part_visual.glb
 ```
 
-It parses the file rather than rendering it, so it needs no Gazebo, no GPU and no ROS. Point it at several files at once. The output is a checklist in profile order — one table row per test stating its mark, what was tested and what was found — and it lists the checks that passed as well, since a report of problems alone cannot tell you whether the thing you cared about was examined. Add `-q` to drop the rows that pass or skip, `-v` to see the explanatory detail on passing checks too, `--json` for machine-readable output, and `--strict` to treat SHOULD violations as failures.
+It parses the file rather than rendering it, so it needs no Gazebo, no GPU and no ROS. Point it at several files at once. The terminal output puts the verdict first, then each problem, then the checks that passed collapsed into one line — named rather than hidden, since a report of problems alone cannot tell you whether the thing you cared about was examined. Add `-v` to list every test with its full reason, `-q` to drop the PASS and SKIP lines, `--report FILE.md` to choose where the Markdown report goes, `--json` for machine-readable output, and `--strict` to treat SHOULD violations as failures.
 
 `gltf-summary` answers a different question: not whether a file conforms, but what is in it. Structure, geometry, materials, and where the origin sits inside the bounding box — the last of which no viewer shows you. It reaches no verdicts, so it is the tool for an unfamiliar file or for confirming that a correct one really is correct. `--explain` appends a glossary of the output.
 
 ## Reading the output
 
-Every run opens with a legend. Each file then gets a header naming it and the number of tests, and a table with one row per test: the mark, the test name (the profile section), what the rule tests, and a one-line finding. The table is also valid Markdown, so a run can be pasted into a walkthrough as it stands. Below it, under Notes, comes the reason behind anything but a pass. The marks are five words, used identically in the table and in the closing tally.
+Each file opens with its name and verdict, then the tally. Below come the FAIL, WARN and OPEN findings in profile order: the mark, the test name (the profile section), a one-line finding, and the reason behind it — in full when it is short, otherwise its first sentence, with the rest under `-v`. The passes and skips close the file as one line each, naming their sections. With several files a last line counts how many are compliant. Marks are coloured when the output goes to a terminal, and plain in a pipe, a log or with `NO_COLOR` set. The marks, explained below, are also listed in `gltf-check --help`.
+
+Every run also writes the full record as Markdown, for review and for walkthroughs, to `gltf-check-output.md` in the current directory; `--report FILE.md` writes it elsewhere. It opens with the legend. With several files it then has a matrix — tests as rows, files as columns, each cell the worst mark for that test, and a Verdict row — so a delivery's parts read side by side. Each file then gets its verdict, a table of every test (mark, test name, what the rule tests, what it found), the reasons behind anything but a pass, and the file's structure: the scene, node, mesh, primitive and material tree, with the scene the file opens starred and anything no scene reaches listed after it.
+
+The marks are five words, used identically in every place they appear.
 
 `PASS` is a rule satisfied. Listed rather than hidden, because the question "was that examined?" needs an answer as much as "did it fail?".
 
@@ -40,7 +44,7 @@ Every run opens with a legend. Each file then gets a header naming it and the nu
 
 `SKIP` is a rule with nothing to examine — the texture rules on a file with no images, the datum rule on a file that declares no part role.
 
-The Summary closes each file with the tally and the verdict. The verdict says *compliant* rather than *conforms* on purpose: compliant is the profile's [Conformance testing](../profile.md#conformance-testing) section's third question, every MUST satisfied, and it is the only one of the four this tool answers. A file with only `WARN` findings is therefore compliant, with things to review before delivering; `--strict` counts them as failures instead. The exit code and the `--json` output follow the same rule as the text, so a script and a reader never disagree about a file.
+The verdict says *compliant* rather than *conforms* on purpose: compliant is the profile's [Conformance testing](../profile.md#conformance-testing) section's third question, every MUST satisfied, and it is the only one of the four this tool answers. A file with only `WARN` findings is therefore compliant, with things to review before delivering; `--strict` counts them as failures instead. The exit code and the `--json` output follow the same rule as the text, so a script and a reader never disagree about a file.
 
 ## What a clean run does not mean
 
