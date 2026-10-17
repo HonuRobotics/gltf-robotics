@@ -438,6 +438,7 @@ def test_realized_pose_must_not_be_authored(write_model):
 # ------------------------------------------------------------ the CLI output
 
 from gltf_robotics.check import cli  # noqa: E402
+from gltf_robotics.check.rules import PASS, Model  # noqa: E402
 
 
 def test_verdict_agrees_with_exit_code(write_model, capsys):
@@ -471,25 +472,69 @@ def test_tally_uses_the_same_words_as_the_marks(write_model):
     assert "PASS" in tally and "WARN" in tally
 
 
+def report_rows(text):
+    """The per-test rows of a report's tables: those whose first cell is a mark."""
+    return [[cell.strip() for cell in line.split(" | ")] for line in text.splitlines()
+            if line.split(" | ")[0].strip() in cli.MARK.values()]
+
+
 def test_every_section_has_a_title(write_model):
     """A rule added without a TITLES entry would print a bare section name."""
-    out = cli.render(write_model(), check_file(write_model()), verbose=False, quiet=False)
-    rows = [[cell.strip() for cell in line.split(" | ")] for line in out.splitlines()
-            if line.split(" | ")[0].strip() in cli.MARK.values()]
+    path = write_model()
+    rows = report_rows(cli.report([(path, check_file(path), Model(path))]))
     assert rows
     for mark, section, tested, _ in rows:
         assert tested, f"untitled section: {section!r}"
-    assert {f.section for f in check_file(write_model())} <= set(cli.TITLES)
+    assert {f.section for f in check_file(path)} <= set(cli.TITLES)
 
 
-def test_legend_prints_once_per_run(write_model, capsys):
+def test_legend_is_in_the_report_not_on_stdout(write_model, capsys, tmp_path):
     a, b = write_model(), write_model(name="other_part_visual.glb")
-    cli.main([str(a), str(b)])
+    out_md = tmp_path / "report.md"
+    assert cli.main([str(a), str(b), "--report", str(out_md)]) == 0
     out = capsys.readouterr().out
-    assert out.count("Each test is marked as one of:") == 1
-    assert out.count("* compliant") == 2
+    assert "Each test is marked as one of:" not in out
+    assert out.count("  compliant") == 2
+    assert "2 files: 2 compliant, 0 NOT compliant" in out
+    text = out_md.read_text()
+    assert text.count("Each test is marked as one of:") == 1
     for mark, _ in cli.LEGEND:
-        assert f"  {mark}  " in out
+        assert f"- **{mark}** " in text
+
+
+def test_terminal_output_is_plain_when_not_a_terminal(write_model, capsys):
+    """Colour is for a person at a terminal; a pipe or a log gets plain text."""
+    cli.main([str(write_model(name="test_part.glb"))])
+    assert "\033[" not in capsys.readouterr().out
+
+
+def test_passes_collapse_into_one_line_unless_verbose(write_model):
+    path = write_model()
+    findings = check_file(path)
+    n_pass = sum(1 for f in findings if f.level == PASS)
+    def pass_lines(text):
+        return [line for line in text.splitlines() if line.startswith("  PASS")]
+
+    compact = pass_lines(cli.render(path, findings))
+    assert len(compact) == 1 and compact[0].startswith(f"  PASS  {n_pass}: ")
+    assert len(pass_lines(cli.render(path, findings, verbose=True))) == n_pass
+    assert pass_lines(cli.render(path, findings, quiet=True)) == []
+
+
+def test_report_matrix_has_a_column_per_file_and_a_verdict_row(write_model):
+    a, b = write_model(), write_model(lambda g: g["asset"].pop("generator"), name="other_part_visual.glb")
+    text = cli.report([(p, check_file(p), Model(p)) for p in (a, b)])
+    header = next(line for line in text.splitlines() if line.startswith("Test "))
+    assert a.name in header and b.name in header
+    verdict_row = next(line for line in text.splitlines() if line.startswith("Verdict"))
+    assert [c.strip() for c in verdict_row.split(" | ")][1:] == ["compliant", "NOT compliant"]
+
+
+def test_report_shows_the_scene_tree(write_model):
+    path = write_model()
+    text = cli.report([(path, check_file(path), Model(path))])
+    tree = text[text.index("### Structure"):]
+    assert "* scene[0]" in tree and "node[0]" in tree and "mesh[0]" in tree and "primitive[0] -> " in tree
 
 
 def test_base_part_without_a_datum_point_fails(write_model):
