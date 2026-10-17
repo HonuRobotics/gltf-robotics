@@ -18,19 +18,18 @@ The integrator uses `gltf_robotics.manifest` and the commission YAML file to wri
 
 The inputs are the commission `bluerobotics_parts/commissions/commission-blueboat.yaml` from [PR #84](https://github.com/HonuRobotics/bluerobotics_models/pull/84) and the three `<part>_visual.glb` files from [PR #83](https://github.com/HonuRobotics/bluerobotics_models/pull/83). The step runs once PR #84 is approved, on PR #83's branch, so the stamped files land in the delivery PR.
 
+The commands on this page assume the gltf-robotics tools are installed as in [Installing the tools](https://github.com/HonuRobotics/gltf-robotics#installing-the-tools), which puts `gltf-manifest`, `gltf-check` and `gltf-summary` on the `PATH`.
+
 From the `bluerobotics_models` root, with the commission available on the branch:
 
 ```bash
-GLTF=~/maritime_ws/tools/gltf-robotics
 M=bluerobotics_parts/models
-PYTHONPATH=$GLTF/src python3 -m gltf_robotics.manifest \
+gltf-manifest \
     bluerobotics_parts/commissions/commission-blueboat.yaml \
     $M/blueboat_chassis/blueboat_chassis_visual.glb \
     $M/m200_weedless_prop_cw/m200_weedless_prop_cw_visual.glb \
     $M/m200_weedless_prop_ccw/m200_weedless_prop_ccw_visual.glb
 ```
-
-With gltf-robotics installed (`pip install -e ~/maritime_ws/tools/gltf-robotics`), `gltf-manifest` replaces the `PYTHONPATH=… python3 -m gltf_robotics.manifest` prefix.
 
 The command finds each part's block by the file name (`<part>_visual.glb` → `<part>`), so the commission's part keys must match the delivered names exactly. A dry run on 2026-10-17 with the PR #84 and PR #83 heads, writing to a scratch directory with `-o`, gave:
 
@@ -132,39 +131,38 @@ This is a qualitative test and requires human evaluation of the visuals.
 Here both run on the files as delivered in PR #83, before Step 3 has written the manifest, because the commission (PR #84) is not yet merged. The manifest test therefore FAILs, and the Units test is OPEN because no dimension is cited; both are decided once Step 3 has run. For the chassis:
 
 ```bash
-GLTF=~/maritime_ws/tools/gltf-robotics
 cd ~/maritime_ws/src/bluerobotics_models/bluerobotics_parts/models/blueboat_chassis
 ```
 
-```
-PYTHONPATH=$GLTF/src python3 -m gltf_robotics.check.cli blueboat_chassis_visual.glb
+```bash
+gltf-check blueboat_chassis_visual.glb
 ```
 
-(Can also run `PYTHONPATH=$GLTF/src python3 -m gltf_robotics.check.cli -h` for cli options.)
+(Can also run `gltf-check -h` for cli options.)
 
 ```bash
-PYTHONPATH=$GLTF/src python3 -m gltf_robotics.summary blueboat_chassis_visual.glb
+gltf-summary blueboat_chassis_visual.glb
 ```
 
 For the props:
 
 ```bash
 cd ~/maritime_ws/src/bluerobotics_models/bluerobotics_parts/models/m200_weedless_prop_cw
-PYTHONPATH=$GLTF/src python3 -m gltf_robotics.check.cli m200_weedless_prop_cw_visual.glb
-PYTHONPATH=$GLTF/src python3 -m gltf_robotics.summary m200_weedless_prop_cw_visual.glb
+gltf-check m200_weedless_prop_cw_visual.glb
+gltf-summary m200_weedless_prop_cw_visual.glb
 
 cd ../m200_weedless_prop_ccw
-PYTHONPATH=$GLTF/src python3 -m gltf_robotics.check.cli m200_weedless_prop_ccw_visual.glb
-PYTHONPATH=$GLTF/src python3 -m gltf_robotics.summary m200_weedless_prop_ccw_visual.glb
+gltf-check m200_weedless_prop_ccw_visual.glb
+gltf-summary m200_weedless_prop_ccw_visual.glb
 ```
 
-With gltf-robotics installed, `gltf-check` and `gltf-summary` replace the `PYTHONPATH=… python3 -m …` prefixes. `gltf-check -q` drops the PASS and SKIP lines, `-v` lists every test with its full reason, and `gltf-summary --explain` appends how to read its output.
+`gltf-check -q` drops the PASS and SKIP lines, `-v` lists every test with its full reason, and `gltf-summary --explain` appends how to read its output.
 
 Every `gltf-check` run also writes the full record as Markdown to `gltf-check-output.md` in the current directory (`--report FILE.md` puts it elsewhere). For the whole delivery at once, the report has a matrix of the three parts side by side, then each file's tests, reasons and scene/node/mesh tree:
 
 ```bash
 cd ~/maritime_ws/src/bluerobotics_models/bluerobotics_parts/models
-PYTHONPATH=$GLTF/src python3 -m gltf_robotics.check.cli \
+gltf-check \
     blueboat_chassis/blueboat_chassis_visual.glb \
     m200_weedless_prop_cw/m200_weedless_prop_cw_visual.glb \
     m200_weedless_prop_ccw/m200_weedless_prop_ccw_visual.glb
