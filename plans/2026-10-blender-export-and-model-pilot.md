@@ -136,8 +136,9 @@ Formerly the options reference, now merged into [exporting-from-blender.md](../d
 
 Brian to Ryan, 2026-10-11: put the profile, workflow and tools to work on the BlueBoat models, and refine the models and the docs together as we go.
 
-- [ ] Ryan opens a PR to `bluerobotics_models` with new BlueBoat chassis and propeller models.
+- [x] Ryan opens a PR to `bluerobotics_models` with new BlueBoat chassis and propeller models: [#83](https://github.com/HonuRobotics/bluerobotics_models/pull/83) `rslee/blueboat-source-assembly`, 2026-10-16. It delivers `blueboat_chassis` and `m200_weedless_prop_cw` and `_ccw` as `<part>_visual.glb`, exported `+Y Up` with the glTF Compliant Material and the export settings saved in each `.blend`. Each `model.sdf` carries the visual pose. The sources are in `source_files/blueboat_assembly/` in two assembly styles to compare for Issue #5: `__ASSEMBLED_NODES` (props merged in place) and `__LINKED_COLLECTIONS` (props linked from `m200_weedless_prop.blend`).
 - [ ] Brian reviews. `bluerobotics_models` and the gltf-robotics docs (profile, workflow, export guide, tools) are revised together; each doc change is recorded here with its reason.
+- [ ] Walkthrough `docs/walkthroughs/blueboat_pilot.md`, written as the pilot runs and listed in the walkthroughs index. It records, step by step, how the profile, workflow and tools co-evolve with the `blueboat_chassis` and propeller models. It starts from PR #83 and follows the workflow's steps (Commission, Author, Manifest, Verify). Each round records what was delivered, the actual output of `gltf-check`, `gltf-summary`, `glb_probe`, `gz sim` and RViz, each change to the profile, workflow, export guide or tools with its reason and commit, and each change Ryan made to the chassis and props in response. It ends with the assembled BlueBoat in Gazebo and RViz, and the Issue #1 and Issue #5 findings.
 - [ ] The chassis visual carries `<pose>0 0 0 1.5708 0 1.5708</pose>`, in `model.sdf` or its generator, and `scripts/gltf_to_yup.py` is retired.
 - [ ] BlueROV2 chassis and propellers.
 - [ ] Holybro UAV models ([holybro_models](https://github.com/HonuRobotics/holybro_models)).
@@ -145,7 +146,7 @@ Brian to Ryan, 2026-10-11: put the profile, workflow and tools to work on the Bl
 
 ### Step 10. Retire the BlueBoat walkthrough
 
-- [x] Deleted `docs/walkthroughs/workflow_blueboat.md` with the files only it used (`blueboat_chassis.sdf`, `blueboat_chassis.urdf`, four `images/blueboat_*.png`) and its walkthroughs index entry (2026-10-11). It recorded the old chassis run with the old roll; the pilot may produce a new walkthrough later.
+- [x] Deleted `docs/walkthroughs/workflow_blueboat.md` with the files only it used (`blueboat_chassis.sdf`, `blueboat_chassis.urdf`, four `images/blueboat_*.png`) and its walkthroughs index entry (2026-10-11). It recorded the old chassis run with the old roll; the pilot walkthrough in Plan Step 9 replaces it.
 - [x] Coordinate orientation demo updated (`ca1b5ad`).
 
 ## Tests that close the Open items

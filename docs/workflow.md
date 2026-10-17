@@ -28,9 +28,15 @@ The integrator writes the commission before any modeling starts. It is the writt
 
 The commission is a YAML file, see [commission template](commission-template.yaml), which shows every field with an example. This meta data will be written into the `.glb` file later in the process.  
 
+Commissions may contain multiple parts, but can only contain a one (or none) `base`.  (see `partRole` field.)
+
 Half of the fields are the manifest wich will be written into the `.glb` file later in the process.  The other half are notes and links for the modeler.  
 
 If any modifications are needed to keep the commission YAML file in alignment with the modeling deliverable, the written YAML file should be updated.  At delivery, the YAML commission and part geometry should agree.
+
+The original YAML commission typically gets is own PR and modeling doesn't happen until the PR is approved.  
+
+
 
 ## Step 2: Author 3D asset [Modeler]
 
@@ -65,7 +71,7 @@ The profile's [Conformance testing](profile.md#conformance-testing) section asks
 
 
 
-### Valid?
+### Valid? Test with Khronos CLI `gltf_validator`
 
 The Khronos glTF Validator answers whether the file is legal glTF. It is a single binary from the [glTF-Validator releases](https://github.com/KhronosGroup/glTF-Validator/releases). The delivery passes with zero errors. Warnings and infos are read and explained: a warning that a normal-mapped primitive has no tangents is expected, because neither consumer reads them ([Geometry](profile.md#geometry)). 
 
@@ -73,10 +79,11 @@ The Khronos glTF Validator answers whether the file is legal glTF. It is a singl
 gltf_validator -o -a <part>_visual.glb
 ```
 
-### Intended?
+### Intended?  Visual check with Khronos sample viewer in browser
 The [Khronos Sample Viewer](https://github.khronos.org/glTF-Sample-Viewer-Release/) answers whether the file looks as intended, judged by a person against the commission's images and material notes. It also answers orientation: the viewer assumes glTF's convention, which the file follows, so a conforming part stands upright and faces the camera in the default view. Qualitative comparison between the physical robot and the 3D asset: materials, textures, orientation.
 
-### Compliant?
+### Compliant?  Custom `gltf-check` to enforce [profile]
+
 `gltf-check` answers whether the file satisfies the profile and passes when thereare no failures, every warning is understood. It covers the container and header, extensions, scene and node structure, primitive attributes, materials, image format and size, transparency and the manifest. How to read its output is in the [checking walkthrough](walkthroughs/checking-a-delivery.md).
 
 `gltf-summary` shows where the origin sits, and the origin line has to agree with the datum specification. An origin on a mounting face reads 0.00 or 1.00 on that axis; 0.50 on all three axes is the bounding-box midpoint and almost always means the origin was inherited and not specified.
