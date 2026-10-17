@@ -36,6 +36,18 @@ Other:
 
 12. Reference documents, [refs/](refs/). A local placeholder for licensed standards the documents cite, such as ISO 9787. Its contents are not committed or published.
 
+## Installing the tools
+
+Install the command-line tools editable into a venv in the clone, so edits under `src/` take effect without reinstalling, and link the commands onto your `PATH`. From the root of the clone:
+
+```bash
+python3 -m venv .venv
+.venv/bin/pip install -e '.[dev]'
+ln -s "$PWD"/.venv/bin/gltf-{check,summary,manifest,assess} ~/.local/bin/
+```
+
+Re-run the `pip install` line only when `pyproject.toml` changes, such as a new command or dependency. `.venv/bin/pytest` runs the tests.
+
 ## License
 
 Apache-2.0. See [LICENSE](LICENSE) and [NOTICE](NOTICE).

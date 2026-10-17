@@ -12,6 +12,9 @@ assess/rig/
 assess/results.json
 assess/run.log
 
+# Tools virtualenv, see README "Installing the tools"
+.venv/
+
 # Per-repo docs virtualenv, created by maritime-workspace's docs-build
 .docs/
 
