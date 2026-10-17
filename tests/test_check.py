@@ -447,24 +447,24 @@ def test_verdict_agrees_with_exit_code(write_model, capsys):
     only SHOULD violations is compliant unless --strict says to count them.
     """
     clean = write_model()
-    assert cli.verdict(check_file(clean)).endswith("-> compliant")
+    assert cli.verdict(check_file(clean)).endswith("* compliant")
 
     warn_only = write_model(name="test_part.glb")
     text = cli.verdict(check_file(warn_only))
-    assert "-> compliant; 1 WARN to review" in text and "File naming" in text
-    assert "not compliant under --strict" in cli.verdict(check_file(warn_only), strict=True)
+    assert "* compliant; 1 WARN to review" in text and "File naming" in text
+    assert "NOT compliant under --strict" in cli.verdict(check_file(warn_only), strict=True)
     assert cli.main([str(warn_only)]) == 0
     assert cli.main(["--strict", str(warn_only)]) == 1
 
     failing = write_model(lambda g: g["asset"].pop("generator"))
-    assert "-> not compliant: a MUST is violated in Authoring toolchain" in cli.verdict(check_file(failing))
+    assert "* NOT compliant: a MUST is violated in Authoring toolchain" in cli.verdict(check_file(failing))
     assert cli.main([str(failing)]) == 1
     capsys.readouterr()
 
 
 def test_tally_uses_the_same_words_as_the_marks(write_model):
     text = cli.verdict(check_file(write_model(name="test_part.glb")))
-    tally = text.splitlines()[0]
+    tally = next(line for line in text.splitlines() if "checks:" in line)
     assert "checks:" in tally
     for word in ("passed", "to review", "undecided", "not applicable", "ok", "note"):
         assert word not in tally
@@ -474,10 +474,11 @@ def test_tally_uses_the_same_words_as_the_marks(write_model):
 def test_every_section_has_a_title(write_model):
     """A rule added without a TITLES entry would print a bare section name."""
     out = cli.render(write_model(), check_file(write_model()), verbose=False, quiet=False)
-    headers = [line for line in out.splitlines() if line.startswith("  ") and line[2:].split(":")[0] in cli.TITLES]
-    assert headers
-    for line in headers:
-        assert line.split(":", 1)[1].strip(), f"untitled section: {line!r}"
+    rows = [[cell.strip() for cell in line.split(" | ")] for line in out.splitlines()
+            if line.split(" | ")[0].strip() in cli.MARK.values()]
+    assert rows
+    for mark, section, tested, _ in rows:
+        assert tested, f"untitled section: {section!r}"
     assert {f.section for f in check_file(write_model())} <= set(cli.TITLES)
 
 
@@ -485,8 +486,8 @@ def test_legend_prints_once_per_run(write_model, capsys):
     a, b = write_model(), write_model(name="other_part_visual.glb")
     cli.main([str(a), str(b)])
     out = capsys.readouterr().out
-    assert out.count("marks:") == 1
-    assert out.count("-> compliant") == 2
+    assert out.count("Each test is marked as one of:") == 1
+    assert out.count("* compliant") == 2
     for mark, _ in cli.LEGEND:
         assert f"  {mark}  " in out
 

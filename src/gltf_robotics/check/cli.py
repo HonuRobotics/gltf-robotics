@@ -58,40 +58,48 @@ def section_key(section):
     return names.index(section) if section in names else len(names)
 
 
-def legend(width=88):
-    """The key to the marks, and what this tool does and does not answer."""
-    lines = ["marks:"]
+def legend():
+    """The key to the marks, printed once at the top of a run."""
+    lines = ["Each test is marked as one of:"]
     for mark, meaning in LEGEND:
         lines.append(f"  {mark}  {meaning}")
-    lines.append("")
-    lines.extend(wrap(SCOPE, width))
     return "\n".join(lines)
 
 
-def render(path, findings, verbose, quiet, width=88):
-    """One block per profile section: what was tested, then the verdict, then why.
+def table(rows):
+    """Rows as a pipe-separated table, columns padded to line up.
 
-    Profile order rather than severity order, so the output reads as a checklist
+    The separator row makes it a Markdown table too, so a run can be pasted into
+    a walkthrough as it stands.
+    """
+    rows = [[cell.replace("|", "\\|") for cell in row] for row in rows]
+    widths = [max(len(row[i]) for row in rows) for i in range(len(rows[0]))]
+    lines = [" | ".join(cell.ljust(w) for cell, w in zip(row, widths)).rstrip() for row in rows]
+    lines.insert(1, "-|-".join("-" * w for w in widths))
+    return lines
+
+
+def render(path, findings, verbose, quiet, width=88):
+    """A header, one table row per test, then the reasons behind anything but a pass.
+
+    Profile order rather than severity order, so the table reads as a checklist
     that can be compared against the profile itself. Passing checks are shown by
     default -- a report that lists only problems cannot tell you whether the
     thing you cared about was examined at all.
     """
-    lines = [str(path)]
-    by_section = {}
-    for f in findings:
-        by_section.setdefault(f.section, []).append(f)
+    lines = [f"gltf-check: evaluating {len(findings)} tests on the file {path}", ""]
+    shown = [f for f in sorted(findings, key=lambda f: (section_key(f.section), ORDER[f.level]))
+             if not (quiet and f.level in (PASS, SKIP))]
+    rows = [["Result", "Test name", "Test description", "Notes"]]
+    rows += [[MARK[f.level], f.section, TITLES.get(f.section, ""), f.summary] for f in shown]
+    lines.extend(table(rows))
 
-    for section in sorted(by_section, key=section_key):
-        group = by_section[section]
-        if quiet and all(f.level in (PASS, SKIP) for f in group):
-            continue
-        title = TITLES.get(section, "")
-        lines.append(f"  {section}: {title}")
-        for f in sorted(group, key=lambda f: ORDER[f.level]):
-            lines.append(f"    {MARK[f.level]:>4}  {f.summary}")
-            if f.detail and (verbose or f.level != PASS):
-                for chunk in wrap(f.detail, width - 12):
-                    lines.append(f"          {chunk}")
+    explained = [f for f in shown if f.detail and (verbose or f.level != PASS)]
+    if explained:
+        lines += ["", "Notes:", ""]
+        for f in explained:
+            lines.append(f"  {MARK[f.level]}  {f.section}")
+            lines.extend(f"        {chunk}" for chunk in wrap(f.detail, width - 8))
     return "\n".join(lines)
 
 
@@ -102,7 +110,7 @@ def sections(findings, level):
 
 
 def verdict(findings, strict=False):
-    """The closing two lines: the tally, then whether the file is compliant.
+    """The summary: the tally, then whether the file is compliant.
 
     Compliant is the profile's Conformance testing section's word: every MUST satisfied. A SHOULD
     violation therefore does not break it unless --strict says to count it, and
@@ -110,19 +118,19 @@ def verdict(findings, strict=False):
     """
     n = {level: sum(1 for f in findings if f.level == level) for level in ORDER}
     tally = ", ".join(f"{n[level]} {MARK[level]}" for level in ORDER if n[level])
-    lines = [f"  {len(findings)} checks: {tally}"]
+    lines = ["Summary:", "", f"* {len(findings)} checks: {tally}"]
 
     if n[FAIL]:
         what = "a MUST is violated" if n[FAIL] == 1 else f"{n[FAIL]} MUSTs are violated"
-        lines.append(f"  -> not compliant: {what} in {sections(findings, FAIL)}")
+        lines.append(f"* NOT compliant: {what} in {sections(findings, FAIL)}")
     elif n[WARN] and strict:
-        lines.append(f"  -> not compliant under --strict: {n[WARN]} WARN counted as failures "
+        lines.append(f"* NOT compliant under --strict: {n[WARN]} WARN counted as failures "
                      f"({sections(findings, WARN)})")
     elif n[WARN]:
-        lines.append(f"  -> compliant; {n[WARN]} WARN to review before delivering "
+        lines.append(f"* compliant; {n[WARN]} WARN to review before delivering "
                      f"({sections(findings, WARN)})")
     else:
-        lines.append("  -> compliant")
+        lines.append("* compliant")
     return "\n".join(lines)
 
 
@@ -143,13 +151,13 @@ def main(argv=None):
     parser = argparse.ArgumentParser(
         prog="gltf-check",
         description="Check a glTF file against the Honu glTF Asset Profile.",
-        epilog=legend(),
+        epilog=legend() + "\n\n" + "\n".join(wrap(SCOPE, 88)),
         formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("files", nargs="+", type=pathlib.Path)
     parser.add_argument("-v", "--verbose", action="store_true",
                         help="show the explanatory detail on passing checks too (few carry any)")
     parser.add_argument("-q", "--quiet", action="store_true",
-                        help="show only the sections with something to report")
+                        help="show only the tests with something to report (no PASS or SKIP rows)")
     parser.add_argument("--json", action="store_true", help="machine-readable output")
     parser.add_argument("--strict", action="store_true",
                         help="treat SHOULD violations (WARN) as failures too")
@@ -176,7 +184,7 @@ def main(argv=None):
                                               tested=TITLES.get(f.section, ""))
                                          for f in findings]})
         else:
-            print(render(path, findings, args.verbose, args.quiet))
+            print(render(path, findings, args.verbose, args.quiet) + "\n")
             print(verdict(findings, args.strict) + "\n")
 
     if args.json:
