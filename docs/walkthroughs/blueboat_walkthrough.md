@@ -273,5 +273,113 @@ Reading each row that did not pass:
 - Scenes and nodes, WARN on all three: `the root node is not named after the part`. The nodes carry the old suffix, `blueboat_chassis.visual`, where the filename implies `blueboat_chassis`. Renaming the object in Blender clears it.
 - Materials, WARN on all three: `metallicFactor unset but carry an ORM map`. With the factor absent glTF's default of 1.0 applies, so metalness comes entirely from the texture's blue channel, which `gltf-check` does not decode. Decoded by hand, the maps are not the all-white case the warning guards against: on the chassis B is 0 for 95.8% of texels and above 128 for 4.1%, so metal is confined to small regions painted in the map; on the props B is 0 throughout (the CW map peaks at 37), so they are not metal. The metalness is where Ryan painted it, and this WARN is understood and accepted. Writing a `metallicFactor` of 0 would clear it but also remove the chassis's metal regions.
 
-## Next steps
+## Round 1 result: what went back to Ryan
+
 To carry forward, from Ryan: one prop per file and root nodes named after the part.
+
+## Round 2: re-export of the props (PR #83 at `e6f369b`)
+
+Ryan re-exported the two props so that each file holds one scene and one node. Against the round 1 head (`79eb6ed`), the net change in [PR #83](https://github.com/HonuRobotics/bluerobotics_models/pull/83) is:
+
+- The two prop GLBs are re-exported. The chassis GLB and the three `model.sdf` files are unchanged.
+- The commission from [PR #84](https://github.com/HonuRobotics/bluerobotics_models/pull/84) has been merged and is now on the PR branch, byte for byte the file used in round 1.
+
+Each step below was rerun on 2026-10-18 from the `bluerobotics_models` root on the PR head, with the same commands as round 1.
+
+### Step 3: Fill the manifest
+
+The `gltf-manifest` command is unchanged and writes the same manifests as in round 1:
+
+```
+bluerobotics_parts/models/blueboat_chassis/blueboat_chassis_visual.glb: manifest written, 11 properties, role base
+bluerobotics_parts/models/m200_weedless_prop_cw/m200_weedless_prop_cw_visual.glb: manifest written, 10 properties, role component
+bluerobotics_parts/models/m200_weedless_prop_ccw/m200_weedless_prop_ccw_visual.glb: manifest written, 10 properties, role component
+```
+
+### Valid?
+
+| File | Round 1 (Errors / Warnings / Infos) | Round 2 (Errors / Warnings / Infos) |
+|---|---|---|
+| `blueboat_chassis_visual.glb` | 0 / 1 / 1 | 0 / 1 / 1 |
+| `m200_weedless_prop_cw_visual.glb` | 0 / 2 / 1 | 0 / 1 / 1 |
+| `m200_weedless_prop_ccw_visual.glb` | 0 / 2 / 1 | 0 / 1 / 1 |
+
+Each prop now carries one mesh, so it has one tangent space warning instead of two. The prop files are no longer identical: 342,012 bytes (CW) and 337,480 bytes (CCW) with the manifest, against 553,708 bytes each in round 1.
+
+### Compliant?
+
+For the cw prop, the same command as round 1:
+
+```bash
+gltf-check bluerobotics_parts/models/m200_weedless_prop_cw/m200_weedless_prop_cw_visual.glb
+```
+
+Now passes:
+
+```
+bluerobotics_parts/models/m200_weedless_prop_cw/m200_weedless_prop_cw_visual.glb  compliant; 2 WARN to review before delivering (Scenes and nodes, Materials)
+  15 checks: 2 WARN, 13 PASS
+
+  WARN  Scenes and nodes     the root node is not named after the part
+        'm200_weedless_prop_cw.visual'. the filename implies 'm200_weedless_prop_cw'
+  WARN  Materials            1 material leaves metallicFactor unset but carry an ORM map
+        Prop-CW-Mat (metallicFactor unset, so 1.0, metallicRoughness texture present). (more with -v)
+
+  PASS  13: File naming, File format, The manifest, Asset header, Units, Datum specification, Geometry, UV sets, Primitives, Textures, Transparency, Prohibited content, Authoring toolchain
+```
+
+The three scene and node FAILs are gone, and with them the three extra checks: the prop has 15 checks, like the chassis. `gltf-summary` shows why:
+
+```
+bluerobotics_parts/models/m200_weedless_prop_cw/m200_weedless_prop_cw_visual.glb  (342012 bytes, .glb)
+  glTF 2.0   exported by: Khronos glTF Blender I/O v5.2.40
+  extensions: used ['KHR_xmp_json_ld']  required []
+  manifest: KHR_xmp_json_ld present
+
+  scenes: 1 total; the file opens scene [0]
+    scene [0] 'm200_weedless_prop_cw' lists 1 root node: [0]
+  nodes: 1 total, 1 root, 0 child
+    node [0] 'm200_weedless_prop_cw.visual'  root   -> mesh [0]
+        translation [0, 0, 0]                  absent, so glTF's default applies
+        rotation    [0, 0, 0, 1]               absent, so glTF's default applies (identity)
+        scale       [1, 1, 1]                  absent, so glTF's default applies
+                    -> node space and scene space coincide
+  meshes: 1 instantiated, holding 1 primitive in total
+    mesh [0] 'Cylinder.007'  -- 1 primitive
+      primitive [0]  NORMAL + POSITION + TEXCOORD_0   material: Prop-CW-Mat
+        -- in NODE space, where the node origin is zero
+        vertex min/max   [-0.02133, -0.0546, -0.0313] -> [0.02133, 0.05572, 0.03638]   declared by the accessor
+        bbox midpoint    [0, 0.0005572, 0.002542]
+        vertex mean      [5.665e-07, 0.000473, 0.002841]   over 431 vertices, split at UV seams, so not the authoring tool's count
+
+  geometry in NODE space, which is also SCENE space here -- no node carries a transform
+    bounding box  [-0.02133, -0.0546, -0.0313] -> [0.02133, 0.05572, 0.03638]
+                  union over 1 primitive, unchanged from the vertex min/max above
+    extent        [0.04267, 0.1103, 0.06768]   = max - min of that box
+    origin at     x 0.50, y 0.49, z 0.46   = (0 - min) / extent, per axis
+                  0 = minimum face, 0.5 = midpoint of the bounding box, 1 = maximum face
+
+  materials: 1 total
+    material [0] 'Prop-CW-Mat'  metallic absent, so glTF's default of 1.0 applies  roughness None  MASK  doubleSided
+       textures: baseColorTexture, metallicRoughnessTexture, normalTexture, occlusionTexture
+  images: 3 total  ['image/png', 'image/png', 'image/png']
+```
+
+Compared with round 1, the file holds one scene, one node, one mesh and one material, where it held two of each. The mesh is the same `Cylinder.007` with the same vertex bounds, so the geometry did not change; only the CCW prop left the file. With the union gone, the extent is the CW prop's own, and its diameter along glTF +Y is 0.1103 m (0.1107 m for the CCW prop) against the commission's nominal 112 mm, which the Units test passes.
+
+The three-file run, with the same command as round 1, ends `3 files: 3 compliant, 0 NOT compliant`. The rows that did not pass in either round:
+
+| Test | Round 1: chassis / cw / ccw | Round 2: chassis / cw / ccw |
+|---|---|---|
+| Scenes and nodes | WARN / FAIL / FAIL | WARN / WARN / WARN |
+| Materials | WARN / WARN / WARN | WARN / WARN / WARN |
+| Verdict | compliant / NOT compliant / NOT compliant | compliant / compliant / compliant |
+
+The detailed round 2 report is archived at [gltf-check-output-round2.md](./gltf-check-output-round2.md).
+
+What remains is two WARNs on each file:
+
+- Scenes and nodes: the root nodes still carry the old suffix (`m200_weedless_prop_cw.visual`), as in round 1.
+- Materials: unchanged and accepted, as read in round 1. The props' metallic maps decode as before (B is 0 throughout; the CW map peaks at 37), and the commission specifies both props as non-metal.
+
+We could rename the root nodes after the part (`blueboat_chassis`, `m200_weedless_prop_cw`, `m200_weedless_prop_ccw`), but that isn't functional and a detail not worth another iteration. 
