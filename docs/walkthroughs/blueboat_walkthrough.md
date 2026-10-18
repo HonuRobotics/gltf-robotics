@@ -122,6 +122,11 @@ This is a qualitative test and requires human evaluation of the visuals.
     ![](./images/m200_prop_sampleviewer.png)
     - Also rotate, zoom, etc. to visually expect.
 
+#### Khronos vs Gazebo
+
+To set expectations, this image shows the blueboat glb file both in the Khronos viewer and in Gazebo.  They are visually quite different.   This is likely due to lighting within Gazebo.  When in doubt, trust the official Khronos viewer.
+![](./images/blueboat_gz_vs_gltf.png)
+
 
 ### Compliant?  Custom `gltf-check` to enforce [profile](../profile.md)
 
